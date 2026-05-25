@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>kio.lol</title>
+<title>regelbruch.cc</title>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Cabinet+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -269,7 +269,7 @@ input[type=color].color-input { width:26px; height:26px; padding:1px 2px; border
 <!-- LOGIN -->
 <div id="v-login" class="auth-root">
   <div class="auth-box">
-    <div class="auth-wordmark">kio<span>.</span>lol</div>
+    <div class="auth-wordmark">regelbruch<span>.</span>cc</div>
     <div class="auth-tagline">Dein persönlicher Bio-Link</div>
     <div class="auth-panel">
       <div id="login-err" class="auth-err">Falscher Username oder Passwort.</div>
@@ -284,7 +284,7 @@ input[type=color].color-input { width:26px; height:26px; padding:1px 2px; border
 <!-- REGISTER -->
 <div id="v-reg" class="auth-root" style="display:none;">
   <div class="auth-box">
-    <div class="auth-wordmark">kio<span>.</span>lol</div>
+    <div class="auth-wordmark">regelbruch<span>.</span>cc</div>
     <div class="auth-tagline">Account erstellen</div>
     <div class="auth-panel">
       <div id="reg-err" class="auth-err"></div>
@@ -302,7 +302,7 @@ input[type=color].color-input { width:26px; height:26px; padding:1px 2px; border
     <!-- SIDEBAR -->
     <div class="sidebar">
       <div class="sidebar-logo">
-        <div class="logo-mark">kio<span>.</span>lol</div>
+        <div class="logo-mark">regelbruch<span>.</span>cc</div>
       </div>
       <div class="sidebar-nav">
         <div class="nav-section">Menü</div>
@@ -343,7 +343,7 @@ input[type=color].color-input { width:26px; height:26px; padding:1px 2px; border
       <div class="sidebar-bottom">
         <div class="profile-link-box">
           <div class="plb-label">Dein Link</div>
-          <div class="plb-url" id="plb-url">kioo.lol/—</div>
+          <div class="plb-url" id="plb-url">regelbruch.cc/—</div>
         </div>
         <div class="plb-btns">
           <button class="btn btn-ghost plb-btn btn-sm" onclick="copyLink()">Kopieren</button>
@@ -363,7 +363,7 @@ input[type=color].color-input { width:26px; height:26px; padding:1px 2px; border
             <div class="card-hd"><div class="card-title">Dein Profil-Link</div></div>
             <div class="custom-url-box" style="margin-bottom:12px;">
               <div class="custom-url-text">
-                <span class="domain">https://kioo.lol/</span><span class="username" id="custom-url-user">—</span>
+                <span class="domain">https://regelbruch.cc/</span><span class="username" id="custom-url-user">—</span>
               </div>
               <button class="btn btn-ghost btn-sm" onclick="copyLink()">Kopieren</button>
             </div>
@@ -836,14 +836,14 @@ function updateStats() {
 }
 
 function updateLink() {
-  document.getElementById('plb-url').textContent = 'kioo.lol/' + CU;
+  document.getElementById('plb-url').textContent = 'regelbruch.cc/' + CU;
   const cu = document.getElementById('custom-url-user');
   if(cu) cu.textContent = CU;
 }
 
 function copyLink() {
   const url = location.href.split('?')[0] + '?user=' + CU;
-  navigator.clipboard.writeText(url).then(() => toast('🔗 Link kopiert!\n(kioo.lol/' + CU + ')'));
+  navigator.clipboard.writeText(url).then(() => toast('🔗 Link kopiert!\n(regelbruch.cc/' + CU + ')'));
 }
 
 // ─── FORM ───
@@ -966,7 +966,7 @@ function renderLeaderboard() {
     html += `<div class="lb-row" style="${rowStyle}" onclick="renderProfile('${h(u.username)}')">
       <div class="lb-rank ${rankClass}">${rankIcon||('#'+rank)}</div>
       <div class="lb-name">${h(u.display_name)}${isMe?' <span style="color:var(--text3);font-size:10px;">(du)</span>':''}</div>
-      <span style="font-size:10px;color:var(--text3);font-family:'Geist Mono',monospace;">kioo.lol/${h(u.username)}</span>
+      <span style="font-size:10px;color:var(--text3);font-family:'Geist Mono',monospace;">regelbruch.cc/${h(u.username)}</span>
       ${u.is_premium?'<span class="lb-badge">💎</span>':''}
       <div class="lb-views">${u.views.toLocaleString('de-DE')} Views</div>
     </div>`;
@@ -1067,14 +1067,14 @@ function submitGiveViews() {
 
 // ─── TEMPLATES ───
 const BUILTIN_TPLS = [
-  {id:'b1',name:'Void',author:'kio.lol',cat:'dark',accent:'#7c3aed',bgcolor:'rgba(8,5,20,0.88)',bg_file:'',builtin:true},
-  {id:'b2',name:'Ocean',author:'kio.lol',cat:'dark',accent:'#2563eb',bgcolor:'rgba(5,10,22,0.88)',bg_file:'',builtin:true},
-  {id:'b3',name:'Forest',author:'kio.lol',cat:'dark',accent:'#16a34a',bgcolor:'rgba(5,14,8,0.88)',bg_file:'',builtin:true},
-  {id:'b4',name:'Crimson',author:'kio.lol',cat:'neon',accent:'#e11d48',bgcolor:'rgba(20,5,8,0.88)',bg_file:'',builtin:true},
-  {id:'b5',name:'Amber',author:'kio.lol',cat:'neon',accent:'#d97706',bgcolor:'rgba(18,12,2,0.88)',bg_file:'',builtin:true},
-  {id:'b6',name:'Cyan',author:'kio.lol',cat:'neon',accent:'#0891b2',bgcolor:'rgba(2,12,18,0.88)',bg_file:'',builtin:true},
-  {id:'b7',name:'Frost',author:'kio.lol',cat:'light',accent:'#4f46e5',bgcolor:'rgba(240,245,255,0.92)',bg_file:'',builtin:true},
-  {id:'b8',name:'Slate',author:'kio.lol',cat:'minimal',accent:'#64748b',bgcolor:'rgba(15,20,28,0.95)',bg_file:'',builtin:true},
+  {id:'b1',name:'Void',author:'regelbruch.cc',cat:'dark',accent:'#7c3aed',bgcolor:'rgba(8,5,20,0.88)',bg_file:'',builtin:true},
+  {id:'b2',name:'Ocean',author:'regelbruch.cc',cat:'dark',accent:'#2563eb',bgcolor:'rgba(5,10,22,0.88)',bg_file:'',builtin:true},
+  {id:'b3',name:'Forest',author:'regelbruch.cc',cat:'dark',accent:'#16a34a',bgcolor:'rgba(5,14,8,0.88)',bg_file:'',builtin:true},
+  {id:'b4',name:'Crimson',author:'regelbruch.cc',cat:'neon',accent:'#e11d48',bgcolor:'rgba(20,5,8,0.88)',bg_file:'',builtin:true},
+  {id:'b5',name:'Amber',author:'regelbruch.cc',cat:'neon',accent:'#d97706',bgcolor:'rgba(18,12,2,0.88)',bg_file:'',builtin:true},
+  {id:'b6',name:'Cyan',author:'regelbruch.cc',cat:'neon',accent:'#0891b2',bgcolor:'rgba(2,12,18,0.88)',bg_file:'',builtin:true},
+  {id:'b7',name:'Frost',author:'regelbruch.cc',cat:'light',accent:'#4f46e5',bgcolor:'rgba(240,245,255,0.92)',bg_file:'',builtin:true},
+  {id:'b8',name:'Slate',author:'regelbruch.cc',cat:'minimal',accent:'#64748b',bgcolor:'rgba(15,20,28,0.95)',bg_file:'',builtin:true},
 ];
 
 function getAllTpls() { return [...BUILTIN_TPLS, ...tpls()]; }
