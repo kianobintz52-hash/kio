@@ -1,1194 +1,1010 @@
-
-raw
-Gunslol profile · HTML
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JAQLIV Profile</title>
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>regelbruch.cc</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root {
-      --primary-color: #00CED1;
+      --primary: 139, 92, 246;
+      --accent: 217, 70, 239;
+      --bg: #030303;
+      --surface: #0d0d0d;
+      --border: rgba(255,255,255,0.08);
     }
- 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Share Tech Mono', 'Courier New', monospace;
-    }
- 
-    /* ─── Custom Cursor ─── */
-    .custom-cursor {
-      position: fixed;
-      width: 22px;
-      height: 22px;
-      border: 2px solid var(--primary-color);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-      transition: border-color 0.3s, transform 0.1s;
-      box-shadow: 0 0 8px var(--primary-color);
-    }
-    .custom-cursor::after {
-      content: '';
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 4px; height: 4px;
-      background: var(--primary-color);
-      border-radius: 50%;
-    }
-    body:not(.touch-device) { cursor: none; }
- 
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      background-color: #000;
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg);
       color: #fff;
-      overflow: hidden;
+      min-height: 100vh;
     }
- 
-    .container {
-      width: 100%;
-      height: 100vh;
-      position: relative;
+
+    .font-display { font-family: 'Syne', sans-serif; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes drift {
+      0%,100% { transform: translate(0,0) scale(1); }
+      50% { transform: translate(40px,20px) scale(1.05); }
     }
- 
-    /* ─── Animated background canvas ─── */
-    #bg-canvas {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: 1;
-      pointer-events: none;
+    @keyframes drift2 {
+      0%,100% { transform: translate(0,0) scale(1); }
+      50% { transform: translate(-30px,-20px) scale(1.08); }
     }
- 
-    .glitch-overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 2;
-      opacity: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        rgba(0,255,0,0.03) 0px,
-        transparent 2px,
-        transparent 4px
-      );
-      transition: opacity 0.5s;
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(24px); }
+      to { opacity:1; transform:translateY(0); }
     }
- 
-    #hacker-overlay, #snow-overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 3;
+    @keyframes pulse-glow {
+      0%,100% { box-shadow: 0 0 20px rgba(139,92,246,0.4); }
+      50% { box-shadow: 0 0 40px rgba(139,92,246,0.8); }
     }
- 
-    .hidden { display: none !important; }
- 
-    /* ─── Theme Buttons ─── */
-    .controls {
-      position: fixed;
-      bottom: calc(50% - 240px - 10px);
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 10px;
-      z-index: 20;
-      background: rgba(0,0,0,0.7);
-      padding: 5px 10px;
-      border-radius: 20px;
-      backdrop-filter: blur(5px);
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
- 
-    .theme-button {
-      width: 30px; height: 30px;
-      border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.3);
-      background-color: rgba(0,0,0,0.5);
+    @keyframes spotlight {
+      0% { opacity:0; transform: scale(0.8); }
+      100% { opacity:1; transform: scale(1); }
+    }
+
+    .animate-drift { animation: drift 20s ease-in-out infinite; }
+    .animate-drift2 { animation: drift2 25s ease-in-out infinite; }
+    .anim-0 { animation: fadeUp 0.7s ease both; }
+    .anim-1 { animation: fadeUp 0.7s 0.1s ease both; }
+    .anim-2 { animation: fadeUp 0.7s 0.2s ease both; }
+    .anim-3 { animation: fadeUp 0.7s 0.3s ease both; }
+    .anim-4 { animation: fadeUp 0.7s 0.4s ease both; }
+
+    /* ── GRID OVERLAY ── */
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+
+    /* ── GLASS CARD ── */
+    .glass {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .glass-strong {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
+    }
+
+    /* ── GRADIENT TEXT ── */
+    .grad-text {
+      background: linear-gradient(135deg, #fff 0%, #a78bfa 50%, #e879f9 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── BUTTON ── */
+    .btn-primary {
+      background: linear-gradient(135deg, rgb(var(--primary)), rgb(var(--accent)));
+      border: none;
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s;
-      font-size: 14px;
-      font-weight: bold;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
       color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.2); }
+
+    /* ── INPUT ── */
+    .rb-input {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .rb-input:focus { border-color: rgba(139,92,246,0.6); background: rgba(139,92,246,0.06); }
+    .rb-input::placeholder { color: rgba(255,255,255,0.3); }
+
+    /* ── PAGES ── */
+    .page { display: none; min-height: 100vh; }
+    .page.active { display: block; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 1.2rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      background: rgba(3,3,3,0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.4rem;
+      background: linear-gradient(135deg, #fff 0%, #a78bfa 60%, #e879f9 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      cursor: pointer;
       user-select: none;
     }
-    .theme-button:hover {
-      transform: scale(1.15);
-      border-color: var(--primary-color);
-      box-shadow: 0 0 8px var(--primary-color);
-    }
- 
-    /* ─── Top Controls ─── */
-    .top-controls {
-      position: fixed;
-      bottom: calc(50% - 240px - 60px);
+
+    /* ── SPOTLIGHT ── */
+    .spotlight {
+      position: absolute;
+      top: -20%;
       left: 50%;
       transform: translateX(-50%);
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      z-index: 20;
-      background: rgba(0,0,0,0.7);
-      padding: 8px 12px;
-      border-radius: 20px;
-      backdrop-filter: blur(5px);
+      width: 80vw;
+      height: 60vh;
+      background: radial-gradient(ellipse at center, rgba(139,92,246,0.15) 0%, transparent 70%);
+      pointer-events: none;
+      animation: spotlight 1.5s ease forwards;
     }
- 
-    .volume-control, .transparency-control {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+
+    /* ── FEATURE CARDS ── */
+    .feature-card {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      border-radius: 16px;
+      padding: 1.5rem;
+      transition: background 0.3s, transform 0.3s, border-color 0.3s;
     }
- 
-    .volume-icon, .transparency-icon {
-      width: 20px; height: 20px;
-      cursor: pointer;
-      color: white;
+    .feature-card:hover {
+      background: rgba(139,92,246,0.08);
+      border-color: rgba(139,92,246,0.3);
+      transform: translateY(-4px);
     }
- 
-    .slider {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 80px; height: 5px;
-      border-radius: 5px;
-      background: rgba(255,255,255,0.3);
-      outline: none;
-    }
-    .slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 12px; height: 12px;
-      border-radius: 50%;
-      background: var(--primary-color);
-      cursor: pointer;
-      box-shadow: 0 0 4px var(--primary-color);
-    }
- 
-    /* ─── Profile Block ─── */
-    #profile-block {
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 820px;
-      min-height: 332px;
-      background: rgba(0,0,0,0.7);
-      border: 1px solid rgba(255,255,255,0.2);
-      padding: 20px;
-      border-radius: 15px;
-      z-index: 20;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      backdrop-filter: blur(10px);
-      opacity: 0;
-      transform-style: preserve-3d;
-      transition: border-color 0.5s;
-      pointer-events: auto;
-    }
- 
-    .profile-header {
-      display: flex;
-      align-items: flex-start;
-      gap: 15px;
-    }
- 
-    /* ─── Profile Picture & Orbit Ring ─── */
-    .profile-container {
-      position: relative;
-      width: 150px; height: 150px;
-      flex-shrink: 0;
-    }
- 
-    .orbit-ring {
-      position: absolute;
-      top: -6px; left: -6px;
-      width: calc(100% + 12px);
-      height: calc(100% + 12px);
-      border-radius: 50%;
-      border: 2px solid transparent;
-      border-top-color: var(--primary-color);
-      border-right-color: rgba(0,206,209,0.3);
-      animation: orbit 3s linear infinite;
-      box-shadow: 0 0 10px var(--primary-color);
-    }
- 
-    .orbit-ring.fast { animation-duration: 0.4s; }
- 
-    @keyframes orbit {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
-    }
- 
-    .profile-picture {
-      width: 150px; height: 150px;
-      border-radius: 50%;
-      object-fit: cover;
-      cursor: pointer;
-      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 60px;
-      position: relative;
-      z-index: 1;
-    }
- 
-    /* Avatar placeholder (emoji since no actual image) */
-    .avatar-emoji {
-      width: 150px; height: 150px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #0f3460, #16213e, #1a1a2e);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 70px;
-      cursor: pointer;
-      position: relative;
-      z-index: 1;
-      border: 2px solid rgba(0,206,209,0.3);
-    }
- 
-    .profile-info {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
- 
-    .name-and-badges {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
-    }
- 
-    #profile-name {
-      font-size: 32px;
-      font-weight: bold;
-      letter-spacing: 3px;
-      color: #fff;
-      filter: drop-shadow(0 0 8px rgba(255,255,255,0.7));
-    }
- 
-    /* ─── Badges ─── */
-    .badge-box {
-      background: rgba(255,255,255,0.15);
-      padding: 2px;
-      border-radius: 15px;
-      display: inline-block;
-    }
-    .badge-box-inner {
-      background: rgba(0,0,0,0.5);
-      padding: 5px;
-      border-radius: 12px;
-      display: flex;
-      gap: 8px;
-      box-shadow: inset 0 0 10px rgba(255,255,255,0.2);
-    }
-    .badge-group { display: flex; flex-wrap: wrap; gap: 8px; }
- 
-    .badge-container {
-      position: relative;
-      cursor: default;
-    }
-    .badge-container .tooltip {
-      visibility: hidden;
-      width: 120px;
-      background-color: rgba(0,0,0,0.9);
-      color: #fff;
-      text-align: center;
-      border-radius: 6px;
-      padding: 4px 6px;
-      font-size: 11px;
-      position: absolute;
-      z-index: 100;
-      bottom: 130%;
-      left: 50%;
-      margin-left: -60px;
-      opacity: 0;
-      transition: opacity 0.3s;
-      border: 1px solid rgba(255,255,255,0.2);
-      white-space: nowrap;
-    }
-    .badge-container:hover .tooltip {
-      visibility: visible;
-      opacity: 1;
-    }
- 
-    .badge {
-      width: 22px; height: 22px;
-      font-size: 18px;
-      transition: transform 0.3s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .badge:hover { transform: scale(1.3); }
- 
-    #profile-bio {
-      color: rgba(255,255,255,0.85);
-      font-size: 16px;
-      line-height: 1.6;
-      margin-bottom: 10px;
-      min-height: 28px;
-    }
- 
-    .bio-separator {
-      width: 100%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
-      margin: 10px 0;
-    }
- 
-    .profile-footer {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      width: 100%;
-      margin-top: auto;
-    }
- 
-    /* ─── Visitor Counter ─── */
-    .visitor-counter {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255,255,255,0.1);
-      padding: 8px 15px;
-      border-radius: 20px;
-      font-size: 14px;
-      align-self: flex-start;
-      position: relative;
-    }
-    .visitor-icon { width: 18px; height: 18px; color: white; }
-    .visitor-counter .tooltip {
-      visibility: hidden;
-      background-color: rgba(0,0,0,0.8);
-      color: #fff;
-      text-align: center;
-      border-radius: 6px;
-      padding: 4px 8px;
-      font-size: 11px;
-      position: absolute;
-      z-index: 100;
-      top: -30px; left: 50%;
-      transform: translateX(-50%);
-      white-space: nowrap;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .visitor-counter:hover .tooltip { visibility: visible; opacity: 1; }
- 
-    /* ─── Social Icons ─── */
-    .social-links {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-    }
- 
-    .social-link {
-      width: 40px; height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(255,255,255,0.1);
-      border-radius: 50%;
-      text-decoration: none;
-      font-size: 20px;
-      transition: transform 0.3s ease, box-shadow 0.3s;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-    .social-link:hover {
-      transform: scale(1.4) rotateY(15deg);
-      box-shadow: 0 0 12px var(--primary-color);
-      border-color: var(--primary-color);
-    }
- 
-    /* ─── Skills Block ─── */
-    #skills-block {
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 820px;
-      min-height: 332px;
-      background: rgba(0,0,0,0.7);
-      border: 1px solid rgba(255,255,255,0.2);
-      padding: 20px;
-      border-radius: 15px;
-      z-index: 20;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      backdrop-filter: blur(10px);
-      transform-style: preserve-3d;
-      transition: border-color 0.5s;
-    }
- 
-    .skills-title {
-      text-align: center;
-      font-size: 24px;
-      margin-bottom: 5px;
-      letter-spacing: 3px;
-      color: var(--primary-color);
-      text-shadow: 0 0 10px var(--primary-color);
-    }
- 
-    .skill { display: flex; flex-direction: column; gap: 8px; }
- 
-    .skill-name {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .skill-label { flex: 1; font-size: 15px; }
-    .skill-pct { font-size: 13px; color: rgba(255,255,255,0.6); }
-    .skill-icon { font-size: 20px; }
- 
-    .skill-bar-container {
-      height: 10px;
-      background: rgba(255,255,255,0.08);
-      border-radius: 5px;
+
+    /* ── URL BAR ── */
+    .url-bar {
+      display: flex; align-items: center;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(139,92,246,0.4);
+      border-radius: 14px;
       overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.1);
+      max-width: 520px; width: 100%;
     }
-    .skill-bar {
-      height: 100%;
-      border-radius: 5px;
-      width: 0%;
-      transition: width 2s cubic-bezier(0.25, 1, 0.5, 1);
+    .url-prefix {
+      padding: 0 0.75rem 0 1rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #a78bfa;
+      white-space: nowrap;
     }
-    #python-bar { background: linear-gradient(90deg, #ff6b6b, #ff9f9f); box-shadow: 0 0 8px #ff6b6b; }
-    #cpp-bar    { background: linear-gradient(90deg, #4facfe, #00f2fe); box-shadow: 0 0 8px #4facfe; }
-    #csharp-bar { background: linear-gradient(90deg, #43e97b, #38f9d7); box-shadow: 0 0 8px #43e97b; }
- 
-    /* ─── Results Button ─── */
-    #results-button-container {
-      position: fixed;
-      top: 20px; left: 50%;
-      transform: translateX(-50%);
-      z-index: 20;
-      text-align: center;
+    .url-bar input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 0.85rem 0.5rem;
+      font-size: 0.95rem;
+      outline: none;
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      min-width: 0;
     }
-    #results-theme {
-      background: rgba(0,0,0,0.7);
-      color: white;
-      border: 1px solid rgba(255,255,255,0.3);
-      padding: 8px 20px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 14px;
-      backdrop-filter: blur(5px);
-      transition: all 0.3s;
-      letter-spacing: 1px;
+    .url-bar input::placeholder { color: rgba(255,255,255,0.3); }
+
+    /* ── STATUS DOT ── */
+    .status-dot {
+      display: inline-block;
+      width: 8px; height: 8px; border-radius: 50%;
+      margin-right: 6px;
     }
-    #results-theme:hover {
-      background: rgba(0,0,0,0.9);
-      border-color: var(--primary-color);
-      box-shadow: 0 0 10px var(--primary-color);
+    .dot-online { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+    .dot-offline { background: #6b7280; }
+
+    /* ── DASHBOARD LAYOUT ── */
+    .dash-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
     }
-    #results-hint {
-      margin-top: 8px;
-      background: rgba(0,0,0,0.8);
-      color: rgba(255,255,255,0.7);
-      padding: 6px 12px;
-      border-radius: 10px;
-      font-size: 12px;
-      border: 1px solid rgba(255,255,255,0.2);
+    @media(min-width: 1024px) {
+      .dash-grid { grid-template-columns: 1fr 1fr 1fr; }
     }
- 
-    /* ─── Theme border colors ─── */
-    .home-theme  #profile-block, .home-theme  #skills-block { border-color: rgba(0,195,255,0.5); }
-    .hacker-theme #profile-block, .hacker-theme #skills-block { border-color: rgba(0,255,0,0.5); }
-    .rain-theme  #profile-block, .rain-theme  #skills-block { border-color: rgba(100,149,237,0.5); }
-    .anime-theme #profile-block, .anime-theme #skills-block { border-color: rgba(255,0,255,0.5); }
-    .car-theme   #profile-block, .car-theme   #skills-block { border-color: rgba(255,165,0,0.5); }
- 
-    /* ─── Glitch animation ─── */
-    .glitch { animation: glitchAnim 0.2s ease-in-out; }
-    @keyframes glitchAnim {
-      0%   { transform: translate(0); }
-      20%  { transform: translate(-3px, 2px); filter: hue-rotate(90deg); }
-      40%  { transform: translate(-3px, -2px); }
-      60%  { transform: translate(3px, 2px); filter: hue-rotate(-90deg); }
-      80%  { transform: translate(3px, -2px); }
-      100% { transform: translate(0); filter: none; }
+
+    .dash-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
     }
- 
-    /* ─── Start Screen ─── */
-    #start-screen {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100vh;
-      background: rgba(0,0,0,0.92);
-      backdrop-filter: blur(10px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 30;
-      cursor: pointer;
-      gap: 20px;
+    .dash-card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
     }
-    #start-logo {
-      font-size: 48px;
-      letter-spacing: 8px;
-      color: var(--primary-color);
-      text-shadow: 0 0 20px var(--primary-color), 0 0 40px var(--primary-color);
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
-    }
-    #start-text {
-      font-size: 20px;
-      color: rgba(255,255,255,0.8);
-      text-align: center;
-      letter-spacing: 1px;
-    }
-    .start-hint {
-      font-size: 13px;
+    .dash-card-sub {
+      font-size: 0.8rem;
       color: rgba(255,255,255,0.4);
-      letter-spacing: 2px;
-      animation: blink 1.2s infinite;
+      margin-bottom: 1.25rem;
     }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
- 
-    /* ─── Hacker matrix overlay ─── */
-    #hacker-overlay canvas { position: absolute; top:0; left:0; width:100%; height:100%; }
- 
-    /* ─── Snowflakes ─── */
-    .snowflake {
-      position: absolute;
-      color: rgba(200,230,255,0.8);
-      font-size: 14px;
-      animation: fall linear infinite;
-      pointer-events: none;
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 999;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      align-items: center; justify-content: center;
     }
-    @keyframes fall {
-      0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(110vh) rotate(360deg); opacity: 0.3; }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: #111;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 2rem;
+      width: 100%; max-width: 440px;
+      margin: 1rem;
+      animation: fadeUp 0.3s ease both;
     }
- 
-    /* ─── Cursor trail ─── */
-    .trail-dot {
-      position: fixed;
-      width: 5px; height: 5px;
+
+    /* ── SOCIAL PLATFORM CARDS ── */
+    .platform-card {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+      margin-bottom: 0.6rem;
+    }
+    .platform-card:hover {
+      background: rgba(139,92,246,0.08);
+      border-color: rgba(139,92,246,0.3);
+    }
+    .platform-icon {
+      width: 36px; height: 36px;
       border-radius: 50%;
-      background: var(--primary-color);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    /* ── LINK ITEM ── */
+    .link-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+      margin-bottom: 0.6rem;
+      transition: background 0.2s;
+    }
+    .link-item:hover { background: rgba(255,255,255,0.05); }
+
+    /* ── PROFILE PAGE ── */
+    .profile-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(139,92,246,0.2) 0%, rgba(0,0,0,1) 60%, rgba(217,70,239,0.1) 100%);
+    }
+
+    .profile-avatar {
+      width: 96px; height: 96px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.3);
+      object-fit: cover;
+    }
+
+    .avatar-glow {
+      position: absolute; inset: -8px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(139,92,246,0.5), transparent 70%);
+      animation: pulse-glow 2s ease infinite;
+    }
+
+    .profile-link-btn {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0.5rem;
+      padding: 0.85rem 1rem;
+      border-radius: 50px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+      width: 100%;
+    }
+    .profile-link-btn:hover {
+      background: rgba(139,92,246,0.15);
+      border-color: rgba(139,92,246,0.4);
+      transform: translateY(-2px);
+    }
+
+    /* ── LOADER ── */
+    .loader {
+      width: 40px; height: 40px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top-color: #a78bfa;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 9999;
+      background: rgba(20,20,20,0.95);
+      border: 1px solid rgba(139,92,246,0.4);
+      border-radius: 12px;
+      padding: 0.8rem 1.2rem;
+      font-size: 0.88rem;
+      color: #fff;
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.3s;
       pointer-events: none;
-      z-index: 9998;
-      opacity: 0.7;
-      transform: translate(-50%, -50%);
-      transition: opacity 0.6s;
     }
- 
-    /* ─── Responsive ─── */
-    @media (max-width: 860px) {
-      #profile-block, #skills-block {
-        width: 92vw;
-        min-height: unset;
-        padding: 15px;
-      }
+    #toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ── AUTH CALLBACK SPINNER ── */
+    #auth-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 9998;
+      background: var(--bg);
+      align-items: center; justify-content: center;
+      flex-direction: column; gap: 1rem;
     }
-    @media (max-width: 480px) {
-      .profile-header { flex-direction: column; align-items: center; }
-      .profile-info { align-items: center; text-align: center; }
-      .name-and-badges { flex-direction: column; align-items: center; }
-      #profile-name { font-size: 24px; }
-      .avatar-emoji { width: 120px; height: 120px; font-size: 55px; }
-      .orbit-ring { width: calc(100% + 10px); height: calc(100% + 10px); }
-      .controls { bottom: 20px; }
-      .top-controls { bottom: 68px; }
-      #start-logo { font-size: 32px; }
-      #start-text { font-size: 16px; }
+    #auth-overlay.open { display: flex; }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(139,92,246,0.4); border-radius: 3px; }
+
+    /* Tag badge */
+    .badge {
+      display: inline-flex; align-items: center;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      background: rgba(139,92,246,0.15);
+      border: 1px solid rgba(139,92,246,0.3);
+      color: #a78bfa;
     }
   </style>
 </head>
-<body class="home-theme" onload="initBg()">
- 
-  <!-- Custom cursor -->
-  <div class="custom-cursor" id="cursor"></div>
- 
-  <!-- Start Screen -->
-  <div id="start-screen">
-    <div id="start-logo">JAQLIV</div>
-    <div id="start-text"></div>
-    <div class="start-hint">[ CLICK TO ENTER ]</div>
+<body class="grid-bg">
+
+<!-- ══════════ TOAST ══════════ -->
+<div id="toast"></div>
+
+<!-- ══════════ AUTH OVERLAY ══════════ -->
+<div id="auth-overlay">
+  <div class="loader"></div>
+  <p style="color:rgba(255,255,255,0.5); font-size:0.9rem;">Anmeldung läuft…</p>
+</div>
+
+<!-- ══════════ MODAL (Add/Edit Link) ══════════ -->
+<div class="modal-overlay" id="link-modal">
+  <div class="modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
+      <h3 class="font-display" style="font-size:1.15rem;" id="modal-title">Link hinzufügen</h3>
+      <button onclick="closeModal()" style="background:none;border:none;color:rgba(255,255,255,0.5);font-size:1.4rem;cursor:pointer;line-height:1;">&times;</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+      <div>
+        <label style="font-size:0.8rem;color:rgba(255,255,255,0.5);display:block;margin-bottom:0.4rem;">Titel</label>
+        <input class="rb-input" id="modal-title-input" type="text" placeholder="z. B. Mein YouTube" style="width:100%;padding:0.75rem 1rem;border-radius:10px;font-size:0.9rem;" />
+      </div>
+      <div>
+        <label style="font-size:0.8rem;color:rgba(255,255,255,0.5);display:block;margin-bottom:0.4rem;">URL</label>
+        <input class="rb-input" id="modal-url-input" type="url" placeholder="https://..." style="width:100%;padding:0.75rem 1rem;border-radius:10px;font-size:0.9rem;" />
+      </div>
+    </div>
+    <div style="display:flex;gap:0.75rem;margin-top:1.5rem;">
+      <button class="btn-ghost" onclick="closeModal()" style="flex:1;padding:0.75rem;border-radius:10px;font-size:0.9rem;">Abbrechen</button>
+      <button class="btn-primary" onclick="saveLink()" style="flex:1;padding:0.75rem;border-radius:10px;font-size:0.9rem;">Speichern</button>
+    </div>
   </div>
- 
-  <div class="container">
- 
-    <!-- Background canvas (replaces video) -->
-    <canvas id="bg-canvas"></canvas>
- 
-    <!-- Overlays -->
-    <div class="glitch-overlay" id="glitch-overlay"></div>
-    <div id="hacker-overlay" class="hidden"><canvas id="matrix-canvas"></canvas></div>
-    <div id="snow-overlay" class="hidden"></div>
- 
-    <!-- Profile Block -->
-    <div id="profile-block" class="hidden">
-      <div class="profile-header">
-        <div class="profile-container" id="profile-container">
-          <div class="orbit-ring" id="orbit-ring"></div>
-          <div class="avatar-emoji" id="profile-picture" title="Click me!">🎯</div>
-        </div>
-        <div class="profile-info">
-          <div class="name-and-badges">
-            <div id="profile-name"></div>
-            <div class="badge-box">
-              <div class="badge-box-inner">
-                <div class="badge-group">
-                  <div class="badge-container">
-                    <div class="badge">⭐</div>
-                    <span class="tooltip">Staff Member</span>
-                  </div>
-                  <div class="badge-container">
-                    <div class="badge">👑</div>
-                    <span class="tooltip">Owner</span>
-                  </div>
-                  <div class="badge-container">
-                    <div class="badge">🤝</div>
-                    <span class="tooltip">Partner</span>
-                  </div>
-                  <div class="badge-container">
-                    <div class="badge">💻</div>
-                    <span class="tooltip">Developer</span>
-                  </div>
-                  <div class="badge-container">
-                    <div class="badge">🐛</div>
-                    <span class="tooltip">Bug Bounty</span>
-                  </div>
-                  <div class="badge-container">
-                    <div class="badge">🔫</div>
-                    <span class="tooltip">Hated by Guns.lol</span>
-                  </div>
-                  <div class="badge-container">
-                    <div class="badge">💀</div>
-                    <span class="tooltip">Hated by Fakecrime.bio</span>
-                  </div>
-                  <div class="badge-container">
-                    <div class="badge">✅</div>
-                    <span class="tooltip">Verified</span>
-                  </div>
-                  <div class="badge-container">
-                    <div class="badge">📜</div>
-                    <span class="tooltip">Rule Maker</span>
-                  </div>
-                </div>
-              </div>
+</div>
+
+<!-- ══════════ MODAL (Profile Settings) ══════════ -->
+<div class="modal-overlay" id="profile-modal">
+  <div class="modal-box" style="max-width:500px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
+      <h3 class="font-display" style="font-size:1.15rem;">Profil bearbeiten</h3>
+      <button onclick="closeProfileModal()" style="background:none;border:none;color:rgba(255,255,255,0.5);font-size:1.4rem;cursor:pointer;line-height:1;">&times;</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+      <div>
+        <label style="font-size:0.8rem;color:rgba(255,255,255,0.5);display:block;margin-bottom:0.4rem;">Name</label>
+        <input class="rb-input" id="prof-name" type="text" placeholder="Dein Name" style="width:100%;padding:0.75rem 1rem;border-radius:10px;font-size:0.9rem;" />
+      </div>
+      <div>
+        <label style="font-size:0.8rem;color:rgba(255,255,255,0.5);display:block;margin-bottom:0.4rem;">Bio</label>
+        <textarea class="rb-input" id="prof-bio" placeholder="Kurze Beschreibung…" rows="3" style="width:100%;padding:0.75rem 1rem;border-radius:10px;font-size:0.9rem;resize:none;"></textarea>
+      </div>
+      <div>
+        <label style="font-size:0.8rem;color:rgba(255,255,255,0.5);display:block;margin-bottom:0.4rem;">Profilbild-URL</label>
+        <input class="rb-input" id="prof-avatar" type="url" placeholder="https://..." style="width:100%;padding:0.75rem 1rem;border-radius:10px;font-size:0.9rem;" />
+      </div>
+    </div>
+    <div style="display:flex;gap:0.75rem;margin-top:1.5rem;">
+      <button class="btn-ghost" onclick="closeProfileModal()" style="flex:1;padding:0.75rem;border-radius:10px;font-size:0.9rem;">Abbrechen</button>
+      <button class="btn-primary" onclick="saveProfile()" style="flex:1;padding:0.75rem;border-radius:10px;font-size:0.9rem;">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ NAV ══════════ -->
+<nav id="main-nav">
+  <span class="logo" onclick="showPage('home')">regelbruch.cc</span>
+  <div style="display:flex;align-items:center;gap:0.75rem;" id="nav-actions">
+    <!-- filled by JS -->
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════
+     PAGE: HOME
+══════════════════════════════════════ -->
+<div class="page active" id="page-home" style="position:relative;overflow:hidden;padding-top:80px;">
+  <div class="spotlight"></div>
+
+  <!-- Blobs -->
+  <div style="position:absolute;top:20%;left:15%;width:400px;height:400px;background:radial-gradient(circle,rgba(139,92,246,0.12),transparent 70%);border-radius:50%;pointer-events:none;" class="animate-drift"></div>
+  <div style="position:absolute;bottom:20%;right:10%;width:350px;height:350px;background:radial-gradient(circle,rgba(217,70,239,0.1),transparent 70%);border-radius:50%;pointer-events:none;" class="animate-drift2"></div>
+
+  <div style="position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;padding:6rem 1.5rem 4rem;text-align:center;">
+
+    <!-- Pill -->
+    <div class="badge anim-0" style="margin-bottom:2rem;">
+      🔥 Dein einziger Link für alles
+    </div>
+
+    <!-- Headline -->
+    <h1 class="font-display grad-text anim-1" style="font-size:clamp(2.8rem,8vw,6rem);line-height:1.05;max-width:820px;margin-bottom:1.5rem;">
+      Brich die Regeln.<br/>Bau ein Profil.
+    </h1>
+    <p class="anim-2" style="font-size:1.05rem;color:rgba(255,255,255,0.55);max-width:480px;line-height:1.7;margin-bottom:2.5rem;">
+      Erstelle ein schlichtes, teilbares Profil mit all deinen Links an einem Ort — ganz ohne Aufwand.
+    </p>
+
+    <!-- Status -->
+    <div class="anim-2" id="home-status" style="font-size:0.8rem;margin-bottom:2rem;display:flex;align-items:center;color:rgba(255,255,255,0.45);">
+      <span class="status-dot dot-offline" id="status-dot"></span>
+      <span id="status-text">Verbinde…</span>
+    </div>
+
+    <!-- URL Bar -->
+    <div class="url-bar anim-3">
+      <span class="url-prefix">regelbruch.cc/</span>
+      <input id="home-username-input" type="text" placeholder="deinname" />
+      <button class="btn-primary" onclick="handleClaim()" style="padding:0.85rem 1.4rem;border-radius:0 12px 12px 0;font-size:0.9rem;white-space:nowrap;">
+        Sichern →
+      </button>
+    </div>
+
+    <!-- Profile URL Example -->
+    <div class="anim-3" style="margin-top:3.5rem;">
+      <p style="font-size:0.8rem;color:rgba(255,255,255,0.35);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.05em;">Deine URL lautet</p>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:0.7rem 1.4rem;display:inline-flex;gap:0.4rem;align-items:center;">
+        <span style="color:#a78bfa;font-weight:600;">regelbruch.cc/</span>
+        <span style="color:#e879f9;font-weight:700;">"DeinUsername"</span>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="anim-4" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;max-width:720px;width:100%;margin-top:4rem;">
+      <div class="feature-card" style="text-align:center;">
+        <div style="font-size:2rem;margin-bottom:0.75rem;">🔗</div>
+        <div style="font-weight:600;margin-bottom:0.4rem;">Ein Link</div>
+        <div style="font-size:0.82rem;color:rgba(255,255,255,0.4);">Ein Link für alle deine Ziele — einfach, schnell, effektiv.</div>
+      </div>
+      <div class="feature-card" style="text-align:center;">
+        <div style="font-size:2rem;margin-bottom:0.75rem;">✨</div>
+        <div style="font-weight:600;margin-bottom:0.4rem;">Schlichtes Design</div>
+        <div style="font-size:0.82rem;color:rgba(255,255,255,0.4);">Schönes, anpassbares Profil für deine Online-Präsenz.</div>
+      </div>
+      <div class="feature-card" style="text-align:center;">
+        <div style="font-size:2rem;margin-bottom:0.75rem;">📊</div>
+        <div style="font-weight:600;margin-bottom:0.4rem;">Analytics</div>
+        <div style="font-size:0.82rem;color:rgba(255,255,255,0.4);">Besucher-Zähler für bessere Reichweite und Analyse.</div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="margin-top:5rem;padding-bottom:3rem;color:rgba(255,255,255,0.2);font-size:0.8rem;">
+      © 2025 regelbruch.cc · Alle Rechte vorbehalten
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: DASHBOARD
+══════════════════════════════════════ -->
+<div class="page" id="page-dashboard" style="padding-top:80px;">
+  <div style="max-width:1200px;margin:0 auto;padding:2rem 1.5rem;">
+
+    <!-- Header -->
+    <div style="margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+      <div>
+        <h2 class="font-display" style="font-size:1.8rem;" id="dash-greeting">Dashboard</h2>
+        <p style="color:rgba(255,255,255,0.4);font-size:0.85rem;margin-top:0.25rem;">Verwalte dein regelbruch.cc Profil</p>
+      </div>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+        <a id="live-link-btn" href="#" target="_blank" style="display:inline-flex;align-items:center;gap:0.5rem;text-decoration:none;">
+          <button class="btn-ghost" style="padding:0.6rem 1.1rem;border-radius:10px;font-size:0.85rem;display:flex;align-items:center;gap:0.4rem;">
+            <span>🔗</span> Live ansehen
+          </button>
+        </a>
+        <button class="btn-primary" onclick="openProfileModal()" style="padding:0.6rem 1.1rem;border-radius:10px;font-size:0.85rem;display:flex;align-items:center;gap:0.4rem;">
+          <span>✏️</span> Profil bearbeiten
+        </button>
+      </div>
+    </div>
+
+    <!-- Username Setup Banner -->
+    <div id="username-banner" style="display:none;background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.3);border-radius:14px;padding:1.2rem 1.5rem;margin-bottom:2rem;">
+      <p style="font-weight:600;margin-bottom:0.5rem;">⚠️ Benutzername nicht gesetzt</p>
+      <p style="font-size:0.85rem;color:rgba(255,255,255,0.5);margin-bottom:0.75rem;">Wähle deinen eindeutigen Benutzernamen für dein Profil-Link.</p>
+      <div style="display:flex;gap:0.6rem;max-width:380px;">
+        <input class="rb-input" id="username-input" type="text" placeholder="deinusername" style="flex:1;padding:0.6rem 0.9rem;border-radius:8px;font-size:0.88rem;" />
+        <button class="btn-primary" onclick="setUsername()" style="padding:0.6rem 1rem;border-radius:8px;font-size:0.88rem;">Sichern</button>
+      </div>
+    </div>
+
+    <div class="dash-grid">
+
+      <!-- ─ PROFILE PREVIEW ─ -->
+      <div class="dash-card">
+        <div class="dash-card-title">Profil-Vorschau</div>
+        <div class="dash-card-sub">So siehst du für andere aus</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:1rem;padding:1rem 0;">
+          <div style="position:relative;display:inline-block;">
+            <div class="avatar-glow"></div>
+            <img id="dash-avatar" src="https://api.dicebear.com/7.x/shapes/svg?seed=rb" class="profile-avatar" style="position:relative;" />
+          </div>
+          <div style="text-align:center;">
+            <div style="font-weight:700;font-size:1.1rem;" id="dash-name">Lädt…</div>
+            <div style="font-size:0.82rem;color:rgba(255,255,255,0.4);margin-top:0.3rem;" id="dash-bio"></div>
+            <div style="margin-top:0.5rem;">
+              <span class="badge" id="dash-username-badge">@username</span>
             </div>
           </div>
-          <div id="profile-bio"></div>
+          <div style="font-size:0.8rem;color:rgba(255,255,255,0.3);display:flex;align-items:center;gap:0.5rem;">
+            <span id="visitor-count">👁 0 Besucher</span>
+          </div>
         </div>
       </div>
- 
-      <div class="bio-separator"></div>
- 
-      <div class="profile-footer">
-        <div class="social-links">
-          <a href="https://discord.gg/motiongoats" target="_blank" class="social-link" title="Discord">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
-            </svg>
-          </a>
-          <a href="https://github.com/JAQLIV" target="_blank" class="social-link" title="GitHub">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
-            </svg>
-          </a>
-          <a href="https://www.youtube.com/@jaqliv" target="_blank" class="social-link" title="YouTube">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-            </svg>
-          </a>
-          <a href="https://www.tiktok.com/@jaqliv" target="_blank" class="social-link" title="TikTok">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/>
-            </svg>
-          </a>
-        </div>
- 
-        <div class="visitor-counter">
-          <svg class="visitor-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-          </svg>
-          <span id="visitor-count">921,234</span>
-          <span class="tooltip">Profile Views</span>
+
+      <!-- ─ SOCIAL LINKS ─ -->
+      <div class="dash-card">
+        <div class="dash-card-title">Social Links</div>
+        <div class="dash-card-sub">Verbinde deine Plattformen</div>
+        <div id="social-platforms-list">
+          <!-- filled by JS -->
         </div>
       </div>
-    </div>
- 
-    <!-- Skills Block -->
-    <div id="skills-block" class="hidden">
-      <h2 class="skills-title">// PROGRAMMING SKILLS</h2>
-      <div class="skill">
-        <div class="skill-name">
-          <span class="skill-icon">🐍</span>
-          <span class="skill-label">Python</span>
-          <span class="skill-pct">87%</span>
+
+      <!-- ─ CUSTOM LINKS ─ -->
+      <div class="dash-card">
+        <div class="dash-card-title">Eigene Links</div>
+        <div class="dash-card-sub">Füge deine persönlichen Links hinzu</div>
+        <div id="custom-links-list">
+          <!-- filled by JS -->
         </div>
-        <div class="skill-bar-container">
-          <div id="python-bar" class="skill-bar"></div>
-        </div>
+        <button class="btn-primary" onclick="openAddModal()" style="width:100%;padding:0.75rem;border-radius:10px;font-size:0.9rem;margin-top:1rem;display:flex;align-items:center;justify-content:center;gap:0.4rem;">
+          <span style="font-size:1.1rem;">+</span> Eigenen Link hinzufügen
+        </button>
       </div>
-      <div class="skill">
-        <div class="skill-name">
-          <span class="skill-icon">⚙️</span>
-          <span class="skill-label">C++</span>
-          <span class="skill-pct">75%</span>
-        </div>
-        <div class="skill-bar-container">
-          <div id="cpp-bar" class="skill-bar"></div>
-        </div>
-      </div>
-      <div class="skill">
-        <div class="skill-name">
-          <span class="skill-icon">🎮</span>
-          <span class="skill-label">C#</span>
-          <span class="skill-pct">80%</span>
-        </div>
-        <div class="skill-bar-container">
-          <div id="csharp-bar" class="skill-bar"></div>
-        </div>
-      </div>
-    </div>
- 
-    <!-- Results Button (hacker theme only) -->
-    <div id="results-button-container" class="hidden">
-      <button id="results-theme">⚡ View Results</button>
-      <div id="results-hint" class="hidden">Click again to return to profile</div>
-    </div>
- 
-    <!-- Theme Buttons -->
-    <div class="controls">
-      <div id="home-btn"   class="theme-button" title="Home">1</div>
-      <div id="hacker-btn" class="theme-button" title="Hacker">2</div>
-      <div id="rain-btn"   class="theme-button" title="Rain">3</div>
-      <div id="anime-btn"  class="theme-button" title="Anime">4</div>
-      <div id="car-btn"    class="theme-button" title="Car">5</div>
-    </div>
- 
-    <!-- Volume + Transparency -->
-    <div class="top-controls">
-      <div class="volume-control">
-        <svg id="volume-icon" class="volume-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="cursor:pointer">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
-        </svg>
-        <input id="volume-slider" class="slider" type="range" min="0" max="1" step="0.01" value="0.3">
-      </div>
-      <div class="transparency-control">
-        <svg class="transparency-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-        </svg>
-        <input id="transparency-slider" class="slider" type="range" min="0" max="1" step="0.01" value="0.7">
-      </div>
+
     </div>
   </div>
- 
-  <script>
-  // ═══════════════════════════════════════════════════
-  //  BACKGROUND CANVAS — animated particle field
-  // ═══════════════════════════════════════════════════
-  const themes = {
-    home:   { bg: '#020818', color: '#00CED1', cssVar: '#00CED1', cls: 'home-theme' },
-    hacker: { bg: '#000a00', color: '#00ff41', cssVar: '#22C55E', cls: 'hacker-theme' },
-    rain:   { bg: '#030818', color: '#6495ED', cssVar: '#1E3A8A', cls: 'rain-theme' },
-    anime:  { bg: '#0d0010', color: '#ff00ff', cssVar: '#DC2626', cls: 'anime-theme' },
-    car:    { bg: '#0a0800', color: '#EAB308', cssVar: '#EAB308', cls: 'car-theme' },
-  };
-  let currentThemeKey = 'home';
- 
-  const bgCanvas = document.getElementById('bg-canvas');
-  const bgCtx = bgCanvas.getContext('2d');
- 
-  let particles = [];
-  function resizeBg() {
-    bgCanvas.width = window.innerWidth;
-    bgCanvas.height = window.innerHeight;
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: PROFILE (public view)
+══════════════════════════════════════ -->
+<div class="page" id="page-profile" style="position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+  <div class="profile-bg"></div>
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(139,92,246,0.2),transparent 60%);pointer-events:none;"></div>
+
+  <div style="position:relative;z-index:10;width:100%;max-width:400px;margin:6rem 1.5rem 3rem;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.07);border-radius:24px;backdrop-filter:blur(24px);padding:2.5rem 2rem;">
+    <!-- Avatar -->
+    <div style="display:flex;justify-content:center;margin-bottom:1.5rem;">
+      <div style="position:relative;display:inline-block;">
+        <div class="avatar-glow"></div>
+        <img id="pub-avatar" src="https://api.dicebear.com/7.x/shapes/svg?seed=rb" class="profile-avatar" style="position:relative;width:88px;height:88px;" />
+      </div>
+    </div>
+    <!-- Info -->
+    <div style="text-align:center;margin-bottom:2rem;">
+      <h1 style="font-size:1.8rem;font-weight:800;font-family:'Syne',sans-serif;" id="pub-name">regelbruch</h1>
+      <p style="font-size:0.88rem;color:rgba(255,255,255,0.5);margin-top:0.5rem;" id="pub-bio"></p>
+      <div id="pub-visitor" style="margin-top:0.75rem;font-size:0.78rem;color:rgba(255,255,255,0.25);">👁 0 Besucher</div>
+    </div>
+    <!-- Links -->
+    <div id="pub-links-list" style="display:flex;flex-direction:column;gap:0.7rem;">
+      <!-- filled by JS -->
+    </div>
+    <!-- Footer -->
+    <div style="text-align:center;margin-top:2rem;">
+      <a href="#" onclick="showPage('home');return false;" style="font-size:0.75rem;color:rgba(255,255,255,0.2);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='rgba(167,139,250,0.7)'" onmouseout="this.style.color='rgba(255,255,255,0.2)'">
+        Erstellt mit regelbruch.cc
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════ -->
+<script>
+// ── STATE ──
+const state = {
+  currentPage: 'home',
+  isLoggedIn: false,
+  user: null,
+  links: [],
+  editingLinkId: null,
+  backendUrl: 'https://api.regelbruch.cc', // ← deine Backend-URL hier eintragen
+};
+
+// ── SOCIAL PLATFORMS ──
+const SOCIAL_PLATFORMS = [
+  { id: 'instagram', name: 'Instagram', icon: '📸', color: '#E1306C', base: 'instagram.com' },
+  { id: 'youtube',   name: 'YouTube',   icon: '▶️', color: '#FF0000', base: 'youtube.com' },
+  { id: 'twitter',   name: 'X (Twitter)', icon: '𝕏', color: '#000', base: 'x.com' },
+  { id: 'twitch',    name: 'Twitch',    icon: '🟣', color: '#9146FF', base: 'twitch.tv' },
+  { id: 'github',    name: 'GitHub',    icon: '🐙', color: '#333', base: 'github.com' },
+  { id: 'linkedin',  name: 'LinkedIn',  icon: '💼', color: '#0A66C2', base: 'linkedin.com' },
+  { id: 'tiktok',    name: 'TikTok',    icon: '🎵', color: '#000', base: 'tiktok.com' },
+];
+
+// ── TOAST ──
+function showToast(msg, duration = 3000) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), duration);
+}
+
+// ── PAGE ROUTING ──
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page)?.classList.add('active');
+  state.currentPage = page;
+  window.scrollTo(0, 0);
+  updateNav();
+  if (page === 'dashboard') renderDashboard();
+  if (page === 'profile') renderPublicProfile();
+}
+
+// ── NAV ──
+function updateNav() {
+  const el = document.getElementById('nav-actions');
+  if (state.isLoggedIn) {
+    el.innerHTML = `
+      <button class="btn-ghost" onclick="showPage('profile')" style="padding:0.5rem 0.9rem;border-radius:8px;font-size:0.82rem;">Profil</button>
+      <button class="btn-ghost" onclick="showPage('dashboard')" style="padding:0.5rem 0.9rem;border-radius:8px;font-size:0.82rem;">Dashboard</button>
+      <button class="btn-ghost" onclick="logout()" style="padding:0.5rem 0.9rem;border-radius:8px;font-size:0.82rem;color:rgba(255,100,100,0.8);border-color:rgba(255,100,100,0.2);">Abmelden</button>
+    `;
+  } else {
+    el.innerHTML = `
+      <button class="btn-primary" onclick="handleGoogleLogin()" style="padding:0.6rem 1.2rem;border-radius:10px;font-size:0.88rem;display:flex;align-items:center;gap:0.5rem;">
+        <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 8 3l5.7-5.7C34 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.3-.1-2.7-.4-3.9z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 8 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2A12 12 0 0 1 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3a12 12 0 0 1-4.1 5.6l6.2 5.2C37 39.8 44 34 44 24c0-1.3-.1-2.7-.4-3.9z"/></svg>
+        Anmelden
+      </button>
+    `;
   }
-  resizeBg();
-  window.addEventListener('resize', resizeBg);
- 
-  function makeParticle() {
-    const t = themes[currentThemeKey];
-    return {
-      x: Math.random() * bgCanvas.width,
-      y: Math.random() * bgCanvas.height,
-      r: Math.random() * 1.5 + 0.3,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
-      alpha: Math.random() * 0.6 + 0.1,
-      color: t.color
+}
+
+// ── BACKEND STATUS CHECK ──
+function checkBackend() {
+  fetch(state.backendUrl, { signal: AbortSignal.timeout(4000) })
+    .then(() => {
+      document.getElementById('status-dot').className = 'status-dot dot-online';
+      document.getElementById('status-text').textContent = 'Backend Online';
+    })
+    .catch(() => {
+      document.getElementById('status-dot').className = 'status-dot dot-offline';
+      document.getElementById('status-text').textContent = 'Backend Offline';
+    });
+}
+
+// ── GOOGLE LOGIN ──
+function handleGoogleLogin() {
+  // In production: window.location.href = state.backendUrl + '/auth/google';
+  // Demo mode: simulate login
+  document.getElementById('auth-overlay').classList.add('open');
+  setTimeout(() => {
+    document.getElementById('auth-overlay').classList.remove('open');
+    // Demo user
+    state.isLoggedIn = true;
+    state.user = {
+      id: 1,
+      username: '',
+      name: 'Demo User',
+      bio: 'Willkommen bei regelbruch.cc!',
+      avatar: 'https://api.dicebear.com/7.x/shapes/svg?seed=demo',
+      visitors: 42,
     };
+    state.links = [
+      { id: 1, title: 'Instagram', url: 'https://instagram.com/regelbruch' },
+      { id: 2, title: 'YouTube', url: 'https://youtube.com/@regelbruch' },
+    ];
+    showToast('✅ Erfolgreich angemeldet!');
+    showPage('dashboard');
+  }, 1800);
+}
+
+// ── LOGOUT ──
+function logout() {
+  state.isLoggedIn = false;
+  state.user = null;
+  state.links = [];
+  showToast('👋 Abgemeldet');
+  showPage('home');
+}
+
+// ── HANDLE CLAIM (home) ──
+function handleClaim() {
+  const val = document.getElementById('home-username-input').value.trim();
+  if (!val) { showToast('⚠️ Bitte einen Benutzernamen eingeben'); return; }
+  handleGoogleLogin();
+}
+
+// ── SET USERNAME ──
+function setUsername() {
+  const val = document.getElementById('username-input').value.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
+  if (!val) { showToast('⚠️ Ungültiger Benutzername'); return; }
+  if (state.user) {
+    state.user.username = val;
+    document.getElementById('username-banner').style.display = 'none';
+    document.getElementById('dash-username-badge').textContent = '@' + val;
+    document.getElementById('live-link-btn').href = '#';
+    showToast('✅ Benutzername "' + val + '" gesetzt!');
+    renderDashboard();
   }
- 
-  function initBg() {
-    particles = [];
-    for (let i = 0; i < 120; i++) particles.push(makeParticle());
-    animateBg();
+}
+
+// ── PROFILE MODAL ──
+function openProfileModal() {
+  if (!state.user) return;
+  document.getElementById('prof-name').value = state.user.name || '';
+  document.getElementById('prof-bio').value = state.user.bio || '';
+  document.getElementById('prof-avatar').value = state.user.avatar || '';
+  document.getElementById('profile-modal').classList.add('open');
+}
+function closeProfileModal() {
+  document.getElementById('profile-modal').classList.remove('open');
+}
+function saveProfile() {
+  const name = document.getElementById('prof-name').value.trim();
+  const bio = document.getElementById('prof-bio').value.trim();
+  const avatar = document.getElementById('prof-avatar').value.trim();
+  if (!name) { showToast('⚠️ Name darf nicht leer sein'); return; }
+  state.user.name = name;
+  state.user.bio = bio;
+  if (avatar) state.user.avatar = avatar;
+  closeProfileModal();
+  renderDashboard();
+  showToast('✅ Profil gespeichert');
+}
+
+// ── LINK MODAL ──
+let _editId = null;
+function openAddModal() {
+  _editId = null;
+  document.getElementById('modal-title').textContent = 'Link hinzufügen';
+  document.getElementById('modal-title-input').value = '';
+  document.getElementById('modal-url-input').value = '';
+  document.getElementById('link-modal').classList.add('open');
+}
+function openEditModal(id) {
+  const link = state.links.find(l => l.id === id);
+  if (!link) return;
+  _editId = id;
+  document.getElementById('modal-title').textContent = 'Link bearbeiten';
+  document.getElementById('modal-title-input').value = link.title;
+  document.getElementById('modal-url-input').value = link.url;
+  document.getElementById('link-modal').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('link-modal').classList.remove('open');
+}
+function saveLink() {
+  const title = document.getElementById('modal-title-input').value.trim();
+  const url = document.getElementById('modal-url-input').value.trim();
+  if (!title || !url) { showToast('⚠️ Bitte alle Felder ausfüllen'); return; }
+  if (_editId !== null) {
+    const link = state.links.find(l => l.id === _editId);
+    if (link) { link.title = title; link.url = url; }
+    showToast('✅ Link aktualisiert');
+  } else {
+    state.links.push({ id: Date.now(), title, url });
+    showToast('✅ Link hinzugefügt');
   }
- 
-  function animateBg() {
-    requestAnimationFrame(animateBg);
-    const t = themes[currentThemeKey];
-    bgCtx.fillStyle = t.bg + 'cc';
-    bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
- 
-    particles.forEach(p => {
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < 0) p.x = bgCanvas.width;
-      if (p.x > bgCanvas.width) p.x = 0;
-      if (p.y < 0) p.y = bgCanvas.height;
-      if (p.y > bgCanvas.height) p.y = 0;
-      bgCtx.beginPath();
-      bgCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      bgCtx.fillStyle = t.color + Math.floor(p.alpha * 255).toString(16).padStart(2,'0');
-      bgCtx.fill();
-    });
- 
-    // draw connections
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const dist = Math.sqrt(dx*dx + dy*dy);
-        if (dist < 100) {
-          bgCtx.beginPath();
-          bgCtx.strokeStyle = t.color + Math.floor((1 - dist/100) * 40).toString(16).padStart(2,'0');
-          bgCtx.lineWidth = 0.5;
-          bgCtx.moveTo(particles[i].x, particles[i].y);
-          bgCtx.lineTo(particles[j].x, particles[j].y);
-          bgCtx.stroke();
-        }
-      }
-    }
+  closeModal();
+  renderDashboard();
+}
+function deleteLink(id) {
+  state.links = state.links.filter(l => l.id !== id);
+  renderDashboard();
+  showToast('🗑 Link gelöscht');
+}
+
+// ── RENDER DASHBOARD ──
+function renderDashboard() {
+  if (!state.user) return;
+  const u = state.user;
+
+  // Greeting
+  document.getElementById('dash-greeting').textContent = 'Hey, ' + (u.name || 'Nutzer') + ' 👋';
+
+  // Avatar & info
+  document.getElementById('dash-avatar').src = u.avatar || 'https://api.dicebear.com/7.x/shapes/svg?seed=rb';
+  document.getElementById('dash-name').textContent = u.name || 'Kein Name';
+  document.getElementById('dash-bio').textContent = u.bio || '';
+  document.getElementById('dash-username-badge').textContent = u.username ? '@' + u.username : '@username';
+  document.getElementById('visitor-count').textContent = '👁 ' + (u.visitors || 0) + ' Besucher';
+
+  // Live link
+  if (u.username) {
+    document.getElementById('live-link-btn').href = 'javascript:showPublicProfile()';
   }
- 
-  // ═══════════════════════════════════════════════════
-  //  MATRIX RAIN
-  // ═══════════════════════════════════════════════════
-  let matrixAnim;
-  function startMatrix() {
-    const c = document.getElementById('matrix-canvas');
-    c.width = window.innerWidth;
-    c.height = window.innerHeight;
-    const ctx = c.getContext('2d');
-    const cols = Math.floor(c.width / 16);
-    const drops = Array(cols).fill(1);
-    clearInterval(matrixAnim);
-    matrixAnim = setInterval(() => {
-      ctx.fillStyle = 'rgba(0,10,0,0.05)';
-      ctx.fillRect(0, 0, c.width, c.height);
-      ctx.fillStyle = '#00ff41';
-      ctx.font = '14px monospace';
-      drops.forEach((y, i) => {
-        const ch = String.fromCharCode(0x30A0 + Math.random() * 96);
-        ctx.fillText(ch, i * 16, y * 16);
-        if (y * 16 > c.height && Math.random() > 0.975) drops[i] = 0;
-        drops[i]++;
-      });
-    }, 50);
+
+  // Username banner
+  document.getElementById('username-banner').style.display = u.username ? 'none' : 'block';
+
+  // Social platforms
+  const socialEl = document.getElementById('social-platforms-list');
+  socialEl.innerHTML = SOCIAL_PLATFORMS.map(p => {
+    const link = state.links.find(l => l.url && l.url.includes(p.base));
+    return `
+      <div class="platform-card" onclick="openPlatformModal('${p.id}')">
+        <div class="platform-icon" style="background:${p.color}20;font-size:1.2rem;">${p.icon}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:600;font-size:0.9rem;">${p.name}</div>
+          ${link
+            ? `<a href="${link.url}" target="_blank" style="font-size:0.75rem;color:#a78bfa;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;">${link.url}</a>`
+            : `<span style="font-size:0.75rem;color:rgba(255,255,255,0.3);">Nicht verbunden</span>`}
+        </div>
+        <span style="color:rgba(255,255,255,0.25);font-size:0.9rem;">✏️</span>
+      </div>
+    `;
+  }).join('');
+
+  // Custom links
+  const customEl = document.getElementById('custom-links-list');
+  const customLinks = state.links;
+  if (!customLinks.length) {
+    customEl.innerHTML = '<p style="text-align:center;color:rgba(255,255,255,0.25);font-size:0.85rem;padding:1.5rem 0;">Noch keine eigenen Links hinzugefügt.</p>';
+  } else {
+    customEl.innerHTML = customLinks.map(l => `
+      <div class="link-item">
+        <div style="display:flex;align-items:center;gap:0.75rem;min-width:0;">
+          <span style="font-size:1rem;">🔗</span>
+          <div style="min-width:0;">
+            <div style="font-weight:600;font-size:0.88rem;">${escHtml(l.title)}</div>
+            <a href="${escHtml(l.url)}" target="_blank" style="font-size:0.75rem;color:#a78bfa;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;max-width:200px;">${escHtml(l.url)}</a>
+          </div>
+        </div>
+        <div style="display:flex;gap:0.4rem;flex-shrink:0;">
+          <button onclick="openEditModal(${l.id})" class="btn-ghost" style="padding:0.35rem 0.6rem;border-radius:7px;font-size:0.78rem;">✏️</button>
+          <button onclick="deleteLink(${l.id})" class="btn-ghost" style="padding:0.35rem 0.6rem;border-radius:7px;font-size:0.78rem;color:rgba(255,100,100,0.7);border-color:rgba(255,100,100,0.15);">🗑</button>
+        </div>
+      </div>
+    `).join('');
   }
-  function stopMatrix() { clearInterval(matrixAnim); }
- 
-  // ═══════════════════════════════════════════════════
-  //  SNOW
-  // ═══════════════════════════════════════════════════
-  function makeSnow() {
-    const container = document.getElementById('snow-overlay');
-    container.innerHTML = '';
-    for (let i = 0; i < 60; i++) {
-      const s = document.createElement('div');
-      s.className = 'snowflake';
-      s.textContent = ['❄','❅','❆'][Math.floor(Math.random()*3)];
-      s.style.left = Math.random() * 100 + '%';
-      s.style.animationDuration = (Math.random() * 5 + 4) + 's';
-      s.style.animationDelay = (Math.random() * 5) + 's';
-      s.style.fontSize = (Math.random() * 14 + 8) + 'px';
-      container.appendChild(s);
-    }
+}
+
+// ── PLATFORM MODAL (quick social add) ──
+function openPlatformModal(platformId) {
+  const p = SOCIAL_PLATFORMS.find(x => x.id === platformId);
+  if (!p) return;
+  const existing = state.links.find(l => l.url && l.url.includes(p.base));
+  _editId = existing ? existing.id : null;
+  document.getElementById('modal-title').textContent = p.name + ' bearbeiten';
+  document.getElementById('modal-title-input').value = p.name;
+  document.getElementById('modal-url-input').value = existing ? existing.url : 'https://' + p.base + '/';
+  document.getElementById('link-modal').classList.add('open');
+}
+
+// ── RENDER PUBLIC PROFILE ──
+function renderPublicProfile() {
+  const u = state.user || { name: 'regelbruch', bio: '', avatar: '', visitors: 0, links: [] };
+  document.getElementById('pub-avatar').src = u.avatar || 'https://api.dicebear.com/7.x/shapes/svg?seed=rb';
+  document.getElementById('pub-name').textContent = u.name || 'regelbruch';
+  document.getElementById('pub-bio').textContent = u.bio || '';
+  document.getElementById('pub-visitor').textContent = '👁 ' + (u.visitors || 0) + ' Besucher';
+
+  const listEl = document.getElementById('pub-links-list');
+  const links = state.links;
+  if (!links.length) {
+    listEl.innerHTML = '<p style="text-align:center;color:rgba(255,255,255,0.2);font-size:0.85rem;">Keine Links vorhanden</p>';
+  } else {
+    listEl.innerHTML = links.map(l => {
+      const icon = getLinkIcon(l.url);
+      return `
+        <a href="${escHtml(l.url)}" target="_blank" rel="noopener noreferrer" class="profile-link-btn">
+          <span>${icon}</span>
+          <span>${escHtml(l.title)}</span>
+        </a>
+      `;
+    }).join('');
   }
- 
-  // ═══════════════════════════════════════════════════
-  //  CURSOR + TRAIL
-  // ═══════════════════════════════════════════════════
-  const cursor = document.getElementById('cursor');
-  const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
-  if (isTouchDevice) document.body.classList.add('touch-device');
- 
-  const trailDots = [];
-  const TRAIL_LEN = 10;
-  for (let i = 0; i < TRAIL_LEN; i++) {
-    const d = document.createElement('div');
-    d.className = 'trail-dot';
-    d.style.opacity = (1 - i / TRAIL_LEN) * 0.5;
-    d.style.width = d.style.height = (5 - i * 0.3) + 'px';
-    document.body.appendChild(d);
-    trailDots.push({ el: d, x: 0, y: 0 });
+}
+
+function showPublicProfile() {
+  showPage('profile');
+}
+
+// ── HELPER: icon from url ──
+function getLinkIcon(url) {
+  const u = url.toLowerCase();
+  if (u.includes('instagram')) return '📸';
+  if (u.includes('youtube')) return '▶️';
+  if (u.includes('x.com') || u.includes('twitter')) return '𝕏';
+  if (u.includes('twitch')) return '🟣';
+  if (u.includes('github')) return '🐙';
+  if (u.includes('linkedin')) return '💼';
+  if (u.includes('tiktok')) return '🎵';
+  if (u.includes('mailto')) return '📧';
+  return '🔗';
+}
+
+// ── HTML ESCAPE ──
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── CLOSE MODALS ON OVERLAY CLICK ──
+document.getElementById('link-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+document.getElementById('profile-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeProfileModal();
+});
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', () => {
+  updateNav();
+  checkBackend();
+
+  // Check for auth callback token in URL
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('token');
+  if (token) {
+    localStorage.setItem('token', token);
+    // In production: fetch user data with token
+    history.replaceState({}, '', window.location.pathname);
   }
-  let mouseX = 0, mouseY = 0;
-  document.addEventListener('mousemove', e => {
-    mouseX = e.clientX; mouseY = e.clientY;
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top  = e.clientY + 'px';
-  });
-  document.addEventListener('mousedown', () => cursor.style.transform = 'scale(0.7) translate(-50%,-50%)');
-  document.addEventListener('mouseup',   () => cursor.style.transform = 'scale(1) translate(-50%,-50%)');
- 
-  (function animTrail() {
-    requestAnimationFrame(animTrail);
-    let px = mouseX, py = mouseY;
-    trailDots.forEach((dot, i) => {
-      dot.x += (px - dot.x) * (0.3 - i * 0.02);
-      dot.y += (py - dot.y) * (0.3 - i * 0.02);
-      dot.el.style.left = dot.x + 'px';
-      dot.el.style.top  = dot.y + 'px';
-      px = dot.x; py = dot.y;
-    });
-  })();
- 
-  // ═══════════════════════════════════════════════════
-  //  START SCREEN TYPEWRITER
-  // ═══════════════════════════════════════════════════
-  const startMsg = 'Click here to enter the motion...';
-  let si = 0, startContent = '', cursorVis = true;
-  const startTextEl = document.getElementById('start-text');
- 
-  setInterval(() => { cursorVis = !cursorVis; startTextEl.textContent = startContent + (cursorVis ? '█' : ' '); }, 500);
-  (function typeStart() {
-    if (si < startMsg.length) {
-      startContent = startMsg.slice(0, ++si);
-      startTextEl.textContent = startContent + '█';
-    }
-    if (si < startMsg.length) setTimeout(typeStart, 60);
-  })();
- 
-  // ═══════════════════════════════════════════════════
-  //  VISITOR COUNTER
-  // ═══════════════════════════════════════════════════
-  function initVisitor() {
-    let total = localStorage.getItem('totalVisitorCount');
-    if (!total) { total = 921234; localStorage.setItem('totalVisitorCount', total); }
-    else total = parseInt(total);
-    if (!localStorage.getItem('hasVisited')) {
-      total++;
-      localStorage.setItem('totalVisitorCount', total);
-      localStorage.setItem('hasVisited', 'true');
-    }
-    document.getElementById('visitor-count').textContent = total.toLocaleString();
-  }
-  initVisitor();
- 
-  // ═══════════════════════════════════════════════════
-  //  PROFILE + BIO TYPEWRITER
-  // ═══════════════════════════════════════════════════
-  const NAME = 'JAQLIV';
-  let nameTxt = '', nameIdx = 0, nameDeleting = false, nameCur = true;
- 
-  setInterval(() => { nameCur = !nameCur; document.getElementById('profile-name').textContent = nameTxt + (nameCur ? '|' : ' '); }, 500);
- 
-  function typeWriterName() {
-    const el = document.getElementById('profile-name');
-    if (!nameDeleting && nameIdx < NAME.length) { nameTxt = NAME.slice(0, ++nameIdx); }
-    else if (nameDeleting && nameIdx > 0)        { nameTxt = NAME.slice(0, --nameIdx); }
-    else if (nameIdx === NAME.length)            { nameDeleting = true; setTimeout(typeWriterName, 10000); return; }
-    else if (nameIdx === 0)                      { nameDeleting = false; }
-    el.textContent = nameTxt + (nameCur ? '|' : ' ');
-    if (Math.random() < 0.08) { el.classList.add('glitch'); setTimeout(() => el.classList.remove('glitch'), 200); }
-    setTimeout(typeWriterName, nameDeleting ? 120 : 200);
-  }
- 
-  const bioMessages = [
-    "Fu*k Guns.lol & Fakecrime.bio — got banned too often, so I built my own.",
-    '"Hello, World!"'
-  ];
-  let bioTxt = '', bioIdx = 0, bioMsgIdx = 0, bioDel = false, bioCur = true;
- 
-  setInterval(() => { bioCur = !bioCur; document.getElementById('profile-bio').textContent = bioTxt + (bioCur ? '|' : ' '); }, 500);
- 
-  function typeWriterBio() {
-    const el = document.getElementById('profile-bio');
-    const msg = bioMessages[bioMsgIdx];
-    if (!bioDel && bioIdx < msg.length)    { bioTxt = msg.slice(0, ++bioIdx); }
-    else if (bioDel && bioIdx > 0)          { bioTxt = msg.slice(0, --bioIdx); }
-    else if (bioIdx === msg.length)         { bioDel = true; setTimeout(typeWriterBio, 2000); return; }
-    else if (bioIdx === 0 && bioDel)        { bioDel = false; bioMsgIdx = (bioMsgIdx + 1) % bioMessages.length; }
-    el.textContent = bioTxt + (bioCur ? '|' : ' ');
-    if (Math.random() < 0.08) { el.classList.add('glitch'); setTimeout(() => el.classList.remove('glitch'), 200); }
-    setTimeout(typeWriterBio, bioDel ? 60 : 120);
-  }
- 
-  // ═══════════════════════════════════════════════════
-  //  THEME SWITCHER
-  // ═══════════════════════════════════════════════════
-  function switchTheme(key) {
-    currentThemeKey = key;
-    const t = themes[key];
-    document.documentElement.style.setProperty('--primary-color', t.cssVar);
-    document.body.className = t.cls;
- 
-    // update particle colors
-    particles.forEach(p => p.color = t.color);
- 
-    const hackerOvl = document.getElementById('hacker-overlay');
-    const snowOvl   = document.getElementById('snow-overlay');
-    const resultsCt = document.getElementById('results-button-container');
-    const profileBlock = document.getElementById('profile-block');
-    const skillsBlock  = document.getElementById('skills-block');
-    const resultsHint  = document.getElementById('results-hint');
- 
-    hackerOvl.classList.add('hidden'); stopMatrix();
-    snowOvl.classList.add('hidden');
- 
-    if (key === 'hacker') {
-      hackerOvl.classList.remove('hidden');
-      startMatrix();
-      resultsCt.classList.remove('hidden');
-    } else {
-      resultsCt.classList.add('hidden');
-      skillsBlock.classList.add('hidden');
-      resultsHint.classList.add('hidden');
-      profileBlock.classList.remove('hidden');
-      gsap.to(profileBlock, { x: 0, opacity: 1, duration: 0.5, ease: 'power2.out' });
-      isShowingSkills = false;
-    }
- 
-    if (key === 'rain') {
-      snowOvl.classList.remove('hidden');
-      makeSnow();
-    }
-  }
- 
-  // ═══════════════════════════════════════════════════
-  //  DOM EVENTS
-  // ═══════════════════════════════════════════════════
-  document.addEventListener('DOMContentLoaded', () => {
-    const startScreen  = document.getElementById('start-screen');
-    const profileBlock = document.getElementById('profile-block');
-    const skillsBlock  = document.getElementById('skills-block');
-    const pythonBar    = document.getElementById('python-bar');
-    const cppBar       = document.getElementById('cpp-bar');
-    const csharpBar    = document.getElementById('csharp-bar');
-    const resultsBtn   = document.getElementById('results-theme');
-    const resultsHint  = document.getElementById('results-hint');
-    const volumeIcon   = document.getElementById('volume-icon');
-    const volSlider    = document.getElementById('volume-slider');
-    const transSlider  = document.getElementById('transparency-slider');
-    const picEl        = document.getElementById('profile-picture');
-    const orbitRing    = document.getElementById('orbit-ring');
-    const glitchOvl    = document.getElementById('glitch-overlay');
- 
-    // Start screen enter
-    function enterSite() {
-      startScreen.classList.add('hidden');
-      profileBlock.classList.remove('hidden');
-      gsap.fromTo(profileBlock,
-        { opacity: 0, y: -50 },
-        { opacity: 1, y: 0, duration: 1, ease: 'power2.out' }
-      );
-      typeWriterName();
-      typeWriterBio();
-    }
-    startScreen.addEventListener('click', enterSite);
-    startScreen.addEventListener('touchstart', e => { e.preventDefault(); enterSite(); });
- 
-    // Theme buttons
-    const btnMap = { 'home-btn':'home', 'hacker-btn':'hacker', 'rain-btn':'rain', 'anime-btn':'anime', 'car-btn':'car' };
-    Object.entries(btnMap).forEach(([id, key]) => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.addEventListener('click', () => switchTheme(key));
-        el.addEventListener('touchstart', e => { e.preventDefault(); switchTheme(key); });
-      }
-    });
- 
-    // Volume (audio not available without files, but UI works)
-    let isMuted = false;
-    volumeIcon.addEventListener('click', () => {
-      isMuted = !isMuted;
-      volumeIcon.style.opacity = isMuted ? '0.4' : '1';
-    });
-    volSlider.addEventListener('input', () => { isMuted = false; volumeIcon.style.opacity = '1'; });
- 
-    // Transparency
-    transSlider.addEventListener('input', () => {
-      const v = parseFloat(transSlider.value);
-      profileBlock.style.background = `rgba(0,0,0,${v})`;
-      profileBlock.style.backdropFilter = v > 0 ? `blur(${10*v}px)` : 'none';
-      skillsBlock.style.background = `rgba(0,0,0,${v})`;
-      skillsBlock.style.backdropFilter = v > 0 ? `blur(${10*v}px)` : 'none';
-    });
- 
-    // Card tilt
-    function handleTilt(e, el) {
-      const rect = el.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
-      const cx2 = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
-      const cy2 = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
-      gsap.to(el, { rotationX: ((cy2-cy)/rect.height)*15, rotationY: -((cx2-cx)/rect.width)*15, duration: 0.3, ease: 'power2.out', transformPerspective: 1000 });
-    }
-    function resetTilt(el) {
-      gsap.to(el, { rotationX: 0, rotationY: 0, duration: 0.5, ease: 'power2.out' });
-    }
-    [profileBlock, skillsBlock].forEach(el => {
-      el.addEventListener('mousemove',  e => handleTilt(e, el));
-      el.addEventListener('mouseleave', ()  => resetTilt(el));
-      el.addEventListener('touchmove',  e => { e.preventDefault(); handleTilt(e, el); });
-      el.addEventListener('touchend',   ()  => resetTilt(el));
-    });
- 
-    // Profile picture click (fast orbit)
-    picEl.addEventListener('click', () => {
-      orbitRing.classList.add('fast');
-      setTimeout(() => orbitRing.classList.remove('fast'), 600);
-    });
-    picEl.addEventListener('mouseenter', () => { glitchOvl.style.opacity = '1'; setTimeout(() => glitchOvl.style.opacity = '0', 500); });
- 
-    // Skills / Results
-    let isShowingSkills = false;
-    window.isShowingSkills = false; // shared
- 
-    resultsBtn.addEventListener('click', () => {
-      if (!isShowingSkills) {
-        gsap.to(profileBlock, { x: -120, opacity: 0, duration: 0.4, ease: 'power2.in', onComplete: () => {
-          profileBlock.classList.add('hidden');
-          skillsBlock.classList.remove('hidden');
-          gsap.fromTo(skillsBlock, { x: 120, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: 'power2.out' });
-          setTimeout(() => {
-            gsap.to(pythonBar, { width: '87%', duration: 2, ease: 'power2.out' });
-            gsap.to(cppBar,    { width: '75%', duration: 2, ease: 'power2.out' });
-            gsap.to(csharpBar, { width: '80%', duration: 2, ease: 'power2.out' });
-          }, 100);
-        }});
-        resultsHint.classList.remove('hidden');
-        isShowingSkills = true;
-      } else {
-        gsap.to(skillsBlock, { x: 120, opacity: 0, duration: 0.4, ease: 'power2.in', onComplete: () => {
-          skillsBlock.classList.add('hidden');
-          profileBlock.classList.remove('hidden');
-          gsap.fromTo(profileBlock, { x: -120, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: 'power2.out' });
-          pythonBar.style.width = '0%'; cppBar.style.width = '0%'; csharpBar.style.width = '0%';
-        }});
-        resultsHint.classList.add('hidden');
-        isShowingSkills = false;
-      }
-    });
-  });
-  </script>
+
+  // Check stored session
+  const storedToken = localStorage.getItem('token');
+  // In production: validate storedToken against backend
+});
+</script>
 </body>
 </html>
- 
