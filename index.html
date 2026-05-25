@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>kio.lol</title>
+<title>regelbruch.cc</title>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -248,7 +248,7 @@ select.inp{cursor:pointer;}
 <!-- LOGIN -->
 <div id="v-login" class="auth-wrap">
   <div class="auth-card">
-    <div class="logo">kio<span>.</span>lol</div>
+    <div class="logo">regelbruch<span>.</span>cc</div>
     <div class="auth-sub">Dein persönlicher Bio-Link</div>
     <div id="login-err" class="auth-err">Falscher Username oder Passwort.</div>
     <div class="field"><label class="lbl">Username</label><input id="lu" class="inp" placeholder="username" autocomplete="off"></div>
@@ -261,7 +261,7 @@ select.inp{cursor:pointer;}
 <!-- REGISTER -->
 <div id="v-register" class="auth-wrap" style="display:none;">
   <div class="auth-card">
-    <div class="logo">kio<span>.</span>lol</div>
+    <div class="logo">regelbruch<span>.</span>cc</div>
     <div class="auth-sub">Account erstellen</div>
     <div id="reg-err" class="auth-err"></div>
     <div class="field"><label class="lbl">Username</label><input id="ru" class="inp" placeholder="username" autocomplete="off"></div>
@@ -278,7 +278,7 @@ select.inp{cursor:pointer;}
   <!-- SIDEBAR -->
   <div class="sb">
     <div class="sb-top">
-      <div class="sb-logo">kio<span>.</span>lol</div>
+      <div class="sb-logo">regelbruch<span>.</span>cc</div>
       <div class="sb-user" id="sb-user">@username</div>
     </div>
     <div class="sb-nav">
@@ -351,6 +351,15 @@ select.inp{cursor:pointer;}
           </div>
         </div>
         <div class="field"><label class="lbl">Bio</label><textarea id="s-bio" class="inp" placeholder="Schreib etwas über dich..."></textarea></div>
+        <div class="field">
+          <label class="lbl">Custom Profil-Link</label>
+          <div style="display:flex;align-items:center;gap:0;">
+            <span style="background:var(--s3);border:1px solid var(--b1);border-right:none;padding:9px 11px;border-radius:var(--r) 0 0 var(--r);font-size:.78rem;color:var(--tx3);white-space:nowrap;">regelbruch.cc/</span>
+            <input id="s-custom_slug" class="inp" placeholder="dein-link" style="border-radius:0 var(--r) var(--r) 0;flex:1;" oninput="updateSlugPreview()">
+          </div>
+          <div style="font-size:.68rem;color:var(--tx3);margin-top:4px;">Nur a-z, 0-9 und Bindestrich. Dein Profil wird unter diesem Link erreichbar.</div>
+          <div id="slug-preview" style="font-size:.7rem;color:var(--acc2);margin-top:3px;font-family:var(--mono);display:none;"></div>
+        </div>
         <div class="g2">
           <div class="field"><label class="lbl">Discord</label><input id="s-discord" class="inp" placeholder="https://discord.gg/..."></div>
           <div class="field"><label class="lbl">Instagram</label><input id="s-instagram" class="inp" placeholder="https://instagram.com/..."></div>
@@ -450,7 +459,7 @@ select.inp{cursor:pointer;}
     <!-- PREMIUM -->
     <div id="tab-premium" class="screen">
       <div class="pg-title">Premium</div>
-      <div class="pg-sub">Hol dir mehr aus kio.lol raus.</div>
+      <div class="pg-sub">Hol dir mehr aus regelbruch.cc raus.</div>
 
       <div id="prem-status-card" class="card" style="margin-bottom:14px;"></div>
 
@@ -462,18 +471,20 @@ select.inp{cursor:pointer;}
         <div class="perk"><span class="perk-ico">🎭</span> Zugang zu Premium-Vorlagen</div>
         <div class="perk"><span class="perk-ico">🌊</span> Hintergrund-Video-Support</div>
         <div class="perk"><span class="perk-ico">⚡</span> Früher Zugang zu neuen Features</div>
-        <div style="background:rgba(88,101,242,.08);border:1px solid rgba(88,101,242,.18);border-radius:var(--r);padding:11px 13px;font-size:.75rem;color:#a5b4fc;margin-top:14px;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(212,168,67,.06);border:1px solid rgba(212,168,67,.2);border-radius:var(--r);padding:14px 16px;margin-top:14px;margin-bottom:14px;">
+          <div>
+            <div style="font-size:.78rem;font-weight:600;color:var(--gold);">💎 Premium — einmalig 15 €</div>
+            <div style="font-size:.72rem;color:var(--tx2);margin-top:3px;">Einmalzahlung, kein Abo. Für immer aktiv.</div>
+          </div>
+          <div style="font-size:1.4rem;font-weight:700;color:var(--gold);">15€</div>
+        </div>
+        <div style="background:rgba(88,101,242,.08);border:1px solid rgba(88,101,242,.18);border-radius:var(--r);padding:11px 13px;font-size:.75rem;color:#a5b4fc;margin-bottom:14px;">
           Kaufe Premium über unseren Discord in <strong>#kauf-premium</strong>. Ein Admin schaltet dich frei.
         </div>
         <a href="https://discord.gg/R7TCxMza2" target="_blank" class="btn btn-full" style="background:rgba(88,101,242,.12);border:1px solid rgba(88,101,242,.25);color:#a5b4fc;text-decoration:none;justify-content:center;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="opacity:.8"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057c.01.122.07.236.172.307a20.04 20.04 0 006.033 3.017.084.084 0 00.089-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.2 13.2 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.016.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
           Discord öffnen — Premium kaufen
         </a>
-      </div>
-
-      <div id="admin-prem-block" class="card" style="display:none;border-color:rgba(212,168,67,.2);">
-        <div class="card-title" style="color:var(--gold);">Admin: Premium-Demo</div>
-        <button class="btn btn-gold btn-sm" onclick="togglePremDemo()">Premium-Status umschalten (Demo)</button>
       </div>
     </div>
 
