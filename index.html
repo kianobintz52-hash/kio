@@ -87,28 +87,6 @@ select.input { cursor:pointer; }
 /* MAIN */
 .main-content { flex:1; display:flex; overflow:hidden; }
 
-/* PROFILE PANEL (left feature sidebar) */
-.profile-panel { width:260px; min-width:260px; border-right:1px solid var(--border); background:var(--surface); overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:12px; }
-.pp-section { }
-.pp-title { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
-.pp-title::after { content:''; flex:1; height:1px; background:var(--border); }
-
-/* Feature rows in left panel */
-.feature-row { display:flex; align-items:center; gap:8px; padding:7px 9px; border-radius:6px; background:var(--surface2); border:1px solid var(--border); margin-bottom:4px; }
-.fr-icon { font-size:15px; flex-shrink:0; width:22px; text-align:center; }
-.fr-info { flex:1; min-width:0; }
-.fr-name { font-size:12px; font-weight:500; color:var(--text); }
-.fr-desc { font-size:10px; color:var(--text3); margin-top:1px; }
-.fr-badge { font-size:10px; font-weight:600; padding:2px 7px; border-radius:20px; flex-shrink:0; }
-.fb-free { background:rgba(34,197,94,0.1); color:#4ade80; border:1px solid rgba(34,197,94,0.2); }
-.fb-prem { background:rgba(245,158,11,0.1); color:var(--gold); border:1px solid rgba(245,158,11,0.2); }
-
-/* Stats in panel */
-.stat-row { display:flex; gap:6px; }
-.stat-chip { flex:1; background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:10px; text-align:center; }
-.sc-val { font-size:1.2rem; font-weight:600; color:#fff; font-family:'Geist Mono',monospace; }
-.sc-lbl { font-size:10px; color:var(--text3); margin-top:2px; }
-
 /* SCROLL AREA */
 .scroll-area { flex:1; overflow-y:auto; padding:24px 28px; }
 .page { display:none; }
@@ -198,6 +176,36 @@ input[type=color].color-input { width:26px; height:26px; padding:1px 2px; border
 .vis-table tr:last-child td { border-bottom:none; }
 .vis-empty { padding:24px; text-align:center; color:var(--text3); font-size:13px; }
 
+/* LEADERBOARD */
+.lb-row { display:flex; align-items:center; gap:12px; padding:10px 14px; border-radius:8px; background:var(--surface2); border:1px solid var(--border); margin-bottom:6px; transition:all .12s; }
+.lb-row:hover { border-color:var(--border2); }
+.lb-rank { font-family:'Geist Mono',monospace; font-size:13px; font-weight:700; min-width:26px; text-align:center; }
+.lb-rank.gold { color:#fbbf24; }
+.lb-rank.silver { color:#94a3b8; }
+.lb-rank.bronze { color:#cd7c44; }
+.lb-name { flex:1; font-size:13px; font-weight:600; }
+.lb-views { font-family:'Geist Mono',monospace; font-size:12px; color:var(--text2); }
+.lb-badge { font-size:10px; font-weight:600; padding:2px 7px; border-radius:20px; background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.2); color:var(--gold); }
+
+/* FEATURES PANEL - inside scroll area as section */
+.feat-section { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:16px; margin-bottom:14px; }
+.feat-section-title { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+.feat-section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+.feature-row { display:flex; align-items:center; gap:8px; padding:7px 9px; border-radius:6px; background:var(--surface2); border:1px solid var(--border); margin-bottom:4px; }
+.fr-icon { font-size:15px; flex-shrink:0; width:22px; text-align:center; }
+.fr-info { flex:1; min-width:0; }
+.fr-name { font-size:12px; font-weight:500; color:var(--text); }
+.fr-desc { font-size:10px; color:var(--text3); margin-top:1px; }
+.fr-badge { font-size:10px; font-weight:600; padding:2px 7px; border-radius:20px; flex-shrink:0; }
+.fb-free { background:rgba(34,197,94,0.1); color:#4ade80; border:1px solid rgba(34,197,94,0.2); }
+.fb-prem { background:rgba(245,158,11,0.1); color:var(--gold); border:1px solid rgba(245,158,11,0.2); }
+
+/* Stats chips */
+.stat-row { display:flex; gap:6px; margin-bottom:6px; }
+.stat-chip { flex:1; background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:10px; text-align:center; }
+.sc-val { font-size:1.2rem; font-weight:600; color:#fff; font-family:'Geist Mono',monospace; }
+.sc-lbl { font-size:10px; color:var(--text3); margin-top:2px; }
+
 /* MODAL */
 .modal-bg { position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:9000; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(2px); }
 .modal { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px; width:100%; max-width:480px; max-height:90vh; overflow-y:auto; }
@@ -219,7 +227,7 @@ input[type=color].color-input { width:26px; height:26px; padding:1px 2px; border
 #toast { position:fixed; bottom:20px; right:20px; background:var(--surface3); border:1px solid var(--border2); color:var(--text); padding:10px 16px; border-radius:8px; font-size:13px; z-index:99999; transform:translateY(60px); opacity:0; transition:all .2s; box-shadow:0 4px 24px rgba(0,0,0,0.5); }
 #toast.show { transform:none; opacity:1; }
 
-/* PROFILE CARD */
+/* PROFILE VIEW */
 #pview { position:fixed; inset:0; z-index:500; display:none; overflow-y:auto; }
 #pv-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:9998; display:flex; align-items:center; justify-content:center; cursor:pointer; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:5px; color:rgba(255,255,255,0.3); transition:opacity .5s; }
 #pv-overlay:hover { color:rgba(255,255,255,0.6); }
@@ -254,15 +262,15 @@ input[type=color].color-input { width:26px; height:26px; padding:1px 2px; border
 .mbar-prog { margin-top:8px; height:2px; background:rgba(255,255,255,0.12); border-radius:2px; cursor:pointer; }
 .mbar-fill { height:100%; border-radius:2px; transition:width .1s linear; }
 
-/* GIVE VIEWS MODAL */
-#give-views-modal { }
-.gv-row { display:flex; gap:8px; margin-bottom:10px; }
-
-/* PREMIUM BADGE */
+/* PREMIUM BADGE & BLOCK */
 .prem-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:20px; background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.2); color:var(--gold); font-size:10px; font-weight:600; }
-
-/* PREMIUM BLOCK */
 .prem-block { background:rgba(245,158,11,0.04); border:1px solid rgba(245,158,11,0.15); }
+
+/* GIVE VIEWS - custom link display */
+.custom-url-box { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.custom-url-text { font-family:'Geist Mono',monospace; font-size:12px; color:var(--text); }
+.custom-url-text .domain { color:var(--text3); }
+.custom-url-text .username { color:var(--accent-color); font-weight:600; }
 </style>
 </head>
 <body>
@@ -319,10 +327,19 @@ input[type=color].color-input { width:26px; height:26px; padding:1px 2px; border
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           Besucher
         </button>
+        <button class="nav-btn" id="nb-features" onclick="goTab('features')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          Features
+        </button>
+        <button class="nav-btn" id="nb-leaderboard" onclick="goTab('leaderboard')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          Leaderboard
+        </button>
         <button class="nav-btn" id="nb-settings" onclick="goTab('settings')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           Einstellungen
         </button>
+
         <div class="nav-section" style="margin-top:8px;">Tools</div>
         <button class="nav-btn" onclick="openGiveViews()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20V4M5 11l7-7 7 7"/></svg>
@@ -340,7 +357,7 @@ input[type=color].color-input { width:26px; height:26px; padding:1px 2px; border
       <div class="sidebar-bottom">
         <div class="profile-link-box">
           <div class="plb-label">Dein Link</div>
-          <div class="plb-url" id="plb-url">kio.lol/—</div>
+          <div class="plb-url" id="plb-url">kioo.lol/—</div>
         </div>
         <div class="plb-btns">
           <button class="btn btn-ghost plb-btn btn-sm" onclick="copyLink()">Kopieren</button>
@@ -351,39 +368,27 @@ input[type=color].color-input { width:26px; height:26px; padding:1px 2px; border
 
     <!-- MAIN CONTENT -->
     <div class="main-content">
-      <!-- LEFT PROFILE PANEL -->
-      <div class="profile-panel" id="profile-panel">
-        <div class="pp-section">
-          <div class="pp-title">Statistiken</div>
-          <div class="stat-row" style="margin-bottom:6px;">
-            <div class="stat-chip"><div class="sc-val" id="sp-views">0</div><div class="sc-lbl">Views</div></div>
-            <div class="stat-chip"><div class="sc-val" id="sp-vis">0</div><div class="sc-lbl">Besucher</div></div>
-          </div>
-          <div class="stat-chip" style="text-align:center;padding:8px;" id="sp-status"></div>
-        </div>
-        <div class="pp-section">
-          <div class="pp-title">Features</div>
-          <div class="feature-row"><div class="fr-icon">🎨</div><div class="fr-info"><div class="fr-name">Akzentfarbe</div><div class="fr-desc">Buttons & Akzent</div></div><span class="fr-badge fb-free">Free</span></div>
-          <div class="feature-row"><div class="fr-icon">🖼️</div><div class="fr-info"><div class="fr-name">Avatar & Banner</div><div class="fr-desc">Custom Bilder</div></div><span class="fr-badge fb-free">Free</span></div>
-          <div class="feature-row"><div class="fr-icon">🔗</div><div class="fr-info"><div class="fr-name">Custom Links</div><div class="fr-desc">Unlimitiert</div></div><span class="fr-badge fb-free">Free</span></div>
-          <div class="feature-row"><div class="fr-icon">🖱️</div><div class="fr-info"><div class="fr-name">Cursor-Effekt</div><div class="fr-desc">Partikel & Trail</div></div><span class="fr-badge fb-prem">💎 Prem</span></div>
-          <div class="feature-row"><div class="fr-icon">✨</div><div class="fr-info"><div class="fr-name">Animated BG</div><div class="fr-desc">Partikel, Stars</div></div><span class="fr-badge fb-prem">💎 Prem</span></div>
-          <div class="feature-row"><div class="fr-icon">🏷️</div><div class="fr-info"><div class="fr-name">Badges</div><div class="fr-desc">Dev, VIP, ...</div></div><span class="fr-badge fb-prem">💎 Prem</span></div>
-          <div class="feature-row"><div class="fr-icon">📊</div><div class="fr-info"><div class="fr-name">Klick-Stats</div><div class="fr-desc">Pro Link</div></div><span class="fr-badge fb-prem">💎 Prem</span></div>
-        </div>
-        <div class="pp-section">
-          <div class="pp-title">Schnell</div>
-          <button class="btn btn-ghost btn-full btn-sm" style="margin-bottom:5px;" onclick="openMyProfile()">Profil ansehen</button>
-          <button class="btn btn-primary btn-full btn-sm" onclick="saveSettings()">Speichern</button>
-        </div>
-      </div>
-
-      <!-- SCROLL AREA -->
       <div class="scroll-area">
 
         <!-- DASHBOARD -->
         <div id="tab-dashboard" class="page active">
           <div class="page-hd"><h1>Dashboard</h1><p>Profil bearbeiten</p></div>
+
+          <!-- Stats + Custom URL -->
+          <div class="card" style="margin-bottom:14px;">
+            <div class="card-hd"><div class="card-title">Dein Profil-Link</div></div>
+            <div class="custom-url-box" style="margin-bottom:12px;">
+              <div class="custom-url-text">
+                <span class="domain">https://kioo.lol/</span><span class="username" id="custom-url-user">—</span>
+              </div>
+              <button class="btn btn-ghost btn-sm" onclick="copyLink()">Kopieren</button>
+            </div>
+            <div class="stat-row">
+              <div class="stat-chip"><div class="sc-val" id="sp-views">0</div><div class="sc-lbl">Views</div></div>
+              <div class="stat-chip"><div class="sc-val" id="sp-vis">0</div><div class="sc-lbl">Besucher</div></div>
+              <div class="stat-chip" id="sp-status-chip" style="flex:1;display:flex;align-items:center;justify-content:center;"></div>
+            </div>
+          </div>
 
           <!-- PROFIL -->
           <div class="card">
@@ -501,7 +506,7 @@ input[type=color].color-input { width:26px; height:26px; padding:1px 2px; border
             </div>
           </div>
 
-          <!-- PREMIUM -->
+          <!-- PREMIUM UPGRADE -->
           <div class="card prem-block" id="prem-card">
             <div class="card-hd"><div class="card-title" style="color:var(--gold);">Premium freischalten</div></div>
             <p style="font-size:12px;color:var(--text3);margin-bottom:14px;">Goldener Name, Cursor-Effekte, Animated BG, Badges, Klick-Stats und mehr.</p>
@@ -554,6 +559,58 @@ input[type=color].color-input { width:26px; height:26px; padding:1px 2px; border
           </div>
         </div>
 
+        <!-- FEATURES (was: profile panel) -->
+        <div id="tab-features" class="page">
+          <div class="page-hd"><h1>Features</h1><p>Übersicht aller Funktionen</p></div>
+
+          <!-- Stats im Features Tab -->
+          <div class="card">
+            <div class="card-hd"><div class="card-title">Statistiken</div></div>
+            <div class="stat-row">
+              <div class="stat-chip"><div class="sc-val" id="feat-views">0</div><div class="sc-lbl">Views</div></div>
+              <div class="stat-chip"><div class="sc-val" id="feat-vis">0</div><div class="sc-lbl">Besucher</div></div>
+            </div>
+          </div>
+
+          <div class="feat-section">
+            <div class="feat-section-title">Kostenlos verfügbar</div>
+            <div class="feature-row"><div class="fr-icon">🎨</div><div class="fr-info"><div class="fr-name">Akzentfarbe</div><div class="fr-desc">Buttons & Akzente anpassen</div></div><span class="fr-badge fb-free">Free</span></div>
+            <div class="feature-row"><div class="fr-icon">🖼️</div><div class="fr-info"><div class="fr-name">Avatar & Banner</div><div class="fr-desc">Custom Bilder hochladen</div></div><span class="fr-badge fb-free">Free</span></div>
+            <div class="feature-row"><div class="fr-icon">🔗</div><div class="fr-info"><div class="fr-name">Custom Links</div><div class="fr-desc">Unlimitierte Social Links</div></div><span class="fr-badge fb-free">Free</span></div>
+            <div class="feature-row"><div class="fr-icon">🎵</div><div class="fr-info"><div class="fr-name">Hintergrundsong</div><div class="fr-desc">Musik auf deinem Profil</div></div><span class="fr-badge fb-free">Free</span></div>
+            <div class="feature-row"><div class="fr-icon">🗂️</div><div class="fr-info"><div class="fr-name">Vorlagen</div><div class="fr-desc">Design-Vorlagen anwenden</div></div><span class="fr-badge fb-free">Free</span></div>
+            <div class="feature-row"><div class="fr-icon">👁️</div><div class="fr-info"><div class="fr-name">Views & Besucher</div><div class="fr-desc">Wer dein Profil besucht</div></div><span class="fr-badge fb-free">Free</span></div>
+          </div>
+
+          <div class="feat-section">
+            <div class="feat-section-title">Premium exklusiv</div>
+            <div class="feature-row"><div class="fr-icon">🌟</div><div class="fr-info"><div class="fr-name">Goldener Name</div><div class="fr-desc">Leuchtendes Gold mit Glow</div></div><span class="fr-badge fb-prem">💎 Prem</span></div>
+            <div class="feature-row"><div class="fr-icon">🖱️</div><div class="fr-info"><div class="fr-name">Cursor-Effekte</div><div class="fr-desc">Partikel, Sterne, Trail</div></div><span class="fr-badge fb-prem">💎 Prem</span></div>
+            <div class="feature-row"><div class="fr-icon">✨</div><div class="fr-info"><div class="fr-name">Animated BG</div><div class="fr-desc">Partikel, Sterne, Wellen</div></div><span class="fr-badge fb-prem">💎 Prem</span></div>
+            <div class="feature-row"><div class="fr-icon">🏷️</div><div class="fr-info"><div class="fr-name">Badges</div><div class="fr-desc">Dev, VIP, Verified & mehr</div></div><span class="fr-badge fb-prem">💎 Prem</span></div>
+            <div class="feature-row"><div class="fr-icon">📊</div><div class="fr-info"><div class="fr-name">Klick-Statistiken</div><div class="fr-desc">Klicks pro Link tracken</div></div><span class="fr-badge fb-prem">💎 Prem</span></div>
+          </div>
+
+          <div id="feat-prem-btn-wrap">
+            <div class="card prem-block">
+              <div class="card-hd"><div class="card-title" style="color:var(--gold);">Premium freischalten</div></div>
+              <p style="font-size:12px;color:var(--text3);margin-bottom:14px;">Schalte alle Premium-Features frei und hebe dein Profil auf das nächste Level.</p>
+              <button class="btn btn-gold" onclick="buyPremium()">💎 Premium aktivieren (Demo)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- LEADERBOARD -->
+        <div id="tab-leaderboard" class="page">
+          <div class="page-hd" style="display:flex;align-items:center;justify-content:space-between;">
+            <div><h1>Leaderboard</h1><p>Top Profile nach Views</p></div>
+            <button class="btn btn-ghost btn-sm" onclick="renderLeaderboard()">🔄 Aktualisieren</button>
+          </div>
+          <div class="card">
+            <div id="lb-wrap"><div class="vis-empty">Lade...</div></div>
+          </div>
+        </div>
+
         <!-- EINSTELLUNGEN -->
         <div id="tab-settings" class="page">
           <div class="page-hd"><h1>Einstellungen</h1><p>Konto und Sicherheit</p></div>
@@ -582,6 +639,7 @@ input[type=color].color-input { width:26px; height:26px; padding:1px 2px; border
             </table>
           </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -641,7 +699,7 @@ input[type=color].color-input { width:26px; height:26px; padding:1px 2px; border
 <div id="save-tpl-modal" class="modal-bg" style="display:none;" onclick="if(event.target===this)closeSaveTplModal()">
   <div class="modal">
     <div class="modal-title">Aktuelles Profil als Vorlage speichern</div>
-    <p style="font-size:12px;color:var(--text3);margin-bottom:16px;">Das Design deines aktuellen Profils (Farbe, Hintergrund, Transparenz) wird als Vorlage gespeichert und kann von anderen angewendet werden.</p>
+    <p style="font-size:12px;color:var(--text3);margin-bottom:16px;">Das Design deines aktuellen Profils wird als Vorlage gespeichert.</p>
     <div class="field"><label>Name</label><input id="stm-name" class="input" placeholder="z.B. Dark Purple Night"></div>
     <div class="field"><label>Kategorie</label>
       <select id="stm-cat" class="input"><option value="dark">Dark</option><option value="light">Light</option><option value="neon">Neon</option><option value="minimal">Minimal</option></select>
@@ -653,13 +711,13 @@ input[type=color].color-input { width:26px; height:26px; padding:1px 2px; border
   </div>
 </div>
 
-<!-- GIVE VIEWS MODAL -->
+<!-- GIVE VIEWS MODAL — only for owner (admin/yourself) -->
 <div id="gv-modal" class="modal-bg" style="display:none;" onclick="if(event.target===this)closeGiveViews()">
   <div class="modal">
-    <div class="modal-title">Views vergeben</div>
-    <p style="font-size:12px;color:var(--text3);margin-bottom:16px;">Verteile Views an andere Nutzer. Du kannst Views nur an existierende Accounts vergeben.</p>
+    <div class="modal-title">👁 Views vergeben</div>
+    <p style="font-size:12px;color:var(--text3);margin-bottom:16px;">Verteile Views an andere Nutzer. Nur für berechtigte Nutzer.</p>
     <div class="field"><label>Empfänger (Username)</label><input id="gv-user" class="input" placeholder="username"></div>
-    <div class="field"><label>Anzahl Views</label><input id="gv-count" class="input" type="number" min="1" max="99999" placeholder="z.B. 100"></div>
+    <div class="field"><label>Anzahl Views</label><input id="gv-count" class="input" type="number" min="1" max="999999" placeholder="z.B. 100"></div>
     <div id="gv-err" class="auth-err"></div>
     <div style="display:flex;gap:8px;margin-top:8px;">
       <button class="btn btn-primary btn-full" onclick="submitGiveViews()">Vergeben</button>
@@ -704,12 +762,11 @@ const getSession = () => localStorage.getItem(SES);
 const setSession = u => localStorage.setItem(SES, u);
 const clearSession = () => localStorage.removeItem(SES);
 
-function h(s) { return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
+function h(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function hashPw(s) { let h=0; for(let i=0;i<s.length;i++) h=(Math.imul(31,h)+s.charCodeAt(i))|0; return h.toString(36); }
 
 // ─── STATE ───
-let CU = null; // current user
+let CU = null;
 let selAccent = '#7c3aed';
 let selCursor = 'none';
 let selAnimBG = 'none';
@@ -719,6 +776,9 @@ let selPlat = 'custom';
 let tplFilter = 'all';
 let ownerAuthed = false;
 let viewingUser = null;
+
+// Custom URL: pretend domain
+const FAKE_DOMAIN = 'https://kioo.lol/';
 
 // ─── VIEWS ───
 function showV(id) {
@@ -772,6 +832,9 @@ function initApp() {
   loadForm(); updateStats(); updateLink();
   document.getElementById('nb-admin').style.display = d[u].is_admin ? 'flex' : 'none';
   document.getElementById('prem-card').style.display = d[u].is_premium ? 'none' : 'block';
+  // Features tab premium card
+  const fpw = document.getElementById('feat-prem-btn-wrap');
+  if(fpw) fpw.style.display = d[u].is_premium ? 'none' : 'block';
   setPremGating(d[u].is_premium);
   renderLinks();
 }
@@ -787,19 +850,27 @@ function updateStats() {
   const d = db()[CU];
   document.getElementById('sp-views').textContent = d.views || 0;
   document.getElementById('sp-vis').textContent = getVis(CU).length;
-  document.getElementById('sp-status').innerHTML = d.is_premium
+  // Features tab stats
+  const fv = document.getElementById('feat-views'); if(fv) fv.textContent = d.views || 0;
+  const fvis = document.getElementById('feat-vis'); if(fvis) fvis.textContent = getVis(CU).length;
+  const sp = document.getElementById('sp-status-chip');
+  if(sp) sp.innerHTML = d.is_premium
     ? '<span class="prem-badge">💎 Premium</span>'
     : '<span style="color:var(--text3);font-size:11px;">Free Plan</span>';
 }
 
 function updateLink() {
-  const url = location.href.split('?')[0] + '?user=' + CU;
-  document.getElementById('plb-url').textContent = url;
+  // Show pretty URL like kioo.lol/username
+  const prettyUrl = 'kioo.lol/' + CU;
+  document.getElementById('plb-url').textContent = prettyUrl;
+  const cu = document.getElementById('custom-url-user');
+  if(cu) cu.textContent = CU;
 }
 
 function copyLink() {
+  // Copy actual link (with ?user= param since this is a single-page app)
   const url = location.href.split('?')[0] + '?user=' + CU;
-  navigator.clipboard.writeText(url).then(() => toast('🔗 Link kopiert!'));
+  navigator.clipboard.writeText(url).then(() => toast('🔗 Link kopiert!\n(kioo.lol/' + CU + ')'));
 }
 
 // ─── FORM ───
@@ -822,7 +893,6 @@ function loadForm() {
   selCursor = d.cursor_effect || 'none';
   selAnimBG = d.anim_bg || 'none';
   selBadges = [...(d.badges || [])];
-  // restore opt btns
   ['#f-cursor .opt-btn','#f-animBG .opt-btn'].forEach(sel => {
     document.querySelectorAll(sel).forEach(b => {
       const m = b.getAttribute('onclick').match(/'([^']+)'\)$/);
@@ -882,6 +952,7 @@ function saveSettings() {
 function buyPremium() {
   const d=db(); d[CU].is_premium=true; saveDB(d);
   document.getElementById('prem-card').style.display='none';
+  const fpw=document.getElementById('feat-prem-btn-wrap'); if(fpw) fpw.style.display='none';
   updateStats(); setPremGating(true); toast('💎 Premium aktiviert!');
 }
 
@@ -894,12 +965,41 @@ function goTab(name) {
   if(name==='admin') renderAdmin();
   if(name==='vorlagen') renderTpls(tplFilter);
   if(name==='visitors') initVisitorTab();
+  if(name==='leaderboard') renderLeaderboard();
+  if(name==='features') updateStats();
 }
 
-// ─── VISITOR LOG (owner-gated) ───
+// ─── LEADERBOARD ───
+function renderLeaderboard() {
+  const d = db();
+  const users = Object.entries(d)
+    .map(([u, ud]) => ({username: u, views: ud.views||0, display_name: ud.display_name||u, is_premium: ud.is_premium}))
+    .sort((a,b) => b.views - a.views)
+    .slice(0, 20);
+
+  const wrap = document.getElementById('lb-wrap');
+  if(!users.length) { wrap.innerHTML='<div class="vis-empty">Keine Nutzer.</div>'; return; }
+
+  let html = '';
+  users.forEach((u, i) => {
+    const rank = i + 1;
+    const rankClass = rank===1?'gold':rank===2?'silver':rank===3?'bronze':'';
+    const rankIcon = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':'';
+    const isMe = u.username === CU;
+    const rowStyle = isMe ? 'border-color:var(--accent-color);background:var(--accent-dim);' : '';
+    html += `<div class="lb-row" style="${rowStyle}" onclick="renderProfile('${h(u.username)}')">
+      <div class="lb-rank ${rankClass}">${rankIcon||('#'+rank)}</div>
+      <div class="lb-name">${h(u.display_name)}${isMe?' <span style="color:var(--text3);font-size:10px;">(du)</span>':''}</div>
+      <span style="font-size:10px;color:var(--text3);font-family:\'Geist Mono\',monospace;">kioo.lol/${h(u.username)}</span>
+      ${u.is_premium?'<span class="lb-badge">💎</span>':''}
+      <div class="lb-views">${u.views.toLocaleString('de-DE')} Views</div>
+    </div>`;
+  });
+  wrap.innerHTML = html;
+}
+
+// ─── VISITOR LOG ───
 function initVisitorTab() {
-  const d = db()[CU];
-  // Always require owner login for visitor log
   if(ownerAuthed) {
     document.getElementById('vis-owner-wall').style.display = 'none';
     document.getElementById('vis-content').style.display = 'block';
@@ -979,7 +1079,7 @@ function renderLinks() {
     const m = PLATFORMS[lnk.platform]||PLATFORMS.custom;
     const row = document.createElement('div'); row.className = 'link-row';
     row.innerHTML = '<span class="lr-icon">'+(lnk.emoji||m.e||'🔗')+'</span><div class="lr-info"><div class="lr-name">'+h(lnk.name)+'</div><div class="lr-url">'+h(lnk.url)+'</div></div>'
-      +(isPrem?'<span class="lr-clicks">'+( stats[lnk.name]||0)+'</span>':'')
+      +(isPrem?'<span class="lr-clicks">'+(stats[lnk.name]||0)+' Klicks</span>':'')
       +'<div class="lr-dot" style="background:'+lnk.color+'"></div>'
       +'<button class="lr-btn" onclick="openLinkModal('+i+')" title="Bearbeiten"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>'
       +'<button class="lr-btn del" onclick="delLink('+i+')" title="Löschen"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
@@ -988,8 +1088,19 @@ function renderLinks() {
 }
 function delLink(i) { const l=getLinks(CU); l.splice(i,1); setLinks(CU,l); renderLinks(); toast('Link gelöscht.'); }
 
-// ─── GIVE VIEWS ───
-function openGiveViews() { document.getElementById('gv-modal').style.display='flex'; document.getElementById('gv-user').value=''; document.getElementById('gv-count').value=''; document.getElementById('gv-err').style.display='none'; }
+// ─── GIVE VIEWS (only allowed for admin or self-boosting owners) ───
+function openGiveViews() {
+  const d = db()[CU];
+  if(!d.is_admin) {
+    // Non-admins can only give views to themselves as demo
+    toast('⚠️ Nur Admins können Views vergeben.');
+    return;
+  }
+  document.getElementById('gv-modal').style.display='flex';
+  document.getElementById('gv-user').value='';
+  document.getElementById('gv-count').value='';
+  document.getElementById('gv-err').style.display='none';
+}
 function closeGiveViews() { document.getElementById('gv-modal').style.display='none'; }
 function submitGiveViews() {
   const u = document.getElementById('gv-user').value.toLowerCase().trim();
@@ -997,9 +1108,10 @@ function submitGiveViews() {
   const err = document.getElementById('gv-err');
   const d = db();
   if(!d[u]) { err.textContent='Nutzer nicht gefunden.'; err.style.display='block'; return; }
-  if(!count||count<1||count>99999) { err.textContent='Ungültige Anzahl (1–99999).'; err.style.display='block'; return; }
+  if(!count||count<1||count>999999) { err.textContent='Ungültige Anzahl (1–999999).'; err.style.display='block'; return; }
   d[u].views = (d[u].views||0)+count; saveDB(d);
   err.style.display='none'; closeGiveViews(); toast('✓ '+count+' Views an @'+u+' vergeben!');
+  if(u === CU) updateStats();
 }
 
 // ─── TEMPLATES ───
@@ -1032,15 +1144,13 @@ function renderTpls(cat) {
     const sel = tpl.id===activeId; const isOwn = tpl.uploader===CU && !tpl.builtin;
     const card = document.createElement('div'); card.className='tpl-card'+(sel?' selected':'');
     card.onclick = () => applyTpl(tpl.id);
-
-    // Live mini-preview using actual profile data
     const accent = tpl.accent || '#7c3aed';
     const bg = tpl.bg_file ? `url("${tpl.bg_file}") center/cover` : tpl.bgcolor || '#111';
     const previewContent = `
       <div class="tpl-preview" style="background:${bg};">
         <div style="position:absolute;inset:0;background:rgba(0,0,0,0.45);"></div>
         <div class="tpl-preview-inner">
-          <div style="width:32px;height:32px;border-radius:50%;background:${accent}33;border:2px solid ${accent};position:relative;z-index:1;display:flex;align-items:center;justify-content:center;font-size:14px;">${tpl.uploader===CU&&db()[CU]?.avatar?'<img src="'+db()[CU].avatar+'" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">':'👤'}</div>
+          <div style="width:32px;height:32px;border-radius:50%;background:${accent}33;border:2px solid ${accent};position:relative;z-index:1;display:flex;align-items:center;justify-content:center;font-size:14px;">👤</div>
           <div class="tpl-preview-name">${h(d.display_name||CU)}</div>
           <div class="tpl-preview-bio">${h((d.bio||'').substring(0,28))}</div>
           <div class="tpl-preview-btns">
@@ -1056,7 +1166,6 @@ function renderTpls(cat) {
       + `<div class="tpl-info"><div class="tpl-name"><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${accent};margin-right:5px;flex-shrink:0;"></span>${h(tpl.name)}</div><div class="tpl-sub">von ${h(tpl.author||tpl.uploader||'anonym')} · ${tpl.cat}</div></div>`;
     grid.appendChild(card);
   });
-  // Update active info
   const activeTpl = getAllTpls().find(t => t.id===activeId);
   const info = document.getElementById('active-tpl-info');
   if(activeTpl) info.innerHTML=`<span style="color:#fff;font-weight:600;">${h(activeTpl.name)}</span> <span style="color:var(--text3);">von ${h(activeTpl.author||activeTpl.uploader||'anonym')}</span>`;
@@ -1066,7 +1175,6 @@ function applyTpl(id) { const d=db(); d[CU].active_template=id; saveDB(d); rende
 function removeTemplate() { const d=db(); d[CU].active_template=null; saveDB(d); renderTpls(tplFilter); toast('Vorlage entfernt.'); }
 function delTpl(id) { if(!confirm('Vorlage löschen?'))return; saveTpls(tpls().filter(t=>t.id!==id)); const d=db(); Object.values(d).forEach(u=>{if(u.active_template===id)u.active_template=null;}); saveDB(d); renderTpls(tplFilter); toast('Gelöscht.'); }
 
-// SAVE TPL MODAL — saves CURRENT profile as template
 function openSaveTplModal() {
   document.getElementById('stm-name').value='';
   document.getElementById('save-tpl-modal').style.display='flex';
@@ -1077,14 +1185,11 @@ function submitSaveTpl() {
   if(!name) { toast('Bitte einen Namen eingeben!'); return; }
   const cat = document.getElementById('stm-cat').value;
   const d = db()[CU];
-  // Use the current user's actual profile data for the template
   const newTpl = {
-    id: 'tpl-'+Date.now(),
-    name, author: CU, uploader: CU, cat,
+    id: 'tpl-'+Date.now(), name, author: CU, uploader: CU, cat,
     accent: d.accent_color || '#7c3aed',
     bgcolor: 'rgba(10,10,14,' + ((d.opacity||80)/100) + ')',
-    bg_file: d.bg_file || '', // include their actual background
-    builtin: false
+    bg_file: d.bg_file || '', builtin: false
   };
   const t = tpls(); t.push(newTpl); saveTpls(t);
   closeSaveTplModal(); filterTpl('mine', null); toast('🎨 Vorlage gespeichert!');
@@ -1169,7 +1274,6 @@ function renderProfile(username){
 
   const accent=ud.accent_color||'#7c3aed';
 
-  // Apply template
   let bgSrc=ud.bg_file||''; let cardBg='rgba(10,10,14,'+(ud.opacity||80)/100+')';
   if(ud.active_template){
     const at=getAllTpls().find(t=>t.id===ud.active_template);
@@ -1180,7 +1284,6 @@ function renderProfile(username){
   pv.style.display='block';
   pv.style.setProperty('--accent-color',accent);
 
-  // BG
   const bi=document.getElementById('pv-bg-img'),bv=document.getElementById('pv-bg-vid');
   bi.style.display='none';bv.style.display='none';
   if(bgSrc){if(bgSrc.startsWith('data:video')){bv.src=bgSrc;bv.style.display='block';}else{bi.src=bgSrc;bi.style.display='block';}}
@@ -1197,7 +1300,6 @@ function renderProfile(username){
   if(ud.is_premium){nameEl.style.color='#fbbf24';nameEl.style.textShadow='0 0 20px rgba(251,191,36,0.5)';}
   else{nameEl.style.color='#fff';nameEl.style.textShadow='none';}
 
-  // Badges
   const brow=document.getElementById('pcard-badges');brow.innerHTML='';
   if(ud.is_premium&&ud.badges&&ud.badges.length){
     ud.badges.forEach(key=>{const m=BADGE_META[key];if(!m)return;const s=document.createElement('span');s.className='rbadge '+m.cl;s.style.pointerEvents='none';s.textContent=m.l;brow.appendChild(s);});
@@ -1206,7 +1308,6 @@ function renderProfile(username){
   document.getElementById('pcard-bio').textContent=ud.bio||'';
   document.getElementById('pcard-views').textContent=ud.views;
 
-  // Links
   const sb=document.getElementById('pcard-socials');sb.innerHTML='';
   getLinks(username).forEach(lnk=>{
     const m=PLATFORMS[lnk.platform]||PLATFORMS.custom;
@@ -1220,14 +1321,12 @@ function renderProfile(username){
     sb.appendChild(a);
   });
 
-  // Audio
   const audio=pvAudio();
-  if(ud.song){audio.src=ud.song;audio.loop=true;document.getElementById('pv-music').style.display='block';document.getElementById('mbar-title').textContent='♪ '+((ud.display_name||username)+' – Song');}
+  if(ud.song){audio.src=ud.song;audio.loop=true;document.getElementById('pv-music').style.display='block';document.getElementById('mbar-title').textContent='♪ '+(ud.display_name||username)+' – Song';}
   else{audio.src='';document.getElementById('pv-music').style.display='none';}
   audio.ontimeupdate=()=>{if(!audio.duration)return;document.getElementById('mbar-fill').style.width=((audio.currentTime/audio.duration)*100)+'%';document.getElementById('mbar-fill').style.background=accent;};
   pvPlaying=false;pvUpdateUI();
 
-  // Animated BG
   if(ud.is_premium&&ud.anim_bg&&ud.anim_bg!=='none')startAnim(ud.anim_bg);
 
   document.getElementById('pv-overlay').style.opacity='1';
@@ -1258,25 +1357,21 @@ function closeProfile(){
 
 // ─── TOAST ───
 let toastT=null;
-function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),2200);}
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),2500);}
 
 // ─── BOOT ───
 (function(){
   const d=db();
-  // Ensure owner account exists
   if(!d['k']){
     d['k']={pw:hashPw('kio'),display_name:'k',bio:'',is_premium:true,is_admin:true,
       opacity:80,font_choice:'Geist',accent_color:'#7c3aed',cursor_effect:'none',
       anim_bg:'none',badges:['verified','vip'],views:0,avatar:'',banner:'',bg_file:'',song:'',active_template:null};
     saveDB(d);
   }
-  // Public profile link
   const params=new URLSearchParams(location.search);
   const linkUser=params.get('user');
   if(linkUser&&db()[linkUser]){
-    // Visited via profile link — show profile, not login
     viewingUser=linkUser;
-    // For public visitors, no app login needed
     const s=getSession();
     if(s&&db()[s]) CU=s;
     renderProfile(linkUser);
