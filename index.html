@@ -2,82 +2,119 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>kio.lol</title>
-
 <style>
 body{
 margin:0;
-background:#050505;
-font-family:Arial,sans-serif;
+font-family:Arial;
+background:black;
 color:white;
-display:flex;
+}
+
+.screen{
+display:none;
+height:100vh;
 justify-content:center;
 align-items:center;
-height:100vh;
-overflow:hidden;
+flex-direction:column;
 }
 
-video{
-position:fixed;
-inset:0;
-width:100%;
-height:100%;
-object-fit:cover;
-z-index:-2;
+.active{
+display:flex;
 }
 
-.overlay{
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.6);
-z-index:-1;
+input,button{
+padding:10px;
+margin:5px;
+border-radius:10px;
+border:none;
+}
+
+button{
+background:#6b21a8;
+color:white;
+cursor:pointer;
+}
+
+.profile{
+text-align:center;
+padding-top:80px;
 }
 
 .card{
-width:450px;
-max-width:90%;
-background:rgba(15,15,15,.8);
-border:1px solid #222;
-border-radius:20px;
-padding:30px;
-text-align:center;
-backdrop-filter:blur(10px);
+background:#111;
+padding:20px;
+border-radius:15px;
+width:300px;
 }
 
-.avatar{
-width:120px;
-height:120px;
-border-radius:50%;
-object-fit:cover;
-}
-
-.btn{
-display:inline-block;
+a{
+color:#6b21a8;
+display:block;
 margin:5px;
-padding:10px 20px;
-background:#6b21a8;
-border-radius:10px;
-text-decoration:none;
-color:white;
 }
 </style>
 </head>
 <body>
 
-<div class="overlay"></div>
-
-<div class="card">
-<img class="avatar" src="https://via.placeholder.com/120">
-
-<h1>Kio</h1>
-
-<p>Meine Bio kommt hier hin.</p>
-
-<a class="btn" href="#">Discord</a>
-<a class="btn" href="#">Instagram</a>
-<a class="btn" href="#">TikTok</a>
+<!-- LOGIN -->
+<div id="login" class="screen active">
+<h1>Login</h1>
+<input id="user" placeholder="Username">
+<button onclick="login()">Enter</button>
 </div>
+
+<!-- DASHBOARD -->
+<div id="dash" class="screen">
+<h1>Dashboard</h1>
+<input id="bio" placeholder="Bio">
+<button onclick="save()">Save</button>
+<button onclick="goProfile()">My Profile</button>
+</div>
+
+<!-- PROFILE -->
+<div id="profile" class="screen profile">
+<div class="card">
+<h1 id="pname"></h1>
+<p id="pbio"></p>
+
+<a href="#">Discord</a>
+<a href="#">Instagram</a>
+
+<button onclick="back()">Back</button>
+</div>
+</div>
+
+<script>
+let currentUser = "";
+
+function show(id){
+document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+}
+
+function login(){
+currentUser = document.getElementById("user").value;
+if(!currentUser) return;
+show("dash");
+}
+
+function save(){
+localStorage.setItem(currentUser+"_bio", document.getElementById("bio").value);
+alert("saved (local only)");
+}
+
+function goProfile(){
+document.getElementById("pname").innerText = currentUser;
+document.getElementById("pbio").innerText =
+localStorage.getItem(currentUser+"_bio") || "";
+show("profile");
+}
+
+function back(){
+show("dash");
+}
+</script>
 
 </body>
 </html>
