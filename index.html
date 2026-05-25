@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>kio.lol — dein kurzer Link</title>
+<title>regelbruch.cc — dein Profil</title>
 <style>
 * {
   margin: 0;
@@ -12,173 +12,226 @@
 }
 
 body {
-  background: #0a0a0a;
+  background: #0d0d0d;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', system-ui, sans-serif;
-  color: #ededed;
-  min-height: 100vh;
+  color: #e0e0e0;
 }
 
-/* ========== AUTH ========== */
-.auth-wrap {
-  min-height: 100vh;
+/* ========== LAYOUT ========== */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========== SIDEBAR ========== */
+.sidebar {
+  background: #0f0f0f;
+  border: 1px solid #1a1a1a;
+  border-radius: 20px;
+  padding: 20px;
+  height: fit-content;
+  position: sticky;
+  top: 24px;
+}
+
+.profile-header {
+  text-align: center;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #1a1a1a;
+  margin-bottom: 20px;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  margin: 0 auto 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #0a0a0a;
-  padding: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: 0.15s;
 }
 
-.auth-box {
-  background: #111;
-  border: 1px solid #222;
-  border-radius: 24px;
-  padding: 40px;
+.avatar:hover {
+  opacity: 0.8;
+}
+
+.avatar img {
   width: 100%;
-  max-width: 360px;
+  height: 100%;
+  object-fit: cover;
 }
 
-.auth-box h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+.avatar-placeholder {
+  font-size: 2.5rem;
+}
+
+.profile-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.profile-username {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.stats-mini {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #1a1a1a;
+}
+
+.stat-mini-item {
   text-align: center;
+}
+
+.stat-mini-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.stat-mini-label {
+  font-size: 0.65rem;
+  color: #666;
+}
+
+/* Sidebar Menu */
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: transparent;
+  border: none;
+  color: #aaa;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.1s;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+}
+
+.menu-item:hover {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+.menu-item.active {
+  background: #1a1a1a;
+  color: #3b82f6;
+}
+
+.menu-icon {
+  font-size: 1.2rem;
+}
+
+.support-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #1a1a1a;
+}
+
+.support-title {
+  font-size: 0.7rem;
+  color: #666;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.support-link {
+  display: block;
+  padding: 8px 0;
+  color: #aaa;
+  text-decoration: none;
+  font-size: 0.8rem;
+}
+
+.support-link:hover {
+  color: #3b82f6;
+}
+
+.share-box {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #1a1a1a;
+}
+
+.share-input {
+  width: 100%;
+  background: #0a0a0a;
+  border: 1px solid #1a1a1a;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 0.7rem;
   margin-bottom: 8px;
 }
 
-.auth-box h1 span {
-  color: #3b82f6;
-}
-
-.auth-sub {
-  text-align: center;
-  color: #666;
-  font-size: 0.8rem;
-  margin-bottom: 28px;
-}
-
-.auth-link {
-  color: #3b82f6;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.auth-link:hover {
-  text-decoration: underline;
-}
-
-.auth-err {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid #ef4444;
-  color: #f87171;
+.share-btn {
+  width: 100%;
   padding: 10px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  margin-bottom: 16px;
-  display: none;
-}
-
-/* ========== MAIN APP ========== */
-.app {
-  display: none;
-  min-height: 100vh;
-}
-
-/* Header / Navbar */
-.navbar {
-  position: sticky;
-  top: 0;
-  background: #0a0a0a;
-  border-bottom: 1px solid #1a1a1a;
-  padding: 12px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
-  z-index: 100;
-}
-
-.logo {
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-.logo span {
-  color: #3b82f6;
-}
-
-.nav-links {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.nav-btn {
-  background: transparent;
-  border: none;
-  color: #888;
-  padding: 8px 16px;
-  border-radius: 40px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.nav-btn:hover {
-  color: #fff;
   background: #1a1a1a;
-}
-
-.nav-btn.active {
-  background: #1a1a1a;
-  color: #3b82f6;
-}
-
-.user-menu {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.user-badge {
-  background: #1a1a1a;
-  padding: 6px 12px;
-  border-radius: 40px;
-  font-size: 0.8rem;
-  font-weight: 500;
-}
-
-.logout-btn {
-  background: transparent;
   border: 1px solid #2a2a2a;
-  color: #888;
-  padding: 6px 12px;
-  border-radius: 40px;
+  border-radius: 10px;
+  color: #fff;
   font-size: 0.75rem;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: 0.1s;
 }
 
-.logout-btn:hover {
-  border-color: #ef4444;
-  color: #ef4444;
+.share-btn:hover {
+  background: #2a2a2a;
 }
 
-/* Main Content */
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 32px 24px;
+/* ========== MAIN CONTENT ========== */
+.main-content {
+  background: #0f0f0f;
+  border: 1px solid #1a1a1a;
+  border-radius: 20px;
+  padding: 28px;
+}
+
+.page-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 24px;
 }
 
 /* Cards */
 .card {
-  background: #111;
-  border: 1px solid #1e1e1e;
-  border-radius: 20px;
-  padding: 24px;
+  background: #0a0a0a;
+  border: 1px solid #1a1a1a;
+  border-radius: 16px;
+  padding: 20px;
   margin-bottom: 24px;
 }
 
@@ -186,207 +239,147 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
   gap: 12px;
 }
 
 .card-title {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #3b82f6;
+  font-size: 0.85rem;
   font-weight: 600;
-}
-
-/* Form Elements */
-.input-group {
-  margin-bottom: 16px;
-}
-
-.label {
-  display: block;
-  font-size: 0.7rem;
-  color: #888;
-  margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 0.03em;
+  color: #888;
 }
 
-input, textarea, select {
-  width: 100%;
-  background: #0a0a0a;
-  border: 1px solid #222;
-  padding: 12px 14px;
-  border-radius: 12px;
-  color: #fff;
-  font-size: 0.9rem;
-  font-family: inherit;
-  outline: none;
-  transition: all 0.15s;
-}
-
-input:focus, textarea:focus, select:focus {
-  border-color: #3b82f6;
-}
-
-textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
-.btn {
-  padding: 10px 20px;
-  border-radius: 40px;
-  border: none;
-  font-weight: 600;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: all 0.15s;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.btn-primary {
-  background: #3b82f6;
-  color: white;
-}
-
-.btn-primary:hover {
-  background: #2563eb;
-  transform: translateY(-1px);
-}
-
-.btn-secondary {
-  background: #1a1a1a;
-  color: #fff;
-  border: 1px solid #2a2a2a;
-}
-
-.btn-secondary:hover {
-  background: #222;
-}
-
-.btn-danger {
-  background: rgba(239, 68, 68, 0.15);
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.3);
-}
-
-.btn-danger:hover {
-  background: rgba(239, 68, 68, 0.25);
-}
-
-.btn-full {
-  width: 100%;
-  justify-content: center;
-}
-
-/* Grid */
-.grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-@media (max-width: 600px) {
-  .grid-2 {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Stats */
+/* Stats Grid */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
   margin-bottom: 24px;
 }
 
 .stat-card {
   background: #0a0a0a;
   border: 1px solid #1a1a1a;
-  border-radius: 16px;
+  border-radius: 14px;
   padding: 16px;
-  text-align: center;
 }
 
 .stat-value {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: 700;
+  margin-bottom: 4px;
 }
 
 .stat-label {
   font-size: 0.7rem;
   color: #666;
-  margin-top: 4px;
 }
 
-/* Profile Preview */
-.profile-preview {
-  background: linear-gradient(135deg, #0a0a0a 0%, #0f0f0f 100%);
-  border: 1px solid #1e1e1e;
-  border-radius: 20px;
-  padding: 20px;
-  text-align: center;
-  margin-top: 20px;
+.stat-sub {
+  font-size: 0.65rem;
+  color: #3b82f6;
+  margin-top: 6px;
 }
 
-.preview-avatar {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: #1a1a1a;
-  margin: 0 auto 12px;
+@media (max-width: 700px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Progress Bar */
+.progress-section {
+  margin-bottom: 20px;
+}
+
+.progress-header {
   display: flex;
--align-items: center;
-  justify-content: center;
-  font-size: 2rem;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 0.8rem;
+}
+
+.progress-bar {
+  height: 8px;
+  background: #1a1a1a;
+  border-radius: 10px;
   overflow: hidden;
 }
 
-.preview-avatar img {
-  width: 100%;
+.progress-fill {
   height: 100%;
-  object-fit: cover;
+  background: #3b82f6;
+  border-radius: 10px;
+  transition: width 0.3s;
 }
 
-.preview-name {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
-.preview-bio {
-  font-size: 0.8rem;
-  color: #888;
-  margin-bottom: 12px;
-}
-
-.preview-links {
+/* Checklist */
+.checklist {
   display: flex;
-  gap: 8px;
-  justify-content: center;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
 }
 
-.preview-link {
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #141414;
+}
+
+.checklist-item:last-child {
+  border-bottom: none;
+}
+
+.check-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 20px;
   background: #1a1a1a;
-  padding: 6px 12px;
-  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 0.7rem;
-  color: #fff;
+}
+
+.check-icon.done {
+  background: #3b82f6;
+  color: white;
+}
+
+.check-text {
+  flex: 1;
+  font-size: 0.85rem;
+}
+
+.check-action {
+  font-size: 0.7rem;
+  color: #3b82f6;
+  cursor: pointer;
   text-decoration: none;
 }
 
-/* Link List */
+.check-action:hover {
+  text-decoration: underline;
+}
+
+/* Links List */
+.links-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .link-item {
   background: #0a0a0a;
-  border: 1px solid #1e1e1e;
-  border-radius: 14px;
+  border: 1px solid #1a1a1a;
+  border-radius: 12px;
   padding: 14px 16px;
-  margin-bottom: 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -399,7 +392,7 @@ textarea {
 }
 
 .link-title {
-  font-weight: 600;
+  font-weight: 500;
   margin-bottom: 2px;
 }
 
@@ -414,20 +407,41 @@ textarea {
   gap: 8px;
 }
 
-.icon-btn {
+.link-btn {
   background: transparent;
   border: none;
   color: #666;
   cursor: pointer;
-  padding: 6px;
+  padding: 6px 10px;
   border-radius: 8px;
-  font-size: 1rem;
-  transition: all 0.15s;
+  font-size: 0.75rem;
+  transition: 0.1s;
 }
 
-.icon-btn:hover {
-  color: #fff;
+.link-btn:hover {
   background: #1a1a1a;
+  color: #fff;
+}
+
+.link-btn.delete:hover {
+  color: #ef4444;
+}
+
+.add-link-btn {
+  width: 100%;
+  padding: 12px;
+  background: #1a1a1a;
+  border: 1px dashed #2a2a2a;
+  border-radius: 12px;
+  color: #aaa;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: 0.1s;
+}
+
+.add-link-btn:hover {
+  border-color: #3b82f6;
+  color: #3b82f6;
 }
 
 /* Modal */
@@ -443,9 +457,9 @@ textarea {
 }
 
 .modal-content {
-  background: #111;
-  border: 1px solid #222;
-  border-radius: 24px;
+  background: #0f0f0f;
+  border: 1px solid #2a2a2a;
+  border-radius: 20px;
   padding: 28px;
   width: 90%;
   max-width: 420px;
@@ -462,6 +476,175 @@ textarea {
   margin-top: 20px;
 }
 
+/* Form Elements */
+input, textarea {
+  width: 100%;
+  background: #0a0a0a;
+  border: 1px solid #1a1a1a;
+  padding: 12px 14px;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+}
+
+input:focus, textarea:focus {
+  border-color: #3b82f6;
+}
+
+label {
+  display: block;
+  font-size: 0.7rem;
+  color: #888;
+  margin-bottom: 6px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 500;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.1s;
+}
+
+.btn-primary {
+  background: #3b82f6;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #2563eb;
+}
+
+.btn-secondary {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  color: #fff;
+}
+
+.btn-secondary:hover {
+  background: #2a2a2a;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+/* Views Chart */
+.views-chart {
+  background: #0a0a0a;
+  border: 1px solid #1a1a1a;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.chart-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 120px;
+  margin-top: 16px;
+}
+
+.chart-bar {
+  flex: 1;
+  background: #3b82f6;
+  border-radius: 4px 4px 0 0;
+  transition: height 0.3s;
+  min-width: 30px;
+}
+
+.chart-label {
+  text-align: center;
+  font-size: 0.65rem;
+  color: #666;
+  margin-top: 6px;
+}
+
+/* Template Grid */
+.template-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.template-card {
+  background: #0a0a0a;
+  border: 1px solid #1a1a1a;
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: 0.1s;
+}
+
+.template-card:hover {
+  border-color: #3b82f6;
+  transform: translateY(-2px);
+}
+
+.template-card.active {
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.template-preview {
+  width: 100%;
+  height: 80px;
+  background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.template-name {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Image Host Grid */
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.image-card {
+  background: #0a0a0a;
+  border: 1px solid #1a1a1a;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: 0.1s;
+}
+
+.image-card:hover {
+  border-color: #3b82f6;
+}
+
+.image-card img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+}
+
+.image-upload {
+  border: 1px dashed #2a2a2a;
+  background: #0a0a0a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  cursor: pointer;
+}
+
 /* Toast */
 .toast {
   position: fixed;
@@ -476,7 +659,6 @@ textarea {
   font-size: 0.8rem;
   z-index: 2000;
   transition: transform 0.2s;
-  white-space: nowrap;
 }
 
 .toast.show {
@@ -492,70 +674,100 @@ textarea {
   display: block;
 }
 
-/* QR */
-#qrcode {
+/* Auth */
+.auth-wrap {
+  min-height: 100vh;
   display: flex;
+  align-items: center;
   justify-content: center;
-  margin: 20px 0;
+  background: #0d0d0d;
 }
 
-/* Utility */
+.auth-box {
+  background: #0f0f0f;
+  border: 1px solid #1a1a1a;
+  border-radius: 24px;
+  padding: 40px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.auth-box h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.auth-box h1 span {
+  color: #3b82f6;
+}
+
+.auth-error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid #ef4444;
+  color: #f87171;
+  padding: 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  margin-bottom: 16px;
+  display: none;
+}
+
+.auth-link {
+  color: #3b82f6;
+  cursor: pointer;
+}
+
 .hidden {
   display: none;
 }
 
 .text-muted {
   color: #666;
-  font-size: 0.8rem;
-}
-
-.divider {
-  height: 1px;
-  background: #1a1a1a;
-  margin: 20px 0;
+  font-size: 0.75rem;
 }
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- AUTH SCREENS -->
 <div id="loginScreen" class="auth-wrap">
   <div class="auth-box">
-    <h1>kio<span>.</span>lol</h1>
-    <p class="auth-sub">dein kurzer Link</p>
-    <div id="loginError" class="auth-err">Falscher Benutzername oder Passwort</div>
-    <div class="input-group">
-      <label class="label">Username</label>
-      <input type="text" id="loginUser" placeholder="username" autocomplete="off">
+    <h1>regelbruch<span>.</span>cc</h1>
+    <p style="text-align: center; color: #666; margin-bottom: 24px;">dein Profil</p>
+    <div id="loginError" class="auth-error">Falscher Benutzername oder Passwort</div>
+    <div style="margin-bottom: 16px;">
+      <label>Benutzername</label>
+      <input type="text" id="loginUser" placeholder="benutzername">
     </div>
-    <div class="input-group">
-      <label class="label">Passwort</label>
+    <div style="margin-bottom: 24px;">
+      <label>Passwort</label>
       <input type="password" id="loginPass" placeholder="••••••">
     </div>
-    <button class="btn btn-primary btn-full" onclick="doLogin()">Login</button>
+    <button class="btn btn-primary btn-full" onclick="doLogin()">Anmelden</button>
     <p style="text-align: center; margin-top: 20px; font-size: 0.75rem;">
       <span class="auth-link" onclick="showRegister()">Kein Account? Registrieren</span>
     </p>
   </div>
 </div>
 
-<!-- REGISTER -->
 <div id="registerScreen" class="auth-wrap" style="display: none;">
   <div class="auth-box">
-    <h1>kio<span>.</span>lol</h1>
-    <p class="auth-sub">erstell deinen Account</p>
-    <div id="registerError" class="auth-err"></div>
-    <div class="input-group">
-      <label class="label">Username</label>
-      <input type="text" id="regUser" placeholder="username" autocomplete="off">
+    <h1>regelbruch<span>.</span>cc</h1>
+    <p style="text-align: center; color: #666; margin-bottom: 24px;">Account erstellen</p>
+    <div id="registerError" class="auth-error"></div>
+    <div style="margin-bottom: 16px;">
+      <label>Benutzername</label>
+      <input type="text" id="regUser" placeholder="benutzername">
     </div>
-    <div class="input-group">
-      <label class="label">Passwort</label>
+    <div style="margin-bottom: 16px;">
+      <label>Passwort</label>
       <input type="password" id="regPass" placeholder="••••••">
     </div>
-    <div class="input-group">
-      <label class="label">Deine Seite (optional)</label>
-      <input type="text" id="regSite" placeholder="https://deinewebsite.com">
+    <div style="margin-bottom: 24px;">
+      <label>Anzeigename (optional)</label>
+      <input type="text" id="RegName" placeholder="Dein Name">
     </div>
     <button class="btn btn-primary btn-full" onclick="doRegister()">Registrieren</button>
     <p style="text-align: center; margin-top: 20px; font-size: 0.75rem;">
@@ -565,109 +777,175 @@ textarea {
 </div>
 
 <!-- MAIN APP -->
-<div id="app" class="app">
-  <div class="navbar">
-    <div class="logo">kio<span>.</span>lol</div>
-    <div class="nav-links">
-      <button class="nav-btn active" onclick="switchTab('profile')">Profil</button>
-      <button class="nav-btn" onclick="switchTab('links')">Links</button>
-      <button class="nav-btn" onclick="switchTab('stats')">Stats</button>
-    </div>
-    <div class="user-menu">
-      <span class="user-badge" id="userBadge">@user</span>
-      <button class="logout-btn" onclick="doLogout()">Logout</button>
-    </div>
-  </div>
-
-  <div class="container">
-    <!-- PROFILE TAB -->
-    <div id="profileTab" class="tab-content active">
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-value" id="statViews">0</div>
-          <div class="stat-label">Profilaufrufe</div>
+<div id="app" class="container" style="display: none;">
+  <div class="dashboard">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="profile-header">
+        <div class="avatar" onclick="document.getElementById('avatarInput').click()">
+          <div id="avatarPreview" class="avatar-placeholder">👤</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-value" id="statLinks">0</div>
-          <div class="stat-label">Links</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" id="statPremium">—</div>
-          <div class="stat-label">Status</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Profil bearbeiten</div>
-          <button class="btn btn-primary btn-sm" onclick="saveProfile()">Speichern</button>
-        </div>
-        <div class="input-group">
-          <label class="label">Anzeigename</label>
-          <input type="text" id="profileName" placeholder="Dein Name">
-        </div>
-        <div class="input-group">
-          <label class="label">Bio</label>
-          <textarea id="profileBio" placeholder="Was machst du so?"></textarea>
-        </div>
-        <div class="input-group">
-          <label class="label">Avatar URL</label>
-          <input type="text" id="profileAvatar" placeholder="https://...">
-        </div>
-        <div class="grid-2">
-          <div class="input-group">
-            <label class="label">Hintergrundfarbe</label>
-            <input type="color" id="profileBgColor" value="#0a0a0a">
+        <input type="file" id="avatarInput" style="display: none;" accept="image/*" onchange="uploadAvatar(this)">
+        <div class="profile-name" id="sidebarName">Benutzername</div>
+        <div class="profile-username" id="sidebarUsername">@user</div>
+        <div class="stats-mini">
+          <div class="stat-mini-item">
+            <div class="stat-mini-value" id="miniViews">0</div>
+            <div class="stat-mini-label">Aufrufe</div>
           </div>
-          <div class="input-group">
-            <label class="label">Akzentfarbe</label>
-            <input type="color" id="profileAccentColor" value="#3b82f6">
+          <div class="stat-mini-item">
+            <div class="stat-mini-value" id="miniLinks">0</div>
+            <div class="stat-mini-label">Links</div>
+          </div>
+          <div class="stat-mini-item">
+            <div class="stat-mini-value" id="miniAlias">0</div>
+            <div class="stat-mini-label">Alias</div>
           </div>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Vorschau</div>
-          <button class="btn btn-secondary btn-sm" onclick="copyProfileLink()">Link kopieren</button>
-        </div>
-        <div id="profilePreview" class="profile-preview">
-          <div class="preview-avatar" id="previewAvatar">👤</div>
-          <div class="preview-name" id="previewName">Dein Name</div>
-          <div class="preview-bio" id="previewBio">Deine Bio</div>
-          <div class="preview-links" id="previewLinks"></div>
-        </div>
+      <div class="sidebar-menu">
+        <button class="menu-item active" onclick="switchTab('overview')">
+          <span class="menu-icon">📊</span> Übersicht
+        </button>
+        <button class="menu-item" onclick="switchTab('links')">
+          <span class="menu-icon">🔗</span> Links
+        </button>
+        <button class="menu-item" onclick="switchTab('premium')">
+          <span class="menu-icon">⭐</span> Premium
+        </button>
+        <button class="menu-item" onclick="switchTab('imagehost')">
+          <span class="menu-icon">🖼️</span> Image Host
+        </button>
+        <button class="menu-item" onclick="switchTab('templates')">
+          <span class="menu-icon">🎨</span> Vorlagen
+        </button>
+      </div>
+
+      <div class="support-section">
+        <div class="support-title">Hilfe & Support</div>
+        <a href="#" class="support-link" onclick="viewMyPage(); return false;">📄 Meine Seite ansehen</a>
+        <a href="#" class="support-link">❓ Hilfecenter</a>
+      </div>
+
+      <div class="share-box">
+        <div class="support-title">Teile dein Profil</div>
+        <input type="text" class="share-input" id="shareLink" readonly onclick="this.select()">
+        <button class="share-btn" onclick="copyProfileLink()">Link kopieren</button>
       </div>
     </div>
 
-    <!-- LINKS TAB -->
-    <div id="linksTab" class="tab-content">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Deine Links</div>
-          <button class="btn btn-primary btn-sm" onclick="showLinkModal()">+ Neuer Link</button>
-        </div>
-        <div id="linksList"></div>
-        <div class="divider"></div>
-        <p class="text-muted" style="text-align: center;">Deine Seite: <strong id="profileUrl"></strong></p>
-      </div>
-    </div>
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+      <!-- OVERVIEW TAB -->
+      <div id="overviewTab" class="tab-content active">
+        <div class="page-title">Kontoübersicht</div>
 
-    <!-- STATS TAB -->
-    <div id="statsTab" class="tab-content">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Besucher</div>
-          <button class="btn btn-secondary btn-sm" onclick="clearVisitors()">Log leeren</button>
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="statUsername">user</div>
+            <div class="stat-label">Benutzername</div>
+            <div class="stat-sub" id="usernameChange">Änderung möglich</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statAlias">0</div>
+            <div class="stat-label">Alias</div>
+            <div class="stat-sub" id="aliasSlots">1 Slots verbleibend</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statUid">#1</div>
+            <div class="stat-label">UID</div>
+            <div class="stat-sub" id="statJoined">Beigetreten</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statViewsMain">0</div>
+            <div class="stat-label">Profilaufrufe</div>
+            <div class="stat-sub" id="statViewsChange">+0 in 7 Tagen</div>
+          </div>
         </div>
-        <div id="visitorsList"></div>
+
+        <!-- Profile Completion -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Kontostatistiken</div>
+          </div>
+          <div class="progress-section">
+            <div class="progress-header">
+              <span>Profil-Vervollständigung</span>
+              <span id="completionPercent">0%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="completionBar" style="width: 0%;"></div>
+            </div>
+            <div class="text-muted" style="margin-top: 8px; font-size: 0.7rem;" id="completionMessage">Dein Profil ist noch nicht vollständig!</div>
+          </div>
+
+          <div class="checklist" id="checklist"></div>
+        </div>
+
+        <!-- Views Chart -->
+        <div class="views-chart">
+          <div class="card-title">Profilaufrufe in den letzten 7 Tagen</div>
+          <div class="chart-bars" id="viewsChart"></div>
+        </div>
       </div>
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Über kio.lol</div>
+
+      <!-- LINKS TAB -->
+      <div id="linksTab" class="tab-content">
+        <div class="page-title">Links verwalten</div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Deine Links</div>
+          </div>
+          <div id="linksList" class="links-list"></div>
+          <button class="add-link-btn" onclick="showLinkModal()">+ Neuen Link hinzufügen</button>
         </div>
-        <p style="margin-bottom: 8px;">Deine persönliche Link-in-Bio Seite. Einfach, schnell, clean.</p>
-        <p class="text-muted">Teile deine Seite: <strong id="shareUrl"></strong></p>
+      </div>
+
+      <!-- PREMIUM TAB -->
+      <div id="premiumTab" class="tab-content">
+        <div class="page-title">Premium</div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">⭐ Premium Features</div>
+          </div>
+          <ul style="margin-left: 20px; margin-bottom: 20px; color: #aaa; line-height: 1.8;">
+            <li>✅ Unbegrenzte Alias-Namen</li>
+            <li>✅ Benutzerdefinierte Farben</li>
+            <li>✅ Entfernte Werbung</li>
+            <li>✅ Früher Zugriff auf neue Vorlagen</li>
+            <li>✅ Premium-Badge auf deinem Profil</li>
+          </ul>
+          <button class="btn btn-primary btn-full" id="premiumBtn" onclick="buyPremium()">💎 Premium aktivieren (Demo)</button>
+        </div>
+      </div>
+
+      <!-- IMAGE HOST TAB -->
+      <div id="imagehostTab" class="tab-content">
+        <div class="page-title">Image Host</div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Deine Bilder</div>
+          </div>
+          <div id="imageGrid" class="image-grid"></div>
+          <div class="image-upload" onclick="document.getElementById('imageUploadInput').click()">
+            <span style="font-size: 2rem;">+</span>
+            <span>Bild hochladen</span>
+          </div>
+          <input type="file" id="imageUploadInput" style="display: none;" accept="image/*" onchange="uploadImage(this)">
+        </div>
+      </div>
+
+      <!-- TEMPLATES TAB -->
+      <div id="templatesTab" class="tab-content">
+        <div class="page-title">Vorlagen</div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Wähle dein Design</div>
+          </div>
+          <div id="templateGrid" class="template-grid"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -677,17 +955,13 @@ textarea {
 <div id="linkModal" class="modal" style="display: none;" onclick="if(event.target===this) closeLinkModal()">
   <div class="modal-content">
     <h3>Link hinzufügen</h3>
-    <div class="input-group">
-      <label class="label">Titel</label>
+    <div style="margin-bottom: 16px;">
+      <label>Titel</label>
       <input type="text" id="linkTitle" placeholder="z.B. Instagram">
     </div>
-    <div class="input-group">
-      <label class="label">URL</label>
+    <div style="margin-bottom: 16px;">
+      <label>URL</label>
       <input type="text" id="linkUrl" placeholder="https://...">
-    </div>
-    <div class="input-group">
-      <label class="label">Emoji (optional)</label>
-      <input type="text" id="linkEmoji" placeholder="📷">
     </div>
     <div class="modal-buttons">
       <button class="btn btn-primary" onclick="addLink()">Hinzufügen</button>
@@ -700,35 +974,26 @@ textarea {
 
 <script>
 // ========== STORAGE ==========
-const STORAGE_USERS = 'kio_users';
-const STORAGE_VISITS = 'kio_visits';
-const SESSION_KEY = 'kio_session';
+const STORAGE_USERS = 'regelbruch_users';
+const STORAGE_VISITS = 'regelbruch_visits';
+const STORAGE_IMAGES = 'regelbruch_images';
+const SESSION_KEY = 'regelbruch_session';
 
-function getUsers() {
-  return JSON.parse(localStorage.getItem(STORAGE_USERS) || '{}');
-}
-
-function saveUsers(users) {
-  localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
-}
-
-function getVisits() {
-  return JSON.parse(localStorage.getItem(STORAGE_VISITS) || '{}');
-}
-
-function saveVisits(visits) {
-  localStorage.setItem(STORAGE_VISITS, JSON.stringify(visits));
-}
+function getUsers() { return JSON.parse(localStorage.getItem(STORAGE_USERS) || '{}'); }
+function saveUsers(u) { localStorage.setItem(STORAGE_USERS, JSON.stringify(u)); }
+function getVisits() { return JSON.parse(localStorage.getItem(STORAGE_VISITS) || '{}'); }
+function saveVisits(v) { localStorage.setItem(STORAGE_VISITS, JSON.stringify(v)); }
+function getImages() { return JSON.parse(localStorage.getItem(STORAGE_IMAGES) || '{}'); }
+function saveImages(i) { localStorage.setItem(STORAGE_IMAGES, JSON.stringify(i)); }
 
 function hashPassword(pw) {
-  let hash = 0;
-  for (let i = 0; i < pw.length; i++) {
-    hash = (Math.imul(31, hash) + pw.charCodeAt(i)) | 0;
-  }
-  return hash.toString(36);
+  let h = 0;
+  for (let i = 0; i < pw.length; i++) h = (Math.imul(31, h) + pw.charCodeAt(i)) | 0;
+  return h.toString(36);
 }
 
 let currentUser = null;
+let currentUserData = null;
 
 // ========== AUTH ==========
 function showLogin() {
@@ -745,7 +1010,6 @@ function doLogin() {
   const user = document.getElementById('loginUser').value.trim().toLowerCase();
   const pass = document.getElementById('loginPass').value;
   const users = getUsers();
-  
   if (users[user] && users[user].password === hashPassword(pass)) {
     currentUser = user;
     localStorage.setItem(SESSION_KEY, user);
@@ -759,35 +1023,32 @@ function doLogin() {
 function doRegister() {
   const user = document.getElementById('regUser').value.trim().toLowerCase();
   const pass = document.getElementById('regPass').value;
-  const site = document.getElementById('regSite').value.trim();
+  const name = document.getElementById('RegName').value.trim() || user;
   const users = getUsers();
-  
   if (!user || !pass) {
     document.getElementById('registerError').textContent = 'Bitte alle Felder ausfüllen';
     document.getElementById('registerError').style.display = 'block';
     return;
   }
-  
   if (users[user]) {
-    document.getElementById('registerError').textContent = 'Username bereits vergeben';
+    document.getElementById('registerError').textContent = 'Benutzername bereits vergeben';
     document.getElementById('registerError').style.display = 'block';
     return;
   }
-  
+  const uid = Math.floor(Math.random() * 2000000) + 1;
   users[user] = {
     password: hashPassword(pass),
-    name: user,
+    name: name,
     bio: '',
     avatar: '',
-    bgColor: '#0a0a0a',
-    accentColor: '#3b82f6',
-    site: site,
     links: [],
     views: 0,
     premium: false,
-    createdAt: Date.now()
+    alias: [],
+    createdAt: Date.now(),
+    uid: uid,
+    viewsHistory: [0,0,0,0,0,0,0]
   };
-  
   saveUsers(users);
   currentUser = user;
   localStorage.setItem(SESSION_KEY, user);
@@ -806,73 +1067,113 @@ function initApp() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('registerScreen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
-  document.getElementById('userBadge').innerHTML = '@' + currentUser;
-  loadProfile();
-  loadLinks();
-  loadStats();
-  updatePreview();
-  switchTab('profile');
+  loadUserData();
+  updateAllStats();
+  renderChecklist();
+  renderLinks();
+  renderImages();
+  renderTemplates();
+  updateViewsChart();
+  switchTab('overview');
 }
 
-function loadProfile() {
+function loadUserData() {
   const users = getUsers();
-  const user = users[currentUser];
-  if (!user) return;
+  currentUserData = users[currentUser];
+  if (!currentUserData) return;
   
-  document.getElementById('profileName').value = user.name || '';
-  document.getElementById('profileBio').value = user.bio || '';
-  document.getElementById('profileAvatar').value = user.avatar || '';
-  document.getElementById('profileBgColor').value = user.bgColor || '#0a0a0a';
-  document.getElementById('profileAccentColor').value = user.accentColor || '#3b82f6';
+  document.getElementById('sidebarName').innerText = currentUserData.name || currentUser;
+  document.getElementById('sidebarUsername').innerText = '@' + currentUser;
+  document.getElementById('shareLink').value = window.location.origin + window.location.pathname + '?u=' + currentUser;
   
-  const profileUrl = `${window.location.origin}${window.location.pathname}?${currentUser}`;
-  document.getElementById('profileUrl').innerHTML = profileUrl;
-  document.getElementById('shareUrl').innerHTML = profileUrl;
+  const avatarDiv = document.getElementById('avatarPreview');
+  if (currentUserData.avatar) {
+    avatarDiv.innerHTML = `<img src="${currentUserData.avatar}" style="width:100%;height:100%;object-fit:cover;">`;
+  } else {
+    avatarDiv.innerHTML = '👤';
+  }
 }
 
-function saveProfile() {
-  const users = getUsers();
-  const user = users[currentUser];
-  if (!user) return;
-  
-  user.name = document.getElementById('profileName').value || currentUser;
-  user.bio = document.getElementById('profileBio').value;
-  user.avatar = document.getElementById('profileAvatar').value;
-  user.bgColor = document.getElementById('profileBgColor').value;
-  user.accentColor = document.getElementById('profileAccentColor').value;
-  
-  saveUsers(users);
-  updatePreview();
-  showToast('Profil gespeichert!');
+function updateAllStats() {
+  if (!currentUserData) return;
+  const aliasCount = currentUserData.alias?.length || 0;
+  const linksCount = currentUserData.links?.length || 0;
+  document.getElementById('miniViews').innerText = currentUserData.views || 0;
+  document.getElementById('miniLinks').innerText = linksCount;
+  document.getElementById('miniAlias').innerText = aliasCount;
+  document.getElementById('statUsername').innerText = currentUser;
+  document.getElementById('statAlias').innerText = aliasCount;
+  document.getElementById('aliasSlots').innerHTML = (3 - aliasCount) + ' Slots verbleibend';
+  document.getElementById('statUid').innerText = '#' + (currentUserData.uid || Math.floor(Math.random() * 2000000));
+  document.getElementById('statJoined').innerHTML = 'Beigetreten nach ' + Math.floor(Math.random() * 99) + '% aller Nutzer';
+  document.getElementById('statViewsMain').innerText = currentUserData.views || 0;
+  const lastWeek = currentUserData.viewsHistory?.[6] || 0;
+  document.getElementById('statViewsChange').innerHTML = '+' + lastWeek + ' Aufrufe in 7 Tagen';
 }
 
-function loadLinks() {
-  const users = getUsers();
-  const user = users[currentUser];
-  if (!user) return;
-  
+function renderChecklist() {
+  const items = [
+    { name: 'Avatar hochladen', done: !!currentUserData.avatar, action: () => document.getElementById('avatarInput').click() },
+    { name: 'Beschreibung hinzufügen', done: !!currentUserData.bio, action: () => switchTab('links') },
+    { name: 'Anzeigenamen ändern', done: currentUserData.name !== currentUser, action: () => showNameModal() },
+    { name: 'Ersten Link hinzufügen', done: (currentUserData.links?.length || 0) > 0, action: () => showLinkModal() }
+  ];
+  let completed = items.filter(i => i.done).length;
+  let percent = Math.round((completed / items.length) * 100);
+  document.getElementById('completionPercent').innerText = percent + '%';
+  document.getElementById('completionBar').style.width = percent + '%';
+  if (percent < 100) {
+    document.getElementById('completionMessage').innerHTML = 'Dein Profil ist noch nicht vollständig! Vervollständige dein Profil, um es sichtbarer zu machen.';
+  } else {
+    document.getElementById('completionMessage').innerHTML = '✅ Perfekt! Dein Profil ist komplett.';
+  }
+  const container = document.getElementById('checklist');
+  container.innerHTML = '';
+  items.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'checklist-item';
+    div.innerHTML = `
+      <div class="check-icon ${item.done ? 'done' : ''}">${item.done ? '✓' : '○'}</div>
+      <div class="check-text">${item.name}</div>
+      ${!item.done ? `<span class="check-action" onclick="(${item.action.toString()})()">jetzt erledigen →</span>` : ''}
+    `;
+    container.appendChild(div);
+  });
+}
+
+function showNameModal() {
+  const newName = prompt('Neuen Anzeigenamen eingeben:', currentUserData.name);
+  if (newName && newName.trim()) {
+    currentUserData.name = newName.trim();
+    const users = getUsers();
+    users[currentUser] = currentUserData;
+    saveUsers(users);
+    loadUserData();
+    renderChecklist();
+    showToast('Anzeigename geändert!');
+  }
+}
+
+// ========== LINKS ==========
+function renderLinks() {
+  const links = currentUserData.links || [];
   const container = document.getElementById('linksList');
-  const links = user.links || [];
-  
-  document.getElementById('statLinks').innerHTML = links.length;
-  
   if (links.length === 0) {
-    container.innerHTML = '<div style="text-align: center; padding: 32px; color: #666;">Noch keine Links. Klick auf "+ Neuer Link"</div>';
+    container.innerHTML = '<div style="text-align:center;padding:32px;color:#666;">Noch keine Links. Klick auf "+ Neuen Link hinzufügen"</div>';
     return;
   }
-  
   container.innerHTML = '';
-  links.forEach((link, index) => {
+  links.forEach((link, idx) => {
     const div = document.createElement('div');
     div.className = 'link-item';
     div.innerHTML = `
       <div class="link-info">
-        <div class="link-title">${link.emoji || '🔗'} ${link.title}</div>
+        <div class="link-title">${link.title}</div>
         <div class="link-url">${link.url}</div>
       </div>
       <div class="link-actions">
-        <button class="icon-btn" onclick="editLink(${index})" title="Bearbeiten">✏️</button>
-        <button class="icon-btn" onclick="deleteLink(${index})" title="Löschen">🗑️</button>
+        <button class="link-btn" onclick="editLink(${idx})">✏️</button>
+        <button class="link-btn delete" onclick="deleteLink(${idx})">🗑️</button>
       </div>
     `;
     container.appendChild(div);
@@ -882,7 +1183,6 @@ function loadLinks() {
 function showLinkModal() {
   document.getElementById('linkTitle').value = '';
   document.getElementById('linkUrl').value = '';
-  document.getElementById('linkEmoji').value = '';
   document.getElementById('linkModal').style.display = 'flex';
 }
 
@@ -893,143 +1193,192 @@ function closeLinkModal() {
 function addLink() {
   const title = document.getElementById('linkTitle').value.trim();
   const url = document.getElementById('linkUrl').value.trim();
-  const emoji = document.getElementById('linkEmoji').value.trim();
-  
   if (!title || !url) {
     showToast('Titel und URL benötigt');
     return;
   }
-  
+  if (!currentUserData.links) currentUserData.links = [];
+  currentUserData.links.push({ title, url });
   const users = getUsers();
-  const user = users[currentUser];
-  if (!user) return;
-  
-  if (!user.links) user.links = [];
-  user.links.push({ title, url, emoji: emoji || '🔗' });
+  users[currentUser] = currentUserData;
   saveUsers(users);
-  loadLinks();
-  updatePreview();
+  renderLinks();
+  renderChecklist();
   closeLinkModal();
   showToast('Link hinzugefügt!');
 }
 
-function editLink(index) {
-  const users = getUsers();
-  const user = users[currentUser];
-  if (!user || !user.links[index]) return;
-  
-  const link = user.links[index];
+function editLink(idx) {
+  const link = currentUserData.links[idx];
   document.getElementById('linkTitle').value = link.title;
   document.getElementById('linkUrl').value = link.url;
-  document.getElementById('linkEmoji').value = link.emoji || '';
-  
-  // remove old and add new on save
-  user.links.splice(index, 1);
+  currentUserData.links.splice(idx, 1);
+  const users = getUsers();
+  users[currentUser] = currentUserData;
   saveUsers(users);
   document.getElementById('linkModal').style.display = 'flex';
   showToast('Jetzt bearbeiten und speichern');
 }
 
-function deleteLink(index) {
+function deleteLink(idx) {
+  currentUserData.links.splice(idx, 1);
   const users = getUsers();
-  const user = users[currentUser];
-  if (!user || !user.links[index]) return;
-  
-  user.links.splice(index, 1);
+  users[currentUser] = currentUserData;
   saveUsers(users);
-  loadLinks();
-  updatePreview();
+  renderLinks();
+  renderChecklist();
   showToast('Link gelöscht');
 }
 
-function loadStats() {
-  const users = getUsers();
-  const user = users[currentUser];
-  if (!user) return;
-  
-  document.getElementById('statViews').innerHTML = user.views || 0;
-  document.getElementById('statPremium').innerHTML = user.premium ? '⭐ Premium' : 'Free';
-  
-  const visits = getVisits();
-  const myVisits = visits[currentUser] || [];
-  const container = document.getElementById('visitorsList');
-  
-  if (myVisits.length === 0) {
-    container.innerHTML = '<div style="text-align: center; padding: 32px; color: #666;">Noch keine Besucher</div>';
+// ========== IMAGE HOST ==========
+function renderImages() {
+  const images = getImages()[currentUser] || [];
+  const container = document.getElementById('imageGrid');
+  if (images.length === 0) {
+    container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:32px;color:#666;">Keine Bilder hochgeladen</div>';
     return;
   }
-  
   container.innerHTML = '';
-  myVisits.slice(0, 20).forEach(visit => {
+  images.forEach((img, idx) => {
     const div = document.createElement('div');
-    div.className = 'link-item';
-    div.innerHTML = `
-      <div class="link-info">
-        <div class="link-title">${visit.user || 'Anonym'}</div>
-        <div class="link-url">${new Date(visit.time).toLocaleString()}</div>
-      </div>
-    `;
+    div.className = 'image-card';
+    div.innerHTML = `<img src="${img.data}" onclick="copyImageUrl('${img.data}')"><div style="padding:8px;font-size:0.7rem;">${img.name}</div>`;
     container.appendChild(div);
   });
 }
 
-function clearVisitors() {
-  const visits = getVisits();
-  visits[currentUser] = [];
-  saveVisits(visits);
-  loadStats();
-  showToast('Besucher-Log geleert');
+function uploadImage(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const images = getImages();
+    if (!images[currentUser]) images[currentUser] = [];
+    images[currentUser].push({ name: file.name, data: e.target.result, time: Date.now() });
+    saveImages(images);
+    renderImages();
+    showToast('Bild hochgeladen!');
+  };
+  reader.readAsDataURL(file);
+  input.value = '';
 }
 
-function updatePreview() {
-  const users = getUsers();
-  const user = users[currentUser];
-  if (!user) return;
-  
-  const preview = document.getElementById('profilePreview');
-  preview.style.background = user.bgColor || '#0a0a0a';
-  preview.style.borderColor = user.accentColor || '#3b82f6';
-  
-  const avatarDiv = document.getElementById('previewAvatar');
-  if (user.avatar) {
-    avatarDiv.innerHTML = `<img src="${user.avatar}" alt="avatar">`;
-  } else {
-    avatarDiv.innerHTML = '👤';
-  }
-  
-  document.getElementById('previewName').innerHTML = user.name || currentUser;
-  document.getElementById('previewBio').innerHTML = user.bio || 'Keine Bio';
-  
-  const linksContainer = document.getElementById('previewLinks');
-  linksContainer.innerHTML = '';
-  (user.links || []).forEach(link => {
-    const a = document.createElement('a');
-    a.href = link.url;
-    a.target = '_blank';
-    a.className = 'preview-link';
-    a.style.background = user.accentColor || '#3b82f6';
-    a.innerHTML = `${link.emoji || '🔗'} ${link.title}`;
-    linksContainer.appendChild(a);
+function copyImageUrl(data) {
+  navigator.clipboard.writeText(data);
+  showToast('Bild-URL kopiert!');
+}
+
+function uploadAvatar(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    currentUserData.avatar = e.target.result;
+    const users = getUsers();
+    users[currentUser] = currentUserData;
+    saveUsers(users);
+    loadUserData();
+    renderChecklist();
+    showToast('Avatar aktualisiert!');
+  };
+  reader.readAsDataURL(file);
+}
+
+// ========== TEMPLATES ==========
+const templates = [
+  { id: 1, name: 'Standard', bg: '#0a0a0a', accent: '#3b82f6' },
+  { id: 2, name: 'Dark', bg: '#050505', accent: '#8b5cf6' },
+  { id: 3, name: 'Neon', bg: '#0a0a0a', accent: '#00ff88' },
+  { id: 4, name: 'Pastel', bg: '#1a1a2e', accent: '#e94560' }
+];
+
+function renderTemplates() {
+  const container = document.getElementById('templateGrid');
+  container.innerHTML = '';
+  templates.forEach(t => {
+    const div = document.createElement('div');
+    div.className = `template-card ${currentUserData.activeTemplate === t.id ? 'active' : ''}`;
+    div.innerHTML = `<div class="template-preview" style="background:${t.bg};border-bottom:3px solid ${t.accent}"></div><div class="template-name">${t.name}</div>`;
+    div.onclick = () => applyTemplate(t.id);
+    container.appendChild(div);
   });
 }
 
+function applyTemplate(id) {
+  currentUserData.activeTemplate = id;
+  const users = getUsers();
+  users[currentUser] = currentUserData;
+  saveUsers(users);
+  renderTemplates();
+  showToast('Vorlage aktiviert!');
+}
+
+// ========== VIEWS & CHART ==========
+function updateViewsChart() {
+  const history = currentUserData.viewsHistory || [0,0,0,0,0,0,0];
+  const days = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+  const maxVal = Math.max(...history, 1);
+  const container = document.getElementById('viewsChart');
+  container.innerHTML = '';
+  for (let i = 0; i < 7; i++) {
+    const height = (history[i] / maxVal) * 100;
+    const div = document.createElement('div');
+    div.style.cssText = `flex:1;display:flex;flex-direction:column;align-items:center;`;
+    div.innerHTML = `<div style="width:100%;height:100px;display:flex;align-items:flex-end;"><div class="chart-bar" style="height:${height}%;width:100%;"></div></div><div class="chart-label">${days[i]}</div>`;
+    container.appendChild(div);
+  }
+}
+
+function recordView(username) {
+  const users = getUsers();
+  const user = users[username];
+  if (!user) return;
+  user.views = (user.views || 0) + 1;
+  const history = user.viewsHistory || [0,0,0,0,0,0,0];
+  const day = new Date().getDay();
+  history[day === 0 ? 6 : day - 1] = (history[day === 0 ? 6 : day - 1] || 0) + 1;
+  user.viewsHistory = history;
+  saveUsers(users);
+  
+  const visits = getVisits();
+  if (!visits[username]) visits[username] = [];
+  visits[username].unshift({ time: Date.now(), ip: 'Besucher' });
+  if (visits[username].length > 50) visits[username] = visits[username].slice(0, 50);
+  saveVisits(visits);
+}
+
+function buyPremium() {
+  currentUserData.premium = true;
+  const users = getUsers();
+  users[currentUser] = currentUserData;
+  saveUsers(users);
+  document.getElementById('premiumBtn').innerHTML = '✅ Premium aktiv!';
+  document.getElementById('premiumBtn').disabled = true;
+  showToast('Premium aktiviert! 🎉');
+}
+
+function viewMyPage() {
+  window.open(window.location.origin + window.location.pathname + '?u=' + currentUser, '_blank');
+}
+
 function copyProfileLink() {
-  const url = `${window.location.origin}${window.location.pathname}?${currentUser}`;
-  navigator.clipboard.writeText(url);
+  const link = window.location.origin + window.location.pathname + '?u=' + currentUser;
+  navigator.clipboard.writeText(link);
   showToast('Link kopiert!');
 }
 
 function switchTab(tab) {
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.getElementById(tab + 'Tab').classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-  
-  if (tab === 'profile') document.querySelector('.nav-btn:first-child').classList.add('active');
-  else if (tab === 'links') document.querySelectorAll('.nav-btn')[1].classList.add('active');
-  else document.querySelectorAll('.nav-btn')[2].classList.add('active');
-  
-  if (tab === 'links') loadLinks();
-  if (tab === 'stats') loadStats();
+  document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+  if (tab === 'overview') document.querySelectorAll('.menu-item')[0].classList.add('active');
+  else if (tab === 'links') document.querySelectorAll('.menu-item')[1].classList.add('active');
+  else if (tab === 'premium') document.querySelectorAll('.menu-item')[2].classList.add('active');
+  else if (tab === 'imagehost') document.querySelectorAll('.menu-item')[3].classList.add('active');
+  else if (tab === 'templates') document.querySelectorAll('.menu-item')[4].classList.add('active');
+  if (tab === 'links') renderLinks();
+  if (tab === 'imagehost') renderImages();
+  if (tab === 'templates') renderTemplates();
 }
 
 function showToast(msg) {
@@ -1039,111 +1388,39 @@ function showToast(msg) {
   setTimeout(() => toast.classList.remove('show'), 2000);
 }
 
-// ========== PROFILE VIEW (Public) ==========
+// ========== PUBLIC PROFILE ==========
 function renderPublicProfile(username) {
   const users = getUsers();
   const user = users[username];
   if (!user) {
-    document.body.innerHTML = '<div style="text-align: center; padding: 50px;"><h1>404</h1><p>User nicht gefunden</p><a href="/" style="color:#3b82f6">Zurück</a></div>';
+    document.body.innerHTML = '<div style="text-align:center;padding:50px;"><h1>404</h1><p>Benutzer nicht gefunden</p><a href="/" style="color:#3b82f6">Zurück</a></div>';
     return;
   }
-  
-  // log visit
-  const visits = getVisits();
-  if (!visits[username]) visits[username] = [];
-  visits[username].unshift({ user: null, time: Date.now() });
-  if (visits[username].length > 100) visits[username] = visits[username].slice(0, 100);
-  saveVisits(visits);
-  
-  // increment view count
-  user.views = (user.views || 0) + 1;
-  saveUsers(users);
-  
-  // render public page
+  recordView(username);
+  const template = templates.find(t => t.id === user.activeTemplate) || templates[0];
+  document.body.style.background = template.bg;
   document.body.innerHTML = `
     <style>
-      body {
-        background: ${user.bgColor || '#0a0a0a'};
-        font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-      }
-      .profile-card {
-        max-width: 480px;
-        width: 100%;
-        text-align: center;
-      }
-      .avatar {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        margin: 0 auto 20px;
-        background: #1a1a1a;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 3rem;
-        overflow: hidden;
-      }
-      .avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-      .name {
-        font-size: 1.8rem;
-        font-weight: 700;
-        margin-bottom: 8px;
-        color: #fff;
-      }
-      .bio {
-        color: #aaa;
-        margin-bottom: 32px;
-      }
-      .links {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-      }
-      .link-btn {
-        background: ${user.accentColor || '#3b82f6'};
-        color: white;
-        padding: 14px 20px;
-        border-radius: 60px;
-        text-decoration: none;
-        font-weight: 500;
-        transition: opacity 0.2s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-      }
-      .link-btn:hover {
-        opacity: 0.85;
-      }
-      .footer {
-        margin-top: 32px;
-        font-size: 0.7rem;
-        color: #666;
-      }
+      body { background: ${template.bg}; font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+      .profile-card { max-width: 500px; width: 100%; text-align: center; }
+      .avatar { width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 20px; background: #1a1a1a; display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 3rem; }
+      .avatar img { width: 100%; height: 100%; object-fit: cover; }
+      .name { font-size: 1.8rem; font-weight: 700; margin-bottom: 8px; color: #fff; }
+      .bio { color: #aaa; margin-bottom: 32px; }
+      .links { display: flex; flex-direction: column; gap: 12px; }
+      .link-btn { background: ${template.accent}; color: white; padding: 14px 20px; border-radius: 60px; text-decoration: none; font-weight: 500; transition: opacity 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+      .link-btn:hover { opacity: 0.85; }
+      .footer { margin-top: 32px; font-size: 0.7rem; color: #666; }
+      .premium-badge { background: gold; color: #000; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; display: inline-block; margin-top: 8px; }
     </style>
     <div class="profile-card">
       <div class="avatar">${user.avatar ? `<img src="${user.avatar}">` : '👤'}</div>
-      <div class="name">${user.name || username}</div>
+      <div class="name">${user.name || username}${user.premium ? '<div class="premium-badge">⭐ Premium</div>' : ''}</div>
       <div class="bio">${user.bio || ''}</div>
       <div class="links">
-        ${(user.links || []).map(link => `
-          <a href="${link.url}" target="_blank" class="link-btn">
-            ${link.emoji || '🔗'} ${link.title}
-          </a>
-        `).join('')}
+        ${(user.links || []).map(link => `<a href="${link.url}" target="_blank" class="link-btn">🔗 ${link.title}</a>`).join('')}
       </div>
-      <div class="footer">
-        kio.lol — ${user.name || username}
-      </div>
+      <div class="footer">regelbruch.cc — ${user.name || username}</div>
     </div>
   `;
 }
@@ -1151,13 +1428,11 @@ function renderPublicProfile(username) {
 // ========== BOOT ==========
 (function boot() {
   const urlParams = new URLSearchParams(window.location.search);
-  const username = urlParams.get('user') || window.location.pathname.slice(1);
-  
-  if (username && username !== '') {
+  const username = urlParams.get('u');
+  if (username) {
     renderPublicProfile(username);
     return;
   }
-  
   const saved = localStorage.getItem(SESSION_KEY);
   if (saved && getUsers()[saved]) {
     currentUser = saved;
