@@ -1,11 +1,83 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>Kio</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>kio.lol</title>
+
+<style>
+body{
+margin:0;
+background:#050505;
+font-family:Arial,sans-serif;
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+overflow:hidden;
+}
+
+video{
+position:fixed;
+inset:0;
+width:100%;
+height:100%;
+object-fit:cover;
+z-index:-2;
+}
+
+.overlay{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.6);
+z-index:-1;
+}
+
+.card{
+width:450px;
+max-width:90%;
+background:rgba(15,15,15,.8);
+border:1px solid #222;
+border-radius:20px;
+padding:30px;
+text-align:center;
+backdrop-filter:blur(10px);
+}
+
+.avatar{
+width:120px;
+height:120px;
+border-radius:50%;
+object-fit:cover;
+}
+
+.btn{
+display:inline-block;
+margin:5px;
+padding:10px 20px;
+background:#6b21a8;
+border-radius:10px;
+text-decoration:none;
+color:white;
+}
+</style>
 </head>
 <body>
-  <h1>Willkommen auf Kio</h1>
-  <p>Meine erste Website.</p>
+
+<div class="overlay"></div>
+
+<div class="card">
+<img class="avatar" src="https://via.placeholder.com/120">
+
+<h1>Kio</h1>
+
+<p>Meine Bio kommt hier hin.</p>
+
+<a class="btn" href="#">Discord</a>
+<a class="btn" href="#">Instagram</a>
+<a class="btn" href="#">TikTok</a>
+</div>
+
 </body>
 </html>
