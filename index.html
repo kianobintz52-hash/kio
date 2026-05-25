@@ -4,42 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>regelbruch.cc</title>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Syne:wght@700;800&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --bg:#0a0a0a;
-  --s1:#111111;
-  --s2:#161616;
-  --s3:#1c1c1c;
-  --b1:#222222;
-  --b2:#2e2e2e;
-  --b3:#3a3a3a;
-  --acc:#5b5bd6;
-  --acc2:#7c7ce8;
-  --gold:#d4a843;
-  --goldd:#1a1508;
-  --red:#e05252;
-  --green:#52a852;
-  --tx0:#ffffff;
-  --tx1:#d4d4d4;
-  --tx2:#888888;
-  --tx3:#555555;
-  --r:8px;
-  --r2:12px;
-  --r3:16px;
-  --font:'Geist',sans-serif;
-  --mono:'Geist Mono',monospace;
+  --bg:#0a0a0a;--s1:#111111;--s2:#161616;--s3:#1c1c1c;
+  --b1:#222222;--b2:#2e2e2e;--b3:#3a3a3a;
+  --acc:#5b5bd6;--acc2:#7c7ce8;
+  --gold:#d4a843;--red:#e05252;--green:#52a852;
+  --tx0:#ffffff;--tx1:#d4d4d4;--tx2:#888888;--tx3:#555555;
+  --r:8px;--r2:12px;--r3:16px;
+  --font:'Geist',sans-serif;--mono:'Geist Mono',monospace;
 }
 body{background:var(--bg);font-family:var(--font);color:var(--tx1);min-height:100vh;overflow-x:hidden;}
 input,select,textarea,button{font-family:inherit;}
-
-/* SCROLLBAR */
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--b2);border-radius:4px;}
-
-/* AUTH */
 .auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);position:fixed;inset:0;z-index:1000;}
 .auth-card{width:360px;background:var(--s1);border:1px solid var(--b1);border-radius:var(--r3);padding:36px;animation:fadeUp .3s ease;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
@@ -49,9 +30,6 @@ input,select,textarea,button{font-family:inherit;}
 .auth-err{background:rgba(224,82,82,.08);border:1px solid rgba(224,82,82,.2);color:#f08080;border-radius:var(--r);padding:9px 12px;font-size:.75rem;margin-bottom:12px;display:none;}
 .auth-foot{text-align:center;font-size:.75rem;color:var(--tx3);margin-top:18px;}
 .auth-foot a{color:var(--acc2);cursor:pointer;}
-.auth-foot a:hover{text-decoration:underline;}
-
-/* FORM */
 .field{margin-bottom:12px;}
 .lbl{display:block;font-size:.72rem;color:var(--tx3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;}
 .inp{width:100%;background:var(--s2);border:1px solid var(--b1);padding:9px 12px;border-radius:var(--r);color:var(--tx0);font-size:.85rem;outline:none;transition:border .15s;}
@@ -59,8 +37,6 @@ input,select,textarea,button{font-family:inherit;}
 .inp:disabled{opacity:.4;cursor:not-allowed;}
 textarea.inp{height:72px;resize:vertical;}
 select.inp{cursor:pointer;}
-
-/* BUTTONS */
 .btn{padding:9px 18px;border-radius:var(--r);border:none;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:7px;}
 .btn-p{background:var(--acc);color:#fff;}
 .btn-p:hover{background:var(--acc2);}
@@ -71,20 +47,17 @@ select.inp{cursor:pointer;}
 .btn-red:hover{background:rgba(224,82,82,.18);}
 .btn-gold{background:var(--gold);color:#000;font-weight:600;}
 .btn-gold:hover{filter:brightness(1.1);}
+.btn-green{background:rgba(82,168,82,.12);border:1px solid rgba(82,168,82,.25);color:var(--green);}
+.btn-green:hover{background:rgba(82,168,82,.2);}
 .btn-sm{padding:5px 12px;font-size:.75rem;}
 .btn-xs{padding:3px 8px;font-size:.68rem;}
-
-/* APP */
-.app{display:flex;height:100vh;overflow:hidden;}
-.app-inner{display:flex;width:100%;height:100%;overflow:hidden;}
-
-/* SIDEBAR */
+.app-inner{display:flex;width:100%;height:100vh;overflow:hidden;}
 .sb{width:236px;min-width:236px;background:var(--s1);border-right:1px solid var(--b1);display:flex;flex-direction:column;overflow:hidden;}
 .sb-top{padding:22px 16px 16px;border-bottom:1px solid var(--b1);}
 .sb-logo{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;letter-spacing:-0.5px;color:var(--tx0);}
 .sb-logo span{color:var(--acc2);}
 .sb-user{font-size:.7rem;color:var(--tx3);margin-top:3px;font-family:var(--mono);}
-.sb-nav{flex:1;padding:10px 10px;display:flex;flex-direction:column;gap:2px;overflow-y:auto;}
+.sb-nav{flex:1;padding:10px;display:flex;flex-direction:column;gap:2px;overflow-y:auto;}
 .sb-sec{font-size:.6rem;color:var(--tx3);text-transform:uppercase;letter-spacing:.1em;padding:12px 8px 5px;font-weight:600;}
 .ni{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);border:none;background:transparent;color:var(--tx2);font-family:var(--font);font-size:.83rem;cursor:pointer;width:100%;text-align:left;transition:all .15s;position:relative;}
 .ni:hover{background:var(--s2);color:var(--tx1);}
@@ -92,58 +65,38 @@ select.inp{cursor:pointer;}
 .ni svg{width:16px;height:16px;flex-shrink:0;opacity:.7;}
 .ni.on svg{opacity:1;}
 .sb-bot{padding:10px;border-top:1px solid var(--b1);}
-.pf-btn{display:flex;align-items:center;gap:9px;padding:10px 10px;border-radius:var(--r2);background:var(--s2);border:1px solid var(--b1);cursor:pointer;width:100%;transition:all .15s;margin-bottom:5px;}
+.pf-btn{display:flex;align-items:center;gap:9px;padding:10px;border-radius:var(--r2);background:var(--s2);border:1px solid var(--b1);cursor:pointer;width:100%;transition:all .15s;margin-bottom:5px;}
 .pf-btn:hover{border-color:var(--b2);background:var(--s3);}
 .pf-av{width:28px;height:28px;border-radius:50%;background:rgba(91,91,214,.2);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:var(--acc2);flex-shrink:0;}
 .pf-name{font-size:.78rem;font-weight:500;color:var(--tx1);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;}
 .icon-btn{background:none;border:none;color:var(--tx3);cursor:pointer;padding:4px;border-radius:5px;line-height:1;transition:.1s;}
 .icon-btn:hover{color:var(--acc2);}
-
-/* MAIN */
 .main{flex:1;overflow-y:auto;background:var(--bg);}
-.main-body{padding:28px 36px;max-width:800px;}
-
-/* SCREEN */
+.main-body{padding:28px 36px;max-width:860px;}
 .screen{display:none;}
 .screen.on{display:block;}
-
-/* PAGE TITLE */
 .pg-title{font-size:1.3rem;font-weight:600;color:var(--tx0);margin-bottom:6px;letter-spacing:-.3px;}
 .pg-sub{font-size:.8rem;color:var(--tx3);margin-bottom:26px;}
-
-/* CARDS */
 .card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r2);padding:22px;margin-bottom:14px;}
 .card-title{font-size:.68rem;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:16px;}
-
-/* STATS */
 .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
 .stat{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r2);padding:18px 18px 16px;}
 .stat-l{font-size:.65rem;color:var(--tx3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
 .stat-v{font-size:1.7rem;font-weight:600;color:var(--tx0);line-height:1;font-variant-numeric:tabular-nums;}
 .stat-note{font-size:.65rem;color:var(--tx3);margin-top:4px;}
-
-/* GRID */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-
-/* UPLOAD BOX */
 .upbox{border:1px dashed var(--b2);border-radius:var(--r);padding:14px;text-align:center;cursor:pointer;transition:.15s;font-size:.75rem;color:var(--tx3);position:relative;}
 .upbox:hover{border-color:var(--acc);color:var(--acc2);}
 .upbox-name{margin-top:4px;font-size:.68rem;color:var(--acc2);font-family:var(--mono);}
 .upbox-clr{position:absolute;top:6px;right:6px;background:rgba(224,82,82,.12);border:none;color:var(--red);font-size:.6rem;padding:2px 7px;border-radius:5px;cursor:pointer;}
-
-/* RANGE */
 .range-row{display:flex;align-items:center;gap:10px;}
 .range-row input[type=range]{flex:1;accent-color:var(--acc);height:3px;}
 .range-val{font-size:.75rem;color:var(--tx2);min-width:36px;text-align:right;font-family:var(--mono);}
-
-/* BADGE */
 .badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:.65rem;font-weight:600;}
 .badge-gold{background:rgba(212,168,67,.12);border:1px solid rgba(212,168,67,.25);color:var(--gold);}
 .badge-free{background:rgba(255,255,255,.04);border:1px solid var(--b2);color:var(--tx3);}
 .badge-admin{background:rgba(224,82,82,.12);border:1px solid rgba(224,82,82,.25);color:var(--red);}
-
-/* TEMPLATE GRID */
 .tpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
 .tpl-card{border-radius:var(--r2);border:1px solid var(--b1);overflow:hidden;cursor:pointer;transition:.15s;position:relative;}
 .tpl-card:hover{border-color:rgba(91,91,214,.5);transform:translateY(-2px);}
@@ -155,32 +108,23 @@ select.inp{cursor:pointer;}
 .tpl-check{position:absolute;top:6px;right:6px;background:var(--acc);color:#fff;font-size:.57rem;font-weight:700;padding:2px 7px;border-radius:20px;}
 .tpl-del{position:absolute;top:6px;left:6px;background:rgba(224,82,82,.85);color:#fff;font-size:.57rem;padding:2px 6px;border-radius:5px;border:none;cursor:pointer;display:none;}
 .tpl-card:hover .tpl-del{display:block;}
-
-/* FILTER TABS */
 .ftabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px;}
 .ftab{padding:5px 13px;border-radius:var(--r);border:1px solid var(--b1);background:transparent;color:var(--tx2);font-family:var(--font);font-size:.73rem;cursor:pointer;transition:.15s;}
 .ftab:hover{color:var(--tx1);}
 .ftab.on{background:var(--acc);border-color:var(--acc);color:#fff;}
-
-/* ADMIN TABLE */
 .adm-wrap{overflow-x:auto;}
-.adm-tbl{width:100%;border-collapse:collapse;font-size:.8rem;}
-.adm-tbl th{text-align:left;padding:8px 12px;color:var(--tx3);border-bottom:1px solid var(--b1);font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;font-weight:500;white-space:nowrap;}
-.adm-tbl td{padding:10px 12px;border-bottom:1px solid rgba(34,34,34,.5);vertical-align:middle;}
+.adm-tbl{width:100%;border-collapse:collapse;font-size:.79rem;}
+.adm-tbl th{text-align:left;padding:8px 10px;color:var(--tx3);border-bottom:1px solid var(--b1);font-size:.63rem;text-transform:uppercase;letter-spacing:.07em;font-weight:500;white-space:nowrap;}
+.adm-tbl td{padding:9px 10px;border-bottom:1px solid rgba(34,34,34,.5);vertical-align:middle;}
 .adm-tbl tr:last-child td{border-bottom:none;}
 .adm-tbl tr:hover td{background:var(--s2);}
 .user-cell{display:flex;align-items:center;gap:8px;}
 .user-av{width:28px;height:28px;border-radius:50%;background:var(--s3);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:var(--acc2);}
-.mono-tag{font-family:var(--mono);font-size:.78rem;background:var(--s2);border:1px solid var(--b1);padding:1px 6px;border-radius:5px;color:var(--tx2);}
-.actions{display:flex;gap:5px;}
-
-/* TOAST */
+.mono-tag{font-family:var(--mono);font-size:.68rem;background:var(--s2);border:1px solid var(--b1);padding:1px 6px;border-radius:5px;color:var(--tx2);}
+.actions{display:flex;gap:4px;flex-wrap:wrap;}
 #toast{position:fixed;bottom:22px;right:22px;background:var(--tx0);color:var(--bg);padding:10px 18px;border-radius:var(--r2);font-size:.8rem;font-weight:600;z-index:99999;transform:translateY(60px);opacity:0;transition:.25s;pointer-events:none;}
 #toast.show{transform:none;opacity:1;}
-
-/* PROFILE VIEW */
 #pv-wrap{position:fixed;inset:0;z-index:9000;display:none;}
-#pv-bg-img,#pv-bg-vid{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:9001;}
 #pv-dim{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9002;}
 #pv-overlay{position:fixed;inset:0;z-index:9010;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:opacity .5s;background:#000;}
 #pv-overlay .enter-txt{font-family:'Syne',sans-serif;font-size:.85rem;letter-spacing:4px;color:rgba(255,255,255,.6);}
@@ -205,39 +149,29 @@ select.inp{cursor:pointer;}
 .pv-bar{flex:1;height:3px;background:rgba(255,255,255,.12);border-radius:3px;cursor:pointer;}
 .pv-fill{height:3px;background:rgba(255,255,255,.55);border-radius:3px;width:0%;}
 .pv-time{font-size:.62rem;color:rgba(255,255,255,.3);min-width:34px;text-align:right;font-family:var(--mono);}
-
-/* PREM PERKS */
+.link-box{background:rgba(91,91,214,.06);border:1px solid rgba(91,91,214,.2);border-radius:var(--r2);padding:14px 16px;display:flex;align-items:center;gap:12px;}
+.link-box-url{font-family:var(--mono);font-size:.79rem;color:var(--acc2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.link-box-copy{background:var(--acc);color:#fff;border:none;padding:7px 14px;border-radius:var(--r);font-size:.73rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:.15s;}
+.link-box-copy:hover{background:var(--acc2);}
 .perk{display:flex;align-items:center;gap:10px;padding:9px 0;font-size:.8rem;color:var(--tx2);border-bottom:1px solid var(--b1);}
 .perk:last-child{border-bottom:none;}
-.perk-ico{font-size:.9rem;flex-shrink:0;}
-
-/* MODAL */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:8000;display:none;align-items:center;justify-content:center;}
 .modal{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r3);padding:28px;width:100%;max-width:400px;}
 .modal h3{font-size:.95rem;font-weight:600;margin-bottom:4px;color:var(--tx0);}
 .modal-sub{font-size:.78rem;color:var(--tx2);margin-bottom:20px;}
-
-/* USER DETAIL MODAL */
 .udm-row{display:flex;gap:6px;font-size:.78rem;padding:6px 0;border-bottom:1px solid var(--b1);}
 .udm-row:last-child{border-bottom:none;}
-.udm-key{color:var(--tx3);min-width:120px;font-family:var(--mono);font-size:.72rem;}
+.udm-key{color:var(--tx3);min-width:130px;font-family:var(--mono);font-size:.72rem;}
 .udm-val{color:var(--tx1);word-break:break-all;}
-
-/* COPY LINK HINT */
 .copy-hint{font-size:.7rem;color:var(--tx3);font-family:var(--mono);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-
-/* SEPARATOR */
-.sep{height:1px;background:var(--b1);margin:4px 0;}
-
-/* DISC SECTION */
-.disc-box{background:rgba(88,101,242,.06);border:1px solid rgba(88,101,242,.18);border-radius:var(--r2);padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:14px;}
-.disc-ico{font-size:1.5rem;}
-.disc-label{font-size:.82rem;font-weight:500;color:var(--tx0);}
-.disc-sub{font-size:.72rem;color:var(--tx2);margin-top:2px;}
-.disc-btn{margin-left:auto;background:rgba(88,101,242,.18);border:1px solid rgba(88,101,242,.3);color:#a5b4fc;padding:7px 14px;border-radius:var(--r);font-size:.73rem;font-weight:600;cursor:pointer;font-family:var(--font);text-decoration:none;white-space:nowrap;}
-.disc-btn:hover{background:rgba(88,101,242,.28);}
-
-/* font extras */
+.adm-search{width:100%;background:var(--s2);border:1px solid var(--b1);padding:8px 12px;border-radius:var(--r);color:var(--tx0);font-size:.82rem;outline:none;transition:border .15s;margin-bottom:14px;}
+.adm-search:focus{border-color:var(--acc);}
+.adm-tabs{display:flex;gap:5px;margin-bottom:16px;flex-wrap:wrap;}
+.adm-tab{padding:6px 14px;border-radius:var(--r);border:1px solid var(--b1);background:transparent;color:var(--tx2);font-family:var(--font);font-size:.75rem;cursor:pointer;transition:.15s;}
+.adm-tab:hover{color:var(--tx1);}
+.adm-tab.on{background:var(--acc);border-color:var(--acc);color:#fff;}
+.announce{background:rgba(212,168,67,.06);border:1px solid rgba(212,168,67,.2);border-radius:var(--r);padding:10px 14px;font-size:.75rem;color:var(--gold);margin-bottom:14px;}
+#slug-preview{font-size:.7rem;color:var(--acc2);margin-top:3px;font-family:var(--mono);display:none;}
 .font-orbitron{font-family:'Orbitron',sans-serif!important;}
 .font-syne{font-family:'Syne',sans-serif!important;}
 .font-mono{font-family:'Geist Mono',monospace!important;}
@@ -245,7 +179,6 @@ select.inp{cursor:pointer;}
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="v-login" class="auth-wrap">
   <div class="auth-card">
     <div class="logo">regelbruch<span>.</span>cc</div>
@@ -258,7 +191,6 @@ select.inp{cursor:pointer;}
   </div>
 </div>
 
-<!-- REGISTER -->
 <div id="v-register" class="auth-wrap" style="display:none;">
   <div class="auth-card">
     <div class="logo">regelbruch<span>.</span>cc</div>
@@ -271,11 +203,8 @@ select.inp{cursor:pointer;}
   </div>
 </div>
 
-<!-- APP -->
 <div id="v-app" style="display:none;height:100vh;">
 <div class="app-inner">
-
-  <!-- SIDEBAR -->
   <div class="sb">
     <div class="sb-top">
       <div class="sb-logo">regelbruch<span>.</span>cc</div>
@@ -287,6 +216,11 @@ select.inp{cursor:pointer;}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
         Dashboard
       </button>
+      <button class="ni" id="ni-meinlink" onclick="tab('meinlink')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+        Mein Link
+        <span id="link-new-dot" style="margin-left:auto;width:7px;height:7px;border-radius:50%;background:var(--acc2);display:inline-block;"></span>
+      </button>
       <button class="ni" id="ni-vorlagen" onclick="tab('vorlagen')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
         Vorlagen
@@ -296,7 +230,7 @@ select.inp{cursor:pointer;}
         Premium
         <span id="prem-dot" style="margin-left:auto;width:7px;height:7px;border-radius:50%;background:var(--gold);display:none;"></span>
       </button>
-      <div class="sb-sec">Admin</div>
+      <div class="sb-sec" id="admin-prem-block" style="display:none;">Admin</div>
       <button class="ni" id="ni-admin" onclick="tab('admin')" style="display:none;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
         Admin Panel
@@ -307,7 +241,7 @@ select.inp{cursor:pointer;}
       <div class="pf-btn" onclick="openMyProfile()">
         <div class="pf-av" id="sb-av">?</div>
         <div class="pf-name" id="sb-name">Mein Profil</div>
-        <button class="icon-btn" onclick="event.stopPropagation();copyLink()" title="Link kopieren">
+        <button class="icon-btn" onclick="event.stopPropagation();copyMyLink()" title="Link kopieren">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
         </button>
       </div>
@@ -320,7 +254,6 @@ select.inp{cursor:pointer;}
     </div>
   </div>
 
-  <!-- MAIN -->
   <div class="main">
   <div class="main-body">
 
@@ -328,14 +261,12 @@ select.inp{cursor:pointer;}
     <div id="tab-dashboard" class="screen on">
       <div class="pg-title">Dashboard</div>
       <div class="pg-sub">Bearbeite dein Profil und passe es an.</div>
-
+      <div id="ann-banner" style="display:none;" class="announce"></div>
       <div class="stats-grid">
         <div class="stat"><div class="stat-l">Profil Views</div><div class="stat-v" id="st-views">0</div><div class="stat-note">Gesamtaufrufe</div></div>
         <div class="stat"><div class="stat-l">Songs</div><div class="stat-v" id="st-songs">0</div><div class="stat-note">MP3 geladen</div></div>
         <div class="stat"><div class="stat-l">Status</div><div style="margin-top:8px;" id="st-prem"></div></div>
       </div>
-
-      <!-- PROFIL -->
       <div class="card">
         <div class="card-title">Profil</div>
         <div class="g2">
@@ -352,13 +283,13 @@ select.inp{cursor:pointer;}
         </div>
         <div class="field"><label class="lbl">Bio</label><textarea id="s-bio" class="inp" placeholder="Schreib etwas über dich..."></textarea></div>
         <div class="field">
-          <label class="lbl">Custom Profil-Link</label>
+          <label class="lbl">Custom Profil-Link (für DC Bio etc.)</label>
           <div style="display:flex;align-items:center;gap:0;">
             <span style="background:var(--s3);border:1px solid var(--b1);border-right:none;padding:9px 11px;border-radius:var(--r) 0 0 var(--r);font-size:.78rem;color:var(--tx3);white-space:nowrap;">regelbruch.cc/</span>
             <input id="s-custom_slug" class="inp" placeholder="dein-link" style="border-radius:0 var(--r) var(--r) 0;flex:1;" oninput="updateSlugPreview()">
           </div>
-          <div style="font-size:.68rem;color:var(--tx3);margin-top:4px;">Nur a-z, 0-9 und Bindestrich. Dein Profil wird unter diesem Link erreichbar.</div>
-          <div id="slug-preview" style="font-size:.7rem;color:var(--acc2);margin-top:3px;font-family:var(--mono);display:none;"></div>
+          <div style="font-size:.68rem;color:var(--tx3);margin-top:4px;">Nur a-z, 0-9, Bindestrich. Kopiere diesen Link danach in deine Discord Bio!</div>
+          <div id="slug-preview"></div>
         </div>
         <div class="g2">
           <div class="field"><label class="lbl">Discord</label><input id="s-discord" class="inp" placeholder="https://discord.gg/..."></div>
@@ -371,65 +302,76 @@ select.inp{cursor:pointer;}
           <div class="range-row"><input type="range" id="s-opacity" min="20" max="100" value="80" oninput="document.getElementById('op-v').textContent=this.value"><span class="range-val"><span id="op-disp">80</span>%</span></div>
         </div>
       </div>
-
-      <!-- MEDIEN -->
       <div class="card">
         <div class="card-title">Medien</div>
         <div class="g3">
           <div class="field">
             <label class="lbl">Hintergrund</label>
-            <div class="upbox" onclick="document.getElementById('f-bg').click()">
-              Datei wählen
-              <div class="upbox-name" id="fn-bg">—</div>
-              <input type="file" id="f-bg" accept="image/*,video/mp4,video/webm" style="display:none" onchange="handleFile('background_file',this,'fn-bg','clr-bg')">
-              <button class="upbox-clr" id="clr-bg" onclick="event.stopPropagation();clearFile('background_file','fn-bg','clr-bg')" style="display:none;">✕</button>
-            </div>
+            <div class="upbox" onclick="document.getElementById('f-bg').click()">Datei wählen<div class="upbox-name" id="fn-bg">—</div><input type="file" id="f-bg" accept="image/*,video/mp4,video/webm" style="display:none" onchange="handleFile('background_file',this,'fn-bg','clr-bg')"><button class="upbox-clr" id="clr-bg" onclick="event.stopPropagation();clearFile('background_file','fn-bg','clr-bg')" style="display:none;">✕</button></div>
           </div>
           <div class="field">
             <label class="lbl">Banner</label>
-            <div class="upbox" onclick="document.getElementById('f-banner').click()">
-              Bild wählen
-              <div class="upbox-name" id="fn-banner">—</div>
-              <input type="file" id="f-banner" accept="image/*" style="display:none" onchange="handleFile('banner',this,'fn-banner','clr-banner')">
-              <button class="upbox-clr" id="clr-banner" onclick="event.stopPropagation();clearFile('banner','fn-banner','clr-banner')" style="display:none;">✕</button>
-            </div>
+            <div class="upbox" onclick="document.getElementById('f-banner').click()">Bild wählen<div class="upbox-name" id="fn-banner">—</div><input type="file" id="f-banner" accept="image/*" style="display:none" onchange="handleFile('banner',this,'fn-banner','clr-banner')"><button class="upbox-clr" id="clr-banner" onclick="event.stopPropagation();clearFile('banner','fn-banner','clr-banner')" style="display:none;">✕</button></div>
           </div>
           <div class="field">
             <label class="lbl">Avatar</label>
-            <div class="upbox" onclick="document.getElementById('f-avatar').click()">
-              Bild wählen
-              <div class="upbox-name" id="fn-avatar">—</div>
-              <input type="file" id="f-avatar" accept="image/*" style="display:none" onchange="handleFile('avatar',this,'fn-avatar','clr-avatar')">
-              <button class="upbox-clr" id="clr-avatar" onclick="event.stopPropagation();clearFile('avatar','fn-avatar','clr-avatar')" style="display:none;">✕</button>
-            </div>
+            <div class="upbox" onclick="document.getElementById('f-avatar').click()">Bild wählen<div class="upbox-name" id="fn-avatar">—</div><input type="file" id="f-avatar" accept="image/*" style="display:none" onchange="handleFile('avatar',this,'fn-avatar','clr-avatar')"><button class="upbox-clr" id="clr-avatar" onclick="event.stopPropagation();clearFile('avatar','fn-avatar','clr-avatar')" style="display:none;">✕</button></div>
           </div>
         </div>
         <div class="field" style="margin-top:6px;">
           <label class="lbl">Musik (MP3)</label>
-          <div class="upbox" onclick="document.getElementById('f-mp3').click()">
-            MP3-Datei wählen
-            <div class="upbox-name" id="fn-mp3">—</div>
-            <input type="file" id="f-mp3" accept="audio/*" style="display:none" onchange="handleMp3(this)">
-            <button class="upbox-clr" id="clr-mp3" onclick="event.stopPropagation();clearMp3()" style="display:none;">✕</button>
-          </div>
-          <div id="mp3-name-row" style="margin-top:8px;display:none;">
-            <label class="lbl">Song-Name anzeigen</label>
-            <input id="mp3-song-name" class="inp" placeholder="z.B. Travis Scott – Sicko Mode">
-          </div>
+          <div class="upbox" onclick="document.getElementById('f-mp3').click()">MP3-Datei wählen<div class="upbox-name" id="fn-mp3">—</div><input type="file" id="f-mp3" accept="audio/*" style="display:none" onchange="handleMp3(this)"><button class="upbox-clr" id="clr-mp3" onclick="event.stopPropagation();clearMp3()" style="display:none;">✕</button></div>
+          <div id="mp3-name-row" style="margin-top:8px;display:none;"><label class="lbl">Song-Name</label><input id="mp3-song-name" class="inp" placeholder="z.B. Travis Scott – Sicko Mode"></div>
         </div>
       </div>
-
       <button class="btn btn-p btn-full" style="margin-bottom:40px;" onclick="saveSettings()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
         Speichern
       </button>
     </div>
 
+    <!-- MEIN LINK -->
+    <div id="tab-meinlink" class="screen">
+      <div class="pg-title">Mein Profil-Link</div>
+      <div class="pg-sub">Teile diesen Link in deiner Discord Bio oder woanders.</div>
+      <div class="card" style="border-color:rgba(91,91,214,.25);">
+        <div class="card-title">Dein Link</div>
+        <div id="mylink-display" style="margin-bottom:14px;"></div>
+        <div style="font-size:.75rem;color:var(--tx2);margin-bottom:12px;">Wenn jemand diesen Link öffnet, sieht er direkt dein Profil — kein Login nötig.</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-p btn-sm" onclick="copyMyLink()">Link kopieren</button>
+          <button class="btn btn-ghost btn-sm" onclick="openMyProfile()">Profil Vorschau</button>
+        </div>
+      </div>
+      <div class="card" style="border-color:rgba(88,101,242,.2);background:rgba(88,101,242,.03);">
+        <div class="card-title" style="color:#a5b4fc;">Für Discord Bio</div>
+        <div style="font-size:.8rem;color:var(--tx2);margin-bottom:12px;">Kopiere diesen Link direkt in deine Discord Bio:</div>
+        <div id="discord-link-box" style="margin-bottom:14px;"></div>
+        <div style="font-size:.75rem;color:var(--tx3);background:var(--s2);border-radius:var(--r);padding:10px 12px;line-height:1.7;">
+          <strong style="color:var(--tx2);">So geht's in Discord:</strong><br>
+          Einstellungen → Mein Konto → „Mich" → Bio bearbeiten → Link einfügen ✓
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">QR-Code</div>
+        <div style="font-size:.8rem;color:var(--tx2);margin-bottom:14px;">Teile dein Profil auch als QR-Code — z.B. auf einem Server oder IRL.</div>
+        <div id="qr-box" style="display:flex;justify-content:center;margin-bottom:14px;"></div>
+        <button class="btn btn-ghost btn-sm btn-full" onclick="downloadQR()">QR-Code herunterladen</button>
+      </div>
+      <div class="card">
+        <div class="card-title">Custom Slug</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <span style="font-size:.82rem;color:var(--tx3);">Aktueller Slug:</span>
+          <span id="slug-display" style="font-family:var(--mono);color:var(--acc2);font-size:.82rem;"></span>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="tab('dashboard')">Im Dashboard ändern →</button>
+      </div>
+    </div>
+
     <!-- VORLAGEN -->
     <div id="tab-vorlagen" class="screen">
       <div class="pg-title">Vorlagen</div>
       <div class="pg-sub">Wähle einen Style für dein Profil.</div>
-
       <div class="card" style="border-color:rgba(91,91,214,.2);">
         <div class="card-title">Aktive Vorlage</div>
         <div style="display:flex;align-items:center;justify-content:space-between;">
@@ -437,14 +379,12 @@ select.inp{cursor:pointer;}
           <button class="btn btn-ghost btn-sm" onclick="removeTemplate()">Entfernen</button>
         </div>
       </div>
-
       <div class="card" style="margin-bottom:16px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0;">
           <div class="card-title" style="margin-bottom:0;">Community Vorlagen</div>
           <button class="btn btn-ghost btn-sm" onclick="openTplModal()">+ Hochladen</button>
         </div>
       </div>
-
       <div class="ftabs">
         <button class="ftab on" onclick="filterTpl('all',this)">Alle</button>
         <button class="ftab" onclick="filterTpl('dark',this)">Dark</button>
@@ -460,65 +400,113 @@ select.inp{cursor:pointer;}
     <div id="tab-premium" class="screen">
       <div class="pg-title">Premium</div>
       <div class="pg-sub">Hol dir mehr aus regelbruch.cc raus.</div>
-
       <div id="prem-status-card" class="card" style="margin-bottom:14px;"></div>
-
       <div class="card">
         <div class="card-title">Was du bekommst</div>
-        <div class="perk"><span class="perk-ico">🎨</span> Premium-Schriftarten (Orbitron, Syne, Geist Mono…)</div>
-        <div class="perk"><span class="perk-ico">✨</span> Goldener Name mit Effekt auf deinem Profil</div>
-        <div class="perk"><span class="perk-ico">🏅</span> Exklusive Badges auf deinem Profil</div>
-        <div class="perk"><span class="perk-ico">🎭</span> Zugang zu Premium-Vorlagen</div>
-        <div class="perk"><span class="perk-ico">🌊</span> Hintergrund-Video-Support</div>
-        <div class="perk"><span class="perk-ico">⚡</span> Früher Zugang zu neuen Features</div>
+        <div class="perk"><span>🎨</span> Premium-Schriftarten (Orbitron, Syne, Geist Mono)</div>
+        <div class="perk"><span>✨</span> Goldener Name auf deinem Profil</div>
+        <div class="perk"><span>🏅</span> Exklusive Premium-Badges</div>
+        <div class="perk"><span>🎭</span> Zugang zu Premium-Vorlagen</div>
+        <div class="perk"><span>🌊</span> Hintergrund-Video-Support</div>
+        <div class="perk"><span>⚡</span> Früher Zugang zu neuen Features</div>
         <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(212,168,67,.06);border:1px solid rgba(212,168,67,.2);border-radius:var(--r);padding:14px 16px;margin-top:14px;margin-bottom:14px;">
-          <div>
-            <div style="font-size:.78rem;font-weight:600;color:var(--gold);">💎 Premium — einmalig 15 €</div>
-            <div style="font-size:.72rem;color:var(--tx2);margin-top:3px;">Einmalzahlung, kein Abo. Für immer aktiv.</div>
-          </div>
+          <div><div style="font-size:.78rem;font-weight:600;color:var(--gold);">💎 Premium — einmalig 15 €</div><div style="font-size:.72rem;color:var(--tx2);margin-top:3px;">Einmalzahlung, kein Abo. Für immer aktiv.</div></div>
           <div style="font-size:1.4rem;font-weight:700;color:var(--gold);">15€</div>
         </div>
         <div style="background:rgba(88,101,242,.08);border:1px solid rgba(88,101,242,.18);border-radius:var(--r);padding:11px 13px;font-size:.75rem;color:#a5b4fc;margin-bottom:14px;">
           Kaufe Premium über unseren Discord in <strong>#kauf-premium</strong>. Ein Admin schaltet dich frei.
         </div>
-        <a href="https://discord.gg/R7TCxMza2" target="_blank" class="btn btn-full" style="background:rgba(88,101,242,.12);border:1px solid rgba(88,101,242,.25);color:#a5b4fc;text-decoration:none;justify-content:center;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="opacity:.8"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057c.01.122.07.236.172.307a20.04 20.04 0 006.033 3.017.084.084 0 00.089-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.2 13.2 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.016.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
-          Discord öffnen — Premium kaufen
-        </a>
+        <a href="https://discord.gg/R7TCxMza2" target="_blank" class="btn btn-full" style="background:rgba(88,101,242,.12);border:1px solid rgba(88,101,242,.25);color:#a5b4fc;text-decoration:none;justify-content:center;">Discord öffnen — Premium kaufen</a>
       </div>
     </div>
 
     <!-- ADMIN PANEL -->
     <div id="tab-admin" class="screen">
       <div class="pg-title">Admin Panel</div>
-      <div class="pg-sub">Vollzugriff auf alle Accounts.</div>
+      <div class="pg-sub">Vollzugriff auf alle Accounts und Statistiken.</div>
+      <div class="stats-grid" id="adm-stats" style="grid-template-columns:repeat(4,1fr);margin-bottom:14px;"></div>
+      <div class="adm-tabs">
+        <button class="adm-tab on" onclick="admTab('nutzer',this)">👥 Nutzer</button>
+        <button class="adm-tab" onclick="admTab('erstellen',this)">➕ Erstellen</button>
+        <button class="adm-tab" onclick="admTab('announce',this)">📢 Ankündigung</button>
+        <button class="adm-tab" onclick="admTab('logs',this)">📋 Logs</button>
+      </div>
 
-      <div class="stats-grid" id="adm-stats" style="margin-bottom:14px;"></div>
-
-      <div class="card">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-          <div class="card-title" style="margin-bottom:0;">Alle Nutzer</div>
-          <button class="btn btn-ghost btn-sm" onclick="renderAdmin()">↺ Refresh</button>
-        </div>
-        <div class="adm-wrap">
-          <table class="adm-tbl">
-            <thead><tr>
-              <th>Nutzer</th><th>Passwort-Hash</th><th>Views</th><th>Songs</th><th>Vorlage</th><th>Premium</th><th>Admin</th><th>Aktionen</th>
-            </tr></thead>
-            <tbody id="adm-tbody"></tbody>
-          </table>
+      <div id="adm-nutzer" class="adm-section">
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+            <div class="card-title" style="margin-bottom:0;">Alle Nutzer</div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-ghost btn-sm" onclick="renderAdmin()">↺ Refresh</button>
+              <button class="btn btn-red btn-sm" onclick="admResetAllViews()">Alle Views reset</button>
+            </div>
+          </div>
+          <input class="adm-search" id="adm-search" placeholder="Nutzer suchen (Name, Username)..." oninput="filterUsers(this.value)">
+          <div class="adm-wrap">
+            <table class="adm-tbl">
+              <thead><tr><th>Nutzer</th><th>Profil-Link</th><th>Views</th><th>Song</th><th>Premium</th><th>Admin</th><th>Erstellt</th><th>Aktionen</th></tr></thead>
+              <tbody id="adm-tbody"></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
-      <div class="card" style="border-color:rgba(212,168,67,.2);">
-        <div class="card-title" style="color:var(--gold);">Neuen Nutzer anlegen (Admin)</div>
-        <div class="g2">
-          <div class="field"><label class="lbl">Username</label><input id="adm-new-u" class="inp" placeholder="username"></div>
-          <div class="field"><label class="lbl">Passwort</label><input id="adm-new-p" class="inp" placeholder="passwort"></div>
+      <div id="adm-erstellen" class="adm-section" style="display:none;">
+        <div class="card" style="border-color:rgba(212,168,67,.2);">
+          <div class="card-title" style="color:var(--gold);">Neuen Nutzer anlegen</div>
+          <div class="g2">
+            <div class="field"><label class="lbl">Username</label><input id="adm-new-u" class="inp" placeholder="username"></div>
+            <div class="field"><label class="lbl">Passwort</label><input id="adm-new-p" class="inp" placeholder="passwort"></div>
+          </div>
+          <div class="field"><label class="lbl">Anzeigename (optional)</label><input id="adm-new-dn" class="inp" placeholder="Display Name"></div>
+          <div class="field"><label class="lbl">Bio (optional)</label><textarea id="adm-new-bio" class="inp" placeholder="Bio..."></textarea></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-ghost btn-sm" onclick="admCreateUser(false,false)">Free erstellen</button>
+            <button class="btn btn-gold btn-sm" onclick="admCreateUser(true,false)">Premium erstellen</button>
+            <button class="btn btn-red btn-sm" onclick="admCreateUser(true,true)">Admin erstellen</button>
+          </div>
         </div>
-        <div style="display:flex;gap:8px;">
-          <button class="btn btn-ghost btn-sm" onclick="admCreateUser(false)">Erstellen</button>
-          <button class="btn btn-gold btn-sm" onclick="admCreateUser(true)">Als Premium erstellen</button>
+        <div class="card">
+          <div class="card-title">Passwort zurücksetzen</div>
+          <div class="g2">
+            <div class="field"><label class="lbl">Username</label><input id="adm-pw-u" class="inp" placeholder="username"></div>
+            <div class="field"><label class="lbl">Neues Passwort</label><input id="adm-pw-p" class="inp" placeholder="neues passwort"></div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="admResetPw()">Passwort setzen</button>
+        </div>
+        <div class="card">
+          <div class="card-title">Custom Slug setzen (Admin)</div>
+          <div class="g2">
+            <div class="field"><label class="lbl">Username</label><input id="adm-slug-u" class="inp" placeholder="username"></div>
+            <div class="field"><label class="lbl">Slug</label><input id="adm-slug-v" class="inp" placeholder="wunsch-slug"></div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="admSetSlug()">Slug setzen</button>
+        </div>
+      </div>
+
+      <div id="adm-announce" class="adm-section" style="display:none;">
+        <div class="card">
+          <div class="card-title">Ankündigung für alle Nutzer</div>
+          <div style="font-size:.8rem;color:var(--tx2);margin-bottom:12px;">Diese Nachricht sehen alle Nutzer oben im Dashboard.</div>
+          <div class="field"><label class="lbl">Nachricht</label><textarea id="ann-text" class="inp" placeholder="z.B. Server Wartung am Samstag 20 Uhr..."></textarea></div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-p btn-sm" onclick="saveAnnounce()">Speichern & Anzeigen</button>
+            <button class="btn btn-red btn-sm" onclick="clearAnnounce()">Entfernen</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Vorschau</div>
+          <div id="ann-preview" class="announce" style="display:none;"></div>
+          <div id="ann-none" style="font-size:.8rem;color:var(--tx3);">Keine aktive Ankündigung.</div>
+        </div>
+      </div>
+
+      <div id="adm-logs" class="adm-section" style="display:none;">
+        <div class="card">
+          <div class="card-title">Admin Aktions-Log</div>
+          <div style="font-size:.75rem;color:var(--tx3);margin-bottom:12px;">Alle Admin-Aktionen dieser Sitzung — hilfreich für Übersicht.</div>
+          <div id="adm-log-list" style="max-height:400px;overflow-y:auto;"></div>
+          <div style="margin-top:10px;"><button class="btn btn-red btn-sm" onclick="clearLogs()">Logs löschen</button></div>
         </div>
       </div>
     </div>
@@ -531,7 +519,7 @@ select.inp{cursor:pointer;}
 <!-- PROFILE VIEW -->
 <div id="pv-wrap">
   <div id="pv-overlay" onclick="pvEnter()"><span class="enter-txt">CLICK TO ENTER</span></div>
-  <img id="pv-bg-img" src="" style="display:none">
+  <img id="pv-bg-img" src="" style="display:none;position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:9001;">
   <video id="pv-bg-vid" autoplay loop muted playsinline style="display:none;position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:9001;"></video>
   <div id="pv-dim"></div>
   <div id="pv-content">
@@ -551,12 +539,8 @@ select.inp{cursor:pointer;}
         <div id="pv-player" class="pv-player" style="display:none;">
           <div class="pv-song-lbl" id="pv-song-name">♪ Song</div>
           <div class="pv-controls">
-            <button class="pv-playbtn" id="pv-playbtn" onclick="pvToggle()">
-              <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><polygon points="5 3 19 12 5 21"/></svg>
-            </button>
-            <div class="pv-bar" id="pv-prog-wrap" onclick="pvSeek(event)">
-              <div class="pv-fill" id="pv-prog-fill"></div>
-            </div>
+            <button class="pv-playbtn" id="pv-playbtn" onclick="pvToggle()"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><polygon points="5 3 19 12 5 21"/></svg></button>
+            <div class="pv-bar" id="pv-prog-wrap" onclick="pvSeek(event)"><div class="pv-fill" id="pv-prog-fill"></div></div>
             <span class="pv-time" id="pv-time">0:00</span>
           </div>
         </div>
@@ -572,9 +556,7 @@ select.inp{cursor:pointer;}
     <h3>Vorlage hochladen</h3>
     <div class="modal-sub">Teile deinen Style mit der Community.</div>
     <div class="field"><label class="lbl">Name</label><input id="tm-name" class="inp" placeholder="z.B. Ocean Night"></div>
-    <div class="field"><label class="lbl">Kategorie</label>
-      <select id="tm-cat" class="inp"><option value="dark">Dark</option><option value="light">Light</option><option value="neon">Neon</option><option value="minimal">Minimal</option></select>
-    </div>
+    <div class="field"><label class="lbl">Kategorie</label><select id="tm-cat" class="inp"><option value="dark">Dark</option><option value="light">Light</option><option value="neon">Neon</option><option value="minimal">Minimal</option></select></div>
     <div class="g2">
       <div class="field"><label class="lbl">Hintergrundfarbe</label><input id="tm-bg" type="color" value="#111115" class="inp" style="height:40px;padding:3px 8px;cursor:pointer;"></div>
       <div class="field"><label class="lbl">Akzentfarbe</label><input id="tm-ac" type="color" value="#7c3aed" class="inp" style="height:40px;padding:3px 8px;cursor:pointer;"></div>
@@ -594,18 +576,30 @@ select.inp{cursor:pointer;}
   <div class="modal" style="max-width:520px;">
     <h3 id="um-title">Nutzer Details</h3>
     <div class="modal-sub" id="um-sub"></div>
-    <div id="um-body" style="max-height:400px;overflow-y:auto;margin-bottom:16px;"></div>
+    <div id="um-body" style="max-height:360px;overflow-y:auto;margin-bottom:12px;"></div>
+    <div id="um-actions" style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;"></div>
     <button class="btn btn-ghost btn-sm" onclick="closeUserModal()">Schließen</button>
+  </div>
+</div>
+
+<!-- NOTE MODAL -->
+<div id="note-modal" class="modal-bg" onclick="if(event.target===this)closeNoteModal()">
+  <div class="modal">
+    <h3>Admin-Notiz</h3>
+    <div class="modal-sub" id="note-modal-sub">Notiz für @user</div>
+    <div class="field"><label class="lbl">Notiz (intern, nur Admins sehen das)</label><textarea id="note-text" class="inp" placeholder="Interne Admin-Notiz..."></textarea></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-p btn-sm" onclick="saveNote()">Speichern</button>
+      <button class="btn btn-ghost btn-sm" onclick="closeNoteModal()">Abbrechen</button>
+    </div>
   </div>
 </div>
 
 <div id="toast"></div>
 
 <script>
-/* ── STORAGE ── */
-const DB='kiolol_db_v3';
-const TPL='kiolol_tpl_v3';
-const SESS='kiolol_sess_v3';
+const DB='rb_db_v4';const TPL='rb_tpl_v4';const SESS='rb_sess_v4';
+const LOGS_KEY='rb_logs_v4';const ANN_KEY='rb_ann_v4';
 const lDB=()=>{try{return JSON.parse(localStorage.getItem(DB)||'{}')}catch{return{}}};
 const sDB=d=>localStorage.setItem(DB,JSON.stringify(d));
 const lTPL=()=>{try{return JSON.parse(localStorage.getItem(TPL)||'[]')}catch{return[]}};
@@ -613,20 +607,19 @@ const sTPL=t=>localStorage.setItem(TPL,JSON.stringify(t));
 const gSess=()=>localStorage.getItem(SESS);
 const sSess=u=>localStorage.setItem(SESS,u);
 const cSess=()=>localStorage.removeItem(SESS);
+const lLogs=()=>{try{return JSON.parse(localStorage.getItem(LOGS_KEY)||'[]')}catch{return[]}};
+const sLogs=l=>localStorage.setItem(LOGS_KEY,JSON.stringify(l));
+const lAnn=()=>localStorage.getItem(ANN_KEY)||'';
+const sAnn=t=>t?localStorage.setItem(ANN_KEY,t):localStorage.removeItem(ANN_KEY);
 
 function sv(id){
-  ['v-login','v-register'].forEach(v=>{
-    const el=document.getElementById(v);
-    if(el)el.style.display='none';
-  });
+  ['v-login','v-register'].forEach(v=>{const el=document.getElementById(v);if(el)el.style.display='none';});
   if(id==='v-app'){document.getElementById('v-app').style.display='block';return;}
-  const t=document.getElementById(id);
-  if(t)t.style.display='flex';
+  const t=document.getElementById(id);if(t)t.style.display='flex';
 }
-
 function hs(s){let h=0;for(let i=0;i<s.length;i++)h=(Math.imul(31,h)+s.charCodeAt(i))|0;return h.toString(36);}
+function addLog(msg){const logs=lLogs();logs.unshift({msg,time:Date.now()});if(logs.length>100)logs.pop();sLogs(logs);}
 
-/* ── AUTH ── */
 function doLogin(){
   const u=document.getElementById('lu').value.toLowerCase().trim();
   const p=document.getElementById('lp').value;
@@ -638,37 +631,72 @@ function doRegister(){
   const u=document.getElementById('ru').value.toLowerCase().trim().replace(/[^a-z0-9_]/g,'');
   const p=document.getElementById('rp').value;
   const db=lDB();const er=document.getElementById('reg-err');
-  if(!u){er.textContent='Bitte gültigen Username eingeben (a-z, 0-9, _).';er.style.display='block';return;}
-  if(p.length<4){er.textContent='Passwort muss mindestens 4 Zeichen haben.';er.style.display='block';return;}
+  if(!u){er.textContent='Bitte gültigen Username eingeben.';er.style.display='block';return;}
+  if(p.length<4){er.textContent='Passwort mind. 4 Zeichen.';er.style.display='block';return;}
   if(db[u]){er.textContent='Username bereits vergeben.';er.style.display='block';return;}
   db[u]=newUser(u,p);sDB(db);sSess(u);er.style.display='none';init();
 }
 function doLogout(){cSess();location.reload();}
 function newUser(u,p,prem=false,admin=false){
   return{pw:hs(p),display_name:u,bio:'',discord:'',instagram:'',youtube:'',tiktok:'',
-    is_premium:prem,is_admin:admin,opacity:80,font_choice:'Geist',
+    is_premium:prem,is_admin:admin,opacity:80,font_choice:'Geist',custom_slug:'',
     views:0,avatar:'',banner:'',background_file:'',
-    mp3_file:'',mp3_name:'',mp3_display_name:'',active_template:null,
+    mp3_file:'',mp3_name:'',mp3_display_name:'',active_template:null,adm_note:'',
     created:Date.now(),last_login:Date.now()};
 }
 
-/* ── INIT ── */
+function getProfileLink(u){
+  const db=lDB();const d=db[u];
+  const base=location.href.split('?')[0];
+  const slug=(d&&d.custom_slug)?d.custom_slug.trim():'';
+  return slug?base+'?slug='+encodeURIComponent(slug):base+'?u='+u;
+}
+function getProfileLinkFor(u,d){
+  const base=location.href.split('?')[0];
+  const slug=(d&&d.custom_slug)?d.custom_slug.trim():'';
+  return slug?base+'?slug='+encodeURIComponent(slug):base+'?u='+u;
+}
+function copyMyLink(){
+  const link=getProfileLink(CU);
+  navigator.clipboard?.writeText(link).then(()=>toast('🔗 Link kopiert!'));
+}
+function updateSlugPreview(){
+  const val=document.getElementById('s-custom_slug').value.replace(/[^a-z0-9-]/gi,'').toLowerCase();
+  document.getElementById('s-custom_slug').value=val;
+  const prev=document.getElementById('slug-preview');
+  const base=location.href.split('?')[0];
+  if(val){prev.style.display='block';prev.textContent='→ '+base+'?slug='+val;}
+  else{prev.style.display='none';}
+}
+
+function renderQR(link){
+  const box=document.getElementById('qr-box');if(!box)return;
+  const enc=encodeURIComponent(link);
+  box.innerHTML=`<img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${enc}&bgcolor=111111&color=ffffff&margin=8" style="border-radius:8px;" alt="QR Code">`;
+}
+function downloadQR(){
+  const link=getProfileLink(CU);const enc=encodeURIComponent(link);
+  const a=document.createElement('a');
+  a.href=`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${enc}&bgcolor=111111&color=ffffff&margin=16`;
+  a.download='regelbruch-qr.png';a.target='_blank';a.click();
+}
+
 let CU=null;
 function init(){
   const u=gSess();if(!u){sv('v-login');return;}
   const db=lDB();if(!db[u]){cSess();sv('v-login');return;}
-  CU=u;
-  db[u].last_login=Date.now();sDB(db);
+  CU=u;db[u].last_login=Date.now();sDB(db);
   sv('v-app');
   document.getElementById('sb-user').textContent='@'+u;
   document.getElementById('sb-av').textContent=u.slice(0,2).toUpperCase();
   document.getElementById('sb-name').textContent=db[u].display_name||u;
-  const host=location.href.split('?')[0];
-  document.getElementById('link-hint').textContent=host+'?u='+u;
+  document.getElementById('link-hint').textContent=getProfileLink(u);
   const isAdmin=db[u].is_admin;
   document.getElementById('ni-admin').style.display=isAdmin?'flex':'none';
   document.getElementById('admin-prem-block').style.display=isAdmin?'block':'none';
   loadForm();updateStats();
+  const ann=lAnn();
+  if(ann){const b=document.getElementById('ann-banner');b.textContent='📢 '+ann;b.style.display='block';}
 }
 function updateStats(){
   const db=lDB();const d=db[CU];
@@ -694,14 +722,10 @@ function lockPremFonts(d){
   const sel=document.getElementById('s-font_choice');
   const lbl=document.getElementById('font-lock');
   lbl.textContent=d.is_premium?'':'(★ = Premium)';
-  Array.from(sel.options).forEach(o=>{
-    o.disabled=o.dataset.prem&&!d.is_premium;
-    o.style.color=o.disabled?'var(--tx3)':'';
-  });
+  Array.from(sel.options).forEach(o=>{o.disabled=o.dataset.prem&&!d.is_premium;o.style.color=o.disabled?'var(--tx3)':'';});
   if(sel.options[sel.selectedIndex]?.dataset.prem&&!d.is_premium)sel.value='Geist';
 }
 
-/* ── TAB ── */
 function tab(name){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
   document.querySelectorAll('.ni').forEach(b=>b.classList.remove('on'));
@@ -710,17 +734,27 @@ function tab(name){
   if(name==='admin')renderAdmin();
   if(name==='vorlagen')renderTpl('all');
   if(name==='premium'){const db=lDB();renderPremiumPage(db[CU]);lockPremFonts(db[CU]);}
+  if(name==='meinlink')renderMyLink();
+  if(name==='meinlink'){const d=document.getElementById('link-new-dot');if(d)d.style.display='none';}
 }
 
-/* ── FORM ── */
+function renderMyLink(){
+  const db=lDB();const d=db[CU];
+  const link=getProfileLink(CU);
+  const lb=`<div class="link-box"><span class="link-box-url">${link}</span><button class="link-box-copy" onclick="copyMyLink()">Kopieren</button></div>`;
+  document.getElementById('mylink-display').innerHTML=lb;
+  document.getElementById('discord-link-box').innerHTML=lb;
+  document.getElementById('slug-display').textContent=d.custom_slug||(CU+' (kein custom slug)');
+  renderQR(link);
+}
+
 function loadForm(){
   const db=lDB();const d=db[CU];
-  ['display_name','bio','discord','instagram','youtube','tiktok','font_choice'].forEach(k=>{
+  ['display_name','bio','discord','instagram','youtube','tiktok','font_choice','custom_slug'].forEach(k=>{
     const el=document.getElementById('s-'+k);if(el)el.value=d[k]||'';
   });
   const op=document.getElementById('s-opacity');op.value=d.opacity||80;
-  document.getElementById('op-v').textContent=op.value;
-  document.getElementById('op-disp').textContent=op.value;
+  document.getElementById('op-v').textContent=op.value;document.getElementById('op-disp').textContent=op.value;
   op.oninput=()=>{document.getElementById('op-v').textContent=op.value;document.getElementById('op-disp').textContent=op.value;};
   ['background_file','banner','avatar'].forEach(k=>{
     const fnMap={background_file:'fn-bg',banner:'fn-banner',avatar:'fn-avatar'};
@@ -733,6 +767,7 @@ function loadForm(){
     document.getElementById('mp3-name-row').style.display='block';
     document.getElementById('mp3-song-name').value=d.mp3_display_name||'';
   }
+  if(d.custom_slug)updateSlugPreview();
 }
 function handleFile(key,input,fnId,clrId){
   const f=input.files[0];if(!f)return;
@@ -757,27 +792,26 @@ function handleMp3(input){
 }
 function clearMp3(){
   const db=lDB();db[CU].mp3_file='';db[CU].mp3_name='';db[CU].mp3_display_name='';sDB(db);
-  document.getElementById('fn-mp3').textContent='—';
-  document.getElementById('clr-mp3').style.display='none';
+  document.getElementById('fn-mp3').textContent='—';document.getElementById('clr-mp3').style.display='none';
   document.getElementById('mp3-name-row').style.display='none';
 }
 function saveSettings(){
   const db=lDB();const d=db[CU];
-  ['display_name','bio','discord','instagram','youtube','tiktok','font_choice'].forEach(k=>{
-    const el=document.getElementById('s-'+k);if(el)d[k]=el.value;
-  });
+  ['display_name','bio','discord','instagram','youtube','tiktok','font_choice'].forEach(k=>{const el=document.getElementById('s-'+k);if(el)d[k]=el.value;});
   d.opacity=document.getElementById('s-opacity').value;
+  const slug=document.getElementById('s-custom_slug').value.replace(/[^a-z0-9-]/gi,'').toLowerCase();
+  if(slug){
+    const taken=Object.entries(db).find(([u,od])=>u!==CU&&od.custom_slug===slug);
+    if(taken){toast('⚠️ Dieser Slug ist schon vergeben!');return;}
+  }
+  d.custom_slug=slug;document.getElementById('s-custom_slug').value=slug;
   const sn=document.getElementById('mp3-song-name');if(sn)d.mp3_display_name=sn.value;
   sDB(db);
   document.getElementById('sb-name').textContent=d.display_name||CU;
+  document.getElementById('link-hint').textContent=getProfileLink(CU);
   updateStats();toast('✓ Gespeichert');
 }
-function togglePremDemo(){
-  const db=lDB();db[CU].is_premium=!db[CU].is_premium;sDB(db);updateStats();
-  toast(db[CU].is_premium?'💎 Premium aktiviert':'Premium deaktiviert');
-}
 
-/* ── VORLAGEN ── */
 const BUILTIN=[
   {id:'b1',name:'Purple Void',author:'kio.lol',category:'dark',bgcolor:'rgba(10,5,20,0.88)',accentcolor:'#7c3aed',bg_image:'',builtin:true,premium:false},
   {id:'b2',name:'Midnight',author:'kio.lol',category:'dark',bgcolor:'rgba(5,10,25,0.88)',accentcolor:'#2563eb',bg_image:'',builtin:true,premium:false},
@@ -793,12 +827,7 @@ const BUILTIN=[
 ];
 let curTplFilter='all';
 function allTpl(){return[...BUILTIN,...lTPL()];}
-function filterTpl(cat,btn){
-  curTplFilter=cat;
-  document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('on'));
-  if(btn)btn.classList.add('on');
-  renderTpl(cat);
-}
+function filterTpl(cat,btn){curTplFilter=cat;document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('on'));if(btn)btn.classList.add('on');renderTpl(cat);}
 function renderTpl(cat){
   const db=lDB();const d=db[CU];const activeTpl=d.active_template||null;
   let tpls=allTpl();
@@ -807,328 +836,275 @@ function renderTpl(cat){
   const grid=document.getElementById('tpl-grid');grid.innerHTML='';
   if(!tpls.length){grid.innerHTML='<div style="color:var(--tx3);font-size:.8rem;padding:10px;">Keine Vorlagen.</div>';return;}
   tpls.forEach(tpl=>{
-    const sel=tpl.id===activeTpl;const isOwn=tpl.uploader===CU;
-    const locked=tpl.premium&&!d.is_premium;
+    const sel=tpl.id===activeTpl;const isOwn=tpl.uploader===CU;const locked=tpl.premium&&!d.is_premium;
     const card=document.createElement('div');card.className='tpl-card'+(sel?' sel':'');
     if(!locked)card.onclick=()=>selectTpl(tpl.id);
-    let prev=tpl.bg_image
-      ?`<img class="tpl-prev" src="${tpl.bg_image}" style="object-fit:cover;">`
-      :`<div class="tpl-prev" style="background:linear-gradient(135deg,${tpl.bgcolor},${tpl.accentcolor}55)"></div>`;
+    let prev=tpl.bg_image?`<img class="tpl-prev" src="${tpl.bg_image}" style="object-fit:cover;">`:`<div class="tpl-prev" style="background:linear-gradient(135deg,${tpl.bgcolor},${tpl.accentcolor}55)"></div>`;
     const lockBadge=locked?`<div style="position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#fff;">🔒 Premium</div>`:'';
-    card.innerHTML=`
-      ${sel?'<div class="tpl-check">✓ Aktiv</div>':''}
-      ${isOwn&&!tpl.builtin?`<button class="tpl-del" onclick="event.stopPropagation();deleteTpl('${tpl.id}')">Löschen</button>`:''}
+    card.innerHTML=`${sel?'<div class="tpl-check">✓ Aktiv</div>':''}${isOwn&&!tpl.builtin?`<button class="tpl-del" onclick="event.stopPropagation();deleteTpl('${tpl.id}')">Löschen</button>`:''}
       <div style="position:relative;">${prev}${lockBadge}</div>
-      <div class="tpl-info">
-        <div class="tpl-name"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${tpl.accentcolor};margin-right:5px;vertical-align:middle;"></span>${tpl.name}</div>
-        <div class="tpl-meta">von ${tpl.author||tpl.uploader} · ${tpl.category}</div>
-      </div>`;
+      <div class="tpl-info"><div class="tpl-name"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${tpl.accentcolor};margin-right:5px;vertical-align:middle;"></span>${tpl.name}</div><div class="tpl-meta">von ${tpl.author||tpl.uploader} · ${tpl.category}</div></div>`;
     grid.appendChild(card);
   });
   const atpl=allTpl().find(t=>t.id===activeTpl);
-  const info=document.getElementById('active-tpl-info');
-  info.innerHTML=atpl
-    ?`<strong style="color:var(--tx0)">${atpl.name}</strong> <span style="color:var(--tx2);">von ${atpl.author||atpl.uploader}</span>`
-    :'<span style="color:var(--tx2);">Keine Vorlage aktiv.</span>';
+  document.getElementById('active-tpl-info').innerHTML=atpl?`<strong style="color:var(--tx0)">${atpl.name}</strong> <span style="color:var(--tx2);">von ${atpl.author||atpl.uploader}</span>`:'<span style="color:var(--tx2);">Keine Vorlage aktiv.</span>';
 }
 function selectTpl(id){const db=lDB();db[CU].active_template=id;sDB(db);renderTpl(curTplFilter);toast('🎨 Vorlage aktiv!');}
 function removeTemplate(){const db=lDB();db[CU].active_template=null;sDB(db);renderTpl(curTplFilter);toast('Vorlage entfernt.');}
-function deleteTpl(id){
-  if(!confirm('Vorlage löschen?'))return;
-  let tpls=lTPL();tpls=tpls.filter(t=>t.id!==id);sTPL(tpls);
-  const db=lDB();Object.values(db).forEach(u=>{if(u.active_template===id)u.active_template=null;});sDB(db);
-  renderTpl(curTplFilter);toast('Vorlage gelöscht.');
-}
+function deleteTpl(id){if(!confirm('Vorlage löschen?'))return;let tpls=lTPL();tpls=tpls.filter(t=>t.id!==id);sTPL(tpls);const db=lDB();Object.values(db).forEach(u=>{if(u.active_template===id)u.active_template=null;});sDB(db);renderTpl(curTplFilter);toast('Vorlage gelöscht.');}
 function openTplModal(){document.getElementById('tpl-modal').style.display='flex';}
 function closeTplModal(){document.getElementById('tpl-modal').style.display='none';}
 function submitTemplate(){
-  const name=document.getElementById('tm-name').value.trim();
-  if(!name){toast('Bitte Namen eingeben!');return;}
-  const finish=bgData=>{
-    const tpls=lTPL();
-    tpls.push({id:'t'+Date.now(),name,author:CU,uploader:CU,
-      category:document.getElementById('tm-cat').value,
-      bgcolor:document.getElementById('tm-bg').value,
-      accentcolor:document.getElementById('tm-ac').value,
-      bg_image:bgData||'',builtin:false,premium:false});
-    sTPL(tpls);closeTplModal();filterTpl('mine',null);toast('🎨 Vorlage hochgeladen!');
-  };
+  const name=document.getElementById('tm-name').value.trim();if(!name){toast('Bitte Namen eingeben!');return;}
+  const finish=bgData=>{const tpls=lTPL();tpls.push({id:'t'+Date.now(),name,author:CU,uploader:CU,category:document.getElementById('tm-cat').value,bgcolor:document.getElementById('tm-bg').value,accentcolor:document.getElementById('tm-ac').value,bg_image:bgData||'',builtin:false,premium:false});sTPL(tpls);closeTplModal();filterTpl('mine',null);toast('🎨 Vorlage hochgeladen!');};
   const f=document.getElementById('tm-img').files[0];
   if(f){const r=new FileReader();r.onload=e=>finish(e.target.result);r.readAsDataURL(f);}else finish('');
 }
 
-/* ── ADMIN PANEL ── */
+/* ── ADMIN ── */
+function admTab(name,btn){
+  document.querySelectorAll('.adm-section').forEach(s=>s.style.display='none');
+  document.querySelectorAll('.adm-tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('adm-'+name).style.display='block';
+  if(btn)btn.classList.add('on');
+  if(name==='announce')renderAnnounce();
+  if(name==='logs')renderLogs();
+}
 function renderAdmin(){
   const db=lDB();const users=Object.entries(db);
-  const total=users.length;
   const premCount=users.filter(([,d])=>d.is_premium).length;
   const totalViews=users.reduce((a,[,d])=>a+(d.views||0),0);
   const withSong=users.filter(([,d])=>d.mp3_file).length;
   document.getElementById('adm-stats').innerHTML=`
-    <div class="stat"><div class="stat-l">Nutzer Gesamt</div><div class="stat-v">${total}</div></div>
-    <div class="stat"><div class="stat-l">Premium Nutzer</div><div class="stat-v" style="color:var(--gold);">${premCount}</div></div>
-    <div class="stat"><div class="stat-l">Gesamte Views</div><div class="stat-v">${totalViews}</div></div>`;
-  
-  const db2=lDB();const users2=Object.entries(db2);
+    <div class="stat"><div class="stat-l">Nutzer</div><div class="stat-v">${users.length}</div></div>
+    <div class="stat"><div class="stat-l">Premium</div><div class="stat-v" style="color:var(--gold);">${premCount}</div></div>
+    <div class="stat"><div class="stat-l">Gesamt Views</div><div class="stat-v">${totalViews}</div></div>
+    <div class="stat"><div class="stat-l">Mit Song</div><div class="stat-v">${withSong}</div></div>`;
+  renderUserTable(users);
+  const badge=document.getElementById('admin-badge');badge.textContent=users.length+' Nutzer';badge.style.display='inline';
+}
+function filterUsers(q){
+  const db=lDB();const users=Object.entries(db);
+  const filtered=q?users.filter(([u,d])=>u.includes(q.toLowerCase())||(d.display_name||'').toLowerCase().includes(q.toLowerCase())):users;
+  renderUserTable(filtered);
+}
+function renderUserTable(users){
   const tbody=document.getElementById('adm-tbody');tbody.innerHTML='';
-  users2.sort(([a],[b])=>a.localeCompare(b)).forEach(([u,d])=>{
+  users.sort(([a],[b])=>a.localeCompare(b)).forEach(([u,d])=>{
+    const link=getProfileLinkFor(u,d);const shortLink=link.length>32?link.slice(0,30)+'…':link;
+    const noteIcon=d.adm_note?'📝 ':'';
     const tr=document.createElement('tr');
-    const initials=u.slice(0,2).toUpperCase();
     tr.innerHTML=`
-      <td>
-        <div class="user-cell">
-          <div class="user-av">${initials}</div>
-          <div>
-            <div style="font-weight:500;color:var(--tx0);">${d.display_name||u}</div>
-            <div style="font-size:.7rem;color:var(--tx3);font-family:var(--mono);">@${u}</div>
-          </div>
-        </div>
-      </td>
-      <td><span class="mono-tag" title="${d.pw}">${d.pw.slice(0,8)}…</span></td>
-      <td style="color:var(--tx1);">${d.views||0}</td>
-      <td style="color:var(--tx2);">${d.mp3_file?'1':'0'}</td>
-      <td style="color:var(--tx2);font-size:.72rem;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${d.active_template||'—'}</td>
+      <td><div class="user-cell"><div class="user-av">${u.slice(0,2).toUpperCase()}</div><div><div style="font-weight:500;color:var(--tx0);">${noteIcon}${d.display_name||u}</div><div style="font-size:.68rem;color:var(--tx3);font-family:var(--mono);">@${u}</div></div></div></td>
+      <td><span class="mono-tag" title="${link}">${shortLink}</span></td>
+      <td><span style="color:var(--tx1);">${d.views||0}</span> <button style="background:none;border:none;color:var(--tx3);cursor:pointer;font-size:.68rem;" onclick="admResetViews('${u}')" title="Views reset">↺</button></td>
+      <td style="color:var(--tx2);">${d.mp3_file?'✓':'—'}</td>
       <td>${d.is_premium?'<span class="badge badge-gold">💎</span>':'<span class="badge badge-free">—</span>'}</td>
       <td>${d.is_admin?'<span class="badge badge-admin">✓</span>':'—'}</td>
-      <td>
-        <div class="actions">
-          <button class="btn btn-ghost btn-xs" onclick="viewUser('${u}')">Details</button>
-          <button class="btn btn-gold btn-xs" onclick="admPrem('${u}')">${d.is_premium?'Entf.':'Prem'}</button>
-          <button class="btn btn-ghost btn-xs" onclick="admAdmin('${u}')">${d.is_admin?'Admin-':'Admin+'}</button>
-          <button class="btn btn-red btn-xs" onclick="admDel('${u}')">Del</button>
-        </div>
-      </td>`;
+      <td style="font-size:.68rem;color:var(--tx3);">${d.created?new Date(d.created).toLocaleDateString('de'):'—'}</td>
+      <td><div class="actions">
+        <button class="btn btn-ghost btn-xs" onclick="viewUser('${u}')">Details</button>
+        <button class="btn btn-gold btn-xs" onclick="admPrem('${u}')">${d.is_premium?'−Prem':'+Prem'}</button>
+        <button class="btn btn-ghost btn-xs" onclick="admAdmin('${u}')">${d.is_admin?'−Admin':'+Admin'}</button>
+        <button class="btn btn-green btn-xs" onclick="admNote('${u}')">Notiz</button>
+        <button class="btn btn-red btn-xs" onclick="admDel('${u}')">Del</button>
+      </div></td>`;
     tbody.appendChild(tr);
   });
-  // update badge
-  const badge=document.getElementById('admin-badge');
-  badge.textContent=total+' Nutzer';badge.style.display='inline';
 }
-
 function viewUser(u){
   const db=lDB();const d=db[u];if(!d)return;
   document.getElementById('um-title').textContent='@'+u;
   document.getElementById('um-sub').textContent=(d.display_name||u)+' — Account Details';
+  const link=getProfileLinkFor(u,d);
   const rows=[
-    ['Display Name',d.display_name||'—'],
-    ['Username',u],
-    ['Passwort-Hash',d.pw],
-    ['Premium',d.is_premium?'✓ Ja':'✗ Nein'],
-    ['Admin',d.is_admin?'✓ Ja':'✗ Nein'],
-    ['Views',d.views||0],
-    ['Bio',d.bio||'—'],
-    ['Discord',d.discord||'—'],
-    ['Instagram',d.instagram||'—'],
-    ['YouTube',d.youtube||'—'],
-    ['TikTok',d.tiktok||'—'],
-    ['Schriftart',d.font_choice||'Standard'],
-    ['Transparenz',d.opacity||80],
+    ['Display Name',d.display_name||'—'],['Username',u],
+    ['Profil-Link',`<a href="${link}" target="_blank" style="color:var(--acc2);font-size:.7rem;font-family:var(--mono);">${link}</a>`],
+    ['Custom Slug',d.custom_slug||'—'],['Premium',d.is_premium?'✓ Ja':'✗ Nein'],
+    ['Admin',d.is_admin?'✓ Ja':'✗ Nein'],['Views',d.views||0],['Bio',d.bio||'—'],
+    ['Discord',d.discord||'—'],['Instagram',d.instagram||'—'],
+    ['YouTube',d.youtube||'—'],['TikTok',d.tiktok||'—'],
+    ['Schriftart',d.font_choice||'Standard'],['Transparenz',d.opacity||80],
     ['Vorlage',d.active_template||'—'],
-    ['Hat Avatar',d.avatar?'✓ Ja':'✗ Nein'],
-    ['Hat Banner',d.banner?'✓ Ja':'✗ Nein'],
-    ['Hat Hintergrund',d.background_file?'✓ Ja':'✗ Nein'],
-    ['Hat Song',d.mp3_file?'✓ Ja':'✗ Nein'],
-    ['Song Name',d.mp3_display_name||d.mp3_name||'—'],
+    ['Avatar',d.avatar?'✓ Ja':'✗ Nein'],['Banner',d.banner?'✓ Ja':'✗ Nein'],
+    ['Hintergrund',d.background_file?'✓ Ja':'✗ Nein'],['Song',d.mp3_file?'✓ Ja':'✗ Nein'],
+    ['Song-Name',d.mp3_display_name||d.mp3_name||'—'],
+    ['Admin-Notiz',d.adm_note||'—'],
     ['Erstellt',d.created?new Date(d.created).toLocaleString('de'):'—'],
     ['Letzter Login',d.last_login?new Date(d.last_login).toLocaleString('de'):'—'],
   ];
-  document.getElementById('um-body').innerHTML=rows.map(([k,v])=>`
-    <div class="udm-row">
-      <div class="udm-key">${k}</div>
-      <div class="udm-val">${v}</div>
-    </div>`).join('');
+  document.getElementById('um-body').innerHTML=rows.map(([k,v])=>`<div class="udm-row"><div class="udm-key">${k}</div><div class="udm-val">${v}</div></div>`).join('');
+  document.getElementById('um-actions').innerHTML=`
+    <button class="btn btn-gold btn-xs" onclick="admPrem('${u}');closeUserModal();renderAdmin();">${d.is_premium?'Premium entfernen':'Premium geben'}</button>
+    <button class="btn btn-ghost btn-xs" onclick="admAdmin('${u}');closeUserModal();renderAdmin();">${d.is_admin?'Admin entfernen':'Admin machen'}</button>
+    <button class="btn btn-green btn-xs" onclick="closeUserModal();admNote('${u}')">Notiz bearbeiten</button>
+    <button class="btn btn-red btn-xs" onclick="closeUserModal();admDel('${u}')">Account löschen</button>`;
   document.getElementById('user-modal').style.display='flex';
 }
 function closeUserModal(){document.getElementById('user-modal').style.display='none';}
 
 function admPrem(u){
-  if(u===CU&&!lDB()[u].is_premium===false)return;
   const db=lDB();if(!db[u])return;
-  db[u].is_premium=!db[u].is_premium;sDB(db);renderAdmin();
-  toast(db[u].is_premium?`💎 Premium für @${u} aktiv`:`Premium für @${u} entfernt`);
+  db[u].is_premium=!db[u].is_premium;sDB(db);
+  addLog(`${CU} → Premium ${db[u].is_premium?'gegeben':'entfernt'} für @${u}`);
+  renderAdmin();toast(db[u].is_premium?`💎 @${u} hat Premium`:`Premium @${u} entfernt`);
 }
 function admAdmin(u){
+  if(u===CU){toast('Kannst deinen eigenen Admin nicht ändern!');return;}
   const db=lDB();if(!db[u])return;
-  if(u===CU){toast('Kannst deinen eigenen Admin nicht entfernen!');return;}
-  db[u].is_admin=!db[u].is_admin;sDB(db);renderAdmin();
-  toast(db[u].is_admin?`@${u} ist jetzt Admin`:`@${u} ist kein Admin mehr`);
+  db[u].is_admin=!db[u].is_admin;sDB(db);
+  addLog(`${CU} → Admin ${db[u].is_admin?'gegeben':'entfernt'} für @${u}`);
+  renderAdmin();toast(db[u].is_admin?`@${u} ist jetzt Admin`:`@${u} kein Admin mehr`);
 }
 function admDel(u){
   if(u===CU){toast('Kannst deinen eigenen Account nicht löschen!');return;}
   if(!confirm(`Account "@${u}" wirklich löschen?`))return;
-  const db=lDB();delete db[u];sDB(db);renderAdmin();toast(`@${u} gelöscht.`);
+  const db=lDB();delete db[u];sDB(db);
+  addLog(`${CU} → @${u} gelöscht`);renderAdmin();toast(`@${u} gelöscht.`);
 }
-function admCreateUser(prem){
+function admResetViews(u){
+  const db=lDB();if(!db[u])return;db[u].views=0;sDB(db);
+  addLog(`${CU} → Views von @${u} zurückgesetzt`);renderAdmin();toast(`Views @${u} zurückgesetzt.`);
+}
+function admResetAllViews(){
+  if(!confirm('Views ALLER Nutzer auf 0 setzen?'))return;
+  const db=lDB();Object.values(db).forEach(d=>d.views=0);sDB(db);
+  addLog(`${CU} → Alle Views zurückgesetzt`);renderAdmin();toast('Alle Views zurückgesetzt.');
+}
+
+let _noteUser=null;
+function admNote(u){
+  _noteUser=u;const db=lDB();const d=db[u];
+  document.getElementById('note-modal-sub').textContent='Notiz für @'+u;
+  document.getElementById('note-text').value=d.adm_note||'';
+  document.getElementById('note-modal').style.display='flex';
+}
+function saveNote(){
+  if(!_noteUser)return;const db=lDB();if(!db[_noteUser])return;
+  db[_noteUser].adm_note=document.getElementById('note-text').value;sDB(db);
+  closeNoteModal();renderAdmin();toast('Notiz gespeichert.');
+}
+function closeNoteModal(){document.getElementById('note-modal').style.display='none';_noteUser=null;}
+
+function admCreateUser(prem,admin){
   const u=document.getElementById('adm-new-u').value.toLowerCase().trim().replace(/[^a-z0-9_]/g,'');
   const p=document.getElementById('adm-new-p').value;
+  const dn=document.getElementById('adm-new-dn').value.trim();
+  const bio=document.getElementById('adm-new-bio').value.trim();
   if(!u||!p){toast('Username und Passwort eingeben!');return;}
   const db=lDB();if(db[u]){toast('Username schon vergeben!');return;}
-  db[u]=newUser(u,p,prem,false);sDB(db);
+  db[u]=newUser(u,p,prem,admin);
+  if(dn)db[u].display_name=dn;if(bio)db[u].bio=bio;sDB(db);
   document.getElementById('adm-new-u').value='';document.getElementById('adm-new-p').value='';
-  renderAdmin();toast(`✓ @${u} erstellt${prem?' mit Premium':''}`);
+  document.getElementById('adm-new-dn').value='';document.getElementById('adm-new-bio').value='';
+  addLog(`${CU} → @${u} erstellt${prem?' (Premium)':''}${admin?' (Admin)':''}`);
+  renderAdmin();toast(`✓ @${u} erstellt`);
 }
+function admResetPw(){
+  const u=document.getElementById('adm-pw-u').value.toLowerCase().trim();
+  const p=document.getElementById('adm-pw-p').value;
+  if(!u||!p){toast('Username und Passwort eingeben!');return;}
+  const db=lDB();if(!db[u]){toast('Nutzer nicht gefunden!');return;}
+  db[u].pw=hs(p);sDB(db);
+  document.getElementById('adm-pw-u').value='';document.getElementById('adm-pw-p').value='';
+  addLog(`${CU} → Passwort von @${u} zurückgesetzt`);toast(`✓ Passwort von @${u} geändert`);
+}
+function admSetSlug(){
+  const u=document.getElementById('adm-slug-u').value.toLowerCase().trim();
+  const slug=document.getElementById('adm-slug-v').value.replace(/[^a-z0-9-]/gi,'').toLowerCase();
+  if(!u||!slug){toast('Username und Slug eingeben!');return;}
+  const db=lDB();if(!db[u]){toast('Nutzer nicht gefunden!');return;}
+  const taken=Object.entries(db).find(([ou,od])=>ou!==u&&od.custom_slug===slug);
+  if(taken){toast('Slug schon vergeben!');return;}
+  db[u].custom_slug=slug;sDB(db);
+  document.getElementById('adm-slug-u').value='';document.getElementById('adm-slug-v').value='';
+  addLog(`${CU} → Slug von @${u} auf "${slug}" gesetzt`);toast(`✓ Slug für @${u} gesetzt`);
+}
+
+function renderAnnounce(){
+  const ann=lAnn();
+  if(ann){
+    document.getElementById('ann-text').value=ann;
+    document.getElementById('ann-preview').textContent='📢 '+ann;
+    document.getElementById('ann-preview').style.display='block';
+    document.getElementById('ann-none').style.display='none';
+  } else {
+    document.getElementById('ann-preview').style.display='none';
+    document.getElementById('ann-none').style.display='block';
+  }
+}
+function saveAnnounce(){
+  const t=document.getElementById('ann-text').value.trim();if(!t){toast('Text eingeben!');return;}
+  sAnn(t);renderAnnounce();addLog(`${CU} → Ankündigung gesetzt`);toast('📢 Ankündigung gespeichert!');
+}
+function clearAnnounce(){sAnn('');renderAnnounce();document.getElementById('ann-text').value='';toast('Ankündigung entfernt.');}
+
+function renderLogs(){
+  const logs=lLogs();const el=document.getElementById('adm-log-list');
+  if(!logs.length){el.innerHTML='<div style="color:var(--tx3);font-size:.8rem;">Noch keine Logs.</div>';return;}
+  el.innerHTML=logs.map(l=>`<div style="display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--b1);font-size:.75rem;"><span style="color:var(--tx3);font-family:var(--mono);white-space:nowrap;">${new Date(l.time).toLocaleTimeString('de')}</span><span style="color:var(--tx2);">${l.msg}</span></div>`).join('');
+}
+function clearLogs(){sLogs([]);renderLogs();toast('Logs gelöscht.');}
 
 /* ── PROFILE VIEW ── */
 let pvAudio=new Audio();let pvPlaying=false;
 function openMyProfile(){renderProfile(CU);}
-
 function renderProfile(username){
   const db=lDB();const d=db[username];if(!d)return;
   if(username!==gSess()){d.views=(d.views||0)+1;sDB(db);}
-
-  let accentColor='#7c3aed';
-  let cardBg=`rgba(12,12,18,${(d.opacity||80)/100})`;
-  let bgSrc=d.background_file||'';
-
-  if(d.active_template){
-    const tpl=allTpl().find(t=>t.id===d.active_template);
-    if(tpl&&(!tpl.premium||d.is_premium)){
-      if(tpl.bg_image)bgSrc=tpl.bg_image;
-      cardBg=tpl.bgcolor;accentColor=tpl.accentcolor;
-    }
-  }
-
+  let accentColor='#7c3aed';let cardBg=`rgba(12,12,18,${(d.opacity||80)/100})`;let bgSrc=d.background_file||'';
+  if(d.active_template){const tpl=allTpl().find(t=>t.id===d.active_template);if(tpl&&(!tpl.premium||d.is_premium)){if(tpl.bg_image)bgSrc=tpl.bg_image;cardBg=tpl.bgcolor;accentColor=tpl.accentcolor;}}
   const bi=document.getElementById('pv-bg-img');const bv=document.getElementById('pv-bg-vid');
   bi.style.display='none';bv.style.display='none';
-  if(bgSrc){
-    if(bgSrc.startsWith('data:video')||/\.(mp4|webm)$/i.test(bgSrc)){bv.src=bgSrc;bv.style.display='block';}
-    else{bi.src=bgSrc;bi.style.display='block';}
-  }
-
+  if(bgSrc){if(bgSrc.startsWith('data:video')||/\.(mp4|webm)$/i.test(bgSrc)){bv.src=bgSrc;bv.style.display='block';}else{bi.src=bgSrc;bi.style.display='block';}}
   document.getElementById('pv-card').style.background=cardBg;
   document.getElementById('pv-banner').style.background=d.banner?`url('${d.banner}') center/cover`:'#141418';
-
   const av=document.getElementById('pv-av');const avRow=document.querySelector('.pv-av-row');
-  if(d.avatar){av.src=d.avatar;av.style.display='block';avRow.style.display='flex';}
-  else{av.style.display='none';avRow.style.display='none';}
-
+  if(d.avatar){av.src=d.avatar;av.style.display='block';avRow.style.display='flex';}else{av.style.display='none';avRow.style.display='none';}
   const nameEl=document.getElementById('pv-name');
-  nameEl.textContent=d.display_name||username;
-  nameEl.className='pv-name'+(d.is_premium?' gold':'');
+  nameEl.textContent=d.display_name||username;nameEl.className='pv-name'+(d.is_premium?' gold':'');
   if(d.font_choice==='Orbitron')nameEl.classList.add('font-orbitron');
   else if(d.font_choice==='Syne')nameEl.classList.add('font-syne');
   else if(d.font_choice==='Geist Mono')nameEl.classList.add('font-mono');
-
   const badges=document.getElementById('pv-badges');badges.innerHTML='';
-  if(d.is_premium){
-    const b=document.createElement('span');b.className='pv-badge';
-    b.style.cssText='background:rgba(212,168,67,.15);border:1px solid rgba(212,168,67,.3);color:#d4a843;';
-    b.textContent='💎 Premium';badges.appendChild(b);
-  }
-  if(d.is_admin){
-    const b2=document.createElement('span');b2.className='pv-badge';
-    b2.style.cssText='background:rgba(224,82,82,.12);border:1px solid rgba(224,82,82,.25);color:#e05252;';
-    b2.textContent='⚡ Admin';badges.appendChild(b2);
-  }
-
+  if(d.is_premium){const b=document.createElement('span');b.className='pv-badge';b.style.cssText='background:rgba(212,168,67,.15);border:1px solid rgba(212,168,67,.3);color:#d4a843;';b.textContent='💎 Premium';badges.appendChild(b);}
+  if(d.is_admin){const b2=document.createElement('span');b2.className='pv-badge';b2.style.cssText='background:rgba(224,82,82,.12);border:1px solid rgba(224,82,82,.25);color:#e05252;';b2.textContent='⚡ Admin';badges.appendChild(b2);}
   document.getElementById('pv-bio').textContent=d.bio||'';
   document.getElementById('pv-views').textContent=db[username].views||0;
-
   const sb=document.getElementById('pv-socials');sb.innerHTML='';
-  [['discord','Discord'],['instagram','Instagram'],['youtube','YouTube'],['tiktok','TikTok']].forEach(([k,l])=>{
-    if(d[k]){
-      const a=document.createElement('a');a.href=d[k];a.target='_blank';a.className='pv-soc';
-      a.style.background=accentColor;a.style.color='#fff';a.textContent=l;sb.appendChild(a);
-    }
-  });
-
+  [['discord','Discord'],['instagram','Instagram'],['youtube','YouTube'],['tiktok','TikTok']].forEach(([k,l])=>{if(d[k]){const a=document.createElement('a');a.href=d[k];a.target='_blank';a.className='pv-soc';a.style.background=accentColor;a.style.color='#fff';a.textContent=l;sb.appendChild(a);}});
   pvAudio.pause();pvAudio.src='';pvAudio.load();pvPlaying=false;
   const pp=document.getElementById('pv-player');
   if(d.mp3_file){
-    pp.style.display='block';
-    document.getElementById('pv-song-name').textContent='♪ '+(d.mp3_display_name||d.mp3_name||'Song');
-    try{
-      const parts=d.mp3_file.split(',');
-      const b64=parts[1];
-      const mime=(parts[0].match(/:(.*?);/)||['','audio/mpeg'])[1];
-      const byteChars=atob(b64);
-      const byteArr=new Uint8Array(byteChars.length);
-      for(let i=0;i<byteChars.length;i++)byteArr[i]=byteChars.charCodeAt(i);
-      const blob=new Blob([byteArr],{type:mime});
-      pvAudio.src=URL.createObjectURL(blob);pvAudio.load();
-    }catch(e){pvAudio.src=d.mp3_file;pvAudio.load();}
+    pp.style.display='block';document.getElementById('pv-song-name').textContent='♪ '+(d.mp3_display_name||d.mp3_name||'Song');
+    try{const parts=d.mp3_file.split(',');const b64=parts[1];const mime=(parts[0].match(/:(.*?);/)||['','audio/mpeg'])[1];const byteChars=atob(b64);const byteArr=new Uint8Array(byteChars.length);for(let i=0;i<byteChars.length;i++)byteArr[i]=byteChars.charCodeAt(i);const blob=new Blob([byteArr],{type:mime});pvAudio.src=URL.createObjectURL(blob);pvAudio.load();}catch(e){pvAudio.src=d.mp3_file;pvAudio.load();}
   } else pp.style.display='none';
   updatePvUI();
-
-  document.getElementById('pv-overlay').style.opacity='1';
-  document.getElementById('pv-overlay').style.display='flex';
-  document.getElementById('pv-wrap').style.display='block';
-  updateStats();
+  document.getElementById('pv-overlay').style.opacity='1';document.getElementById('pv-overlay').style.display='flex';
+  document.getElementById('pv-wrap').style.display='block';updateStats();
 }
-
-function pvEnter(){
-  const ov=document.getElementById('pv-overlay');
-  ov.style.opacity='0';setTimeout(()=>ov.style.display='none',500);
-  if(pvAudio.src){pvAudio.play().then(()=>{pvPlaying=true;updatePvUI();}).catch(()=>{});}
-}
-function pvToggle(){
-  if(pvPlaying){pvAudio.pause();pvPlaying=false;}
-  else{pvAudio.play().catch(()=>{});pvPlaying=true;}
-  updatePvUI();
-}
-function pvSeek(e){
-  const r=document.getElementById('pv-prog-wrap').getBoundingClientRect();
-  if(pvAudio.duration)pvAudio.currentTime=((e.clientX-r.left)/r.width)*pvAudio.duration;
-}
-pvAudio.addEventListener('timeupdate',()=>{
-  const pf=document.getElementById('pv-prog-fill');const pt=document.getElementById('pv-time');
-  if(pvAudio.duration&&pf){pf.style.width=(pvAudio.currentTime/pvAudio.duration*100)+'%';pt.textContent=fmt(pvAudio.currentTime);}
-});
+function pvEnter(){const ov=document.getElementById('pv-overlay');ov.style.opacity='0';setTimeout(()=>ov.style.display='none',500);if(pvAudio.src){pvAudio.play().then(()=>{pvPlaying=true;updatePvUI();}).catch(()=>{});}}
+function pvToggle(){if(pvPlaying){pvAudio.pause();pvPlaying=false;}else{pvAudio.play().catch(()=>{});pvPlaying=true;}updatePvUI();}
+function pvSeek(e){const r=document.getElementById('pv-prog-wrap').getBoundingClientRect();if(pvAudio.duration)pvAudio.currentTime=((e.clientX-r.left)/r.width)*pvAudio.duration;}
+pvAudio.addEventListener('timeupdate',()=>{const pf=document.getElementById('pv-prog-fill');const pt=document.getElementById('pv-time');if(pvAudio.duration&&pf){pf.style.width=(pvAudio.currentTime/pvAudio.duration*100)+'%';pt.textContent=fmt(pvAudio.currentTime);}});
 pvAudio.addEventListener('ended',()=>{pvPlaying=false;updatePvUI();});
-function updatePvUI(){
-  const btn=document.getElementById('pv-playbtn');if(!btn)return;
-  btn.innerHTML=pvPlaying
-    ?'<svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>'
-    :'<svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><polygon points="5 3 19 12 5 21"/></svg>';
-}
-function pvClose(){
-  document.getElementById('pv-wrap').style.display='none';
-  if(pvAudio.src&&pvAudio.src.startsWith('blob:'))URL.revokeObjectURL(pvAudio.src);
-  pvAudio.pause();pvAudio.src='';pvAudio.load();pvPlaying=false;
-}
+function updatePvUI(){const btn=document.getElementById('pv-playbtn');if(!btn)return;btn.innerHTML=pvPlaying?'<svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>':'<svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><polygon points="5 3 19 12 5 21"/></svg>';}
+function pvClose(){document.getElementById('pv-wrap').style.display='none';if(pvAudio.src&&pvAudio.src.startsWith('blob:'))URL.revokeObjectURL(pvAudio.src);pvAudio.pause();pvAudio.src='';pvAudio.load();pvPlaying=false;}
 function fmt(s){const m=Math.floor(s/60);const ss=Math.floor(s%60);return m+':'+(ss<10?'0':'')+ss;}
 
-/* ── COPY LINK ── */
-function copyLink(){
-  const link=location.href.split('?')[0]+'?u='+CU;
-  navigator.clipboard?.writeText(link).then(()=>toast('🔗 Link kopiert!'));
-}
-
-/* ── TOAST ── */
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
-/* ── BOOTSTRAP ── */
 (function(){
   function hs(s){let h=0;for(let i=0;i<s.length;i++)h=(Math.imul(31,h)+s.charCodeAt(i))|0;return h.toString(36);}
   const db=lDB();
-  // Create default admin account: username=k, password=kio
-  if(!db['k']){
-    db['k']={pw:hs('kio'),display_name:'Admin',bio:'kio.lol Admin',discord:'',instagram:'',youtube:'',tiktok:'',
-      is_premium:true,is_admin:true,opacity:80,font_choice:'Syne',views:0,
-      avatar:'',banner:'',background_file:'',mp3_file:'',mp3_name:'',mp3_display_name:'',
-      active_template:null,created:Date.now(),last_login:Date.now()};
-    sDB(db);
-  }
-  // Check URL for profile param
+  if(!db['k']){db['k']={pw:hs('kio'),display_name:'Admin',bio:'kio.lol Admin',discord:'',instagram:'',youtube:'',tiktok:'',is_premium:true,is_admin:true,opacity:80,font_choice:'Syne',custom_slug:'',views:0,avatar:'',banner:'',background_file:'',mp3_file:'',mp3_name:'',mp3_display_name:'',active_template:null,adm_note:'',created:Date.now(),last_login:Date.now()};sDB(db);}
   const params=new URLSearchParams(location.search);
+  const slugParam=params.get('slug');
+  if(slugParam){const db2=lDB();const found=Object.entries(db2).find(([,d])=>d.custom_slug&&d.custom_slug===slugParam);if(found){document.getElementById('v-login').style.display='none';renderProfile(found[0]);return;}}
   const lu=params.get('u')||params.get('user');
-  if(lu&&lDB()[lu]){
-    // Show profile directly
-    document.getElementById('v-login').style.display='none';
-    renderProfile(lu);
-    return;
-  }
-  const s=gSess();
-  if(s&&lDB()[s])init();
-  else sv('v-login');
-
-  document.addEventListener('keydown',e=>{
-    if(e.key!=='Enter')return;
-    const vl=document.getElementById('v-login');
-    const vr=document.getElementById('v-register');
-    if(vl&&vl.style.display!=='none'&&vl.style.display!=='')doLogin();
-    if(vr&&vr.style.display!=='none'&&vr.style.display!=='')doRegister();
-  });
+  if(lu&&lDB()[lu]){document.getElementById('v-login').style.display='none';renderProfile(lu);return;}
+  const s=gSess();if(s&&lDB()[s])init();else sv('v-login');
+  document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const vl=document.getElementById('v-login');const vr=document.getElementById('v-register');if(vl&&vl.style.display!=='none'&&vl.style.display!=='')doLogin();if(vr&&vr.style.display!=='none'&&vr.style.display!=='')doRegister();});
 })();
 </script>
 </body>
