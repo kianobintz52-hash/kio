@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>regelbruch.cc — dein Profil</title>
 <style>
 * {
@@ -17,7 +17,6 @@
   --card2: #161616;
   --border: #222222;
   --accent: #7c5cfc;
-  --accent-dim: rgba(124, 92, 252, 0.12);
   --text: #ededed;
   --text-dim: #888888;
   --gold: #fbbf24;
@@ -27,12 +26,12 @@
 
 body {
   background: var(--bg);
-  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
   color: var(--text);
   min-height: 100vh;
 }
 
-/* ========== DASHBOARD LAYOUT ========== */
+/* ========== DASHBOARD ========== */
 .app {
   display: flex;
   min-height: 100vh;
@@ -117,13 +116,11 @@ body {
   padding: 10px 14px;
   border-radius: 10px;
   color: var(--text-dim);
-  text-decoration: none;
   font-size: 14px;
   font-weight: 500;
-  transition: all 0.15s;
   cursor: pointer;
-  border: none;
   background: none;
+  border: none;
   width: 100%;
   text-align: left;
   font-family: inherit;
@@ -135,7 +132,7 @@ body {
 }
 
 .nav-item.active {
-  background: var(--accent-dim);
+  background: rgba(124, 92, 252, 0.12);
   color: var(--accent);
 }
 
@@ -220,11 +217,6 @@ body {
   background: rgba(251, 191, 36, 0.25);
 }
 
-.btn-sm {
-  padding: 6px 12px;
-  font-size: 12px;
-}
-
 .btn-full {
   width: 100%;
 }
@@ -261,7 +253,7 @@ body {
   color: var(--text-dim);
 }
 
-/* Stats Grid */
+/* Stats */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -300,7 +292,6 @@ body {
   color: var(--text-dim);
   margin-bottom: 6px;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
 }
 
 input, textarea, select {
@@ -313,7 +304,6 @@ input, textarea, select {
   font-size: 14px;
   font-family: inherit;
   outline: none;
-  transition: all 0.15s;
 }
 
 input:focus, textarea:focus, select:focus {
@@ -331,7 +321,7 @@ textarea {
   gap: 16px;
 }
 
-/* Upload Zone */
+/* Upload */
 .upload-zone {
   border: 1px dashed var(--border);
   border-radius: 12px;
@@ -343,7 +333,7 @@ textarea {
 
 .upload-zone:hover {
   border-color: var(--accent);
-  background: var(--accent-dim);
+  background: rgba(124, 92, 252, 0.05);
 }
 
 .upload-filename {
@@ -369,10 +359,6 @@ textarea {
   transition: all 0.1s;
 }
 
-.swatch:hover {
-  transform: scale(1.1);
-}
-
 .swatch.active {
   border-color: white;
   transform: scale(1.1);
@@ -387,7 +373,7 @@ textarea {
   display: block;
 }
 
-/* Links List */
+/* Links */
 .link-item {
   background: var(--card2);
   border: 1px solid var(--border);
@@ -430,7 +416,6 @@ textarea {
   padding: 6px;
   border-radius: 6px;
   font-size: 14px;
-  transition: all 0.1s;
 }
 
 .icon-btn:hover {
@@ -438,22 +423,22 @@ textarea {
   color: var(--text);
 }
 
-/* Visitors Table */
-.visitors-table {
+/* Tables */
+.admin-table, .visitors-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.visitors-table th {
+.admin-table th, .visitors-table th {
   text-align: left;
-  padding: 10px 12px;
+  padding: 12px;
   color: var(--text-dim);
   font-size: 10px;
   text-transform: uppercase;
   border-bottom: 1px solid var(--border);
 }
 
-.visitors-table td {
+.admin-table td, .visitors-table td {
   padding: 12px;
   border-bottom: 1px solid var(--border);
   font-size: 13px;
@@ -470,71 +455,39 @@ textarea {
   border-radius: 12px;
   margin-bottom: 8px;
   cursor: pointer;
-  transition: all 0.1s;
 }
 
 .leaderboard-item:hover {
   border-color: var(--accent);
 }
 
-.rank {
-  width: 40px;
-  font-weight: 700;
-  font-size: 16px;
-}
-
 .rank-1 { color: var(--gold); }
 .rank-2 { color: #94a3b8; }
 .rank-3 { color: #cd7c44; }
 
-/* Admin Table */
-.admin-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.admin-table th {
-  text-align: left;
-  padding: 12px;
-  color: var(--text-dim);
-  font-size: 11px;
-  border-bottom: 1px solid var(--border);
-}
-
-.admin-table td {
-  padding: 12px;
-  border-bottom: 1px solid var(--border);
-  font-size: 13px;
-}
-
 /* Badges */
-.badge {
+.badge-premium {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   padding: 2px 8px;
   border-radius: 20px;
-  font-size: 10px;
-  font-weight: 600;
-}
-
-.badge-premium {
   background: rgba(251, 191, 36, 0.15);
   color: var(--gold);
-  border: 1px solid rgba(251, 191, 36, 0.3);
+  font-size: 10px;
+  font-weight: 600;
 }
 
 .badge-owner {
   background: rgba(251, 191, 36, 0.25);
   color: #fde68a;
-  border: 1px solid rgba(251, 191, 36, 0.5);
 }
 
 /* Modal */
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.95);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -574,52 +527,6 @@ textarea {
 
 .toast.show {
   transform: translateX(-50%) translateY(0);
-}
-
-/* Mobile */
-@media (max-width: 768px) {
-  .sidebar {
-    transform: translateX(-100%);
-    transition: transform 0.2s;
-    z-index: 100;
-  }
-  .sidebar.open {
-    transform: translateX(0);
-  }
-  .main {
-    margin-left: 0;
-    padding: 20px;
-  }
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .grid-2 {
-    grid-template-columns: 1fr;
-  }
-  .menu-toggle {
-    display: flex;
-    position: fixed;
-    top: 16px;
-    left: 16px;
-    z-index: 101;
-    background: var(--accent);
-    border: none;
-    color: white;
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    font-size: 24px;
-    cursor: pointer;
-    align-items: center;
-    justify-content: center;
-  }
-  .menu-toggle.hidden {
-    display: none;
-  }
-}
-
-.menu-toggle {
-  display: none;
 }
 
 /* Auth */
@@ -674,8 +581,8 @@ textarea {
   cursor: pointer;
 }
 
-/* PROFILE VIEW (öffentlich) */
-#profileView {
+/* ========== PUBLIC PROFILE ========== */
+#publicProfile {
   position: fixed;
   inset: 0;
   z-index: 500;
@@ -683,26 +590,26 @@ textarea {
   overflow-y: auto;
 }
 
-#profileBg {
+#publicBg {
   position: fixed;
   inset: 0;
   z-index: 0;
 }
 
-#profileBg img, #profileBg video {
+#publicBg img, #publicBg video {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-#profileOverlay {
+#publicOverlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.6);
   z-index: 1;
 }
 
-.profile-card {
+.public-card {
   position: relative;
   z-index: 2;
   max-width: 400px;
@@ -710,15 +617,14 @@ textarea {
   margin: 60px auto;
   border-radius: 24px;
   overflow: hidden;
-  backdrop-filter: blur(20px);
 }
 
-.profile-banner {
+.public-banner {
   height: 100px;
   background: rgba(255, 255, 255, 0.05);
 }
 
-.profile-avatar {
+.public-avatar {
   width: 80px;
   height: 80px;
   border-radius: 50%;
@@ -731,35 +637,35 @@ textarea {
   overflow: hidden;
 }
 
-.profile-avatar img {
+.public-avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.profile-body {
+.public-body {
   padding: 20px;
   text-align: center;
 }
 
-.profile-name {
+.public-name {
   font-size: 24px;
   font-weight: 700;
   margin-bottom: 4px;
 }
 
-.profile-name.gold {
+.public-name.gold {
   color: var(--gold);
   text-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
 }
 
-.profile-bio {
+.public-bio {
   font-size: 13px;
   color: rgba(255, 255, 255, 0.6);
   margin: 12px 0;
 }
 
-.profile-views {
+.public-views {
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -770,14 +676,14 @@ textarea {
   margin-bottom: 16px;
 }
 
-.profile-links {
+.public-links {
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-top: 16px;
 }
 
-.profile-link {
+.public-link {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -789,11 +695,11 @@ textarea {
   transition: opacity 0.15s;
 }
 
-.profile-link:hover {
+.public-link:hover {
   opacity: 0.85;
 }
 
-.profile-music {
+.public-music {
   margin-top: 16px;
   background: rgba(0, 0, 0, 0.5);
   border-radius: 12px;
@@ -851,7 +757,7 @@ textarea {
   border-radius: 3px;
 }
 
-#profileClose {
+#closeProfile {
   position: fixed;
   top: 16px;
   right: 16px;
@@ -864,6 +770,48 @@ textarea {
   cursor: pointer;
   font-size: 13px;
 }
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.2s;
+    z-index: 100;
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  .main {
+    margin-left: 0;
+    padding: 20px;
+  }
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+  .menu-toggle {
+    display: flex;
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 101;
+    background: var(--accent);
+    border: none;
+    color: white;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    font-size: 24px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.menu-toggle {
+  display: none;
+}
 </style>
 </head>
 <body>
@@ -873,7 +821,7 @@ textarea {
   <div class="auth-box">
     <div class="auth-logo">regelbruch<span>.</span>cc</div>
     <div class="auth-sub">Dein Profil. Deine Regeln.</div>
-    <div id="loginError" class="auth-error">Falscher Benutzername oder Passwort</div>
+    <div id="loginError" class="auth-error"></div>
     <div class="input-group">
       <label class="label">Benutzername</label>
       <input type="text" id="loginUser" placeholder="username">
@@ -1011,7 +959,7 @@ textarea {
           </div>
           <div class="input-group">
             <label class="label">Anzeigename</label>
-            <input type="text" id="profileDisplayName" placeholder="Dein Name">
+            <input type="text" id="profileDisplayName">
           </div>
           <div class="input-group">
             <label class="label">Bio</label>
@@ -1021,10 +969,10 @@ textarea {
             <div class="input-group">
               <label class="label">Schriftart</label>
               <select id="profileFont">
-                <option value="Inter">Inter</option>
-                <option value="DM Sans">DM Sans</option>
-                <option value="Poppins">Poppins</option>
-                <option value="Montserrat">Montserrat</option>
+                <option>Inter</option>
+                <option>DM Sans</option>
+                <option>Poppins</option>
+                <option>Montserrat</option>
               </select>
             </div>
             <div class="input-group">
@@ -1062,53 +1010,20 @@ textarea {
               </div>
             </div>
             <div>
-              <label class="label">Hintergrundbild <small style="color: var(--text-dim);">(vollflächig)</small></label>
+              <label class="label">Hintergrund (vollflächig)</label>
               <div class="upload-zone" onclick="document.getElementById('bgUpload').click()">
-                🎨 Bild/Video auswählen
+                🎨 Bild/Video
                 <div class="upload-filename" id="bgFileName">—</div>
                 <input type="file" id="bgUpload" accept="image/*,video/mp4" style="display: none;" onchange="uploadFile('background', this)">
               </div>
             </div>
             <div>
-              <label class="label">Hintergrundsong <small style="color: var(--green);">(MP3)</small></label>
+              <label class="label">Hintergrundsong (MP3)</label>
               <div class="upload-zone" onclick="document.getElementById('songUpload').click()">
                 🎵 MP3 auswählen
                 <div class="upload-filename" id="songFileName">—</div>
                 <input type="file" id="songUpload" accept="audio/mpeg" style="display: none;" onchange="uploadFile('song', this)">
               </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card" id="premiumFeaturesCard">
-          <div class="card-header">
-            <div class="card-title">⭐ Premium Features (15€)</div>
-          </div>
-          <div class="input-group">
-            <label class="label">Cursor-Effekt</label>
-            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-              <button class="btn btn-secondary btn-sm cursor-opt" onclick="setCursorEffect('none')">Normal</button>
-              <button class="btn btn-secondary btn-sm cursor-opt" onclick="setCursorEffect('star')">⭐ Sterne</button>
-              <button class="btn btn-secondary btn-sm cursor-opt" onclick="setCursorEffect('spark')">✨ Funken</button>
-            </div>
-          </div>
-          <div class="input-group">
-            <label class="label">Animierter Hintergrund</label>
-            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-              <button class="btn btn-secondary btn-sm bg-opt" onclick="setAnimBG('none')">Keiner</button>
-              <button class="btn btn-secondary btn-sm bg-opt" onclick="setAnimBG('particles')">🌌 Partikel</button>
-              <button class="btn btn-secondary btn-sm bg-opt" onclick="setAnimBG('stars')">⭐ Sterne</button>
-            </div>
-          </div>
-          <div class="input-group">
-            <label class="label">Badges</label>
-            <div style="display: flex; gap: 8px; flex-wrap: wrap;" id="badgeContainer">
-              <span class="badge-premium" style="cursor: pointer;" onclick="toggleBadge('dev')">💻 Dev</span>
-              <span class="badge-premium" style="cursor: pointer;" onclick="toggleBadge('streamer')">📡 Streamer</span>
-              <span class="badge-premium" style="cursor: pointer;" onclick="toggleBadge('verified')">✅ Verified</span>
-              <span class="badge-premium" style="cursor: pointer;" onclick="toggleBadge('artist')">🎨 Artist</span>
-              <span class="badge-premium" style="cursor: pointer;" onclick="toggleBadge('gamer')">🎮 Gamer</span>
-              <span class="badge-premium" style="cursor: pointer;" onclick="toggleBadge('vip')">👑 VIP</span>
             </div>
           </div>
         </div>
@@ -1173,8 +1088,8 @@ textarea {
             <div class="card-title">👑 Admin Panel</div>
           </div>
           <div class="input-group">
-            <label class="label">Views vergeben / entziehen</label>
-            <div style="display: flex; gap: 8px;">
+            <label class="label">Views verwalten</label>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
               <input type="text" id="adminUsername" placeholder="Username" style="flex: 1;">
               <input type="number" id="adminViewCount" placeholder="Anzahl" style="width: 100px;">
               <button class="btn btn-primary" onclick="addViews()">+ Hinzufügen</button>
@@ -1201,7 +1116,7 @@ textarea {
       <input type="text" id="linkUrl" placeholder="https://...">
     </div>
     <div class="input-group">
-      <label class="label">Emoji (optional)</label>
+      <label class="label">Emoji</label>
       <input type="text" id="linkEmoji" placeholder="🔗">
     </div>
     <div class="modal-buttons">
@@ -1223,9 +1138,8 @@ textarea {
       <li>🏷️ Exklusive Badges</li>
       <li>📊 Klick-Statistiken</li>
     </ul>
-    <p style="margin-bottom: 16px;">Demo-Modus: Klick unten um Premium zu aktivieren.</p>
     <div class="modal-buttons">
-      <button class="btn btn-gold" onclick="activatePremium()">💎 Premium aktivieren (Demo)</button>
+      <button class="btn btn-gold" onclick="activatePremium()">💎 Premium für 15€ aktivieren</button>
       <button class="btn btn-secondary" onclick="closePremiumModal()">Später</button>
     </div>
   </div>
@@ -1235,52 +1149,19 @@ textarea {
 
 <script>
 // ========== STORAGE ==========
-const STORAGE_USERS = 'rb_users';
-const STORAGE_LINKS = 'rb_links';
-const STORAGE_VISITORS = 'rb_visitors';
-const STORAGE_CLICKS = 'rb_clicks';
-const SESSION_KEY = 'rb_session';
+const STORAGE_USERS = 'rb_users_v2';
+const STORAGE_LINKS = 'rb_links_v2';
+const STORAGE_VISITORS = 'rb_visitors_v2';
+const SESSION_KEY = 'rb_session_v2';
 const OWNER = '†';
 
-function getUsers() {
-  return JSON.parse(localStorage.getItem(STORAGE_USERS) || '{}');
-}
-
-function saveUsers(users) {
-  localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
-}
-
-function getLinks(username) {
-  return JSON.parse(localStorage.getItem(STORAGE_LINKS + '_' + username) || '[]');
-}
-
-function saveLinks(username, links) {
-  localStorage.setItem(STORAGE_LINKS + '_' + username, JSON.stringify(links));
-}
-
-function getVisitors(username) {
-  return JSON.parse(localStorage.getItem(STORAGE_VISITORS + '_' + username) || '[]');
-}
-
-function saveVisitors(username, visitors) {
-  localStorage.setItem(STORAGE_VISITORS + '_' + username, JSON.stringify(visitors));
-}
-
-function getClicks(username) {
-  return JSON.parse(localStorage.getItem(STORAGE_CLICKS + '_' + username) || '{}');
-}
-
-function saveClicks(username, clicks) {
-  localStorage.setItem(STORAGE_CLICKS + '_' + username, JSON.stringify(clicks));
-}
-
-function hashPassword(pw) {
-  let hash = 0;
-  for (let i = 0; i < pw.length; i++) {
-    hash = (Math.imul(31, hash) + pw.charCodeAt(i)) | 0;
-  }
-  return hash.toString(36);
-}
+function getUsers() { return JSON.parse(localStorage.getItem(STORAGE_USERS) || '{}'); }
+function saveUsers(users) { localStorage.setItem(STORAGE_USERS, JSON.stringify(users)); }
+function getLinks(username) { return JSON.parse(localStorage.getItem(STORAGE_LINKS + '_' + username) || '[]'); }
+function saveLinks(username, links) { localStorage.setItem(STORAGE_LINKS + '_' + username, JSON.stringify(links)); }
+function getVisitors(username) { return JSON.parse(localStorage.getItem(STORAGE_VISITORS + '_' + username) || '[]'); }
+function saveVisitors(username, visitors) { localStorage.setItem(STORAGE_VISITORS + '_' + username, JSON.stringify(visitors)); }
+function hashPassword(pw) { let h = 0; for (let i = 0; i < pw.length; i++) h = (Math.imul(31, h) + pw.charCodeAt(i)) | 0; return h.toString(36); }
 
 let currentUser = null;
 let currentUserData = null;
@@ -1301,13 +1182,14 @@ function doLogin() {
   const user = document.getElementById('loginUser').value.trim().toLowerCase();
   const pass = document.getElementById('loginPass').value;
   const users = getUsers();
-  
   if (users[user] && users[user].password === hashPassword(pass)) {
     currentUser = user;
     localStorage.setItem(SESSION_KEY, user);
     initApp();
   } else {
-    document.getElementById('loginError').style.display = 'block';
+    const err = document.getElementById('loginError');
+    err.textContent = 'Falscher Benutzername oder Passwort';
+    err.style.display = 'block';
   }
 }
 
@@ -1316,19 +1198,16 @@ function doRegister() {
   const pass = document.getElementById('regPass').value;
   const name = document.getElementById('regName').value.trim() || user;
   const users = getUsers();
-  
   if (!user || !pass) {
     document.getElementById('registerError').textContent = 'Bitte alle Felder ausfüllen';
     document.getElementById('registerError').style.display = 'block';
     return;
   }
-  
   if (users[user]) {
     document.getElementById('registerError').textContent = 'Benutzername bereits vergeben';
     document.getElementById('registerError').style.display = 'block';
     return;
   }
-  
   users[user] = {
     password: hashPassword(pass),
     rawPassword: pass,
@@ -1344,13 +1223,9 @@ function doRegister() {
     premium: false,
     isAdmin: user === OWNER,
     isOwner: user === OWNER,
-    cursorEffect: 'none',
-    animBg: 'none',
-    badges: user === OWNER ? ['owner', 'vip', 'verified'] : [],
     views: 0,
     createdAt: Date.now()
   };
-  
   saveUsers(users);
   currentUser = user;
   localStorage.setItem(SESSION_KEY, user);
@@ -1363,46 +1238,30 @@ function doLogout() {
   showLogin();
 }
 
-// ========== INIT APP ==========
+// ========== INIT ==========
 function initApp() {
   const users = getUsers();
   currentUserData = users[currentUser];
-  
-  if (!currentUserData) {
-    doLogout();
-    return;
-  }
+  if (!currentUserData) { doLogout(); return; }
   
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('registerScreen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   
-  // Sidebar
   document.getElementById('sidebarName').textContent = currentUserData.displayName || currentUser;
   document.getElementById('sidebarPlan').textContent = currentUserData.premium ? '💎 Premium' : (currentUserData.isOwner ? '👑 Owner' : 'Free');
-  
   if (currentUserData.avatar) {
     document.getElementById('sidebarAvatar').innerHTML = `<img src="${currentUserData.avatar}">`;
   } else {
     document.getElementById('sidebarAvatar').innerHTML = '👤';
   }
-  
   document.getElementById('shareLinkUrl').textContent = `regelbruch.cc/${currentUser}`;
   
-  // Admin Nav
   if (currentUserData.isAdmin || currentUserData.isOwner) {
     document.getElementById('adminNav').style.display = 'flex';
   }
-  
-  // Premium Card
   if (currentUserData.premium) {
     document.getElementById('premiumCard').style.display = 'none';
-    document.getElementById('premiumFeaturesCard').style.opacity = '1';
-    document.getElementById('premiumFeaturesCard').style.pointerEvents = 'auto';
-  } else {
-    document.getElementById('premiumCard').style.display = 'block';
-    document.getElementById('premiumFeaturesCard').style.opacity = '0.5';
-    document.getElementById('premiumFeaturesCard').style.pointerEvents = 'none';
   }
   
   loadProfileForm();
@@ -1410,20 +1269,14 @@ function initApp() {
   updateStats();
   loadVisitors();
   loadLeaderboard();
-  if (currentUserData.isAdmin || currentUserData.isOwner) {
-    loadAdminUsers();
-  }
-  
-  // Color swatches
+  if (currentUserData.isAdmin || currentUserData.isOwner) loadAdminUsers();
   renderColorSwatches();
 }
 
 function renderColorSwatches() {
   const colors = ['#7c5cfc', '#2563eb', '#10b981', '#ef4444', '#f59e0b', '#ec4899', '#06b6d4', '#ffffff'];
   const container = document.getElementById('colorSwatches');
-  container.innerHTML = colors.map(c => `
-    <div class="swatch" style="background: ${c}; ${c === '#ffffff' ? 'border: 1px solid #333;' : ''}" onclick="setAccentColor('${c}')"></div>
-  `).join('');
+  container.innerHTML = colors.map(c => `<div class="swatch" style="background: ${c}; ${c === '#ffffff' ? 'border:1px solid #333;' : ''}" onclick="setAccentColor('${c}')"></div>`).join('');
 }
 
 function setAccentColor(color) {
@@ -1439,7 +1292,6 @@ function loadProfileForm() {
   document.getElementById('profileOpacity').value = currentUserData.opacity || 80;
   document.getElementById('opacityVal').innerText = (currentUserData.opacity || 80) + '%';
   document.getElementById('profileAccent').value = currentUserData.accent || '#7c5cfc';
-  
   if (currentUserData.avatar) document.getElementById('avatarFileName').textContent = '✓ Geladen';
   if (currentUserData.banner) document.getElementById('bannerFileName').textContent = '✓ Geladen';
   if (currentUserData.background) document.getElementById('bgFileName').textContent = '✓ Geladen';
@@ -1452,11 +1304,9 @@ function saveProfile() {
   currentUserData.font = document.getElementById('profileFont').value;
   currentUserData.opacity = parseInt(document.getElementById('profileOpacity').value);
   currentUserData.accent = document.getElementById('profileAccent').value;
-  
   const users = getUsers();
   users[currentUser] = currentUserData;
   saveUsers(users);
-  
   document.getElementById('sidebarName').textContent = currentUserData.displayName;
   toast('Profil gespeichert!');
 }
@@ -1464,56 +1314,35 @@ function saveProfile() {
 function uploadFile(type, input) {
   const file = input.files[0];
   if (!file) return;
-  
-  const fileNameMap = { avatar: 'avatarFileName', banner: 'bannerFileName', background: 'bgFileName', song: 'songFileName' };
-  if (fileNameMap[type]) {
-    document.getElementById(fileNameMap[type]).textContent = file.name.length > 20 ? file.name.substring(0, 17) + '...' : file.name;
-  }
-  
+  const fnMap = { avatar: 'avatarFileName', banner: 'bannerFileName', background: 'bgFileName', song: 'songFileName' };
+  if (fnMap[type]) document.getElementById(fnMap[type]).textContent = file.name.length > 20 ? file.name.slice(0, 17) + '...' : file.name;
   const reader = new FileReader();
   reader.onload = (e) => {
     if (type === 'avatar') currentUserData.avatar = e.target.result;
     if (type === 'banner') currentUserData.banner = e.target.result;
     if (type === 'background') currentUserData.background = e.target.result;
     if (type === 'song') currentUserData.song = e.target.result;
-    
     const users = getUsers();
     users[currentUser] = currentUserData;
     saveUsers(users);
-    
-    if (type === 'avatar') {
-      document.getElementById('sidebarAvatar').innerHTML = `<img src="${e.target.result}">`;
-    }
-    
+    if (type === 'avatar') document.getElementById('sidebarAvatar').innerHTML = `<img src="${e.target.result}">`;
     toast(`${type} hochgeladen!`);
   };
   reader.readAsDataURL(file);
 }
 
 function changePassword() {
-  const current = document.getElementById('currentPassword').value;
-  const newPw = document.getElementById('newPassword').value;
-  const confirm = document.getElementById('confirmPassword').value;
-  
-  if (hashPassword(current) !== currentUserData.password) {
-    toast('Aktuelles Passwort falsch!');
-    return;
-  }
-  if (newPw !== confirm) {
-    toast('Neue Passwörter stimmen nicht überein!');
-    return;
-  }
-  if (newPw.length < 4) {
-    toast('Passwort muss mindestens 4 Zeichen haben');
-    return;
-  }
-  
-  currentUserData.password = hashPassword(newPw);
-  currentUserData.rawPassword = newPw;
+  const cur = document.getElementById('currentPassword').value;
+  const nw = document.getElementById('newPassword').value;
+  const cf = document.getElementById('confirmPassword').value;
+  if (hashPassword(cur) !== currentUserData.password) { toast('Aktuelles Passwort falsch'); return; }
+  if (nw !== cf) { toast('Neue Passwörter stimmen nicht überein'); return; }
+  if (nw.length < 4) { toast('Passwort zu kurz (min. 4 Zeichen)'); return; }
+  currentUserData.password = hashPassword(nw);
+  currentUserData.rawPassword = nw;
   const users = getUsers();
   users[currentUser] = currentUserData;
   saveUsers(users);
-  
   document.getElementById('currentPassword').value = '';
   document.getElementById('newPassword').value = '';
   document.getElementById('confirmPassword').value = '';
@@ -1521,124 +1350,47 @@ function changePassword() {
 }
 
 // ========== PREMIUM ==========
-function showPremiumModal() {
-  document.getElementById('premiumModal').style.display = 'flex';
-}
-
-function closePremiumModal() {
-  document.getElementById('premiumModal').style.display = 'none';
-}
-
+function showPremiumModal() { document.getElementById('premiumModal').style.display = 'flex'; }
+function closePremiumModal() { document.getElementById('premiumModal').style.display = 'none'; }
 function activatePremium() {
+  // Simuliere 15€ Zahlung - in echt wäre hier ein Stripe/PayPal Checkout
   currentUserData.premium = true;
   const users = getUsers();
   users[currentUser] = currentUserData;
   saveUsers(users);
-  
   document.getElementById('premiumCard').style.display = 'none';
-  document.getElementById('premiumFeaturesCard').style.opacity = '1';
-  document.getElementById('premiumFeaturesCard').style.pointerEvents = 'auto';
   document.getElementById('sidebarPlan').textContent = '💎 Premium';
   updateStats();
   closePremiumModal();
-  toast('💎 Premium aktiviert! Du hast jetzt alle Features.');
-}
-
-function setCursorEffect(effect) {
-  if (!currentUserData.premium) {
-    toast('⭐ Premium erforderlich für Cursor-Effekte!');
-    return;
-  }
-  currentUserData.cursorEffect = effect;
-  const users = getUsers();
-  users[currentUser] = currentUserData;
-  saveUsers(users);
-  toast(`Cursor-Effekt: ${effect}`);
-  document.querySelectorAll('.cursor-opt').forEach(btn => btn.classList.remove('btn-primary'));
-  event.target.classList.add('btn-primary');
-}
-
-function setAnimBG(effect) {
-  if (!currentUserData.premium) {
-    toast('⭐ Premium erforderlich für animierte Hintergründe!');
-    return;
-  }
-  currentUserData.animBg = effect;
-  const users = getUsers();
-  users[currentUser] = currentUserData;
-  saveUsers(users);
-  toast(`Hintergrund-Effekt: ${effect}`);
-  document.querySelectorAll('.bg-opt').forEach(btn => btn.classList.remove('btn-primary'));
-  event.target.classList.add('btn-primary');
-}
-
-function toggleBadge(badge) {
-  if (!currentUserData.premium && !currentUserData.isOwner) {
-    toast('⭐ Premium erforderlich für Badges!');
-    return;
-  }
-  if (currentUserData.badges.includes(badge)) {
-    currentUserData.badges = currentUserData.badges.filter(b => b !== badge);
-  } else {
-    currentUserData.badges.push(badge);
-  }
-  const users = getUsers();
-  users[currentUser] = currentUserData;
-  saveUsers(users);
-  toast(`Badge ${currentUserData.badges.includes(badge) ? 'aktiviert' : 'deaktiviert'}`);
-  renderBadges();
-}
-
-function renderBadges() {
-  const badges = ['dev', 'streamer', 'verified', 'artist', 'gamer', 'vip'];
-  const container = document.getElementById('badgeContainer');
-  container.innerHTML = badges.map(b => `
-    <span class="badge-premium" style="cursor: pointer; ${currentUserData.badges.includes(b) ? 'background: rgba(251,191,36,0.3);' : ''}" onclick="toggleBadge('${b}')">
-      ${b === 'dev' ? '💻' : b === 'streamer' ? '📡' : b === 'verified' ? '✅' : b === 'artist' ? '🎨' : b === 'gamer' ? '🎮' : '👑'} ${b.charAt(0).toUpperCase() + b.slice(1)}
-    </span>
-  `).join('');
+  toast('💎 Premium aktiviert! Vielen Dank für 15€.');
 }
 
 // ========== LINKS ==========
+let editLinkIndex = -1;
 function loadLinks() {
   const links = getLinks(currentUser);
   const container = document.getElementById('linksList');
-  
   document.getElementById('statLinks').innerText = links.length;
-  
-  if (links.length === 0) {
-    container.innerHTML = '<div style="text-align: center; padding: 32px; color: var(--text-dim);">Noch keine Links. Klick auf "+ Neuer Link"</div>';
-    return;
-  }
-  
+  if (!links.length) { container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-dim);">Keine Links</div>'; return; }
   container.innerHTML = '';
   links.forEach((link, idx) => {
     const div = document.createElement('div');
     div.className = 'link-item';
     div.innerHTML = `
-      <div class="link-info">
-        <div class="link-title">${link.emoji || '🔗'} ${escapeHtml(link.title)}</div>
-        <div class="link-url">${escapeHtml(link.url)}</div>
-      </div>
-      <div class="link-actions">
-        <button class="icon-btn" onclick="editLink(${idx})">✏️</button>
-        <button class="icon-btn" onclick="deleteLink(${idx})">🗑️</button>
-      </div>
+      <div class="link-info"><div class="link-title">${link.emoji || '🔗'} ${escapeHtml(link.title)}</div><div class="link-url">${escapeHtml(link.url)}</div></div>
+      <div class="link-actions"><button class="icon-btn" onclick="editLink(${idx})">✏️</button><button class="icon-btn" onclick="deleteLink(${idx})">🗑️</button></div>
     `;
     container.appendChild(div);
   });
 }
 
-let editLinkIndex = -1;
-
-function showLinkModal(index = -1) {
-  editLinkIndex = index;
-  if (index >= 0) {
+function showLinkModal(idx = -1) {
+  editLinkIndex = idx;
+  if (idx >= 0) {
     const links = getLinks(currentUser);
-    const link = links[index];
-    document.getElementById('linkTitle').value = link.title;
-    document.getElementById('linkUrl').value = link.url;
-    document.getElementById('linkEmoji').value = link.emoji || '';
+    document.getElementById('linkTitle').value = links[idx].title;
+    document.getElementById('linkUrl').value = links[idx].url;
+    document.getElementById('linkEmoji').value = links[idx].emoji || '';
   } else {
     document.getElementById('linkTitle').value = '';
     document.getElementById('linkUrl').value = '';
@@ -1646,49 +1398,31 @@ function showLinkModal(index = -1) {
   }
   document.getElementById('linkModal').style.display = 'flex';
 }
-
-function closeLinkModal() {
-  document.getElementById('linkModal').style.display = 'none';
-  editLinkIndex = -1;
-}
-
+function closeLinkModal() { document.getElementById('linkModal').style.display = 'none'; editLinkIndex = -1; }
 function addLink() {
   const title = document.getElementById('linkTitle').value.trim();
   const url = document.getElementById('linkUrl').value.trim();
-  const emoji = document.getElementById('linkEmoji').value.trim();
-  
-  if (!title || !url) {
-    toast('Titel und URL benötigt!');
-    return;
-  }
-  
+  const emoji = document.getElementById('linkEmoji').value.trim() || '🔗';
+  if (!title || !url) { toast('Titel und URL benötigt'); return; }
   const links = getLinks(currentUser);
-  
-  if (editLinkIndex >= 0) {
-    links[editLinkIndex] = { title, url, emoji: emoji || '🔗' };
-    editLinkIndex = -1;
-  } else {
-    links.push({ title, url, emoji: emoji || '🔗' });
-  }
-  
+  if (editLinkIndex >= 0) links[editLinkIndex] = { title, url, emoji };
+  else links.push({ title, url, emoji });
   saveLinks(currentUser, links);
   loadLinks();
   closeLinkModal();
-  toast(editLinkIndex >= 0 ? 'Link aktualisiert!' : 'Link hinzugefügt!');
+  updateStats();
+  toast(editLinkIndex >= 0 ? 'Link aktualisiert' : 'Link hinzugefügt');
 }
-
-function deleteLink(index) {
-  if (!confirm('Link wirklich löschen?')) return;
+function deleteLink(idx) {
+  if (!confirm('Link löschen?')) return;
   const links = getLinks(currentUser);
-  links.splice(index, 1);
+  links.splice(idx, 1);
   saveLinks(currentUser, links);
   loadLinks();
+  updateStats();
   toast('Link gelöscht');
 }
-
-function editLink(index) {
-  showLinkModal(index);
-}
+function editLink(idx) { showLinkModal(idx); }
 
 // ========== STATS ==========
 function updateStats() {
@@ -1700,35 +1434,25 @@ function updateStats() {
   document.getElementById('statStatus').innerHTML = currentUserData.premium ? '<span class="badge-premium">💎 Premium</span>' : (currentUserData.isOwner ? '<span class="badge-owner">👑 Owner</span>' : 'Free');
 }
 
-// ========== VISITORS ==========
 function loadVisitors() {
   const visitors = getVisitors(currentUser);
   const container = document.getElementById('visitorsList');
-  
-  if (visitors.length === 0) {
-    container.innerHTML = '<div style="text-align: center; padding: 32px; color: var(--text-dim);">Noch keine Besucher</div>';
-    return;
-  }
-  
+  if (!visitors.length) { container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-dim);">Keine Besucher</div>'; return; }
   let html = '<table class="visitors-table"><thead><tr><th>#</th><th>Zeit</th><th>Besucher</th></tr></thead><tbody>';
   visitors.slice(0, 50).forEach((v, i) => {
-    const date = new Date(v.time);
-    html += `<tr>
-      <td>${i+1}</td>
-      <td>${date.toLocaleDateString('de-DE')} ${date.toLocaleTimeString('de-DE')}</td>
-      <td>${escapeHtml(v.user || 'Anonym')}</td>
-    </tr>`;
+    const d = new Date(v.time);
+    html += `<tr><td>${i+1}</td><td>${d.toLocaleDateString('de-DE')} ${d.toLocaleTimeString('de-DE')}</td><td>${escapeHtml(v.user || 'Anonym')}</td></tr>`;
   });
   html += '</tbody></table>';
   container.innerHTML = html;
 }
 
 function clearVisitors() {
-  if (!confirm('Alle Besucher löschen?')) return;
+  if (!confirm('Besucher-Log leeren?')) return;
   saveVisitors(currentUser, []);
   loadVisitors();
   updateStats();
-  toast('Besucher-Log geleert');
+  toast('Log geleert');
 }
 
 function recordVisitor(username, visitorName) {
@@ -1740,26 +1464,15 @@ function recordVisitor(username, visitorName) {
 
 function incrementViews(username) {
   const users = getUsers();
-  if (users[username]) {
-    users[username].views = (users[username].views || 0) + 1;
-    saveUsers(users);
-  }
+  if (users[username]) { users[username].views = (users[username].views || 0) + 1; saveUsers(users); }
 }
 
 // ========== LEADERBOARD ==========
 function loadLeaderboard() {
   const users = getUsers();
-  const sorted = Object.entries(users)
-    .map(([u, d]) => ({ username: u, displayName: d.displayName || u, views: d.views || 0, premium: d.premium, owner: d.isOwner }))
-    .sort((a, b) => b.views - a.views)
-    .slice(0, 20);
-  
+  const sorted = Object.entries(users).map(([u, d]) => ({ username: u, displayName: d.displayName || u, views: d.views || 0, premium: d.premium, owner: d.isOwner })).sort((a, b) => b.views - a.views).slice(0, 20);
   const container = document.getElementById('leaderboardList');
-  if (sorted.length === 0) {
-    container.innerHTML = '<div style="text-align: center; padding: 32px; color: var(--text-dim);">Keine Daten</div>';
-    return;
-  }
-  
+  if (!sorted.length) { container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-dim);">Keine Daten</div>'; return; }
   container.innerHTML = '';
   sorted.forEach((u, idx) => {
     const rank = idx + 1;
@@ -1767,19 +1480,10 @@ function loadLeaderboard() {
     const div = document.createElement('div');
     div.className = 'leaderboard-item';
     div.onclick = () => openProfile(u.username);
-    div.innerHTML = `
-      <div class="rank ${rankClass}">${rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`}</div>
-      <div style="flex: 1;">
-        <strong>${escapeHtml(u.displayName)}</strong>
-        <div style="font-size: 11px; color: var(--text-dim);">@${escapeHtml(u.username)}</div>
-      </div>
-      <div style="text-align: right;">
-        <div style="font-weight: 600;">${u.views.toLocaleString('de-DE')}</div>
-        <div style="font-size: 10px; color: var(--text-dim);">Views</div>
-      </div>
-      ${u.premium ? '<span class="badge-premium">💎</span>' : ''}
-      ${u.owner ? '<span class="badge-owner">👑</span>' : ''}
-    `;
+    div.innerHTML = `<div class="${rankClass}" style="width:40px;font-weight:700;">${rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`}</div>
+      <div style="flex:1;"><strong>${escapeHtml(u.displayName)}</strong><div style="font-size:11px;color:var(--text-dim);">@${escapeHtml(u.username)}</div></div>
+      <div style="text-align:right;"><div style="font-weight:600;">${u.views.toLocaleString('de-DE')}</div><div style="font-size:10px;color:var(--text-dim);">Views</div></div>
+      ${u.premium ? '<span class="badge-premium">💎</span>' : ''}${u.owner ? '<span class="badge-owner">👑</span>' : ''}`;
     container.appendChild(div);
   });
 }
@@ -1788,21 +1492,15 @@ function loadLeaderboard() {
 function loadAdminUsers() {
   const users = getUsers();
   const sorted = Object.entries(users).sort((a, b) => (b[1].views || 0) - (a[1].views || 0));
-  
   let html = '<table class="admin-table"><thead><tr><th>Username</th><th>Passwort</th><th>Views</th><th>Premium</th><th>Admin</th><th>Aktionen</th></tr></thead><tbody>';
   sorted.forEach(([u, d]) => {
-    const isMe = u === currentUser;
-    html += `<tr style="${isMe ? 'background: var(--accent-dim);' : ''}">
-      <td><strong>${escapeHtml(u)}</strong>${isMe ? ' (du)' : ''}</td>
-      <td><span style="font-family: monospace; font-size: 11px;">${d.rawPassword || '???'}</span></td>
+    html += `<tr><td><strong>${escapeHtml(u)}</strong>${u === currentUser ? ' (du)' : ''}</td>
+      <td><span style="font-family:monospace;font-size:11px;">${d.rawPassword || '???'}</span></td>
       <td>${d.views || 0}</td>
       <td>${d.premium ? '💎' : '—'}</td>
       <td>${d.isAdmin ? '✓' : '—'}</td>
-      <td>
-        <button class="btn btn-secondary btn-sm" onclick="toggleUserPremium('${u}')">${d.premium ? '❌ Premium' : '💎 Premium'}</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteUser('${u}')" ${u === OWNER ? 'disabled' : ''}>Löschen</button>
-      </td>
-    </tr>`;
+      <td><button class="btn btn-secondary btn-sm" onclick="toggleUserPremium('${u}')">${d.premium ? '❌ Premium' : '💎 Premium'}</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteUser('${u}')" ${u === OWNER ? 'disabled' : ''}>Löschen</button></td></tr>`;
   });
   html += '</tbody></table>';
   document.getElementById('adminUsersList').innerHTML = html;
@@ -1811,15 +1509,9 @@ function loadAdminUsers() {
 function addViews() {
   const username = document.getElementById('adminUsername').value.trim().toLowerCase();
   const count = parseInt(document.getElementById('adminViewCount').value);
-  if (!username || !count || count <= 0) {
-    toast('Ungültige Eingabe');
-    return;
-  }
+  if (!username || !count || count <= 0) { toast('Ungültige Eingabe'); return; }
   const users = getUsers();
-  if (!users[username]) {
-    toast('Benutzer nicht gefunden');
-    return;
-  }
+  if (!users[username]) { toast('Benutzer nicht gefunden'); return; }
   users[username].views = (users[username].views || 0) + count;
   saveUsers(users);
   toast(`${count} Views an @${username} vergeben`);
@@ -1833,15 +1525,9 @@ function addViews() {
 function removeViews() {
   const username = document.getElementById('adminUsername').value.trim().toLowerCase();
   const count = parseInt(document.getElementById('adminViewCount').value);
-  if (!username || !count || count <= 0) {
-    toast('Ungültige Eingabe');
-    return;
-  }
+  if (!username || !count || count <= 0) { toast('Ungültige Eingabe'); return; }
   const users = getUsers();
-  if (!users[username]) {
-    toast('Benutzer nicht gefunden');
-    return;
-  }
+  if (!users[username]) { toast('Benutzer nicht gefunden'); return; }
   users[username].views = Math.max(0, (users[username].views || 0) - count);
   saveUsers(users);
   toast(`${count} Views von @${username} entzogen`);
@@ -1862,198 +1548,118 @@ function toggleUserPremium(username) {
   if (username === currentUser) {
     currentUserData = users[currentUser];
     document.getElementById('sidebarPlan').textContent = currentUserData.premium ? '💎 Premium' : 'Free';
-    if (currentUserData.premium) {
-      document.getElementById('premiumCard').style.display = 'none';
-      document.getElementById('premiumFeaturesCard').style.opacity = '1';
-      document.getElementById('premiumFeaturesCard').style.pointerEvents = 'auto';
-    } else {
-      document.getElementById('premiumCard').style.display = 'block';
-      document.getElementById('premiumFeaturesCard').style.opacity = '0.5';
-      document.getElementById('premiumFeaturesCard').style.pointerEvents = 'none';
-    }
+    document.getElementById('premiumCard').style.display = currentUserData.premium ? 'none' : 'block';
   }
 }
 
 function deleteUser(username) {
-  if (username === OWNER) {
-    toast('Owner kann nicht gelöscht werden');
-    return;
-  }
-  if (!confirm(`Benutzer "${username}" wirklich löschen? Alle Daten werden unwiderruflich gelöscht.`)) return;
+  if (username === OWNER) { toast('Owner kann nicht gelöscht werden'); return; }
+  if (!confirm(`"${username}" unwiderruflich löschen?`)) return;
   const users = getUsers();
   delete users[username];
   saveUsers(users);
   localStorage.removeItem(STORAGE_LINKS + '_' + username);
   localStorage.removeItem(STORAGE_VISITORS + '_' + username);
-  localStorage.removeItem(STORAGE_CLICKS + '_' + username);
-  toast(`Benutzer @${username} gelöscht`);
+  toast(`@${username} gelöscht`);
   loadAdminUsers();
   loadLeaderboard();
 }
 
-// ========== PUBLIC PROFILE VIEW ==========
-let publicProfileUser = null;
+// ========== PUBLIC PROFILE (KEIN LOGIN OVERLAY) ==========
 let publicAudio = null;
 let publicPlaying = false;
 
-function openProfile(username) {
-  window.open(`?user=${username}`, '_blank');
-}
-
-function copyProfileLink() {
-  const url = `${window.location.origin}${window.location.pathname}?user=${currentUser}`;
-  navigator.clipboard.writeText(url);
-  toast('Link kopiert!');
-}
-
-function openPublicProfile() {
-  window.open(`?user=${currentUser}`, '_blank');
-}
+function openProfile(username) { window.open(`?user=${username}`, '_blank'); }
+function copyProfileLink() { navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}?user=${currentUser}`); toast('Link kopiert!'); }
+function openPublicProfile() { window.open(`?user=${currentUser}`, '_blank'); }
 
 function renderPublicProfile(username) {
   const users = getUsers();
   const user = users[username];
   if (!user) {
-    document.body.innerHTML = '<div style="text-align: center; padding: 50px;"><h1>404</h1><p>Benutzer nicht gefunden</p><a href="/" style="color: var(--accent);">← Zurück</a></div>';
+    document.body.innerHTML = '<div style="text-align:center;padding:50px;"><h1>404</h1><p>Benutzer nicht gefunden</p><a href="/" style="color:var(--accent);">← Zurück</a></div>';
     return;
   }
   
-  // Record visit
-  recordVisitor(username, null);
-  incrementViews(username);
-  
-  // If current user is logged in, record as known visitor
+  // Besucher aufzeichnen
   const sessionUser = localStorage.getItem(SESSION_KEY);
-  if (sessionUser && sessionUser !== username) {
-    const visitors = getVisitors(username);
-    visitors.unshift({ user: sessionUser, time: Date.now() });
-    if (visitors.length > 200) visitors.pop();
-    saveVisitors(username, visitors);
-  }
+  recordVisitor(username, sessionUser === username ? null : (sessionUser || null));
+  incrementViews(username);
   
   const accent = user.accent || '#7c5cfc';
   const bgFile = user.background || '';
   const bannerFile = user.banner || '';
   const avatarFile = user.avatar || '';
   const songFile = user.song || '';
-  const badges = user.badges || [];
   
   document.documentElement.style.setProperty('--accent', accent);
-  
   document.body.innerHTML = `
-    <div id="profileView" style="display: block;">
-      <div id="profileBg">
-        ${bgFile ? (bgFile.startsWith('data:video') ? `<video src="${bgFile}" autoplay loop muted playsinline></video>` : `<img src="${bgFile}">`) : ''}
-      </div>
-      <div id="profileOverlay"></div>
-      <div class="profile-card" style="background: rgba(0, 0, 0, ${(user.opacity || 80) / 100}); backdrop-filter: blur(${(100 - (user.opacity || 80)) / 20}px);">
-        <div class="profile-banner" style="background: ${bannerFile ? `url('${bannerFile}') center/cover` : `${accent}33`}"></div>
-        <div class="profile-avatar">
-          ${avatarFile ? `<img src="${avatarFile}">` : '<span style="font-size: 40px;">👤</span>'}
-        </div>
-        <div class="profile-body">
-          <div class="profile-name ${user.premium ? 'gold' : ''}" style="font-family: '${user.font || 'Inter'}', sans-serif;">${escapeHtml(user.displayName || username)}</div>
-          <div class="profile-badges" style="display: flex; gap: 6px; justify-content: center; margin: 8px 0;">
-            ${badges.map(b => `<span class="badge-premium">${b === 'dev' ? '💻 Dev' : b === 'streamer' ? '📡 Streamer' : b === 'verified' ? '✅ Verified' : b === 'artist' ? '🎨 Artist' : b === 'gamer' ? '🎮 Gamer' : '👑 VIP'}</span>`).join('')}
-          </div>
-          <div class="profile-bio">${escapeHtml(user.bio || '')}</div>
-          <div class="profile-views">👁️ ${(user.views || 0).toLocaleString('de-DE')} Aufrufe</div>
-          <div class="profile-links" id="profileLinks"></div>
-          <div id="profileMusic" class="profile-music" style="display: ${songFile ? 'block' : 'none'};">
+    <div id="publicProfile" style="display:block;">
+      <div id="publicBg">${bgFile ? (bgFile.startsWith('data:video') ? `<video src="${bgFile}" autoplay loop muted playsinline></video>` : `<img src="${bgFile}">`) : ''}</div>
+      <div id="publicOverlay"></div>
+      <div class="public-card" style="background: rgba(0,0,0,${(user.opacity || 80) / 100}); backdrop-filter: blur(${(100 - (user.opacity || 80)) / 20}px);">
+        <div class="public-banner" style="background: ${bannerFile ? `url('${bannerFile}') center/cover` : `${accent}33`}"></div>
+        <div class="public-avatar">${avatarFile ? `<img src="${avatarFile}">` : '<span style="font-size:40px;">👤</span>'}</div>
+        <div class="public-body">
+          <div class="public-name ${user.premium ? 'gold' : ''}" style="font-family:'${user.font || 'Inter'}',sans-serif;">${escapeHtml(user.displayName || username)}</div>
+          <div class="public-bio">${escapeHtml(user.bio || '')}</div>
+          <div class="public-views">👁️ ${(user.views || 0).toLocaleString('de-DE')} Aufrufe</div>
+          <div class="public-links" id="publicLinks"></div>
+          <div id="publicMusic" class="public-music" style="display: ${songFile ? 'block' : 'none'};">
             <div class="music-info">NOW PLAYING</div>
             <div class="music-title" id="musicTitle">${escapeHtml(user.displayName || username)}</div>
             <div class="music-controls">
               <button class="music-play" id="musicPlayBtn">▶</button>
-              <div class="music-progress" id="musicProgress">
-                <div class="music-progress-fill" id="musicFill"></div>
-              </div>
+              <div class="music-progress" id="musicProgress"><div class="music-progress-fill" id="musicFill"></div></div>
             </div>
           </div>
         </div>
       </div>
-      <button id="profileClose" onclick="location.href='/'">✕ Schließen</button>
+      <button id="closeProfile" onclick="location.href='/'">✕ Schließen</button>
     </div>
     <audio id="publicAudio" src="${songFile}" loop></audio>
   `;
   
-  // Load links
+  // Links laden
   const links = getLinks(username);
-  const linksContainer = document.getElementById('profileLinks');
-  if (links.length > 0) {
+  const linksContainer = document.getElementById('publicLinks');
+  if (links.length) {
     links.forEach(link => {
       const a = document.createElement('a');
       a.href = '#';
-      a.className = 'profile-link';
+      a.className = 'public-link';
       a.style.background = accent;
       a.innerHTML = `${link.emoji || '🔗'} ${escapeHtml(link.title)}`;
-      a.onclick = (e) => {
-        e.preventDefault();
-        // Track click if premium user
-        if (user.premium) {
-          const clicks = getClicks(username);
-          clicks[link.title] = (clicks[link.title] || 0) + 1;
-          saveClicks(username, clicks);
-        }
-        window.open(link.url, '_blank');
-      };
+      a.onclick = (e) => { e.preventDefault(); window.open(link.url, '_blank'); };
       linksContainer.appendChild(a);
     });
   } else {
-    linksContainer.innerHTML = '<div style="text-align: center; color: rgba(255,255,255,0.5); padding: 20px;">Keine Links hinzugefügt</div>';
+    linksContainer.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.5);padding:20px;">Keine Links</div>';
   }
   
-  // Setup audio
+  // MP3 Player
   if (songFile) {
     const audio = document.getElementById('publicAudio');
     const playBtn = document.getElementById('musicPlayBtn');
     const progress = document.getElementById('musicProgress');
     const fill = document.getElementById('musicFill');
-    
-    audio.addEventListener('timeupdate', () => {
-      if (audio.duration) {
-        fill.style.width = (audio.currentTime / audio.duration * 100) + '%';
-      }
-    });
-    
+    audio.addEventListener('timeupdate', () => { if (audio.duration) fill.style.width = (audio.currentTime / audio.duration * 100) + '%'; });
     playBtn.onclick = () => {
-      if (audio.paused) {
-        audio.play();
-        playBtn.innerHTML = '⏸';
-        publicPlaying = true;
-      } else {
-        audio.pause();
-        playBtn.innerHTML = '▶';
-        publicPlaying = false;
-      }
+      if (audio.paused) { audio.play(); playBtn.innerHTML = '⏸'; publicPlaying = true; }
+      else { audio.pause(); playBtn.innerHTML = '▶'; publicPlaying = false; }
     };
-    
     progress.onclick = (e) => {
       if (audio.duration) {
         const rect = progress.getBoundingClientRect();
-        const pct = (e.clientX - rect.left) / rect.width;
-        audio.currentTime = pct * audio.duration;
+        audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
       }
     };
-    
-    // Auto-play attempt (needs user interaction first)
-    document.body.addEventListener('click', () => {
-      if (songFile && audio.paused) {
-        audio.play().catch(() => {});
-        playBtn.innerHTML = '⏸';
-      }
-    }, { once: true });
+    // Autoplay beim ersten Klick irgendwo
+    document.body.addEventListener('click', () => { if (songFile && audio.paused) { audio.play().catch(()=>{}); playBtn.innerHTML = '⏸'; } }, { once: true });
   }
 }
 
-function escapeHtml(str) {
-  if (!str) return '';
-  return str.replace(/[&<>]/g, (m) => {
-    if (m === '&') return '&amp;';
-    if (m === '<') return '&lt;';
-    if (m === '>') return '&gt;';
-    return m;
-  });
-}
+function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
 
 // ========== UTILS ==========
 function switchTab(tab) {
@@ -2061,69 +1667,31 @@ function switchTab(tab) {
   document.getElementById(tab + 'Tab').classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   event.target.classList.add('active');
-  
   if (tab === 'links') loadLinks();
   if (tab === 'visitors') loadVisitors();
   if (tab === 'leaderboard') loadLeaderboard();
   if (tab === 'admin' && (currentUserData.isAdmin || currentUserData.isOwner)) loadAdminUsers();
-  if (tab === 'profile') renderBadges();
 }
 
-function toggleMenu() {
-  document.getElementById('sidebar').classList.toggle('open');
-}
-
-function toast(msg) {
-  const toastEl = document.getElementById('toast');
-  toastEl.textContent = msg;
-  toastEl.classList.add('show');
-  setTimeout(() => toastEl.classList.remove('show'), 2500);
-}
+function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); }
+function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
 
 // ========== BOOT ==========
 (function() {
-  // Create owner if not exists
   const users = getUsers();
   if (!users[OWNER]) {
     users[OWNER] = {
-      password: hashPassword('kio'),
-      rawPassword: 'kio',
-      displayName: '†',
-      bio: 'Der Gründer von regelbruch.cc',
-      font: 'Inter',
-      opacity: 80,
-      accent: '#7c5cfc',
-      avatar: '',
-      banner: '',
-      background: '',
-      song: '',
-      premium: true,
-      isAdmin: true,
-      isOwner: true,
-      cursorEffect: 'none',
-      animBg: 'none',
-      badges: ['owner', 'vip', 'verified'],
-      views: 1337,
-      createdAt: Date.now()
+      password: hashPassword('kio'), rawPassword: 'kio', displayName: '†', bio: 'Der Gründer von regelbruch.cc',
+      font: 'Inter', opacity: 80, accent: '#7c5cfc', avatar: '', banner: '', background: '', song: '',
+      premium: true, isAdmin: true, isOwner: true, views: 1337, createdAt: Date.now()
     };
     saveUsers(users);
   }
-  
-  const urlParams = new URLSearchParams(window.location.search);
-  const username = urlParams.get('user');
-  
-  if (username) {
-    renderPublicProfile(username);
-    return;
-  }
-  
-  const sessionUser = localStorage.getItem(SESSION_KEY);
-  if (sessionUser && users[sessionUser]) {
-    currentUser = sessionUser;
-    initApp();
-  } else {
-    showLogin();
-  }
+  const urlUser = new URLSearchParams(location.search).get('user');
+  if (urlUser) { renderPublicProfile(urlUser); return; }
+  const session = localStorage.getItem(SESSION_KEY);
+  if (session && users[session]) { currentUser = session; initApp(); }
+  else showLogin();
 })();
 </script>
 </body>
