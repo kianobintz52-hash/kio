@@ -2,137 +2,601 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>kio.lol</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Orbitron:wght@900&family=Playfair+Display:ital,wght@1,900&family=Bebas+Neue&family=Courier+Prime&family=Syne:wght@800&display=swap" rel="stylesheet">
 <style>
-body{
-margin:0;
-background:black;
-color:white;
-font-family:Arial;
+:root{
+  --bg:#060608;
+  --side:#0d0d10;
+  --card:#111115;
+  --accent:#7c3aed;
+  --accent2:#a855f7;
+  --border:#1e1e26;
+  --gold:#f59e0b;
+  --gold2:#fbbf24;
+  --text:#e8e8f0;
+  --muted:#6b6b80;
 }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);font-family:'Space Grotesk',sans-serif;color:var(--text);height:100vh;overflow:hidden;}
+#app{display:flex;height:100vh;}
 
-.screen{
-display:none;
-height:100vh;
-justify-content:center;
-align-items:center;
-flex-direction:column;
-}
+/* ── SIDEBAR ── */
+.sidebar{width:260px;min-width:260px;background:var(--side);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:28px 20px;gap:8px;}
+.sidebar-logo{font-family:'Orbitron',monospace;font-size:1.4rem;color:#fff;letter-spacing:2px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.sidebar-logo span{color:var(--accent2);}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:10px;border:none;background:transparent;color:var(--muted);font-family:'Space Grotesk',sans-serif;font-size:.9rem;cursor:pointer;text-align:left;transition:.15s;}
+.nav-btn:hover{background:var(--border);color:var(--text);}
+.nav-btn.active{background:rgba(124,58,237,.18);color:var(--accent2);font-weight:700;}
+.nav-btn svg{width:18px;height:18px;flex-shrink:0;}
+.sidebar-spacer{flex:1;}
+.nav-btn.danger{color:#f87171;}
+.nav-btn.danger:hover{background:rgba(248,113,113,.1);}
 
-.active{
-display:flex;
-}
+/* ── MAIN ── */
+.main{flex:1;overflow-y:auto;padding:40px;}
+.main::-webkit-scrollbar{width:4px;}
+.main::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
 
-input,button{
-padding:10px;
-margin:5px;
-border-radius:10px;
-border:none;
-}
+/* ── CARDS ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:22px;}
+.card h2{font-size:1.1rem;margin-bottom:20px;color:#fff;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 
-button{
-background:#6b21a8;
-color:white;
-cursor:pointer;
-}
+/* ── FORM ── */
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:.78rem;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;}
+.input-f{width:100%;background:#0a0a0e;border:1px solid var(--border);padding:11px 14px;border-radius:9px;color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:.9rem;outline:none;transition:.15s;}
+.input-f:focus{border-color:var(--accent);}
+textarea.input-f{height:80px;resize:vertical;}
+select.input-f{cursor:pointer;}
 
-.card{
-background:#111;
-padding:20px;
-border-radius:15px;
-text-align:center;
-width:300px;
-}
+/* ── BUTTONS ── */
+.btn{padding:11px 22px;border-radius:9px;border:none;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:7px;}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-primary:hover{background:var(--accent2);}
+.btn-gold{background:var(--gold);color:#000;}
+.btn-gold:hover{background:var(--gold2);}
+.btn-red{background:#7f1d1d;color:#fca5a5;}
+.btn-red:hover{background:#991b1b;}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted);}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent2);}
+.btn-full{width:100%;justify-content:center;}
 
-a{
-color:#6b21a8;
-display:block;
-margin:5px;
-text-decoration:none;
-}
+/* ── UPLOAD BOX ── */
+.upload-box{border:2px dashed var(--border);border-radius:10px;padding:18px;text-align:center;cursor:pointer;transition:.15s;position:relative;font-size:.85rem;color:var(--muted);}
+.upload-box:hover{border-color:var(--accent);color:var(--accent2);}
+.upload-box input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.upload-box .file-name{margin-top:6px;font-size:.75rem;color:var(--accent2);}
 
-.profile{
-padding-top:80px;
-text-align:center;
-}
+/* ── RANGE ── */
+.range-row{display:flex;align-items:center;gap:12px;}
+.range-row input[type=range]{flex:1;accent-color:var(--accent);}
+.range-val{font-size:.85rem;color:var(--accent2);min-width:32px;}
 
-.avatar{
-width:100px;
-height:100px;
-border-radius:50%;
-object-fit:cover;
-}
+/* ── VIEWS BADGE ── */
+.views-badge{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:20px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);font-size:.82rem;color:var(--accent2);}
+
+/* ── PREMIUM BADGE ── */
+.premium-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.35);font-size:.75rem;color:var(--gold2);}
+
+/* ── SCREEN VIEWS ── */
+.screen{display:none;}
+.screen.active{display:block;}
+
+/* ── AUTH SCREENS ── */
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);}
+.auth-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:40px;width:100%;max-width:380px;}
+.auth-card h1{font-family:'Orbitron',monospace;font-size:1.6rem;text-align:center;margin-bottom:8px;}
+.auth-card .sub{text-align:center;color:var(--muted);font-size:.85rem;margin-bottom:28px;}
+.auth-link{color:var(--accent2);cursor:pointer;text-decoration:underline;}
+.auth-error{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#f87171;border-radius:8px;padding:10px 14px;font-size:.82rem;margin-bottom:14px;display:none;}
+
+/* ── PROFILE VIEW ── */
+#profile-overlay{position:fixed;inset:0;background:#000;z-index:9999;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:'Orbitron',monospace;font-size:1.4rem;letter-spacing:4px;transition:opacity .8s;}
+#profile-bg-wrap{position:fixed;inset:0;z-index:-2;}
+#profile-bg-wrap img,#profile-bg-wrap video{width:100%;height:100%;object-fit:cover;}
+#profile-black-overlay{position:fixed;inset:0;background:rgba(0,0,0,.68);z-index:-1;}
+#profile-card-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.profile-card{width:100%;max-width:480px;border-radius:22px;border:1px solid #2a2a35;overflow:hidden;position:relative;z-index:10;}
+.profile-banner{height:140px;background:#1a1a22 center/cover;}
+.profile-avatar-wrap{display:flex;justify-content:center;margin-top:-50px;}
+.profile-avatar{width:100px;height:100px;border-radius:50%;border:4px solid #000;object-fit:cover;background:#111;}
+.profile-body{padding:20px 32px 32px;}
+.profile-name{font-size:1.5rem;font-weight:700;margin-top:10px;text-align:center;}
+.profile-name.golden{text-shadow:0 0 24px rgba(245,158,11,.5);color:var(--gold2);}
+.profile-bio{color:var(--muted);font-size:.88rem;text-align:center;margin-top:10px;line-height:1.5;}
+.social-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px;}
+.social-btn{padding:9px 18px;border-radius:9px;background:var(--accent);color:#fff;text-decoration:none;font-size:.82rem;font-weight:700;font-family:'Space Grotesk',sans-serif;transition:.15s;}
+.social-btn:hover{background:var(--accent2);}
+#profile-views-row{display:flex;justify-content:center;margin-top:16px;}
+
+/* ── ADMIN TABLE ── */
+.admin-table{width:100%;border-collapse:collapse;font-size:.88rem;}
+.admin-table th{text-align:left;padding:10px 14px;color:var(--muted);border-bottom:1px solid var(--border);font-weight:400;text-transform:uppercase;font-size:.72rem;letter-spacing:.05em;}
+.admin-table td{padding:12px 14px;border-bottom:1px solid var(--border);}
+.admin-table tr:last-child td{border-bottom:none;}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:24px;right:24px;background:var(--accent);color:#fff;padding:12px 20px;border-radius:10px;font-size:.85rem;font-weight:700;z-index:9999;transform:translateY(80px);opacity:0;transition:.3s;}
+#toast.show{transform:none;opacity:1;}
+
+/* ── STAT CARDS ── */
+.stat-card{background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:12px;padding:18px 20px;}
+.stat-label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+.stat-val{font-size:1.8rem;font-weight:700;margin-top:4px;}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="login" class="screen active">
-<h1>Login</h1>
-<input id="user" placeholder="Username">
-<button onclick="login()">Enter</button>
+<!-- ═══════════════════════ AUTH ═══════════════════════ -->
+<div id="view-login" class="auth-wrap">
+  <div class="auth-card">
+    <h1>kio<span style="color:var(--accent2)">.</span>lol</h1>
+    <p class="sub">Dein persönlicher Bio-Link</p>
+    <div id="login-error" class="auth-error">Falscher Username oder Passwort.</div>
+    <div class="field"><label>Username</label><input id="login-u" class="input-f" placeholder="username" autocomplete="off"></div>
+    <div class="field"><label>Passwort</label><input id="login-p" class="input-f" type="password" placeholder="••••••••"></div>
+    <button class="btn btn-primary btn-full" onclick="doLogin()">Login</button>
+    <p style="text-align:center;margin-top:16px;font-size:.84rem;color:var(--muted)">Noch kein Account? <span class="auth-link" onclick="showView('view-register')">Registrieren</span></p>
+  </div>
 </div>
 
-<!-- DASHBOARD -->
-<div id="dash" class="screen">
-<h1>Dashboard</h1>
-<input id="bio" placeholder="Bio">
-<input id="avatar" placeholder="Avatar URL">
-<button onclick="save()">Save</button>
-<button onclick="openProfile()">My Profile</button>
+<div id="view-register" class="auth-wrap" style="display:none;">
+  <div class="auth-card">
+    <h1>kio<span style="color:var(--accent2)">.</span>lol</h1>
+    <p class="sub">Account erstellen</p>
+    <div id="reg-error" class="auth-error">Username bereits vergeben.</div>
+    <div class="field"><label>Username</label><input id="reg-u" class="input-f" placeholder="username" autocomplete="off"></div>
+    <div class="field"><label>Passwort</label><input id="reg-p" class="input-f" type="password" placeholder="••••••••"></div>
+    <button class="btn btn-primary btn-full" onclick="doRegister()">Registrieren</button>
+    <p style="text-align:center;margin-top:16px;font-size:.84rem;color:var(--muted)">Schon ein Account? <span class="auth-link" onclick="showView('view-login')">Login</span></p>
+  </div>
 </div>
 
-<!-- PROFILE -->
-<div id="profile" class="screen profile">
-<div class="card">
-<img id="pavatar" class="avatar">
-<h1 id="pname"></h1>
-<p id="pbio"></p>
+<!-- ═══════════════════════ APP SHELL ═══════════════════════ -->
+<div id="view-app" style="display:none;height:100vh;">
+  <div id="app">
 
-<a href="#">Discord</a>
-<a href="#">Instagram</a>
-<a href="#">TikTok</a>
+    <div class="sidebar">
+      <div class="sidebar-logo">kio<span>.</span>lol</div>
 
-<button onclick="back()">Back</button>
+      <button class="nav-btn active" id="nav-dashboard" onclick="switchTab('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboard
+      </button>
+
+      <button class="nav-btn" id="nav-profile-btn" onclick="openMyProfile()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        Mein Profil
+      </button>
+
+      <button class="nav-btn" id="nav-admin" onclick="switchTab('admin')" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        Admin Panel
+      </button>
+
+      <div class="sidebar-spacer"></div>
+
+      <button class="nav-btn danger" onclick="doLogout()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"/></svg>
+        Logout
+      </button>
+    </div>
+
+    <div class="main">
+
+      <!-- DASHBOARD TAB -->
+      <div id="tab-dashboard" class="screen active">
+
+        <div class="grid2" style="margin-bottom:22px;">
+          <div class="stat-card">
+            <div class="stat-label">Profil Views</div>
+            <div class="stat-val" id="stat-views">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Status</div>
+            <div class="stat-val" id="stat-premium" style="font-size:1rem;margin-top:8px;"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>⚙️ Einstellungen</h2>
+
+          <div class="grid2">
+            <div class="field"><label>Display Name</label><input id="s-display_name" class="input-f" placeholder="Dein Name"></div>
+            <div class="field"><label>Font</label>
+              <select id="s-font_choice" class="input-f">
+                <option>Space Grotesk</option><option>Orbitron</option><option>Playfair Display</option><option>Bebas Neue</option><option>Courier Prime</option><option>Syne</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field"><label>Bio</label><textarea id="s-bio" class="input-f" placeholder="Schreib etwas über dich..."></textarea></div>
+
+          <div class="grid2">
+            <div class="field"><label>Discord</label><input id="s-discord" class="input-f" placeholder="https://discord.gg/..."></div>
+            <div class="field"><label>Instagram</label><input id="s-instagram" class="input-f" placeholder="https://instagram.com/..."></div>
+            <div class="field"><label>YouTube</label><input id="s-youtube" class="input-f" placeholder="https://youtube.com/..."></div>
+            <div class="field"><label>TikTok</label><input id="s-tiktok" class="input-f" placeholder="https://tiktok.com/..."></div>
+          </div>
+
+          <div class="field">
+            <label>Hintergrund Transparenz: <span id="opacity-val">80</span>%</label>
+            <div class="range-row">
+              <input type="range" id="s-opacity" min="0" max="100" value="80" oninput="document.getElementById('opacity-val').textContent=this.value">
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Bass Boost: <span id="bass-val">0</span></label>
+            <div class="range-row">
+              <input type="range" id="s-bass_boost" min="0" max="40" value="0" oninput="document.getElementById('bass-val').textContent=this.value">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>🖼️ Medien Upload</h2>
+          <div class="grid2">
+            <div class="field">
+              <label>Hintergrund (Bild)</label>
+              <div class="upload-box" onclick="document.getElementById('f-background').click()">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                <div>Bild wählen</div>
+                <div class="file-name" id="fname-background">—</div>
+                <input type="file" id="f-background" accept="image/*,video/mp4,video/webm" style="display:none;" onchange="handleFile('background',this)">
+              </div>
+            </div>
+            <div class="field">
+              <label>Banner</label>
+              <div class="upload-box" onclick="document.getElementById('f-banner').click()">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                <div>Bild wählen</div>
+                <div class="file-name" id="fname-banner">—</div>
+                <input type="file" id="f-banner" accept="image/*" style="display:none;" onchange="handleFile('banner',this)">
+              </div>
+            </div>
+            <div class="field">
+              <label>Avatar</label>
+              <div class="upload-box" onclick="document.getElementById('f-avatar').click()">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                <div>Bild wählen</div>
+                <div class="file-name" id="fname-avatar">—</div>
+                <input type="file" id="f-avatar" accept="image/*" style="display:none;" onchange="handleFile('avatar',this)">
+              </div>
+            </div>
+            <div class="field">
+              <label>Hintergrundsong</label>
+              <div class="upload-box" onclick="document.getElementById('f-song').click()">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                <div>Audio wählen</div>
+                <div class="file-name" id="fname-song">—</div>
+                <input type="file" id="f-song" accept="audio/*" style="display:none;" onchange="handleFile('song',this)">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="premium-buy-block" class="card" style="border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.05);">
+          <h2 style="color:var(--gold2);">💎 Premium freischalten</h2>
+          <p style="color:var(--muted);font-size:.88rem;margin-bottom:16px;">Goldener Name, Glow-Effekt und mehr Features.</p>
+          <button class="btn btn-gold" onclick="buyPremium()">Premium kaufen (Demo)</button>
+        </div>
+
+        <button class="btn btn-primary btn-full" style="margin-bottom:40px;" onclick="saveSettings()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Speichern
+        </button>
+      </div>
+
+      <!-- ADMIN TAB -->
+      <div id="tab-admin" class="screen">
+        <div class="card">
+          <h2>🛡️ Admin Panel</h2>
+          <table class="admin-table" id="admin-table">
+            <thead><tr><th>Username</th><th>Views</th><th>Premium</th><th>Aktionen</th></tr></thead>
+            <tbody id="admin-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
+
+<!-- ═══════════════════════ PROFILE VIEW ═══════════════════════ -->
+<div id="view-profile" style="display:none;position:fixed;inset:0;z-index:500;overflow-y:auto;">
+  <div id="profile-overlay" onclick="enterProfile()">CLICK TO ENTER</div>
+  <div id="profile-bg-wrap">
+    <img id="profile-bg-img" src="" style="display:none;">
+    <video id="profile-bg-vid" autoplay loop muted playsinline style="display:none;"></video>
+  </div>
+  <div id="profile-black-overlay"></div>
+  <div id="profile-card-wrap">
+    <div class="profile-card" id="profile-card-el">
+      <div class="profile-banner" id="profile-banner-el"></div>
+      <div class="profile-avatar-wrap">
+        <img class="profile-avatar" id="profile-avatar-el" src="" alt="">
+      </div>
+      <div class="profile-body" id="profile-body-el">
+        <div class="profile-name" id="profile-name-el"></div>
+        <div class="profile-bio" id="profile-bio-el"></div>
+        <div id="profile-views-row"><span class="views-badge">👁️ <span id="profile-views-el">0</span> Views</span></div>
+        <div class="social-btns" id="profile-socials-el"></div>
+      </div>
+    </div>
+  </div>
+  <button onclick="closeProfile()" style="position:fixed;top:20px;right:20px;z-index:9999;background:rgba(0,0,0,.6);border:1px solid #333;color:#fff;padding:8px 16px;border-radius:8px;font-family:'Space Grotesk',sans-serif;cursor:pointer;font-size:.82rem;">✕ Schließen</button>
+  <audio id="profile-audio" loop></audio>
 </div>
+
+<div id="toast">✓ Gespeichert!</div>
 
 <script>
-let currentUser = "";
+// ═══════════════════ STORAGE ═══════════════════
+const DB_KEY='kio_users';
+const SESSION_KEY='kio_session';
 
-function show(id){
-document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
-document.getElementById(id).classList.add("active");
+function loadDB(){try{return JSON.parse(localStorage.getItem(DB_KEY)||'{}')}catch{return{}}}
+function saveDB(db){localStorage.setItem(DB_KEY,JSON.stringify(db))}
+function getSession(){return localStorage.getItem(SESSION_KEY)}
+function setSession(u){localStorage.setItem(SESSION_KEY,u)}
+function clearSession(){localStorage.removeItem(SESSION_KEY)}
+
+// ═══════════════════ VIEW ROUTER ═══════════════════
+function showView(id){
+  ['view-login','view-register','view-app','view-profile'].forEach(v=>{
+    const el=document.getElementById(v);
+    if(el)el.style.display='none';
+  });
+  const target=document.getElementById(id);
+  if(target)target.style.display=(id==='view-app')?'block':'flex';
+  if(id==='view-app'){
+    document.getElementById('view-app').style.display='block';
+    document.getElementById('app').style.display='flex';
+  }
 }
 
-function login(){
-currentUser = document.getElementById("user").value;
-if(!currentUser) return;
-
-show("dash");
+// ═══════════════════ AUTH ═══════════════════
+function doLogin(){
+  const u=document.getElementById('login-u').value.toLowerCase().trim();
+  const p=document.getElementById('login-p').value;
+  const db=loadDB();
+  const err=document.getElementById('login-error');
+  if(db[u]&&db[u].pw===hashSimple(p)){
+    setSession(u);err.style.display='none';
+    initApp();
+  }else{err.style.display='block';}
 }
 
-function save(){
-localStorage.setItem(currentUser+"_bio", document.getElementById("bio").value);
-localStorage.setItem(currentUser+"_avatar", document.getElementById("avatar").value);
-alert("saved");
+function doRegister(){
+  const u=document.getElementById('reg-u').value.toLowerCase().trim().replace(/[^a-z0-9_]/g,'');
+  const p=document.getElementById('reg-p').value;
+  const db=loadDB();
+  const err=document.getElementById('reg-error');
+  if(!u||!p){err.textContent='Bitte alle Felder ausfüllen.';err.style.display='block';return;}
+  if(db[u]){err.textContent='Username bereits vergeben.';err.style.display='block';return;}
+  db[u]={
+    pw:hashSimple(p),display_name:u,bio:'',discord:'',instagram:'',youtube:'',tiktok:'',
+    is_premium:false,is_admin:false,opacity:80,bass_boost:0,font_choice:'Space Grotesk',
+    views:0,avatar:'',banner:'',background_file:'',song:''
+  };
+  saveDB(db);setSession(u);err.style.display='none';initApp();
 }
 
-function openProfile(){
-document.getElementById("pname").innerText = currentUser;
-document.getElementById("pbio").innerText =
-localStorage.getItem(currentUser+"_bio") || "";
+function doLogout(){clearSession();location.reload();}
 
-document.getElementById("pavatar").src =
-localStorage.getItem(currentUser+"_avatar") || "";
+// Simple hash (XOR folding – not crypto, just obfuscation for demo)
+function hashSimple(s){let h=0;for(let i=0;i<s.length;i++)h=(Math.imul(31,h)+s.charCodeAt(i))|0;return h.toString(36);}
 
-show("profile");
+// ═══════════════════ APP INIT ═══════════════════
+let currentUser=null;
+
+function initApp(){
+  const u=getSession();if(!u){showView('view-login');return;}
+  const db=loadDB();if(!db[u]){clearSession();showView('view-login');return;}
+  currentUser=u;
+  showView('view-app');
+  loadSettingsForm();
+  updateStats();
+  const data=db[u];
+  document.getElementById('nav-admin').style.display=data.is_admin?'flex':'none';
+  document.getElementById('premium-buy-block').style.display=data.is_premium?'none':'block';
 }
 
-function back(){
-show("dash");
+function updateStats(){
+  const db=loadDB();const d=db[currentUser];
+  document.getElementById('stat-views').textContent=d.views||0;
+  document.getElementById('stat-premium').innerHTML=d.is_premium
+    ?'<span class="premium-badge">💎 Premium</span>'
+    :'<span style="color:var(--muted);font-size:.85rem;">Free</span>';
 }
+
+// ═══════════════════ SETTINGS ═══════════════════
+function loadSettingsForm(){
+  const db=loadDB();const d=db[currentUser];
+  const fields=['display_name','bio','discord','instagram','youtube','tiktok','font_choice'];
+  fields.forEach(k=>{const el=document.getElementById('s-'+k);if(el)el.value=d[k]||'';});
+  const op=document.getElementById('s-opacity');op.value=d.opacity||80;
+  document.getElementById('opacity-val').textContent=op.value;
+  const bb=document.getElementById('s-bass_boost');bb.value=d.bass_boost||0;
+  document.getElementById('bass-val').textContent=bb.value;
+  // show existing filenames
+  ['background','banner','avatar','song'].forEach(k=>{
+    const lbl=document.getElementById('fname-'+k);
+    if(lbl&&d[k+'_file']||d[k])lbl.textContent=d[k]?'✓ Geladen':'—';
+    if(k==='background'&&d.background_file)document.getElementById('fname-background').textContent='✓ Geladen';
+  });
+}
+
+function handleFile(key, input){
+  const file=input.files[0];if(!file)return;
+  const lbl=document.getElementById('fname-'+key);
+  lbl.textContent=file.name.length>22?file.name.slice(0,20)+'…':file.name;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const db=loadDB();
+    if(key==='background')db[currentUser].background_file=e.target.result;
+    else db[currentUser][key]=e.target.result;
+    saveDB(db);
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveSettings(){
+  const db=loadDB();const d=db[currentUser];
+  ['display_name','bio','discord','instagram','youtube','tiktok','font_choice'].forEach(k=>{
+    const el=document.getElementById('s-'+k);if(el)d[k]=el.value;
+  });
+  d.opacity=document.getElementById('s-opacity').value;
+  d.bass_boost=document.getElementById('s-bass_boost').value;
+  saveDB(db);
+  updateStats();
+  showToast('✓ Gespeichert!');
+}
+
+function buyPremium(){
+  const db=loadDB();db[currentUser].is_premium=true;saveDB(db);
+  document.getElementById('premium-buy-block').style.display='none';
+  updateStats();showToast('💎 Premium aktiviert!');
+}
+
+// ═══════════════════ TABS ═══════════════════
+function switchTab(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  document.getElementById('nav-'+name).classList.add('active');
+  if(name==='admin')renderAdmin();
+}
+
+// ═══════════════════ PROFILE VIEW ═══════════════════
+let profileAudioCtx=null;
+
+function openMyProfile(){renderProfile(currentUser);}
+
+function renderProfile(username){
+  const db=loadDB();const d=db[username];
+  if(!d)return;
+  // increment views
+  d.views=(d.views||0)+1;saveDB(db);
+  // bg
+  const bgWrap=document.getElementById('profile-bg-wrap');
+  const bgImg=document.getElementById('profile-bg-img');
+  const bgVid=document.getElementById('profile-bg-vid');
+  const bf=d.background_file||'';
+  bgImg.style.display='none';bgVid.style.display='none';
+  if(bf){
+    if(bf.startsWith('data:video')||bf.endsWith('.mp4')||bf.endsWith('.webm')){
+      bgVid.src=bf;bgVid.style.display='block';
+    }else{bgImg.src=bf;bgImg.style.display='block';}
+  }
+  // card bg opacity
+  document.getElementById('profile-card-el').style.background=`rgba(12,12,18,${(d.opacity||80)/100})`;
+  // banner
+  const banner=document.getElementById('profile-banner-el');
+  banner.style.background=d.banner?`#1a1a22 url('${d.banner}') center/cover`:'#1a1a22';
+  // avatar
+  const av=document.getElementById('profile-avatar-el');
+  av.src=d.avatar||'';av.style.display=d.avatar?'block':'none';
+  // name
+  const nameEl=document.getElementById('profile-name-el');
+  nameEl.textContent=d.display_name||username;
+  nameEl.className='profile-name'+(d.is_premium?' golden':'');
+  // font
+  document.getElementById('view-profile').style.fontFamily=`'${d.font_choice||'Space Grotesk'}', sans-serif`;
+  // bio
+  document.getElementById('profile-bio-el').textContent=d.bio||'';
+  // views
+  document.getElementById('profile-views-el').textContent=d.views;
+  // socials
+  const sb=document.getElementById('profile-socials-el');sb.innerHTML='';
+  [['discord','Discord'],['instagram','Instagram'],['youtube','YouTube'],['tiktok','TikTok']].forEach(([k,label])=>{
+    if(d[k]){const a=document.createElement('a');a.href=d[k];a.target='_blank';a.className='social-btn';a.textContent=label;sb.appendChild(a);}
+  });
+  // audio
+  const audio=document.getElementById('profile-audio');
+  audio.src=d.song||'';
+  profileAudioCtx=null;
+  // overlay reset
+  const ov=document.getElementById('profile-overlay');
+  ov.style.opacity='1';ov.style.display='flex';
+  document.getElementById('view-profile').style.display='block';
+}
+
+function enterProfile(){
+  const db=loadDB();const d=db[currentUser];
+  const audio=document.getElementById('profile-audio');
+  if(!profileAudioCtx&&audio.src&&audio.src!==window.location.href){
+    profileAudioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    const src=profileAudioCtx.createMediaElementSource(audio);
+    const bass=profileAudioCtx.createBiquadFilter();
+    bass.type='lowshelf';bass.frequency.value=150;
+    bass.gain.value=parseFloat(d.bass_boost||0);
+    src.connect(bass);bass.connect(profileAudioCtx.destination);
+    audio.play().catch(()=>{});
+  }
+  const ov=document.getElementById('profile-overlay');
+  ov.style.opacity='0';
+  setTimeout(()=>ov.style.display='none',800);
+}
+
+function closeProfile(){
+  document.getElementById('view-profile').style.display='none';
+  const audio=document.getElementById('profile-audio');
+  audio.pause();audio.src='';
+  if(profileAudioCtx){profileAudioCtx.close();profileAudioCtx=null;}
+}
+
+// ═══════════════════ ADMIN ═══════════════════
+function renderAdmin(){
+  const db=loadDB();const tbody=document.getElementById('admin-tbody');tbody.innerHTML='';
+  Object.entries(db).forEach(([uname,d])=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td style="font-weight:600;">${uname}</td>
+      <td>${d.views||0}</td>
+      <td>${d.is_premium?'<span class="premium-badge">💎 Premium</span>':'—'}</td>
+      <td style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-gold" style="padding:6px 12px;font-size:.78rem;" onclick="adminTogglePremium('${uname}')">${d.is_premium?'Premium ent.':'Premium geben'}</button>
+        <button class="btn btn-red" style="padding:6px 12px;font-size:.78rem;" onclick="adminDelete('${uname}')">Löschen</button>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function adminTogglePremium(u){const db=loadDB();if(!db[u])return;db[u].is_premium=!db[u].is_premium;saveDB(db);renderAdmin();}
+function adminDelete(u){if(!confirm(`"${u}" wirklich löschen?`))return;const db=loadDB();delete db[u];saveDB(db);renderAdmin();}
+
+// ═══════════════════ TOAST ═══════════════════
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+// ═══════════════════ BOOT ═══════════════════
+(function boot(){
+  // seed admin if first time
+  const db=loadDB();
+  if(Object.keys(db).length===0){
+    db['admin']={pw:hashSimple('admin123'),display_name:'Admin',bio:'',discord:'',instagram:'',youtube:'',tiktok:'',is_premium:true,is_admin:true,opacity:80,bass_boost:0,font_choice:'Orbitron',views:0,avatar:'',banner:'',background_file:'',song:''};
+    saveDB(db);
+  }
+  const s=getSession();
+  if(s&&loadDB()[s])initApp();
+  else showView('view-login');
+  // enter key
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){
+      const loginU=document.getElementById('login-u');
+      const regU=document.getElementById('reg-u');
+      if(document.getElementById('view-login').style.display!=='none'&&loginU===document.activeElement)doLogin();
+      if(document.getElementById('view-register').style.display!=='none'&&regU===document.activeElement)doRegister();
+    }
+  });
+})();
 </script>
-
 </body>
 </html>
