@@ -6,9 +6,9 @@
 <style>
 body{
 margin:0;
-font-family:Arial;
 background:black;
 color:white;
+font-family:Arial;
 }
 
 .screen{
@@ -36,15 +36,11 @@ color:white;
 cursor:pointer;
 }
 
-.profile{
-text-align:center;
-padding-top:80px;
-}
-
 .card{
 background:#111;
 padding:20px;
 border-radius:15px;
+text-align:center;
 width:300px;
 }
 
@@ -52,6 +48,19 @@ a{
 color:#6b21a8;
 display:block;
 margin:5px;
+text-decoration:none;
+}
+
+.profile{
+padding-top:80px;
+text-align:center;
+}
+
+.avatar{
+width:100px;
+height:100px;
+border-radius:50%;
+object-fit:cover;
 }
 </style>
 </head>
@@ -68,18 +77,21 @@ margin:5px;
 <div id="dash" class="screen">
 <h1>Dashboard</h1>
 <input id="bio" placeholder="Bio">
+<input id="avatar" placeholder="Avatar URL">
 <button onclick="save()">Save</button>
-<button onclick="goProfile()">My Profile</button>
+<button onclick="openProfile()">My Profile</button>
 </div>
 
 <!-- PROFILE -->
 <div id="profile" class="screen profile">
 <div class="card">
+<img id="pavatar" class="avatar">
 <h1 id="pname"></h1>
 <p id="pbio"></p>
 
 <a href="#">Discord</a>
 <a href="#">Instagram</a>
+<a href="#">TikTok</a>
 
 <button onclick="back()">Back</button>
 </div>
@@ -96,18 +108,24 @@ document.getElementById(id).classList.add("active");
 function login(){
 currentUser = document.getElementById("user").value;
 if(!currentUser) return;
+
 show("dash");
 }
 
 function save(){
 localStorage.setItem(currentUser+"_bio", document.getElementById("bio").value);
-alert("saved (local only)");
+localStorage.setItem(currentUser+"_avatar", document.getElementById("avatar").value);
+alert("saved");
 }
 
-function goProfile(){
+function openProfile(){
 document.getElementById("pname").innerText = currentUser;
 document.getElementById("pbio").innerText =
 localStorage.getItem(currentUser+"_bio") || "";
+
+document.getElementById("pavatar").src =
+localStorage.getItem(currentUser+"_avatar") || "";
+
 show("profile");
 }
 
