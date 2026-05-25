@@ -1,7 +1,0 @@
-<!DOCTYPE html>
-<html>
-<body>
-<h1>Kio</h1>
-<p>Meine Website</p>
-</body>
-</html>
