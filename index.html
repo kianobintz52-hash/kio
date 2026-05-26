@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+src = r"""<!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
@@ -57,7 +57,6 @@ select.inp{cursor:pointer;}
 .sb-logo{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;letter-spacing:-0.5px;color:var(--tx0);}
 .sb-logo span{color:var(--acc2);}
 .sb-user{font-size:.7rem;color:var(--tx3);margin-top:3px;font-family:var(--mono);}
-/* Lang toggle in sidebar top */
 .lang-tog{display:flex;gap:4px;margin-top:8px;}
 .lang-btn-sb{padding:3px 10px;border-radius:var(--r);border:1px solid var(--b1);background:transparent;color:var(--tx3);font-family:var(--font);font-size:.68rem;cursor:pointer;transition:.15s;}
 .lang-btn-sb.on{background:rgba(91,91,214,.15);border-color:var(--acc);color:var(--acc2);}
@@ -127,8 +126,6 @@ select.inp{cursor:pointer;}
 #toast.show{transform:none;opacity:1;}
 #pv-wrap{position:fixed;inset:0;z-index:9000;display:none;}
 #pv-dim{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9002;}
-#pv-overlay{position:fixed;inset:0;z-index:9010;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:opacity .5s;background:#000;}
-#pv-overlay .enter-txt{font-family:'Syne',sans-serif;font-size:.85rem;letter-spacing:4px;color:rgba(255,255,255,.6);}
 #pv-content{position:fixed;inset:0;z-index:9003;display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto;}
 #pv-close-btn{position:fixed;top:16px;right:16px;z-index:9011;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.6);padding:7px 14px;border-radius:var(--r);font-family:var(--font);cursor:pointer;font-size:.73rem;}
 .pv-card{width:100%;max-width:430px;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.1);}
@@ -178,17 +175,14 @@ select.inp{cursor:pointer;}
 .font-orbitron{font-family:'Orbitron',sans-serif!important;}
 .font-syne{font-family:'Syne',sans-serif!important;}
 .font-mono{font-family:'Geist Mono',monospace!important;}
-/* Animated name effects */
 @keyframes glow-anim{0%,100%{text-shadow:0 0 8px currentColor,0 0 20px currentColor}50%{text-shadow:0 0 4px currentColor}}
 @keyframes rainbow-anim{0%{color:#f87171}16%{color:#fb923c}33%{color:#facc15}50%{color:#4ade80}66%{color:#60a5fa}83%{color:#c084fc}100%{color:#f87171}}
 .anim-glow{animation:glow-anim 2s ease-in-out infinite;}
 .anim-rainbow{animation:rainbow-anim 2s linear infinite;}
-/* Custom link editor rows */
 .cl-row{display:flex;gap:7px;margin-bottom:8px;align-items:center;}
 .cl-row .inp{flex:1;}
 .cl-del{background:none;border:1px solid var(--b2);color:var(--tx3);padding:6px 10px;border-radius:var(--r);cursor:pointer;font-size:.72rem;transition:.15s;white-space:nowrap;}
 .cl-del:hover{border-color:var(--red);color:var(--red);}
-/* Community page */
 .community-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:16px;}
 .community-card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r2);padding:16px;text-align:center;cursor:pointer;transition:.15s;}
 .community-card:hover{border-color:rgba(91,91,214,.4);transform:translateY(-2px);}
@@ -197,13 +191,12 @@ select.inp{cursor:pointer;}
 .community-name{font-size:.85rem;font-weight:600;color:var(--tx0);margin-bottom:4px;}
 .community-bio{font-size:.72rem;color:var(--tx3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .community-views{font-size:.65rem;color:var(--tx3);margin-top:6px;}
-/* Profile link bar */
 #pv-own-link-bar{display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9011;background:rgba(10,10,18,0.95);border:1px solid rgba(91,91,214,.4);border-radius:14px;padding:12px 20px;align-items:center;gap:12px;max-width:90vw;overflow:hidden;}
 </style>
 </head>
 <body>
 
-<!-- ── LOGIN ── -->
+<!-- LOGIN -->
 <div id="v-login" class="auth-wrap">
   <div class="auth-card">
     <div class="logo">regelbruch<span>.</span>cc</div>
@@ -216,7 +209,7 @@ select.inp{cursor:pointer;}
   </div>
 </div>
 
-<!-- ── REGISTER ── -->
+<!-- REGISTER -->
 <div id="v-register" class="auth-wrap" style="display:none;">
   <div class="auth-card">
     <div class="logo">regelbruch<span>.</span>cc</div>
@@ -229,7 +222,7 @@ select.inp{cursor:pointer;}
   </div>
 </div>
 
-<!-- ── APP ── -->
+<!-- APP -->
 <div id="v-app" style="display:none;height:100vh;">
 <div class="app-inner">
   <div class="sb">
@@ -430,8 +423,6 @@ select.inp{cursor:pointer;}
     <div id="tab-einstellungen" class="screen">
       <div class="pg-title" data-i18n="settings_title">Einstellungen</div>
       <div class="pg-sub" data-i18n="settings_sub">Passe deinen Account an.</div>
-
-      <!-- Custom Link Buttons -->
       <div class="card">
         <div class="card-title" data-i18n="custom_links_title">Eigene Link-Buttons</div>
         <div style="font-size:.78rem;color:var(--tx2);margin-bottom:12px;" data-i18n="custom_links_desc">Füge eigene Buttons zu deinem Profil hinzu (z.B. „Mein Shop", „Mein Server").</div>
@@ -440,8 +431,6 @@ select.inp{cursor:pointer;}
           + <span data-i18n="add_link">Link hinzufügen</span>
         </button>
       </div>
-
-      <!-- Passwort ändern -->
       <div class="card">
         <div class="card-title" data-i18n="change_pw_title">Passwort ändern</div>
         <div class="g2" style="margin-bottom:10px;">
@@ -451,7 +440,6 @@ select.inp{cursor:pointer;}
         <div class="field"><label class="lbl" data-i18n="confirm_pw">Bestätigen</label><input id="pw-confirm" class="inp" type="password" placeholder="••••••••"></div>
         <button class="btn btn-p btn-sm" onclick="changePassword()" style="margin-top:4px;" data-i18n="change_pw_btn">Passwort ändern</button>
       </div>
-
       <button class="btn btn-p btn-full" style="margin-bottom:40px;" onclick="saveCustomLinks()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
         <span data-i18n="save">Speichern</span>
@@ -602,7 +590,8 @@ select.inp{cursor:pointer;}
 
 <!-- PROFILE VIEW -->
 <div id="pv-wrap">
-  <div id="pv-overlay" onclick="pvEnter()"><span class="enter-txt">CLICK TO ENTER</span></div>
+  <!-- OVERLAY REMOVED: Profile shows immediately without click -->
+  <div id="pv-overlay" style="display:none;"></div>
   <img id="pv-bg-img" src="" style="display:none;position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:9001;">
   <video id="pv-bg-vid" autoplay loop muted playsinline style="display:none;position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:9001;"></video>
   <div id="pv-dim"></div>
@@ -687,7 +676,7 @@ select.inp{cursor:pointer;}
 <div id="toast"></div>
 
 <script>
-/* ─── I18N ─── */
+/* I18N */
 const TRANSLATIONS={
   de:{
     login_sub:'Dein persönlicher Bio-Link',login_err:'Falscher Username oder Passwort.',
@@ -750,7 +739,7 @@ const TRANSLATIONS={
     community_desc2:'Others can then discover your profile here.',
     public_off:'Private',public_on:'Public',
     settings_title:'Settings',settings_sub:'Customize your account.',
-    custom_links_title:'Custom Link Buttons',custom_links_desc:'Add custom buttons to your profile (e.g. "My Shop", "My Server").',
+    custom_links_title:'Custom Link Buttons',custom_links_desc:'Add custom buttons to your profile.',
     add_link:'Add link',btn_text:'Button text',btn_url:'URL',
     change_pw_title:'Change password',old_pw:'Current password',new_pw:'New password',confirm_pw:'Confirm',change_pw_btn:'Change password',
     templates_title:'Templates',templates_sub:'Choose a style for your profile.',
@@ -771,16 +760,14 @@ function setLang(l,btn){
     const k=el.getAttribute('data-i18n');
     if(TRANSLATIONS[l][k])el.textContent=TRANSLATIONS[l][k];
   });
-  // Update community toggle label
   const db=lDB();const d=db[CU];
   if(d){const lbl=document.getElementById('comm-toggle-lbl');if(lbl)lbl.textContent=d.community_public?TRANSLATIONS[l].public_on:TRANSLATIONS[l].public_off;}
-  // update anim buttons active state styling
   highlightAnimBtn(db&&db[CU]?db[CU].name_anim||'none':'none');
   localStorage.setItem('rb_lang',l);
 }
 function t(k){return TRANSLATIONS[LANG][k]||k;}
 
-/* ── STORAGE ── */
+/* STORAGE */
 const DB='rb_db_v5_meta';const TPL='rb_tpl_v5';const SESS='rb_sess_v5';
 const LOGS_KEY='rb_logs_v5';const ANN_KEY='rb_ann_v5';
 const lDB=()=>{try{return JSON.parse(localStorage.getItem(DB)||'{}')}catch{return{}}};
@@ -799,7 +786,7 @@ const sLogs=l=>localStorage.setItem(LOGS_KEY,JSON.stringify(l));
 const lAnn=()=>localStorage.getItem(ANN_KEY)||'';
 const sAnn=t=>t?localStorage.setItem(ANN_KEY,t):localStorage.removeItem(ANN_KEY);
 
-/* ── INDEXEDDB MEDIA ── */
+/* INDEXEDDB MEDIA */
 const IDB_NAME='rb_media_v5';const IDB_STORE='media';
 let _idb=null;
 function openIDB(){
@@ -873,15 +860,14 @@ function doLogout(){cSess();location.reload();}
 function newUser(u,p,prem=false,admin=false){
   return{pw:hs(p),display_name:u,bio:'',is_premium:prem,is_admin:admin,
     opacity:80,font_choice:'Geist',custom_slug:'',name_anim:'none',
-    custom_links:[],
-    community_public:false,
+    custom_links:[],community_public:false,
     discord:'',instagram:'',youtube:'',tiktok:'',
     views:0,avatar_set:false,banner_set:false,background_file_set:false,mp3_file_set:false,
     mp3_name:'',mp3_display_name:'',active_template:null,adm_note:'',
     created:Date.now(),last_login:Date.now()};
 }
 
-/* ─── ANIMATED NAME ─── */
+/* ANIMATED NAME */
 let _twInterval=null;
 function setNameAnim(anim){
   const db=lDB();if(!db[CU])return;
@@ -896,7 +882,7 @@ function highlightAnimBtn(anim){
   });
 }
 
-/* ─── CUSTOM LINKS ─── */
+/* CUSTOM LINKS */
 function loadCustomLinks(){
   const db=lDB();const d=db[CU];
   const links=d.custom_links||[];
@@ -927,7 +913,6 @@ function removeCLRow(i){
 }
 function saveCustomLinks(){
   const db=lDB();if(!db[CU])return;
-  // Collect current values from DOM
   const rows=document.querySelectorAll('#cl-container .cl-row');
   db[CU].custom_links=Array.from(rows).map(row=>{
     const inputs=row.querySelectorAll('input');
@@ -936,7 +921,7 @@ function saveCustomLinks(){
   sDB(db);toast('✓ '+t('save'));
 }
 
-/* ─── CHANGE PASSWORD ─── */
+/* CHANGE PASSWORD */
 function changePassword(){
   const db=lDB();if(!db[CU])return;
   const oldPw=document.getElementById('pw-old').value;
@@ -952,7 +937,7 @@ function changePassword(){
   toast('✓ Passwort geändert!');
 }
 
-/* ─── COMMUNITY ─── */
+/* COMMUNITY */
 function toggleCommunity(){
   const db=lDB();if(!db[CU])return;
   db[CU].community_public=!db[CU].community_public;sDB(db);
@@ -992,7 +977,7 @@ async function renderCommunity(q=''){
 }
 function openProfile(username){renderProfile(username);}
 
-/* ─── PROFILE LINK ─── */
+/* PROFILE LINK */
 function getProfileLink(u){
   const db=lDB();const d=db[u];
   const slug=(d&&d.custom_slug)?d.custom_slug.trim():'';
@@ -1042,7 +1027,6 @@ function init(){
   document.getElementById('ni-admin').style.display=isAdmin?'flex':'none';
   document.getElementById('admin-prem-block').style.display=isAdmin?'block':'none';
   loadForm();updateStats();
-  // Load saved lang
   const savedLang=localStorage.getItem('rb_lang')||'de';
   const langBtn=document.querySelector(`.lang-btn-sb[onclick="setLang('${savedLang}',this)"]`);
   setLang(savedLang,langBtn);
@@ -1173,7 +1157,7 @@ function saveSettings(){
   updateStats();toast('✓ Gespeichert');
 }
 
-/* ─── TEMPLATES ─── */
+/* TEMPLATES */
 const BUILTIN=[
   {id:'b1',name:'Purple Void',author:'kio.lol',category:'dark',bgcolor:'rgba(10,5,20,0.88)',accentcolor:'#7c3aed',bg_image:'',builtin:true,premium:false},
   {id:'b2',name:'Midnight',author:'kio.lol',category:'dark',bgcolor:'rgba(5,10,25,0.88)',accentcolor:'#2563eb',bg_image:'',builtin:true,premium:false},
@@ -1183,9 +1167,9 @@ const BUILTIN=[
   {id:'b6',name:'Ice',author:'kio.lol',category:'light',bgcolor:'rgba(235,240,255,0.92)',accentcolor:'#4f46e5',bg_image:'',builtin:true,premium:false},
   {id:'b7',name:'Paper',author:'kio.lol',category:'minimal',bgcolor:'rgba(250,248,245,0.95)',accentcolor:'#57534e',bg_image:'',builtin:true,premium:false},
   {id:'b8',name:'Carbon',author:'kio.lol',category:'minimal',bgcolor:'rgba(18,18,20,0.95)',accentcolor:'#71717a',bg_image:'',builtin:true,premium:false},
-  {id:'b9',name:'Obsidian ★',author:'kio.lol',category:'dark',bgcolor:'rgba(5,5,8,0.96)',accentcolor:'#a78bfa',bg_image:'',builtin:true,premium:true},
-  {id:'b10',name:'Liquid Gold ★',author:'kio.lol',category:'neon',bgcolor:'rgba(15,10,5,0.94)',accentcolor:'#f59e0b',bg_image:'',builtin:true,premium:true},
-  {id:'b11',name:'Frost ★',author:'kio.lol',category:'light',bgcolor:'rgba(240,248,255,0.97)',accentcolor:'#0ea5e9',bg_image:'',builtin:true,premium:true},
+  {id:'b9',name:'Obsidian \u2605',author:'kio.lol',category:'dark',bgcolor:'rgba(5,5,8,0.96)',accentcolor:'#a78bfa',bg_image:'',builtin:true,premium:true},
+  {id:'b10',name:'Liquid Gold \u2605',author:'kio.lol',category:'neon',bgcolor:'rgba(15,10,5,0.94)',accentcolor:'#f59e0b',bg_image:'',builtin:true,premium:true},
+  {id:'b11',name:'Frost \u2605',author:'kio.lol',category:'light',bgcolor:'rgba(240,248,255,0.97)',accentcolor:'#0ea5e9',bg_image:'',builtin:true,premium:true},
 ];
 let curTplFilter='all';
 function allTpl(){return[...BUILTIN,...lTPL()];}
@@ -1202,28 +1186,28 @@ function renderTpl(cat){
     const card=document.createElement('div');card.className='tpl-card'+(sel?' sel':'');
     if(!locked)card.onclick=()=>selectTpl(tpl.id);
     let prev=tpl.bg_image?`<img class="tpl-prev" src="${tpl.bg_image}" style="object-fit:cover;">`:`<div class="tpl-prev" style="background:linear-gradient(135deg,${tpl.bgcolor},${tpl.accentcolor}55)"></div>`;
-    const lockBadge=locked?`<div style="position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#fff;">🔒 Premium</div>`:'';
-    card.innerHTML=`${sel?'<div class="tpl-check">✓ Aktiv</div>':''}${isOwn&&!tpl.builtin?`<button class="tpl-del" onclick="event.stopPropagation();deleteTpl('${tpl.id}')">Löschen</button>`:''}
+    const lockBadge=locked?`<div style="position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#fff;">\uD83D\uDD12 Premium</div>`:'';
+    card.innerHTML=`${sel?'<div class="tpl-check">\u2713 Aktiv</div>':''}${isOwn&&!tpl.builtin?`<button class="tpl-del" onclick="event.stopPropagation();deleteTpl('${tpl.id}')">L\xF6schen</button>`:''}
       <div style="position:relative;">${prev}${lockBadge}</div>
-      <div class="tpl-info"><div class="tpl-name"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${tpl.accentcolor};margin-right:5px;vertical-align:middle;"></span>${tpl.name}</div><div class="tpl-meta">von ${tpl.author||tpl.uploader} · ${tpl.category}</div></div>`;
+      <div class="tpl-info"><div class="tpl-name"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${tpl.accentcolor};margin-right:5px;vertical-align:middle;"></span>${tpl.name}</div><div class="tpl-meta">von ${tpl.author||tpl.uploader} \xB7 ${tpl.category}</div></div>`;
     grid.appendChild(card);
   });
   const atpl=allTpl().find(tp=>tp.id===activeTpl);
   document.getElementById('active-tpl-info').innerHTML=atpl?`<strong style="color:var(--tx0)">${atpl.name}</strong> <span style="color:var(--tx2);">von ${atpl.author||atpl.uploader}</span>`:`<span style="color:var(--tx2);">${t('no_tpl')}</span>`;
 }
-function selectTpl(id){const db=lDB();db[CU].active_template=id;sDB(db);renderTpl(curTplFilter);toast('🎨 Vorlage aktiv!');}
+function selectTpl(id){const db=lDB();db[CU].active_template=id;sDB(db);renderTpl(curTplFilter);toast('\uD83C\uDFA8 Vorlage aktiv!');}
 function removeTemplate(){const db=lDB();db[CU].active_template=null;sDB(db);renderTpl(curTplFilter);toast('Vorlage entfernt.');}
-function deleteTpl(id){if(!confirm('Vorlage löschen?'))return;let tpls=lTPL();tpls=tpls.filter(tp=>tp.id!==id);sTPL(tpls);const db=lDB();Object.values(db).forEach(u=>{if(u.active_template===id)u.active_template=null;});sDB(db);renderTpl(curTplFilter);toast('Vorlage gelöscht.');}
+function deleteTpl(id){if(!confirm('Vorlage l\xF6schen?'))return;let tpls=lTPL();tpls=tpls.filter(tp=>tp.id!==id);sTPL(tpls);const db=lDB();Object.values(db).forEach(u=>{if(u.active_template===id)u.active_template=null;});sDB(db);renderTpl(curTplFilter);toast('Vorlage gel\xF6scht.');}
 function openTplModal(){document.getElementById('tpl-modal').style.display='flex';}
 function closeTplModal(){document.getElementById('tpl-modal').style.display='none';}
 function submitTemplate(){
   const name=document.getElementById('tm-name').value.trim();if(!name){toast('Bitte Namen eingeben!');return;}
-  const finish=bgData=>{const tpls=lTPL();tpls.push({id:'t'+Date.now(),name,author:CU,uploader:CU,category:document.getElementById('tm-cat').value,bgcolor:document.getElementById('tm-bg').value,accentcolor:document.getElementById('tm-ac').value,bg_image:bgData||'',builtin:false,premium:false});sTPL(tpls);closeTplModal();filterTpl('mine',null);toast('🎨 Vorlage hochgeladen!');};
+  const finish=bgData=>{const tpls=lTPL();tpls.push({id:'t'+Date.now(),name,author:CU,uploader:CU,category:document.getElementById('tm-cat').value,bgcolor:document.getElementById('tm-bg').value,accentcolor:document.getElementById('tm-ac').value,bg_image:bgData||'',builtin:false,premium:false});sTPL(tpls);closeTplModal();filterTpl('mine',null);toast('\uD83C\uDFA8 Vorlage hochgeladen!');};
   const f=document.getElementById('tm-img').files[0];
   if(f){const r=new FileReader();r.onload=e=>finish(e.target.result);r.readAsDataURL(f);}else finish('');
 }
 
-/* ─── ADMIN ─── */
+/* ADMIN */
 function admTab(name,btn){
   document.querySelectorAll('.adm-section').forEach(s=>s.style.display='none');
   document.querySelectorAll('.adm-tab').forEach(b=>b.classList.remove('on'));
@@ -1253,21 +1237,21 @@ function filterUsers(q){
 function renderUserTable(users){
   const tbody=document.getElementById('adm-tbody');tbody.innerHTML='';
   users.sort(([a],[b])=>a.localeCompare(b)).forEach(([u,d])=>{
-    const link=getProfileLinkFor(u,d);const shortLink=link.length>32?link.slice(0,30)+'…':link;
-    const noteIcon=d.adm_note?'📝 ':'';
+    const link=getProfileLinkFor(u,d);const shortLink=link.length>32?link.slice(0,30)+'\u2026':link;
+    const noteIcon=d.adm_note?'\uD83D\uDCDD ':' ';
     const tr=document.createElement('tr');
     tr.innerHTML=`
       <td><div class="user-cell"><div class="user-av">${u.slice(0,2).toUpperCase()}</div><div><div style="font-weight:500;color:var(--tx0);">${noteIcon}${escHtml(d.display_name||u)}</div><div style="font-size:.68rem;color:var(--tx3);font-family:var(--mono);">@${u}</div></div></div></td>
       <td><span class="mono-tag" title="${link}">${shortLink}</span></td>
-      <td><span style="color:var(--tx1);">${d.views||0}</span> <button style="background:none;border:none;color:var(--tx3);cursor:pointer;font-size:.68rem;" onclick="admResetViews('${u}')" title="reset">↺</button></td>
-      <td style="color:var(--tx2);">${d.mp3_file_set?'✓':'—'}</td>
-      <td>${d.is_premium?'<span class="badge badge-gold">💎</span>':'<span class="badge badge-free">—</span>'}</td>
-      <td>${d.is_admin?'<span class="badge badge-admin">👑</span>':'—'}</td>
-      <td style="font-size:.68rem;color:var(--tx3);">${d.created?new Date(d.created).toLocaleDateString('de'):'—'}</td>
+      <td><span style="color:var(--tx1);">${d.views||0}</span> <button style="background:none;border:none;color:var(--tx3);cursor:pointer;font-size:.68rem;" onclick="admResetViews('${u}')" title="reset">\u21BA</button></td>
+      <td style="color:var(--tx2);">${d.mp3_file_set?'\u2713':'\u2014'}</td>
+      <td>${d.is_premium?'<span class="badge badge-gold">\uD83D\uDC8E</span>':'<span class="badge badge-free">\u2014</span>'}</td>
+      <td>${d.is_admin?'<span class="badge badge-admin">\uD83D\uDC51</span>':'\u2014'}</td>
+      <td style="font-size:.68rem;color:var(--tx3);">${d.created?new Date(d.created).toLocaleDateString('de'):'\u2014'}</td>
       <td><div class="actions">
         <button class="btn btn-ghost btn-xs" onclick="viewUser('${u}')">Details</button>
-        <button class="btn btn-gold btn-xs" onclick="admPrem('${u}')">${d.is_premium?'−Prem':'+Prem'}</button>
-        <button class="btn btn-ghost btn-xs" onclick="admAdmin('${u}')">${d.is_admin?'−Owner':'+Owner'}</button>
+        <button class="btn btn-gold btn-xs" onclick="admPrem('${u}')">${d.is_premium?'\u2212Prem':'+Prem'}</button>
+        <button class="btn btn-ghost btn-xs" onclick="admAdmin('${u}')">${d.is_admin?'\u2212Owner':'+Owner'}</button>
         <button class="btn btn-green btn-xs" onclick="admNote('${u}')">Notiz</button>
         <button class="btn btn-red btn-xs" onclick="admDel('${u}')">Del</button>
       </div></td>`;
@@ -1277,56 +1261,56 @@ function renderUserTable(users){
 function viewUser(u){
   const db=lDB();const d=db[u];if(!d)return;
   document.getElementById('um-title').textContent='@'+u;
-  document.getElementById('um-sub').textContent=(d.display_name||u)+' — Account Details';
+  document.getElementById('um-sub').textContent=(d.display_name||u)+' \u2014 Account Details';
   const link=getProfileLinkFor(u,d);
   const rows=[
-    ['Display Name',d.display_name||'—'],['Username',u],
+    ['Display Name',d.display_name||'\u2014'],['Username',u],
     ['Profil-Link',`<a href="${link}" target="_blank" style="color:var(--acc2);font-size:.7rem;font-family:var(--mono);">${link}</a>`],
-    ['Custom Slug',d.custom_slug||'—'],['Premium',d.is_premium?'✓ Ja':'✗ Nein'],
-    ['Admin',d.is_admin?'✓ Ja':'✗ Nein'],['Views',d.views||0],
-    ['Öffentlich',d.community_public?'✓ Ja':'✗ Nein'],
-    ['Bio',d.bio||'—'],['Schriftart',d.font_choice||'Standard'],['Name-Anim',d.name_anim||'none'],
-    ['Custom Links',(d.custom_links||[]).length+' Einträge'],
-    ['Vorlage',d.active_template||'—'],
-    ['Avatar',d.avatar_set?'✓':'-'],['Banner',d.banner_set?'✓':'-'],
-    ['Song',d.mp3_file_set?'✓ '+d.mp3_display_name:'-'],
-    ['Admin-Notiz',d.adm_note||'—'],
-    ['Erstellt',d.created?new Date(d.created).toLocaleString('de'):'—'],
+    ['Custom Slug',d.custom_slug||'\u2014'],['Premium',d.is_premium?'\u2713 Ja':'\u2717 Nein'],
+    ['Admin',d.is_admin?'\u2713 Ja':'\u2717 Nein'],['Views',d.views||0],
+    ['\xD6ffentlich',d.community_public?'\u2713 Ja':'\u2717 Nein'],
+    ['Bio',d.bio||'\u2014'],['Schriftart',d.font_choice||'Standard'],['Name-Anim',d.name_anim||'none'],
+    ['Custom Links',(d.custom_links||[]).length+' Eintr\xE4ge'],
+    ['Vorlage',d.active_template||'\u2014'],
+    ['Avatar',d.avatar_set?'\u2713':'-'],['Banner',d.banner_set?'\u2713':'-'],
+    ['Song',d.mp3_file_set?'\u2713 '+d.mp3_display_name:'-'],
+    ['Admin-Notiz',d.adm_note||'\u2014'],
+    ['Erstellt',d.created?new Date(d.created).toLocaleString('de'):'\u2014'],
   ];
   document.getElementById('um-body').innerHTML=rows.map(([k,v])=>`<div class="udm-row"><div class="udm-key">${k}</div><div class="udm-val">${v}</div></div>`).join('');
   document.getElementById('um-actions').innerHTML=`
     <button class="btn btn-gold btn-xs" onclick="admPrem('${u}');closeUserModal();renderAdmin();">${d.is_premium?'Premium entfernen':'Premium geben'}</button>
     <button class="btn btn-ghost btn-xs" onclick="admAdmin('${u}');closeUserModal();renderAdmin();">${d.is_admin?'Owner entfernen':'Owner machen'}</button>
     <button class="btn btn-green btn-xs" onclick="closeUserModal();admNote('${u}')">Notiz</button>
-    <button class="btn btn-red btn-xs" onclick="closeUserModal();admDel('${u}')">Löschen</button>`;
+    <button class="btn btn-red btn-xs" onclick="closeUserModal();admDel('${u}')">L\xF6schen</button>`;
   document.getElementById('user-modal').style.display='flex';
 }
 function closeUserModal(){document.getElementById('user-modal').style.display='none';}
 function admPrem(u){
   const db=lDB();if(!db[u])return;db[u].is_premium=!db[u].is_premium;sDB(db);
-  addLog(`${CU} → Premium ${db[u].is_premium?'gegeben':'entfernt'} für @${u}`);
-  renderAdmin();toast(db[u].is_premium?`💎 @${u} hat Premium`:`Premium @${u} entfernt`);
+  addLog(`${CU} \u2192 Premium ${db[u].is_premium?'gegeben':'entfernt'} f\xFCr @${u}`);
+  renderAdmin();toast(db[u].is_premium?`\uD83D\uDC8E @${u} hat Premium`:`Premium @${u} entfernt`);
 }
 function admAdmin(u){
-  if(u===CU){toast('Kannst deinen eigenen Owner-Status nicht ändern!');return;}
+  if(u===CU){toast('Kannst deinen eigenen Owner-Status nicht \xE4ndern!');return;}
   const db=lDB();if(!db[u])return;db[u].is_admin=!db[u].is_admin;sDB(db);
-  addLog(`${CU} → Owner ${db[u].is_admin?'gegeben':'entfernt'} für @${u}`);
-  renderAdmin();toast(db[u].is_admin?`👑 @${u} ist jetzt Owner`:`@${u} kein Owner mehr`);
+  addLog(`${CU} \u2192 Owner ${db[u].is_admin?'gegeben':'entfernt'} f\xFCr @${u}`);
+  renderAdmin();toast(db[u].is_admin?`\uD83D\uDC51 @${u} ist jetzt Owner`:`@${u} kein Owner mehr`);
 }
 function admDel(u){
-  if(u===CU){toast('Kannst deinen eigenen Account nicht löschen!');return;}
-  if(!confirm(`Account "@${u}" wirklich löschen?`))return;
+  if(u===CU){toast('Kannst deinen eigenen Account nicht l\xF6schen!');return;}
+  if(!confirm(`Account "@${u}" wirklich l\xF6schen?`))return;
   const db=lDB();delete db[u];sDB(db);mediaDelUser(u);
-  addLog(`${CU} → @${u} gelöscht`);renderAdmin();toast(`@${u} gelöscht.`);
+  addLog(`${CU} \u2192 @${u} gel\xF6scht`);renderAdmin();toast(`@${u} gel\xF6scht.`);
 }
-function admResetViews(u){const db=lDB();if(!db[u])return;db[u].views=0;sDB(db);addLog(`${CU} → Views @${u} reset`);renderAdmin();toast(`Views @${u} zurückgesetzt.`);}
+function admResetViews(u){const db=lDB();if(!db[u])return;db[u].views=0;sDB(db);addLog(`${CU} \u2192 Views @${u} reset`);renderAdmin();toast(`Views @${u} zur\xFCckgesetzt.`);}
 function admResetAllViews(){
   if(!confirm('Views ALLER Nutzer auf 0 setzen?'))return;
   const db=lDB();Object.values(db).forEach(d=>d.views=0);sDB(db);
-  addLog(`${CU} → Alle Views zurückgesetzt`);renderAdmin();toast('Alle Views zurückgesetzt.');
+  addLog(`${CU} \u2192 Alle Views zur\xFCckgesetzt`);renderAdmin();toast('Alle Views zur\xFCckgesetzt.');
 }
 let _noteUser=null;
-function admNote(u){_noteUser=u;const db=lDB();const d=db[u];document.getElementById('note-modal-sub').textContent='Notiz für @'+u;document.getElementById('note-text').value=d.adm_note||'';document.getElementById('note-modal').style.display='flex';}
+function admNote(u){_noteUser=u;const db=lDB();const d=db[u];document.getElementById('note-modal-sub').textContent='Notiz f\xFCr @'+u;document.getElementById('note-text').value=d.adm_note||'';document.getElementById('note-modal').style.display='flex';}
 function saveNote(){if(!_noteUser)return;const db=lDB();if(!db[_noteUser])return;db[_noteUser].adm_note=document.getElementById('note-text').value;sDB(db);closeNoteModal();renderAdmin();toast('Notiz gespeichert.');}
 function closeNoteModal(){document.getElementById('note-modal').style.display='none';_noteUser=null;}
 function admCreateUser(prem,admin){
@@ -1339,8 +1323,8 @@ function admCreateUser(prem,admin){
   db[u]=newUser(u,p,prem,admin);
   if(dn)db[u].display_name=dn;if(bio)db[u].bio=bio;sDB(db);
   ['adm-new-u','adm-new-p','adm-new-dn','adm-new-bio'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  addLog(`${CU} → @${u} erstellt${prem?' (Premium)':''}${admin?' (Admin)':''}`);
-  renderAdmin();toast(`✓ @${u} erstellt`);
+  addLog(`${CU} \u2192 @${u} erstellt${prem?' (Premium)':''}${admin?' (Admin)':''}`);
+  renderAdmin();toast(`\u2713 @${u} erstellt`);
 }
 function admResetPw(){
   const u=document.getElementById('adm-pw-u').value.toLowerCase().trim();
@@ -1349,7 +1333,7 @@ function admResetPw(){
   const db=lDB();if(!db[u]){toast('Nutzer nicht gefunden!');return;}
   db[u].pw=hs(p);sDB(db);
   document.getElementById('adm-pw-u').value='';document.getElementById('adm-pw-p').value='';
-  addLog(`${CU} → Passwort von @${u} zurückgesetzt`);toast(`✓ Passwort von @${u} geändert`);
+  addLog(`${CU} \u2192 Passwort von @${u} zur\xFCckgesetzt`);toast(`\u2713 Passwort von @${u} ge\xE4ndert`);
 }
 function admSetSlug(){
   const u=document.getElementById('adm-slug-u').value.toLowerCase().trim();
@@ -1360,23 +1344,23 @@ function admSetSlug(){
   if(taken){toast('Slug schon vergeben!');return;}
   db[u].custom_slug=slug;sDB(db);
   document.getElementById('adm-slug-u').value='';document.getElementById('adm-slug-v').value='';
-  addLog(`${CU} → Slug @${u} → "${slug}"`);toast(`✓ Slug für @${u} gesetzt`);
+  addLog(`${CU} \u2192 Slug @${u} \u2192 "${slug}"`);toast(`\u2713 Slug f\xFCr @${u} gesetzt`);
 }
 function renderAnnounce(){
   const ann=lAnn();
-  if(ann){document.getElementById('ann-text').value=ann;document.getElementById('ann-preview').textContent='📢 '+ann;document.getElementById('ann-preview').style.display='block';document.getElementById('ann-none').style.display='none';}
+  if(ann){document.getElementById('ann-text').value=ann;document.getElementById('ann-preview').textContent='\uD83D\uDCE2 '+ann;document.getElementById('ann-preview').style.display='block';document.getElementById('ann-none').style.display='none';}
   else{document.getElementById('ann-preview').style.display='none';document.getElementById('ann-none').style.display='block';}
 }
-function saveAnnounce(){const text=document.getElementById('ann-text').value.trim();if(!text){toast('Text eingeben!');return;}sAnn(text);renderAnnounce();addLog(`${CU} → Ankündigung gesetzt`);toast('📢 Ankündigung gespeichert!');}
-function clearAnnounce(){sAnn('');renderAnnounce();document.getElementById('ann-text').value='';toast('Ankündigung entfernt.');}
+function saveAnnounce(){const text=document.getElementById('ann-text').value.trim();if(!text){toast('Text eingeben!');return;}sAnn(text);renderAnnounce();addLog(`${CU} \u2192 Ank\xFCndigung gesetzt`);toast('\uD83D\uDCE2 Ank\xFCndigung gespeichert!');}
+function clearAnnounce(){sAnn('');renderAnnounce();document.getElementById('ann-text').value='';toast('Ank\xFCndigung entfernt.');}
 function renderLogs(){
   const logs=lLogs();const el=document.getElementById('adm-log-list');
   if(!logs.length){el.innerHTML='<div style="color:var(--tx3);font-size:.8rem;">Noch keine Logs.</div>';return;}
   el.innerHTML=logs.map(l=>`<div style="display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--b1);font-size:.75rem;"><span style="color:var(--tx3);font-family:var(--mono);white-space:nowrap;">${new Date(l.time).toLocaleTimeString('de')}</span><span style="color:var(--tx2);">${l.msg}</span></div>`).join('');
 }
-function clearLogs(){sLogs([]);renderLogs();toast('Logs gelöscht.');}
+function clearLogs(){sLogs([]);renderLogs();toast('Logs gel\xF6scht.');}
 
-/* ─── PROFILE VIEW ─── */
+/* PROFILE VIEW */
 let pvAudio=new Audio();let pvPlaying=false;
 function openMyProfile(){renderProfile(CU);}
 async function renderProfile(username){
@@ -1411,7 +1395,6 @@ async function renderProfile(username){
   if(avatarSrc){av.src=avatarSrc;av.style.display='block';avRow.style.display='flex';}
   else{av.style.display='none';avRow.style.display='none';}
 
-  // Name with animation
   const nameEl=document.getElementById('pv-name');
   nameEl.className='pv-name'+(d.is_premium?' gold':'');
   clearInterval(_twInterval);
@@ -1431,18 +1414,16 @@ async function renderProfile(username){
   else if(d.font_choice==='Geist Mono')nameEl.classList.add('font-mono');
 
   const badges=document.getElementById('pv-badges');badges.innerHTML='';
-  if(d.is_premium){const b=document.createElement('span');b.className='pv-badge';b.style.cssText='background:rgba(212,168,67,.15);border:1px solid rgba(212,168,67,.3);color:#d4a843;';b.textContent='💎 Premium';badges.appendChild(b);}
-  if(d.is_admin){const b2=document.createElement('span');b2.className='pv-badge';b2.style.cssText='background:rgba(224,82,82,.12);border:1px solid rgba(224,82,82,.25);color:#e05252;';b2.textContent='👑 Owner';badges.appendChild(b2);}
+  if(d.is_premium){const b=document.createElement('span');b.className='pv-badge';b.style.cssText='background:rgba(212,168,67,.15);border:1px solid rgba(212,168,67,.3);color:#d4a843;';b.textContent='\uD83D\uDC8E Premium';badges.appendChild(b);}
+  if(d.is_admin){const b2=document.createElement('span');b2.className='pv-badge';b2.style.cssText='background:rgba(224,82,82,.12);border:1px solid rgba(224,82,82,.25);color:#e05252;';b2.textContent='\uD83D\uDC51 Owner';badges.appendChild(b2);}
   document.getElementById('pv-bio').textContent=d.bio||'';
   document.getElementById('pv-views').textContent=lDB()[username].views||0;
 
-  // Social buttons (Discord, Instagram, YouTube, TikTok)
   const sbEl=document.getElementById('pv-socials');sbEl.innerHTML='';
   [['discord','Discord'],['instagram','Instagram'],['youtube','YouTube'],['tiktok','TikTok']].forEach(([k,l])=>{
     if(d[k]){const a=document.createElement('a');a.href=d[k];a.target='_blank';a.className='pv-soc';a.style.background=accentColor;a.style.color='#fff';a.textContent=l;sbEl.appendChild(a);}
   });
 
-  // Custom link buttons
   const clEl=document.getElementById('pv-custom-links');clEl.innerHTML='';
   (d.custom_links||[]).filter(l=>l.text&&l.url).forEach(lnk=>{
     const a=document.createElement('a');
@@ -1451,7 +1432,6 @@ async function renderProfile(username){
     clEl.appendChild(a);
   });
 
-  // MP3
   if(pvAudio){try{pvAudio.pause();}catch(e){}}
   pvAudio=new Audio();pvPlaying=false;
   pvAudio.addEventListener('timeupdate',pvTimeUpdate);
@@ -1459,20 +1439,19 @@ async function renderProfile(username){
   const pp=document.getElementById('pv-player');
   if(mp3Src){
     pp.style.display='block';
-    document.getElementById('pv-song-name').textContent='♪ '+(d.mp3_display_name||d.mp3_name||'Song');
+    document.getElementById('pv-song-name').textContent='\u266A '+(d.mp3_display_name||d.mp3_name||'Song');
     pvAudio.src=mp3Src;pvAudio.load();
   } else {pp.style.display='none';}
   updatePvUI();
 
-  // Own link bar
   const bar=document.getElementById('pv-own-link-bar');
   if(username===sess&&bar){
     document.getElementById('pv-own-link-txt').textContent=getProfileLink(username);
     bar.style.display='flex';
   } else if(bar){bar.style.display='none';}
 
-  document.getElementById('pv-overlay').style.opacity='1';
-  document.getElementById('pv-overlay').style.display='flex';
+  // FIX: Show profile immediately without overlay
+  document.getElementById('pv-overlay').style.display='none';
   document.getElementById('pv-wrap').style.display='block';
   if(username===sess)updateStats();
 }
@@ -1485,13 +1464,11 @@ function copyPvLink(){
   const link=getProfileLink(sess);
   navigator.clipboard?.writeText(link).then(()=>{
     const btn=document.querySelector('#pv-own-link-bar button');
-    if(btn){btn.textContent='✓ Kopiert!';setTimeout(()=>btn.textContent=t('copy_link'),2000);}
+    if(btn){btn.textContent='\u2713 Kopiert!';setTimeout(()=>btn.textContent=t('copy_link'),2000);}
   });
 }
-function pvEnter(){
-  const ov=document.getElementById('pv-overlay');ov.style.opacity='0';setTimeout(()=>ov.style.display='none',500);
-  if(pvAudio&&pvAudio.src){const p=pvAudio.play();if(p&&p.then)p.then(()=>{pvPlaying=true;updatePvUI();}).catch(()=>{pvPlaying=false;updatePvUI();});}
-}
+// pvEnter no longer needed - overlay is removed
+function pvEnter(){}
 function pvToggle(){if(pvPlaying){pvAudio.pause();pvPlaying=false;updatePvUI();}else{pvAudio.play().then(()=>{pvPlaying=true;updatePvUI();}).catch(()=>{pvPlaying=false;updatePvUI();});}}
 function pvSeek(e){const r=document.getElementById('pv-prog-wrap').getBoundingClientRect();if(pvAudio.duration)pvAudio.currentTime=((e.clientX-r.left)/r.width)*pvAudio.duration;}
 function updatePvUI(){const btn=document.getElementById('pv-playbtn');if(!btn)return;btn.innerHTML=pvPlaying?'<svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>':'<svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><polygon points="5 3 19 12 5 21"/></svg>';}
@@ -1504,9 +1481,8 @@ function pvClose(){
 function fmt(s){const m=Math.floor(s/60);const ss=Math.floor(s%60);return m+':'+(ss<10?'0':'')+ss;}
 function toast(msg){const tEl=document.getElementById('toast');tEl.textContent=msg;tEl.classList.add('show');setTimeout(()=>tEl.classList.remove('show'),2500);}
 
-/* ─── BOOT ─── */
+/* BOOT */
 (function(){
-  // Ensure admin account exists
   const db=lDB();
   if(!db['k']){
     db['k']={pw:hs('kio'),display_name:'Admin',bio:'kio.lol Admin',
@@ -1518,14 +1494,12 @@ function toast(msg){const tEl=document.getElementById('toast');tEl.textContent=m
       created:Date.now(),last_login:Date.now()};
     sDB(db);
   }
-  // Migrate missing fields for existing users
   let changed=false;
   const db2=lDB();
   Object.values(db2).forEach(d=>{
     if(d.name_anim===undefined){d.name_anim='none';changed=true;}
     if(!d.custom_links){d.custom_links=[];changed=true;}
     if(d.community_public===undefined){d.community_public=false;changed=true;}
-    // Move social links out of top-level if missing
     if(d.discord===undefined){d.discord='';changed=true;}
     if(d.instagram===undefined){d.instagram='';changed=true;}
     if(d.youtube===undefined){d.youtube='';changed=true;}
@@ -1533,14 +1507,12 @@ function toast(msg){const tEl=document.getElementById('toast');tEl.textContent=m
   });
   if(changed)sDB(db2);
 
-  // Public profile via URL param
   const params=new URLSearchParams(location.search);
   const slugParam=params.get('slug');
   if(slugParam){const db3=lDB();const found=Object.entries(db3).find(([,d])=>d.custom_slug&&d.custom_slug===slugParam);if(found){document.getElementById('v-login').style.display='none';renderProfile(found[0]);return;}}
   const lu=params.get('u')||params.get('user');
   if(lu&&lDB()[lu]){document.getElementById('v-login').style.display='none';renderProfile(lu);return;}
 
-  // Media migration from old localStorage blobs to IDB
   (async()=>{
     const db3=lDB();let migrated=false;
     for(const [u,d] of Object.entries(db3)){
@@ -1563,4 +1535,8 @@ function toast(msg){const tEl=document.getElementById('toast');tEl.textContent=m
 })();
 </script>
 </body>
-</html>
+</html>"""
+
+print(src)
+PYEOF
+echo "File written: $(wc -c < /mnt/user-data/outputs/regelbruch_fixed.html) bytes"
