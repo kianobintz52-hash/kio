@@ -57,6 +57,10 @@ select.inp{cursor:pointer;}
 .sb-logo{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;letter-spacing:-0.5px;color:var(--tx0);}
 .sb-logo span{color:var(--acc2);}
 .sb-user{font-size:.7rem;color:var(--tx3);margin-top:3px;font-family:var(--mono);}
+/* Lang toggle in sidebar top */
+.lang-tog{display:flex;gap:4px;margin-top:8px;}
+.lang-btn-sb{padding:3px 10px;border-radius:var(--r);border:1px solid var(--b1);background:transparent;color:var(--tx3);font-family:var(--font);font-size:.68rem;cursor:pointer;transition:.15s;}
+.lang-btn-sb.on{background:rgba(91,91,214,.15);border-color:var(--acc);color:var(--acc2);}
 .sb-nav{flex:1;padding:10px;display:flex;flex-direction:column;gap:2px;overflow-y:auto;}
 .sb-sec{font-size:.6rem;color:var(--tx3);text-transform:uppercase;letter-spacing:.1em;padding:12px 8px 5px;font-weight:600;}
 .ni{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);border:none;background:transparent;color:var(--tx2);font-family:var(--font);font-size:.83rem;cursor:pointer;width:100%;text-align:left;transition:all .15s;position:relative;}
@@ -90,9 +94,6 @@ select.inp{cursor:pointer;}
 .upbox:hover{border-color:var(--acc);color:var(--acc2);}
 .upbox-name{margin-top:4px;font-size:.68rem;color:var(--acc2);font-family:var(--mono);}
 .upbox-clr{position:absolute;top:6px;right:6px;background:rgba(224,82,82,.12);border:none;color:var(--red);font-size:.6rem;padding:2px 7px;border-radius:5px;cursor:pointer;}
-.range-row{display:flex;align-items:center;gap:10px;}
-.range-row input[type=range]{flex:1;accent-color:var(--acc);height:3px;}
-.range-val{font-size:.75rem;color:var(--tx2);min-width:36px;text-align:right;font-family:var(--mono);}
 .badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:.65rem;font-weight:600;}
 .badge-gold{background:rgba(212,168,67,.12);border:1px solid rgba(212,168,67,.25);color:var(--gold);}
 .badge-free{background:rgba(255,255,255,.04);border:1px solid var(--b2);color:var(--tx3);}
@@ -142,6 +143,8 @@ select.inp{cursor:pointer;}
 .pv-bio{color:rgba(255,255,255,.5);font-size:.78rem;text-align:center;margin-top:9px;line-height:1.65;}
 .pv-socials{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-top:14px;}
 .pv-soc{padding:8px 16px;border-radius:var(--r);text-decoration:none;font-size:.75rem;font-weight:600;font-family:var(--font);}
+.pv-custom-links{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-top:10px;}
+.pv-custom-link{padding:8px 16px;border-radius:var(--r);text-decoration:none;font-size:.75rem;font-weight:500;font-family:var(--font);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.85);}
 .pv-player{margin-top:14px;background:rgba(0,0,0,.3);border-radius:10px;padding:12px 14px;}
 .pv-song-lbl{font-size:.7rem;color:rgba(255,255,255,.45);margin-bottom:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .pv-controls{display:flex;align-items:center;gap:8px;}
@@ -175,59 +178,95 @@ select.inp{cursor:pointer;}
 .font-orbitron{font-family:'Orbitron',sans-serif!important;}
 .font-syne{font-family:'Syne',sans-serif!important;}
 .font-mono{font-family:'Geist Mono',monospace!important;}
+/* Animated name effects */
+@keyframes glow-anim{0%,100%{text-shadow:0 0 8px currentColor,0 0 20px currentColor}50%{text-shadow:0 0 4px currentColor}}
+@keyframes rainbow-anim{0%{color:#f87171}16%{color:#fb923c}33%{color:#facc15}50%{color:#4ade80}66%{color:#60a5fa}83%{color:#c084fc}100%{color:#f87171}}
+.anim-glow{animation:glow-anim 2s ease-in-out infinite;}
+.anim-rainbow{animation:rainbow-anim 2s linear infinite;}
+/* Custom link editor rows */
+.cl-row{display:flex;gap:7px;margin-bottom:8px;align-items:center;}
+.cl-row .inp{flex:1;}
+.cl-del{background:none;border:1px solid var(--b2);color:var(--tx3);padding:6px 10px;border-radius:var(--r);cursor:pointer;font-size:.72rem;transition:.15s;white-space:nowrap;}
+.cl-del:hover{border-color:var(--red);color:var(--red);}
+/* Community page */
+.community-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:16px;}
+.community-card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r2);padding:16px;text-align:center;cursor:pointer;transition:.15s;}
+.community-card:hover{border-color:rgba(91,91,214,.4);transform:translateY(-2px);}
+.community-av{width:52px;height:52px;border-radius:50%;background:rgba(91,91,214,.15);display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;color:var(--acc2);margin:0 auto 10px;overflow:hidden;}
+.community-av img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.community-name{font-size:.85rem;font-weight:600;color:var(--tx0);margin-bottom:4px;}
+.community-bio{font-size:.72rem;color:var(--tx3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.community-views{font-size:.65rem;color:var(--tx3);margin-top:6px;}
+/* Profile link bar */
+#pv-own-link-bar{display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9011;background:rgba(10,10,18,0.95);border:1px solid rgba(91,91,214,.4);border-radius:14px;padding:12px 20px;align-items:center;gap:12px;max-width:90vw;overflow:hidden;}
 </style>
 </head>
 <body>
 
+<!-- ── LOGIN ── -->
 <div id="v-login" class="auth-wrap">
   <div class="auth-card">
     <div class="logo">regelbruch<span>.</span>cc</div>
-    <div class="auth-sub">Dein persönlicher Bio-Link</div>
-    <div id="login-err" class="auth-err">Falscher Username oder Passwort.</div>
-    <div class="field"><label class="lbl">Username</label><input id="lu" class="inp" placeholder="username" autocomplete="off"></div>
-    <div class="field"><label class="lbl">Passwort</label><input id="lp" class="inp" type="password" placeholder="••••••••"></div>
-    <button class="btn btn-p btn-full" onclick="doLogin()" style="margin-top:4px;">Einloggen</button>
-    <div class="auth-foot">Kein Account? <a onclick="sv('v-register')">Registrieren</a></div>
+    <div class="auth-sub" data-i18n="login_sub">Dein persönlicher Bio-Link</div>
+    <div id="login-err" class="auth-err" data-i18n="login_err">Falscher Username oder Passwort.</div>
+    <div class="field"><label class="lbl" data-i18n="username">Username</label><input id="lu" class="inp" placeholder="username" autocomplete="off"></div>
+    <div class="field"><label class="lbl" data-i18n="password">Passwort</label><input id="lp" class="inp" type="password" placeholder="••••••••"></div>
+    <button class="btn btn-p btn-full" onclick="doLogin()" style="margin-top:4px;" data-i18n="login_btn">Einloggen</button>
+    <div class="auth-foot"><span data-i18n="no_acc">Kein Account?</span> <a onclick="sv('v-register')" data-i18n="register">Registrieren</a></div>
   </div>
 </div>
 
+<!-- ── REGISTER ── -->
 <div id="v-register" class="auth-wrap" style="display:none;">
   <div class="auth-card">
     <div class="logo">regelbruch<span>.</span>cc</div>
-    <div class="auth-sub">Account erstellen</div>
+    <div class="auth-sub" data-i18n="register_sub">Account erstellen</div>
     <div id="reg-err" class="auth-err"></div>
-    <div class="field"><label class="lbl">Username</label><input id="ru" class="inp" placeholder="username" autocomplete="off"></div>
-    <div class="field"><label class="lbl">Passwort</label><input id="rp" class="inp" type="password" placeholder="••••••••"></div>
-    <button class="btn btn-p btn-full" onclick="doRegister()" style="margin-top:4px;">Registrieren</button>
-    <div class="auth-foot">Schon dabei? <a onclick="sv('v-login')">Einloggen</a></div>
+    <div class="field"><label class="lbl" data-i18n="username">Username</label><input id="ru" class="inp" placeholder="username" autocomplete="off"></div>
+    <div class="field"><label class="lbl" data-i18n="password">Passwort</label><input id="rp" class="inp" type="password" placeholder="••••••••"></div>
+    <button class="btn btn-p btn-full" onclick="doRegister()" style="margin-top:4px;" data-i18n="register_btn">Registrieren</button>
+    <div class="auth-foot"><span data-i18n="have_acc">Schon dabei?</span> <a onclick="sv('v-login')" data-i18n="login_btn">Einloggen</a></div>
   </div>
 </div>
 
+<!-- ── APP ── -->
 <div id="v-app" style="display:none;height:100vh;">
 <div class="app-inner">
   <div class="sb">
     <div class="sb-top">
       <div class="sb-logo">regelbruch<span>.</span>cc</div>
       <div class="sb-user" id="sb-user">@username</div>
+      <div class="lang-tog">
+        <button class="lang-btn-sb on" onclick="setLang('de',this)">🇩🇪 DE</button>
+        <button class="lang-btn-sb" onclick="setLang('en',this)">🇬🇧 EN</button>
+      </div>
     </div>
     <div class="sb-nav">
-      <div class="sb-sec">Menü</div>
+      <div class="sb-sec" data-i18n="menu">Menü</div>
       <button class="ni on" id="ni-dashboard" onclick="tab('dashboard')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-        Dashboard
+        <span data-i18n="nav_dashboard">Dashboard</span>
       </button>
       <button class="ni" id="ni-meinlink" onclick="tab('meinlink')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
-        Mein Link
+        <span data-i18n="nav_mylink">Mein Link</span>
         <span id="link-new-dot" style="margin-left:auto;width:7px;height:7px;border-radius:50%;background:var(--acc2);display:inline-block;"></span>
+      </button>
+      <button class="ni" id="ni-community" onclick="tab('community')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        <span data-i18n="nav_community">Community</span>
+      </button>
+      <button class="ni" id="ni-einstellungen" onclick="tab('einstellungen')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        <span data-i18n="nav_settings">Einstellungen</span>
       </button>
       <button class="ni" id="ni-vorlagen" onclick="tab('vorlagen')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-        Vorlagen
+        <span data-i18n="nav_templates">Vorlagen</span>
       </button>
       <button class="ni" id="ni-premium" onclick="tab('premium')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        Premium
+        <span data-i18n="nav_premium">Premium</span>
         <span id="prem-dot" style="margin-left:auto;width:7px;height:7px;border-radius:50%;background:var(--gold);display:none;"></span>
       </button>
       <div class="sb-sec" id="admin-prem-block" style="display:none;">Owner</div>
@@ -249,7 +288,7 @@ select.inp{cursor:pointer;}
       <div style="height:8px;"></div>
       <button class="ni" style="color:#f08080;" onclick="doLogout()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"/></svg>
-        Logout
+        <span data-i18n="logout">Logout</span>
       </button>
     </div>
   </div>
@@ -259,150 +298,201 @@ select.inp{cursor:pointer;}
 
     <!-- DASHBOARD -->
     <div id="tab-dashboard" class="screen on">
-      <div class="pg-title">Dashboard</div>
-      <div class="pg-sub">Bearbeite dein Profil und passe es an.</div>
+      <div class="pg-title" data-i18n="dashboard_title">Dashboard</div>
+      <div class="pg-sub" data-i18n="dashboard_sub">Bearbeite dein Profil und passe es an.</div>
       <div id="ann-banner" style="display:none;" class="announce"></div>
       <div class="stats-grid">
-        <div class="stat"><div class="stat-l">Profil Views</div><div class="stat-v" id="st-views">0</div><div class="stat-note">Gesamtaufrufe</div></div>
-        <div class="stat"><div class="stat-l">Songs</div><div class="stat-v" id="st-songs">0</div><div class="stat-note">MP3 geladen</div></div>
-        <div class="stat"><div class="stat-l">Status</div><div style="margin-top:8px;" id="st-prem"></div></div>
+        <div class="stat"><div class="stat-l" data-i18n="stat_views">Profil Views</div><div class="stat-v" id="st-views">0</div><div class="stat-note" data-i18n="stat_views_note">Gesamtaufrufe</div></div>
+        <div class="stat"><div class="stat-l" data-i18n="stat_songs">Songs</div><div class="stat-v" id="st-songs">0</div><div class="stat-note" data-i18n="stat_songs_note">MP3 geladen</div></div>
+        <div class="stat"><div class="stat-l" data-i18n="stat_status">Status</div><div style="margin-top:8px;" id="st-prem"></div></div>
       </div>
       <div class="card">
-        <div class="card-title">Profil</div>
+        <div class="card-title" data-i18n="card_profile">Profil</div>
         <div class="g2">
-          <div class="field"><label class="lbl">Anzeigename</label><input id="s-display_name" class="inp" placeholder="Dein Name"></div>
+          <div class="field"><label class="lbl" data-i18n="display_name">Anzeigename</label><input id="s-display_name" class="inp" placeholder="Dein Name"></div>
           <div class="field">
-            <label class="lbl">Schriftart <span id="font-lock" style="color:var(--gold);font-size:.62rem;"></span></label>
+            <label class="lbl"><span data-i18n="font">Schriftart</span> <span id="font-lock" style="color:var(--gold);font-size:.62rem;"></span></label>
             <select id="s-font_choice" class="inp">
-              <option value="Geist">Geist (Standard)</option>
+              <option value="Geist" data-i18n-opt="font_geist">Geist (Standard)</option>
               <option value="Syne">Syne</option>
               <option value="Geist Mono" data-prem>Geist Mono ★</option>
               <option value="Orbitron" data-prem>Orbitron ★</option>
             </select>
           </div>
         </div>
+        <div class="field">
+          <label class="lbl" data-i18n="anim_name">Animierter Name</label>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button class="btn btn-ghost btn-sm" onclick="setNameAnim('none')" id="anim-none" data-i18n="anim_none">Kein Effekt</button>
+            <button class="btn btn-ghost btn-sm" onclick="setNameAnim('glow')" id="anim-glow" data-i18n="anim_glow">✨ Glow</button>
+            <button class="btn btn-ghost btn-sm" onclick="setNameAnim('rainbow')" id="anim-rainbow" data-i18n="anim_rainbow">🌈 Regenbogen</button>
+            <button class="btn btn-ghost btn-sm" onclick="setNameAnim('typewriter')" id="anim-typewriter" data-i18n="anim_typewriter">⌨ Typewriter</button>
+          </div>
+        </div>
         <div class="field"><label class="lbl">Bio</label><textarea id="s-bio" class="inp" placeholder="Schreib etwas über dich..."></textarea></div>
         <div class="field">
-          <label class="lbl">Custom Profil-Link (für DC Bio etc.)</label>
+          <label class="lbl" data-i18n="custom_slug_lbl">Custom Profil-Link</label>
           <div style="display:flex;align-items:center;gap:0;">
             <span style="background:var(--s3);border:1px solid var(--b1);border-right:none;padding:9px 11px;border-radius:var(--r) 0 0 var(--r);font-size:.78rem;color:var(--tx3);white-space:nowrap;">regelbruch.cc/</span>
             <input id="s-custom_slug" class="inp" placeholder="dein-link" style="border-radius:0 var(--r) var(--r) 0;flex:1;" oninput="updateSlugPreview()">
           </div>
-          <div style="font-size:.68rem;color:var(--tx3);margin-top:4px;">Nur a-z, 0-9, Bindestrich. Kopiere diesen Link danach in deine Discord Bio!</div>
+          <div style="font-size:.68rem;color:var(--tx3);margin-top:4px;" data-i18n="slug_hint">Nur a-z, 0-9, Bindestrich.</div>
           <div id="slug-preview"></div>
-        </div>
-        <div class="g2">
-          <div class="field"><label class="lbl">Discord</label><input id="s-discord" class="inp" placeholder="https://discord.gg/..."></div>
-          <div class="field"><label class="lbl">Instagram</label><input id="s-instagram" class="inp" placeholder="https://instagram.com/..."></div>
-          <div class="field"><label class="lbl">YouTube</label><input id="s-youtube" class="inp" placeholder="https://youtube.com/..."></div>
-          <div class="field"><label class="lbl">TikTok</label><input id="s-tiktok" class="inp" placeholder="https://tiktok.com/..."></div>
-        </div>
-        <div class="field">
-          <label class="lbl">Karten-Transparenz: <span id="op-v">80</span>%</label>
-          <div class="range-row"><input type="range" id="s-opacity" min="20" max="100" value="80" oninput="document.getElementById('op-v').textContent=this.value"><span class="range-val"><span id="op-disp">80</span>%</span></div>
         </div>
       </div>
       <div class="card">
-        <div class="card-title">Medien</div>
+        <div class="card-title" data-i18n="card_media">Medien</div>
         <div class="g3">
           <div class="field">
-            <label class="lbl">Hintergrund</label>
-            <div class="upbox" onclick="document.getElementById('f-bg').click()">Datei wählen<div class="upbox-name" id="fn-bg">—</div><input type="file" id="f-bg" accept="image/*,video/mp4,video/webm" style="display:none" onchange="handleFile('background_file',this,'fn-bg','clr-bg')"><button class="upbox-clr" id="clr-bg" onclick="event.stopPropagation();clearFile('background_file','fn-bg','clr-bg')" style="display:none;">✕</button></div>
+            <label class="lbl" data-i18n="bg">Hintergrund</label>
+            <div class="upbox" onclick="document.getElementById('f-bg').click()"><span data-i18n="choose_file">Datei wählen</span><div class="upbox-name" id="fn-bg">—</div><input type="file" id="f-bg" accept="image/*,video/mp4,video/webm" style="display:none" onchange="handleFile('background_file',this,'fn-bg','clr-bg')"><button class="upbox-clr" id="clr-bg" onclick="event.stopPropagation();clearFile('background_file','fn-bg','clr-bg')" style="display:none;">✕</button></div>
           </div>
           <div class="field">
-            <label class="lbl">Banner</label>
-            <div class="upbox" onclick="document.getElementById('f-banner').click()">Bild wählen<div class="upbox-name" id="fn-banner">—</div><input type="file" id="f-banner" accept="image/*" style="display:none" onchange="handleFile('banner',this,'fn-banner','clr-banner')"><button class="upbox-clr" id="clr-banner" onclick="event.stopPropagation();clearFile('banner','fn-banner','clr-banner')" style="display:none;">✕</button></div>
+            <label class="lbl" data-i18n="banner">Banner</label>
+            <div class="upbox" onclick="document.getElementById('f-banner').click()"><span data-i18n="choose_img">Bild wählen</span><div class="upbox-name" id="fn-banner">—</div><input type="file" id="f-banner" accept="image/*" style="display:none" onchange="handleFile('banner',this,'fn-banner','clr-banner')"><button class="upbox-clr" id="clr-banner" onclick="event.stopPropagation();clearFile('banner','fn-banner','clr-banner')" style="display:none;">✕</button></div>
           </div>
           <div class="field">
             <label class="lbl">Avatar</label>
-            <div class="upbox" onclick="document.getElementById('f-avatar').click()">Bild wählen<div class="upbox-name" id="fn-avatar">—</div><input type="file" id="f-avatar" accept="image/*" style="display:none" onchange="handleFile('avatar',this,'fn-avatar','clr-avatar')"><button class="upbox-clr" id="clr-avatar" onclick="event.stopPropagation();clearFile('avatar','fn-avatar','clr-avatar')" style="display:none;">✕</button></div>
+            <div class="upbox" onclick="document.getElementById('f-avatar').click()"><span data-i18n="choose_img">Bild wählen</span><div class="upbox-name" id="fn-avatar">—</div><input type="file" id="f-avatar" accept="image/*" style="display:none" onchange="handleFile('avatar',this,'fn-avatar','clr-avatar')"><button class="upbox-clr" id="clr-avatar" onclick="event.stopPropagation();clearFile('avatar','fn-avatar','clr-avatar')" style="display:none;">✕</button></div>
           </div>
         </div>
         <div class="field" style="margin-top:6px;">
-          <label class="lbl">Musik (MP3)</label>
-          <div class="upbox" onclick="document.getElementById('f-mp3').click()">MP3-Datei wählen<div class="upbox-name" id="fn-mp3">—</div><input type="file" id="f-mp3" accept="audio/*" style="display:none" onchange="handleMp3(this)"><button class="upbox-clr" id="clr-mp3" onclick="event.stopPropagation();clearMp3()" style="display:none;">✕</button></div>
-          <div id="mp3-name-row" style="margin-top:8px;display:none;"><label class="lbl">Song-Name</label><input id="mp3-song-name" class="inp" placeholder="z.B. Travis Scott – Sicko Mode"></div>
+          <label class="lbl" data-i18n="music">Musik (MP3)</label>
+          <div class="upbox" onclick="document.getElementById('f-mp3').click()"><span data-i18n="choose_mp3">MP3-Datei wählen</span><div class="upbox-name" id="fn-mp3">—</div><input type="file" id="f-mp3" accept="audio/*" style="display:none" onchange="handleMp3(this)"><button class="upbox-clr" id="clr-mp3" onclick="event.stopPropagation();clearMp3()" style="display:none;">✕</button></div>
+          <div id="mp3-name-row" style="margin-top:8px;display:none;"><label class="lbl" data-i18n="song_name">Song-Name</label><input id="mp3-song-name" class="inp" placeholder="z.B. Travis Scott – Sicko Mode"></div>
         </div>
       </div>
       <button class="btn btn-p btn-full" style="margin-bottom:40px;" onclick="saveSettings()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        Speichern
+        <span data-i18n="save">Speichern</span>
       </button>
     </div>
 
     <!-- MEIN LINK -->
     <div id="tab-meinlink" class="screen">
-      <div class="pg-title">Mein Profil-Link</div>
-      <div class="pg-sub">Teile diesen Link in deiner Discord Bio oder woanders.</div>
+      <div class="pg-title" data-i18n="mylink_title">Mein Profil-Link</div>
+      <div class="pg-sub" data-i18n="mylink_sub">Teile diesen Link in deiner Discord Bio oder woanders.</div>
       <div class="card" style="border-color:rgba(91,91,214,.25);">
-        <div class="card-title">Dein Link</div>
+        <div class="card-title" data-i18n="your_link">Dein Link</div>
         <div id="mylink-display" style="margin-bottom:14px;"></div>
-        <div style="font-size:.75rem;color:var(--tx2);margin-bottom:12px;">Wenn jemand diesen Link öffnet, sieht er direkt dein Profil — kein Login nötig.</div>
+        <div style="font-size:.75rem;color:var(--tx2);margin-bottom:12px;" data-i18n="link_info">Wenn jemand diesen Link öffnet, sieht er direkt dein Profil — kein Login nötig.</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <button class="btn btn-p btn-sm" onclick="copyMyLink()">Link kopieren</button>
-          <button class="btn btn-ghost btn-sm" onclick="openMyProfile()">Profil Vorschau</button>
+          <button class="btn btn-p btn-sm" onclick="copyMyLink()" data-i18n="copy_link">Link kopieren</button>
+          <button class="btn btn-ghost btn-sm" onclick="openMyProfile()" data-i18n="preview">Profil Vorschau</button>
         </div>
       </div>
       <div class="card" style="border-color:rgba(88,101,242,.2);background:rgba(88,101,242,.03);">
-        <div class="card-title" style="color:#a5b4fc;">Für Discord Bio</div>
-        <div style="font-size:.8rem;color:var(--tx2);margin-bottom:12px;">Kopiere diesen Link direkt in deine Discord Bio:</div>
+        <div class="card-title" style="color:#a5b4fc;" data-i18n="for_discord">Für Discord Bio</div>
+        <div style="font-size:.8rem;color:var(--tx2);margin-bottom:12px;" data-i18n="discord_hint">Kopiere diesen Link direkt in deine Discord Bio:</div>
         <div id="discord-link-box" style="margin-bottom:14px;"></div>
-        <div style="font-size:.75rem;color:var(--tx3);background:var(--s2);border-radius:var(--r);padding:10px 12px;line-height:1.7;">
-          <strong style="color:var(--tx2);">So geht's in Discord:</strong><br>
+        <div style="font-size:.75rem;color:var(--tx3);background:var(--s2);border-radius:var(--r);padding:10px 12px;line-height:1.7;" data-i18n="discord_steps">
           Einstellungen → Mein Konto → „Mich" → Bio bearbeiten → Link einfügen ✓
         </div>
       </div>
       <div class="card">
-        <div class="card-title">QR-Code</div>
-        <div style="font-size:.8rem;color:var(--tx2);margin-bottom:14px;">Teile dein Profil auch als QR-Code — z.B. auf einem Server oder IRL.</div>
+        <div class="card-title" data-i18n="qr_code">QR-Code</div>
         <div id="qr-box" style="display:flex;justify-content:center;margin-bottom:14px;"></div>
-        <button class="btn btn-ghost btn-sm btn-full" onclick="downloadQR()">QR-Code herunterladen</button>
+        <button class="btn btn-ghost btn-sm btn-full" onclick="downloadQR()" data-i18n="download_qr">QR-Code herunterladen</button>
       </div>
       <div class="card">
-        <div class="card-title">Custom Slug</div>
+        <div class="card-title" data-i18n="custom_slug">Custom Slug</div>
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-          <span style="font-size:.82rem;color:var(--tx3);">Aktueller Slug:</span>
+          <span style="font-size:.82rem;color:var(--tx3);" data-i18n="current_slug">Aktueller Slug:</span>
           <span id="slug-display" style="font-family:var(--mono);color:var(--acc2);font-size:.82rem;"></span>
         </div>
-        <button class="btn btn-ghost btn-sm" onclick="tab('dashboard')">Im Dashboard ändern →</button>
+        <button class="btn btn-ghost btn-sm" onclick="tab('dashboard')" data-i18n="change_in_dashboard">Im Dashboard ändern →</button>
       </div>
+    </div>
+
+    <!-- COMMUNITY -->
+    <div id="tab-community" class="screen">
+      <div class="pg-title" data-i18n="community_title">Community</div>
+      <div class="pg-sub" data-i18n="community_sub">Alle öffentlichen Profile auf regelbruch.cc</div>
+      <div class="card" style="border-color:rgba(91,91,214,.2);">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+          <div>
+            <div style="font-size:.82rem;font-weight:500;color:var(--tx1);" data-i18n="community_desc">Dein Profil in der Liste erscheinen lassen?</div>
+            <div style="font-size:.72rem;color:var(--tx3);margin-top:3px;" data-i18n="community_desc2">Andere können dein Profil dann hier entdecken.</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:.78rem;color:var(--tx3);" id="comm-toggle-lbl" data-i18n="public_off">Privat</span>
+            <div id="comm-toggle-wrap" onclick="toggleCommunity()" style="width:42px;height:24px;border-radius:12px;background:var(--b2);cursor:pointer;position:relative;transition:.2s;">
+              <div id="comm-toggle-thumb" style="width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:3px;left:3px;transition:.2s;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <input class="adm-search" id="community-search" placeholder="Nutzer suchen..." oninput="renderCommunity(this.value)" style="margin-bottom:0;">
+      <div class="community-grid" id="community-grid"></div>
+    </div>
+
+    <!-- EINSTELLUNGEN -->
+    <div id="tab-einstellungen" class="screen">
+      <div class="pg-title" data-i18n="settings_title">Einstellungen</div>
+      <div class="pg-sub" data-i18n="settings_sub">Passe deinen Account an.</div>
+
+      <!-- Custom Link Buttons -->
+      <div class="card">
+        <div class="card-title" data-i18n="custom_links_title">Eigene Link-Buttons</div>
+        <div style="font-size:.78rem;color:var(--tx2);margin-bottom:12px;" data-i18n="custom_links_desc">Füge eigene Buttons zu deinem Profil hinzu (z.B. „Mein Shop", „Mein Server").</div>
+        <div id="cl-container"></div>
+        <button class="btn btn-ghost btn-sm" onclick="addCustomLink()" style="margin-top:4px;">
+          + <span data-i18n="add_link">Link hinzufügen</span>
+        </button>
+      </div>
+
+      <!-- Passwort ändern -->
+      <div class="card">
+        <div class="card-title" data-i18n="change_pw_title">Passwort ändern</div>
+        <div class="g2" style="margin-bottom:10px;">
+          <div class="field"><label class="lbl" data-i18n="old_pw">Aktuelles Passwort</label><input id="pw-old" class="inp" type="password" placeholder="••••••••"></div>
+          <div class="field"><label class="lbl" data-i18n="new_pw">Neues Passwort</label><input id="pw-new" class="inp" type="password" placeholder="••••••••"></div>
+        </div>
+        <div class="field"><label class="lbl" data-i18n="confirm_pw">Bestätigen</label><input id="pw-confirm" class="inp" type="password" placeholder="••••••••"></div>
+        <button class="btn btn-p btn-sm" onclick="changePassword()" style="margin-top:4px;" data-i18n="change_pw_btn">Passwort ändern</button>
+      </div>
+
+      <button class="btn btn-p btn-full" style="margin-bottom:40px;" onclick="saveCustomLinks()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        <span data-i18n="save">Speichern</span>
+      </button>
     </div>
 
     <!-- VORLAGEN -->
     <div id="tab-vorlagen" class="screen">
-      <div class="pg-title">Vorlagen</div>
-      <div class="pg-sub">Wähle einen Style für dein Profil.</div>
+      <div class="pg-title" data-i18n="templates_title">Vorlagen</div>
+      <div class="pg-sub" data-i18n="templates_sub">Wähle einen Style für dein Profil.</div>
       <div class="card" style="border-color:rgba(91,91,214,.2);">
-        <div class="card-title">Aktive Vorlage</div>
+        <div class="card-title" data-i18n="active_tpl">Aktive Vorlage</div>
         <div style="display:flex;align-items:center;justify-content:space-between;">
-          <div id="active-tpl-info" style="font-size:.82rem;color:var(--tx2);">Keine Vorlage aktiv</div>
-          <button class="btn btn-ghost btn-sm" onclick="removeTemplate()">Entfernen</button>
+          <div id="active-tpl-info" style="font-size:.82rem;color:var(--tx2);" data-i18n="no_tpl">Keine Vorlage aktiv</div>
+          <button class="btn btn-ghost btn-sm" onclick="removeTemplate()" data-i18n="remove">Entfernen</button>
         </div>
       </div>
       <div class="card" style="margin-bottom:16px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0;">
-          <div class="card-title" style="margin-bottom:0;">Community Vorlagen</div>
-          <button class="btn btn-ghost btn-sm" onclick="openTplModal()">+ Hochladen</button>
+          <div class="card-title" style="margin-bottom:0;" data-i18n="community_tpl">Community Vorlagen</div>
+          <button class="btn btn-ghost btn-sm" onclick="openTplModal()">+ <span data-i18n="upload">Hochladen</span></button>
         </div>
       </div>
       <div class="ftabs">
-        <button class="ftab on" onclick="filterTpl('all',this)">Alle</button>
+        <button class="ftab on" onclick="filterTpl('all',this)" data-i18n="all">Alle</button>
         <button class="ftab" onclick="filterTpl('dark',this)">Dark</button>
         <button class="ftab" onclick="filterTpl('light',this)">Light</button>
         <button class="ftab" onclick="filterTpl('neon',this)">Neon</button>
         <button class="ftab" onclick="filterTpl('minimal',this)">Minimal</button>
-        <button class="ftab" onclick="filterTpl('mine',this)">Meine</button>
+        <button class="ftab" onclick="filterTpl('mine',this)" data-i18n="mine">Meine</button>
       </div>
       <div class="tpl-grid" id="tpl-grid"></div>
     </div>
 
     <!-- PREMIUM -->
     <div id="tab-premium" class="screen">
-      <div class="pg-title">Premium</div>
-      <div class="pg-sub">Hol dir mehr aus regelbruch.cc raus.</div>
+      <div class="pg-title" data-i18n="premium_title">Premium</div>
+      <div class="pg-sub" data-i18n="premium_sub">Hol dir mehr aus regelbruch.cc raus.</div>
       <div id="prem-status-card" class="card" style="margin-bottom:14px;"></div>
       <div class="card">
-        <div class="card-title">Was du bekommst</div>
+        <div class="card-title" data-i18n="perks">Was du bekommst</div>
         <div class="perk"><span>🎨</span> Premium-Schriftarten (Orbitron, Syne, Geist Mono)</div>
         <div class="perk"><span>✨</span> Goldener Name auf deinem Profil</div>
         <div class="perk"><span>🏅</span> Exklusive Premium-Badges</div>
@@ -431,7 +521,6 @@ select.inp{cursor:pointer;}
         <button class="adm-tab" onclick="admTab('announce',this)">📢 Ankündigung</button>
         <button class="adm-tab" onclick="admTab('logs',this)">📋 Logs</button>
       </div>
-
       <div id="adm-nutzer" class="adm-section">
         <div class="card">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
@@ -441,16 +530,15 @@ select.inp{cursor:pointer;}
               <button class="btn btn-red btn-sm" onclick="admResetAllViews()">Alle Views reset</button>
             </div>
           </div>
-          <input class="adm-search" id="adm-search" placeholder="Nutzer suchen (Name, Username)..." oninput="filterUsers(this.value)">
+          <input class="adm-search" id="adm-search" placeholder="Nutzer suchen..." oninput="filterUsers(this.value)">
           <div class="adm-wrap">
             <table class="adm-tbl">
-              <thead><tr><th>Nutzer</th><th>Profil-Link</th><th>Views</th><th>Song</th><th>Premium</th><th>Admin</th><th>Erstellt</th><th>Aktionen</th></tr></thead>
+              <thead><tr><th>Nutzer</th><th>Link</th><th>Views</th><th>Song</th><th>Premium</th><th>Admin</th><th>Erstellt</th><th>Aktionen</th></tr></thead>
               <tbody id="adm-tbody"></tbody>
             </table>
           </div>
         </div>
       </div>
-
       <div id="adm-erstellen" class="adm-section" style="display:none;">
         <div class="card" style="border-color:rgba(212,168,67,.2);">
           <div class="card-title" style="color:var(--gold);">Neuen Nutzer anlegen</div>
@@ -483,14 +571,12 @@ select.inp{cursor:pointer;}
           <button class="btn btn-ghost btn-sm" onclick="admSetSlug()">Slug setzen</button>
         </div>
       </div>
-
       <div id="adm-announce" class="adm-section" style="display:none;">
         <div class="card">
           <div class="card-title">Ankündigung für alle Nutzer</div>
-          <div style="font-size:.8rem;color:var(--tx2);margin-bottom:12px;">Diese Nachricht sehen alle Nutzer oben im Dashboard.</div>
-          <div class="field"><label class="lbl">Nachricht</label><textarea id="ann-text" class="inp" placeholder="z.B. Server Wartung am Samstag 20 Uhr..."></textarea></div>
+          <div class="field"><label class="lbl">Nachricht</label><textarea id="ann-text" class="inp" placeholder="z.B. Server Wartung..."></textarea></div>
           <div style="display:flex;gap:8px;">
-            <button class="btn btn-p btn-sm" onclick="saveAnnounce()">Speichern & Anzeigen</button>
+            <button class="btn btn-p btn-sm" onclick="saveAnnounce()">Speichern</button>
             <button class="btn btn-red btn-sm" onclick="clearAnnounce()">Entfernen</button>
           </div>
         </div>
@@ -500,11 +586,9 @@ select.inp{cursor:pointer;}
           <div id="ann-none" style="font-size:.8rem;color:var(--tx3);">Keine aktive Ankündigung.</div>
         </div>
       </div>
-
       <div id="adm-logs" class="adm-section" style="display:none;">
         <div class="card">
           <div class="card-title">Owner Aktions-Log</div>
-          <div style="font-size:.75rem;color:var(--tx3);margin-bottom:12px;">Alle Admin-Aktionen dieser Sitzung — hilfreich für Übersicht.</div>
           <div id="adm-log-list" style="max-height:400px;overflow-y:auto;"></div>
           <div style="margin-top:10px;"><button class="btn btn-red btn-sm" onclick="clearLogs()">Logs löschen</button></div>
         </div>
@@ -536,6 +620,7 @@ select.inp{cursor:pointer;}
           </div>
         </div>
         <div class="pv-socials" id="pv-socials"></div>
+        <div class="pv-custom-links" id="pv-custom-links"></div>
         <div id="pv-player" class="pv-player" style="display:none;">
           <div class="pv-song-lbl" id="pv-song-name">♪ Song</div>
           <div class="pv-controls">
@@ -548,29 +633,29 @@ select.inp{cursor:pointer;}
     </div>
   </div>
   <button id="pv-close-btn" onclick="pvClose()">✕ Schließen</button>
-<div id="pv-own-link-bar" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9011;background:rgba(10,10,18,0.95);border:1px solid rgba(91,91,214,.4);border-radius:14px;padding:12px 20px;align-items:center;gap:12px;max-width:90vw;overflow:hidden;">
-  <span style="font-family:'Geist Mono',monospace;font-size:.75rem;color:#7c7ce8;" id="pv-own-link-txt"></span>
-  <button onclick="copyPvLink()" style="background:var(--acc);color:#fff;border:none;padding:6px 14px;border-radius:8px;font-size:.73rem;font-weight:600;cursor:pointer;white-space:nowrap;">Link kopieren</button>
-</div>
+  <div id="pv-own-link-bar" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9011;background:rgba(10,10,18,0.95);border:1px solid rgba(91,91,214,.4);border-radius:14px;padding:12px 20px;align-items:center;gap:12px;max-width:90vw;overflow:hidden;">
+    <span style="font-family:'Geist Mono',monospace;font-size:.75rem;color:#7c7ce8;" id="pv-own-link-txt"></span>
+    <button onclick="copyPvLink()" style="background:var(--acc);color:#fff;border:none;padding:6px 14px;border-radius:8px;font-size:.73rem;font-weight:600;cursor:pointer;white-space:nowrap;" data-i18n="copy_link">Link kopieren</button>
+  </div>
 </div>
 
 <!-- TPL MODAL -->
 <div id="tpl-modal" class="modal-bg" onclick="if(event.target===this)closeTplModal()">
   <div class="modal">
-    <h3>Vorlage hochladen</h3>
-    <div class="modal-sub">Teile deinen Style mit der Community.</div>
-    <div class="field"><label class="lbl">Name</label><input id="tm-name" class="inp" placeholder="z.B. Ocean Night"></div>
-    <div class="field"><label class="lbl">Kategorie</label><select id="tm-cat" class="inp"><option value="dark">Dark</option><option value="light">Light</option><option value="neon">Neon</option><option value="minimal">Minimal</option></select></div>
+    <h3 data-i18n="upload_tpl">Vorlage hochladen</h3>
+    <div class="modal-sub" data-i18n="upload_tpl_sub">Teile deinen Style mit der Community.</div>
+    <div class="field"><label class="lbl" data-i18n="name">Name</label><input id="tm-name" class="inp" placeholder="z.B. Ocean Night"></div>
+    <div class="field"><label class="lbl" data-i18n="category">Kategorie</label><select id="tm-cat" class="inp"><option value="dark">Dark</option><option value="light">Light</option><option value="neon">Neon</option><option value="minimal">Minimal</option></select></div>
     <div class="g2">
-      <div class="field"><label class="lbl">Hintergrundfarbe</label><input id="tm-bg" type="color" value="#111115" class="inp" style="height:40px;padding:3px 8px;cursor:pointer;"></div>
-      <div class="field"><label class="lbl">Akzentfarbe</label><input id="tm-ac" type="color" value="#7c3aed" class="inp" style="height:40px;padding:3px 8px;cursor:pointer;"></div>
+      <div class="field"><label class="lbl" data-i18n="bg_color">Hintergrundfarbe</label><input id="tm-bg" type="color" value="#111115" class="inp" style="height:40px;padding:3px 8px;cursor:pointer;"></div>
+      <div class="field"><label class="lbl" data-i18n="accent_color">Akzentfarbe</label><input id="tm-ac" type="color" value="#7c3aed" class="inp" style="height:40px;padding:3px 8px;cursor:pointer;"></div>
     </div>
-    <div class="field"><label class="lbl">Hintergrundbild (optional)</label>
-      <div class="upbox" onclick="document.getElementById('tm-img').click()">Bild wählen<div class="upbox-name" id="tm-img-name">—</div><input type="file" id="tm-img" accept="image/*" style="display:none" onchange="document.getElementById('tm-img-name').textContent=this.files[0]?.name||'—'"></div>
+    <div class="field"><label class="lbl" data-i18n="bg_img">Hintergrundbild (optional)</label>
+      <div class="upbox" onclick="document.getElementById('tm-img').click()"><span data-i18n="choose_img">Bild wählen</span><div class="upbox-name" id="tm-img-name">—</div><input type="file" id="tm-img" accept="image/*" style="display:none" onchange="document.getElementById('tm-img-name').textContent=this.files[0]?.name||'—'"></div>
     </div>
     <div style="display:flex;gap:8px;margin-top:4px;">
-      <button class="btn btn-p btn-full" onclick="submitTemplate()">Hochladen</button>
-      <button class="btn btn-ghost" onclick="closeTplModal()">Abbrechen</button>
+      <button class="btn btn-p btn-full" onclick="submitTemplate()" data-i18n="upload">Hochladen</button>
+      <button class="btn btn-ghost" onclick="closeTplModal()" data-i18n="cancel">Abbrechen</button>
     </div>
   </div>
 </div>
@@ -582,7 +667,7 @@ select.inp{cursor:pointer;}
     <div class="modal-sub" id="um-sub"></div>
     <div id="um-body" style="max-height:360px;overflow-y:auto;margin-bottom:12px;"></div>
     <div id="um-actions" style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;"></div>
-    <button class="btn btn-ghost btn-sm" onclick="closeUserModal()">Schließen</button>
+    <button class="btn btn-ghost btn-sm" onclick="closeUserModal()" data-i18n="close">Schließen</button>
   </div>
 </div>
 
@@ -591,10 +676,10 @@ select.inp{cursor:pointer;}
   <div class="modal">
     <h3>Admin-Notiz</h3>
     <div class="modal-sub" id="note-modal-sub">Notiz für @user</div>
-    <div class="field"><label class="lbl">Notiz (intern, nur Owner sehen das)</label><textarea id="note-text" class="inp" placeholder="Interne Admin-Notiz..."></textarea></div>
+    <div class="field"><label class="lbl">Notiz</label><textarea id="note-text" class="inp" placeholder="Interne Admin-Notiz..."></textarea></div>
     <div style="display:flex;gap:8px;">
-      <button class="btn btn-p btn-sm" onclick="saveNote()">Speichern</button>
-      <button class="btn btn-ghost btn-sm" onclick="closeNoteModal()">Abbrechen</button>
+      <button class="btn btn-p btn-sm" onclick="saveNote()" data-i18n="save">Speichern</button>
+      <button class="btn btn-ghost btn-sm" onclick="closeNoteModal()" data-i18n="cancel">Abbrechen</button>
     </div>
   </div>
 </div>
@@ -602,30 +687,110 @@ select.inp{cursor:pointer;}
 <div id="toast"></div>
 
 <script>
-/* ── STORAGE KEYS ── */
-const DB='rb_db_v5_meta'; // text-only user metadata
-const TPL='rb_tpl_v5';const SESS='rb_sess_v5';
-const LOGS_KEY='rb_logs_v5';const ANN_KEY='rb_ann_v5';
+/* ─── I18N ─── */
+const TRANSLATIONS={
+  de:{
+    login_sub:'Dein persönlicher Bio-Link',login_err:'Falscher Username oder Passwort.',
+    username:'Username',password:'Passwort',login_btn:'Einloggen',no_acc:'Kein Account?',register:'Registrieren',
+    register_sub:'Account erstellen',register_btn:'Registrieren',have_acc:'Schon dabei?',
+    menu:'Menü',nav_dashboard:'Dashboard',nav_mylink:'Mein Link',nav_community:'Community',
+    nav_settings:'Einstellungen',nav_templates:'Vorlagen',nav_premium:'Premium',logout:'Logout',
+    dashboard_title:'Dashboard',dashboard_sub:'Bearbeite dein Profil und passe es an.',
+    stat_views:'Profil Views',stat_views_note:'Gesamtaufrufe',stat_songs:'Songs',stat_songs_note:'MP3 geladen',stat_status:'Status',
+    card_profile:'Profil',display_name:'Anzeigename',font:'Schriftart',anim_name:'Animierter Name',
+    anim_none:'Kein Effekt',anim_glow:'✨ Glow',anim_rainbow:'🌈 Regenbogen',anim_typewriter:'⌨ Typewriter',
+    custom_slug_lbl:'Custom Profil-Link',slug_hint:'Nur a-z, 0-9, Bindestrich.',
+    card_media:'Medien',bg:'Hintergrund',banner:'Banner',choose_file:'Datei wählen',choose_img:'Bild wählen',
+    music:'Musik (MP3)',choose_mp3:'MP3-Datei wählen',song_name:'Song-Name',save:'Speichern',
+    mylink_title:'Mein Profil-Link',mylink_sub:'Teile diesen Link in deiner Discord Bio oder woanders.',
+    your_link:'Dein Link',link_info:'Wenn jemand diesen Link öffnet, sieht er direkt dein Profil — kein Login nötig.',
+    copy_link:'Link kopieren',preview:'Profil Vorschau',for_discord:'Für Discord Bio',
+    discord_hint:'Kopiere diesen Link direkt in deine Discord Bio:',
+    discord_steps:'Einstellungen → Mein Konto → „Mich" → Bio bearbeiten → Link einfügen ✓',
+    qr_code:'QR-Code',download_qr:'QR-Code herunterladen',custom_slug:'Custom Slug',
+    current_slug:'Aktueller Slug:',change_in_dashboard:'Im Dashboard ändern →',
+    community_title:'Community',community_sub:'Alle öffentlichen Profile auf regelbruch.cc',
+    community_desc:'Dein Profil in der Liste erscheinen lassen?',
+    community_desc2:'Andere können dein Profil dann hier entdecken.',
+    public_off:'Privat',public_on:'Öffentlich',
+    settings_title:'Einstellungen',settings_sub:'Passe deinen Account an.',
+    custom_links_title:'Eigene Link-Buttons',custom_links_desc:'Füge eigene Buttons zu deinem Profil hinzu.',
+    add_link:'Link hinzufügen',btn_text:'Button-Text',btn_url:'URL',
+    change_pw_title:'Passwort ändern',old_pw:'Aktuelles Passwort',new_pw:'Neues Passwort',confirm_pw:'Bestätigen',change_pw_btn:'Passwort ändern',
+    templates_title:'Vorlagen',templates_sub:'Wähle einen Style für dein Profil.',
+    active_tpl:'Aktive Vorlage',no_tpl:'Keine Vorlage aktiv',remove:'Entfernen',community_tpl:'Community Vorlagen',
+    upload:'Hochladen',all:'Alle',mine:'Meine',
+    premium_title:'Premium',premium_sub:'Hol dir mehr aus regelbruch.cc raus.',perks:'Was du bekommst',
+    upload_tpl:'Vorlage hochladen',upload_tpl_sub:'Teile deinen Style mit der Community.',
+    name:'Name',category:'Kategorie',bg_color:'Hintergrundfarbe',accent_color:'Akzentfarbe',bg_img:'Hintergrundbild (optional)',
+    close:'Schließen',cancel:'Abbrechen',font_geist:'Geist (Standard)',
+  },
+  en:{
+    login_sub:'Your personal bio link',login_err:'Wrong username or password.',
+    username:'Username',password:'Password',login_btn:'Login',no_acc:'No account?',register:'Register',
+    register_sub:'Create account',register_btn:'Register',have_acc:'Already here?',
+    menu:'Menu',nav_dashboard:'Dashboard',nav_mylink:'My Link',nav_community:'Community',
+    nav_settings:'Settings',nav_templates:'Templates',nav_premium:'Premium',logout:'Logout',
+    dashboard_title:'Dashboard',dashboard_sub:'Edit your profile and customize it.',
+    stat_views:'Profile Views',stat_views_note:'Total views',stat_songs:'Songs',stat_songs_note:'MP3 loaded',stat_status:'Status',
+    card_profile:'Profile',display_name:'Display name',font:'Font',anim_name:'Animated name',
+    anim_none:'No effect',anim_glow:'✨ Glow',anim_rainbow:'🌈 Rainbow',anim_typewriter:'⌨ Typewriter',
+    custom_slug_lbl:'Custom Profile Link',slug_hint:'Only a-z, 0-9, hyphen.',
+    card_media:'Media',bg:'Background',banner:'Banner',choose_file:'Choose file',choose_img:'Choose image',
+    music:'Music (MP3)',choose_mp3:'Choose MP3 file',song_name:'Song name',save:'Save',
+    mylink_title:'My Profile Link',mylink_sub:'Share this link in your Discord bio or elsewhere.',
+    your_link:'Your Link',link_info:'Anyone who opens this link sees your profile directly — no login needed.',
+    copy_link:'Copy link',preview:'Profile Preview',for_discord:'For Discord Bio',
+    discord_hint:'Copy this link directly into your Discord bio:',
+    discord_steps:'Settings → My Account → "About me" → Edit bio → Paste link ✓',
+    qr_code:'QR Code',download_qr:'Download QR code',custom_slug:'Custom Slug',
+    current_slug:'Current slug:',change_in_dashboard:'Change in Dashboard →',
+    community_title:'Community',community_sub:'All public profiles on regelbruch.cc',
+    community_desc:'Show your profile in the list?',
+    community_desc2:'Others can then discover your profile here.',
+    public_off:'Private',public_on:'Public',
+    settings_title:'Settings',settings_sub:'Customize your account.',
+    custom_links_title:'Custom Link Buttons',custom_links_desc:'Add custom buttons to your profile (e.g. "My Shop", "My Server").',
+    add_link:'Add link',btn_text:'Button text',btn_url:'URL',
+    change_pw_title:'Change password',old_pw:'Current password',new_pw:'New password',confirm_pw:'Confirm',change_pw_btn:'Change password',
+    templates_title:'Templates',templates_sub:'Choose a style for your profile.',
+    active_tpl:'Active Template',no_tpl:'No template active',remove:'Remove',community_tpl:'Community Templates',
+    upload:'Upload',all:'All',mine:'Mine',
+    premium_title:'Premium',premium_sub:'Get more out of regelbruch.cc.',perks:'What you get',
+    upload_tpl:'Upload Template',upload_tpl_sub:'Share your style with the community.',
+    name:'Name',category:'Category',bg_color:'Background color',accent_color:'Accent color',bg_img:'Background image (optional)',
+    close:'Close',cancel:'Cancel',font_geist:'Geist (Default)',
+  }
+};
+let LANG='de';
+function setLang(l,btn){
+  LANG=l;
+  document.querySelectorAll('.lang-btn-sb').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.getAttribute('data-i18n');
+    if(TRANSLATIONS[l][k])el.textContent=TRANSLATIONS[l][k];
+  });
+  // Update community toggle label
+  const db=lDB();const d=db[CU];
+  if(d){const lbl=document.getElementById('comm-toggle-lbl');if(lbl)lbl.textContent=d.community_public?TRANSLATIONS[l].public_on:TRANSLATIONS[l].public_off;}
+  // update anim buttons active state styling
+  highlightAnimBtn(db&&db[CU]?db[CU].name_anim||'none':'none');
+  localStorage.setItem('rb_lang',l);
+}
+function t(k){return TRANSLATIONS[LANG][k]||k;}
 
-/* ── LOCALSTORAGE (text only, no media) ── */
+/* ── STORAGE ── */
+const DB='rb_db_v5_meta';const TPL='rb_tpl_v5';const SESS='rb_sess_v5';
+const LOGS_KEY='rb_logs_v5';const ANN_KEY='rb_ann_v5';
 const lDB=()=>{try{return JSON.parse(localStorage.getItem(DB)||'{}')}catch{return{}}};
 const sDB=d=>{
-  // Strip media blobs before saving to localStorage
   const clean={};
-  for(const [u,v] of Object.entries(d)){
-    clean[u]={...v};
-    // Never store raw base64 media in localStorage
-    delete clean[u]._mediaCache;
-  }
-  try{localStorage.setItem(DB,JSON.stringify(clean));}
-  catch(e){console.error('sDB failed',e);}
+  for(const [u,v] of Object.entries(d)){clean[u]={...v};delete clean[u]._mediaCache;}
+  try{localStorage.setItem(DB,JSON.stringify(clean));}catch(e){console.error('sDB failed',e);}
 };
 const lTPL=()=>{try{return JSON.parse(localStorage.getItem(TPL)||'[]')}catch{return[]}};
-const sTPL=t=>{
-  // Strip bg_image blobs from templates before localStorage
-  const clean=t.map(tp=>{const c={...tp};if(c.bg_image&&c.bg_image.length>500)c.bg_image='';return c;});
-  try{localStorage.setItem(TPL,JSON.stringify(clean));}catch(e){}
-};
+const sTPL=t=>{const clean=t.map(tp=>{const c={...tp};if(c.bg_image&&c.bg_image.length>500)c.bg_image='';return c;});try{localStorage.setItem(TPL,JSON.stringify(clean));}catch(e){}};
 const gSess=()=>localStorage.getItem(SESS);
 const sSess=u=>localStorage.setItem(SESS,u);
 const cSess=()=>localStorage.removeItem(SESS);
@@ -634,9 +799,7 @@ const sLogs=l=>localStorage.setItem(LOGS_KEY,JSON.stringify(l));
 const lAnn=()=>localStorage.getItem(ANN_KEY)||'';
 const sAnn=t=>t?localStorage.setItem(ANN_KEY,t):localStorage.removeItem(ANN_KEY);
 
-/* ── INDEXEDDB MEDIA STORE ── */
-// Stores large blobs: avatar, banner, background_file, mp3_file
-// Key: "username:fieldname"  Value: base64 data URI string
+/* ── INDEXEDDB MEDIA ── */
 const IDB_NAME='rb_media_v5';const IDB_STORE='media';
 let _idb=null;
 function openIDB(){
@@ -668,7 +831,6 @@ async function mediaGet(user,field){
   });
 }
 async function mediaDelUser(user){
-  // Delete all media for a user (on account delete)
   const db=await openIDB();
   return new Promise((res,rej)=>{
     const tx=db.transaction(IDB_STORE,'readwrite');
@@ -681,13 +843,12 @@ async function mediaDelUser(user){
     tx.oncomplete=()=>res();tx.onerror=e=>rej(e);
   });
 }
-// Media field names
 const MEDIA_FIELDS=['avatar','banner','background_file','mp3_file'];
 
 function sv(id){
   ['v-login','v-register'].forEach(v=>{const el=document.getElementById(v);if(el)el.style.display='none';});
   if(id==='v-app'){document.getElementById('v-app').style.display='block';return;}
-  const t=document.getElementById(id);if(t)t.style.display='flex';
+  const target=document.getElementById(id);if(target)target.style.display='flex';
 }
 function hs(s){let h=0;for(let i=0;i<s.length;i++)h=(Math.imul(31,h)+s.charCodeAt(i))|0;return h.toString(36);}
 function addLog(msg){const logs=lLogs();logs.unshift({msg,time:Date.now()});if(logs.length>100)logs.pop();sLogs(logs);}
@@ -697,7 +858,7 @@ function doLogin(){
   const p=document.getElementById('lp').value;
   const db=lDB();const er=document.getElementById('login-err');
   if(db[u]&&db[u].pw===hs(p)){sSess(u);er.style.display='none';init();}
-  else{er.textContent='Falscher Username oder Passwort.';er.style.display='block';}
+  else{er.textContent=t('login_err');er.style.display='block';}
 }
 function doRegister(){
   const u=document.getElementById('ru').value.toLowerCase().trim().replace(/[^a-z0-9_]/g,'');
@@ -710,26 +871,136 @@ function doRegister(){
 }
 function doLogout(){cSess();location.reload();}
 function newUser(u,p,prem=false,admin=false){
-  // Media (avatar/banner/bg/mp3) stored in IndexedDB, only flags here
-  return{pw:hs(p),display_name:u,bio:'',discord:'',instagram:'',youtube:'',tiktok:'',
-    is_premium:prem,is_admin:admin,opacity:80,font_choice:'Geist',custom_slug:'',
-    views:0,
-    avatar_set:false,banner_set:false,background_file_set:false,mp3_file_set:false,
+  return{pw:hs(p),display_name:u,bio:'',is_premium:prem,is_admin:admin,
+    opacity:80,font_choice:'Geist',custom_slug:'',name_anim:'none',
+    custom_links:[],
+    community_public:false,
+    discord:'',instagram:'',youtube:'',tiktok:'',
+    views:0,avatar_set:false,banner_set:false,background_file_set:false,mp3_file_set:false,
     mp3_name:'',mp3_display_name:'',active_template:null,adm_note:'',
     created:Date.now(),last_login:Date.now()};
 }
 
+/* ─── ANIMATED NAME ─── */
+let _twInterval=null;
+function setNameAnim(anim){
+  const db=lDB();if(!db[CU])return;
+  db[CU].name_anim=anim;sDB(db);
+  highlightAnimBtn(anim);
+  toast('✓');
+}
+function highlightAnimBtn(anim){
+  ['none','glow','rainbow','typewriter'].forEach(a=>{
+    const btn=document.getElementById('anim-'+a);
+    if(btn){btn.style.borderColor=a===anim?'var(--acc)':'';btn.style.color=a===anim?'var(--acc2)':'';btn.style.background=a===anim?'rgba(91,91,214,.1)':'';}
+  });
+}
+
+/* ─── CUSTOM LINKS ─── */
+function loadCustomLinks(){
+  const db=lDB();const d=db[CU];
+  const links=d.custom_links||[];
+  const container=document.getElementById('cl-container');if(!container)return;
+  container.innerHTML='';
+  links.forEach((lnk,i)=>{
+    const row=document.createElement('div');row.className='cl-row';
+    row.innerHTML=`<input class="inp" style="flex:1;" placeholder="${t('btn_text')}" value="${escHtml(lnk.text||'')}" oninput="updateCLField(${i},'text',this.value)"><input class="inp" style="flex:1;" placeholder="https://..." value="${escHtml(lnk.url||'')}" oninput="updateCLField(${i},'url',this.value)"><button class="cl-del" onclick="removeCLRow(${i})">✕</button>`;
+    container.appendChild(row);
+  });
+}
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function updateCLField(i,field,val){
+  const db=lDB();if(!db[CU])return;
+  if(!db[CU].custom_links)db[CU].custom_links=[];
+  if(db[CU].custom_links[i])db[CU].custom_links[i][field]=val;
+  sDB(db);
+}
+function addCustomLink(){
+  const db=lDB();if(!db[CU])return;
+  if(!db[CU].custom_links)db[CU].custom_links=[];
+  db[CU].custom_links.push({text:'',url:''});
+  sDB(db);loadCustomLinks();
+}
+function removeCLRow(i){
+  const db=lDB();if(!db[CU])return;
+  db[CU].custom_links.splice(i,1);sDB(db);loadCustomLinks();
+}
+function saveCustomLinks(){
+  const db=lDB();if(!db[CU])return;
+  // Collect current values from DOM
+  const rows=document.querySelectorAll('#cl-container .cl-row');
+  db[CU].custom_links=Array.from(rows).map(row=>{
+    const inputs=row.querySelectorAll('input');
+    return{text:inputs[0].value.trim(),url:inputs[1].value.trim()};
+  }).filter(l=>l.text||l.url);
+  sDB(db);toast('✓ '+t('save'));
+}
+
+/* ─── CHANGE PASSWORD ─── */
+function changePassword(){
+  const db=lDB();if(!db[CU])return;
+  const oldPw=document.getElementById('pw-old').value;
+  const newPw=document.getElementById('pw-new').value;
+  const confirm=document.getElementById('pw-confirm').value;
+  if(db[CU].pw!==hs(oldPw)){toast('⚠️ Aktuelles Passwort falsch!');return;}
+  if(newPw.length<4){toast('⚠️ Neues Passwort mind. 4 Zeichen!');return;}
+  if(newPw!==confirm){toast('⚠️ Passwörter stimmen nicht überein!');return;}
+  db[CU].pw=hs(newPw);sDB(db);
+  document.getElementById('pw-old').value='';
+  document.getElementById('pw-new').value='';
+  document.getElementById('pw-confirm').value='';
+  toast('✓ Passwort geändert!');
+}
+
+/* ─── COMMUNITY ─── */
+function toggleCommunity(){
+  const db=lDB();if(!db[CU])return;
+  db[CU].community_public=!db[CU].community_public;sDB(db);
+  updateCommunityToggle(db[CU].community_public);
+  renderCommunity();
+  toast(db[CU].community_public?'🌍 Profil ist jetzt öffentlich':'🔒 Profil ist jetzt privat');
+}
+function updateCommunityToggle(pub){
+  const track=document.getElementById('comm-toggle-wrap');
+  const thumb=document.getElementById('comm-toggle-thumb');
+  const lbl=document.getElementById('comm-toggle-lbl');
+  if(track)track.style.background=pub?'var(--acc)':'var(--b2)';
+  if(thumb)thumb.style.left=pub?'21px':'3px';
+  if(lbl)lbl.textContent=pub?t('public_on'):t('public_off');
+}
+async function renderCommunity(q=''){
+  const db=lDB();
+  const grid=document.getElementById('community-grid');if(!grid)return;
+  grid.innerHTML='';
+  const users=Object.entries(db).filter(([u,d])=>d.community_public);
+  const filtered=q?users.filter(([u,d])=>u.includes(q.toLowerCase())||(d.display_name||'').toLowerCase().includes(q.toLowerCase())):users;
+  if(!filtered.length){
+    grid.innerHTML=`<div style="color:var(--tx3);font-size:.8rem;padding:10px;grid-column:1/-1;">Noch keine öffentlichen Profile.</div>`;
+    return;
+  }
+  for(const [u,d] of filtered){
+    const card=document.createElement('div');card.className='community-card';
+    card.onclick=()=>{openProfile(u);};
+    const avatarSrc=await mediaGet(u,'avatar');
+    const avHtml=avatarSrc?`<img src="${avatarSrc}" alt="">`:`${(d.display_name||u).slice(0,2).toUpperCase()}`;
+    card.innerHTML=`<div class="community-av">${avHtml}</div>
+      <div class="community-name">${escHtml(d.display_name||u)}${d.is_premium?' <span style="color:var(--gold);font-size:.7rem;">💎</span>':''}</div>
+      <div class="community-bio">${escHtml(d.bio||'')}</div>
+      <div class="community-views">👁 ${d.views||0} Views</div>`;
+    grid.appendChild(card);
+  }
+}
+function openProfile(username){renderProfile(username);}
+
+/* ─── PROFILE LINK ─── */
 function getProfileLink(u){
   const db=lDB();const d=db[u];
   const slug=(d&&d.custom_slug)?d.custom_slug.trim():'';
-  // Build a shareable link that always uses ?u= or ?slug= with the actual file path
-  const href=location.href;
-  const base=href.includes('?')?href.split('?')[0]:href;
+  const href=location.href;const base=href.includes('?')?href.split('?')[0]:href;
   return slug?base+'?slug='+encodeURIComponent(slug):base+'?u='+encodeURIComponent(u);
 }
 function getProfileLinkFor(u,d){
-  const href=location.href;
-  const base=href.includes('?')?href.split('?')[0]:href;
+  const href=location.href;const base=href.includes('?')?href.split('?')[0]:href;
   const slug=(d&&d.custom_slug)?d.custom_slug.trim():'';
   return slug?base+'?slug='+encodeURIComponent(slug):base+'?u='+encodeURIComponent(u);
 }
@@ -745,7 +1016,6 @@ function updateSlugPreview(){
   if(val){prev.style.display='block';prev.textContent='→ '+base+'?slug='+val;}
   else{prev.style.display='none';}
 }
-
 function renderQR(link){
   const box=document.getElementById('qr-box');if(!box)return;
   const enc=encodeURIComponent(link);
@@ -772,6 +1042,10 @@ function init(){
   document.getElementById('ni-admin').style.display=isAdmin?'flex':'none';
   document.getElementById('admin-prem-block').style.display=isAdmin?'block':'none';
   loadForm();updateStats();
+  // Load saved lang
+  const savedLang=localStorage.getItem('rb_lang')||'de';
+  const langBtn=document.querySelector(`.lang-btn-sb[onclick="setLang('${savedLang}',this)"]`);
+  setLang(savedLang,langBtn);
   const ann=lAnn();
   if(ann){const b=document.getElementById('ann-banner');b.textContent='📢 '+ann;b.style.display='block';}
 }
@@ -784,16 +1058,13 @@ function updateStats(){
     :'<span class="badge badge-free">Free</span>'+(d.is_admin?'<span class="badge badge-admin" style="margin-left:4px;">👑 Owner</span>':'');
   document.getElementById('prem-dot').style.display=d.is_premium?'none':'inline-block';
   renderPremiumPage(d);lockPremFonts(d);
+  highlightAnimBtn(d.name_anim||'none');
+  updateCommunityToggle(d.community_public||false);
 }
 function renderPremiumPage(d){
   const sc=document.getElementById('prem-status-card');
-  if(d.is_premium){
-    sc.innerHTML=`<div style="display:flex;align-items:center;gap:14px;"><div style="font-size:1.8rem;">💎</div><div><div style="font-size:.95rem;font-weight:600;color:var(--gold);">Premium aktiv</div><div style="font-size:.75rem;color:var(--tx2);margin-top:3px;">Alle Features freigeschaltet.</div></div></div>`;
-    sc.style.borderColor='rgba(212,168,67,.3)';sc.style.background='rgba(212,168,67,.04)';
-  } else {
-    sc.innerHTML=`<div style="font-size:.82rem;color:var(--tx2);">Du hast kein Premium. Kaufe es über Discord!</div>`;
-    sc.style.borderColor='';sc.style.background='';
-  }
+  if(d.is_premium){sc.innerHTML=`<div style="display:flex;align-items:center;gap:14px;"><div style="font-size:1.8rem;">💎</div><div><div style="font-size:.95rem;font-weight:600;color:var(--gold);">Premium aktiv</div><div style="font-size:.75rem;color:var(--tx2);margin-top:3px;">Alle Features freigeschaltet.</div></div></div>`;sc.style.borderColor='rgba(212,168,67,.3)';sc.style.background='rgba(212,168,67,.04)';}
+  else{sc.innerHTML=`<div style="font-size:.82rem;color:var(--tx2);">Du hast kein Premium. Kaufe es über Discord!</div>`;sc.style.borderColor='';sc.style.background='';}
 }
 function lockPremFonts(d){
   const sel=document.getElementById('s-font_choice');
@@ -812,13 +1083,15 @@ function tab(name){
   if(name==='vorlagen')renderTpl('all');
   if(name==='premium'){const db=lDB();renderPremiumPage(db[CU]);lockPremFonts(db[CU]);}
   if(name==='meinlink')renderMyLink();
+  if(name==='community')renderCommunity();
+  if(name==='einstellungen')loadCustomLinks();
   if(name==='meinlink'){const d=document.getElementById('link-new-dot');if(d)d.style.display='none';}
 }
 
 function renderMyLink(){
   const db=lDB();const d=db[CU];
   const link=getProfileLink(CU);
-  const lb=`<div class="link-box"><span class="link-box-url">${link}</span><button class="link-box-copy" onclick="copyMyLink()">Kopieren</button></div>`;
+  const lb=`<div class="link-box"><span class="link-box-url">${link}</span><button class="link-box-copy" onclick="copyMyLink()">${t('copy_link')}</button></div>`;
   document.getElementById('mylink-display').innerHTML=lb;
   document.getElementById('discord-link-box').innerHTML=lb;
   document.getElementById('slug-display').textContent=d.custom_slug||(CU+' (kein custom slug)');
@@ -827,13 +1100,9 @@ function renderMyLink(){
 
 function loadForm(){
   const db=lDB();const d=db[CU];
-  ['display_name','bio','discord','instagram','youtube','tiktok','font_choice','custom_slug'].forEach(k=>{
+  ['display_name','bio','font_choice','custom_slug'].forEach(k=>{
     const el=document.getElementById('s-'+k);if(el)el.value=d[k]||'';
   });
-  const op=document.getElementById('s-opacity');op.value=d.opacity||80;
-  document.getElementById('op-v').textContent=op.value;document.getElementById('op-disp').textContent=op.value;
-  op.oninput=()=>{document.getElementById('op-v').textContent=op.value;document.getElementById('op-disp').textContent=op.value;};
-  // Check IDB flags for media presence
   const fnMap={background_file:'fn-bg',banner:'fn-banner',avatar:'fn-avatar'};
   const clrMap={background_file:'clr-bg',banner:'clr-banner',avatar:'clr-avatar'};
   ['background_file','banner','avatar'].forEach(k=>{
@@ -846,6 +1115,7 @@ function loadForm(){
     document.getElementById('mp3-song-name').value=d.mp3_display_name||'';
   }
   if(d.custom_slug)updateSlugPreview();
+  highlightAnimBtn(d.name_anim||'none');
 }
 function handleFile(key,input,fnId,clrId){
   const f=input.files[0];if(!f)return;
@@ -857,19 +1127,14 @@ function handleFile(key,input,fnId,clrId){
     const data=e.target.result;
     await mediaSet(CU,key,data);
     document.getElementById(fnId).textContent=short;
-    // Also store filename/flag in metadata (not the blob)
-    const db=lDB();
-    if(!db[CU])return;
-    db[CU][key+'_set']=true; // flag: media exists in IDB
-    sDB(db);
+    const db=lDB();if(!db[CU])return;
+    db[CU][key+'_set']=true;sDB(db);
   };
   r.readAsDataURL(f);
 }
 function clearFile(key,fnId,clrId){
-  mediaSet(CU,key,null); // remove from IDB
-  const db=lDB();if(db[CU])delete db[CU][key+'_set'];sDB(db);
-  document.getElementById(fnId).textContent='—';
-  const clr=document.getElementById(clrId);if(clr)clr.style.display='none';
+  mediaSet(CU,key,null);const db=lDB();if(db[CU])delete db[CU][key+'_set'];sDB(db);
+  document.getElementById(fnId).textContent='—';const clr=document.getElementById(clrId);if(clr)clr.style.display='none';
 }
 function handleMp3(input){
   const f=input.files[0];if(!f)return;
@@ -884,28 +1149,22 @@ function handleMp3(input){
     const data=e.target.result;
     await mediaSet(CU,'mp3_file',data);
     const db=lDB();if(!db[CU])return;
-    db[CU].mp3_file_set=true;db[CU].mp3_name=f.name;
-    sDB(db);
+    db[CU].mp3_file_set=true;db[CU].mp3_name=f.name;sDB(db);
     document.getElementById('fn-mp3').textContent=short;
     toast('✓ Song gespeichert!');
   };
   r.readAsDataURL(f);
 }
 function clearMp3(){
-  mediaSet(CU,'mp3_file',null);
-  const db=lDB();if(db[CU]){delete db[CU].mp3_file_set;db[CU].mp3_name='';db[CU].mp3_display_name='';}sDB(db);
+  mediaSet(CU,'mp3_file',null);const db=lDB();if(db[CU]){delete db[CU].mp3_file_set;db[CU].mp3_name='';db[CU].mp3_display_name='';}sDB(db);
   document.getElementById('fn-mp3').textContent='—';document.getElementById('clr-mp3').style.display='none';
   document.getElementById('mp3-name-row').style.display='none';
 }
 function saveSettings(){
   const db=lDB();const d=db[CU];
-  ['display_name','bio','discord','instagram','youtube','tiktok','font_choice'].forEach(k=>{const el=document.getElementById('s-'+k);if(el)d[k]=el.value;});
-  d.opacity=document.getElementById('s-opacity').value;
+  ['display_name','bio','font_choice'].forEach(k=>{const el=document.getElementById('s-'+k);if(el)d[k]=el.value;});
   const slug=document.getElementById('s-custom_slug').value.replace(/[^a-z0-9-]/gi,'').toLowerCase();
-  if(slug){
-    const taken=Object.entries(db).find(([u,od])=>u!==CU&&od.custom_slug===slug);
-    if(taken){toast('⚠️ Dieser Slug ist schon vergeben!');return;}
-  }
+  if(slug){const taken=Object.entries(db).find(([u,od])=>u!==CU&&od.custom_slug===slug);if(taken){toast('⚠️ Dieser Slug ist schon vergeben!');return;}}
   d.custom_slug=slug;document.getElementById('s-custom_slug').value=slug;
   const sn=document.getElementById('mp3-song-name');if(sn)d.mp3_display_name=sn.value;
   sDB(db);
@@ -914,6 +1173,7 @@ function saveSettings(){
   updateStats();toast('✓ Gespeichert');
 }
 
+/* ─── TEMPLATES ─── */
 const BUILTIN=[
   {id:'b1',name:'Purple Void',author:'kio.lol',category:'dark',bgcolor:'rgba(10,5,20,0.88)',accentcolor:'#7c3aed',bg_image:'',builtin:true,premium:false},
   {id:'b2',name:'Midnight',author:'kio.lol',category:'dark',bgcolor:'rgba(5,10,25,0.88)',accentcolor:'#2563eb',bg_image:'',builtin:true,premium:false},
@@ -933,8 +1193,8 @@ function filterTpl(cat,btn){curTplFilter=cat;document.querySelectorAll('.ftab').
 function renderTpl(cat){
   const db=lDB();const d=db[CU];const activeTpl=d.active_template||null;
   let tpls=allTpl();
-  if(cat==='mine')tpls=lTPL().filter(t=>t.uploader===CU);
-  else if(cat!=='all')tpls=tpls.filter(t=>t.category===cat);
+  if(cat==='mine')tpls=lTPL().filter(tp=>tp.uploader===CU);
+  else if(cat!=='all')tpls=tpls.filter(tp=>tp.category===cat);
   const grid=document.getElementById('tpl-grid');grid.innerHTML='';
   if(!tpls.length){grid.innerHTML='<div style="color:var(--tx3);font-size:.8rem;padding:10px;">Keine Vorlagen.</div>';return;}
   tpls.forEach(tpl=>{
@@ -948,12 +1208,12 @@ function renderTpl(cat){
       <div class="tpl-info"><div class="tpl-name"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${tpl.accentcolor};margin-right:5px;vertical-align:middle;"></span>${tpl.name}</div><div class="tpl-meta">von ${tpl.author||tpl.uploader} · ${tpl.category}</div></div>`;
     grid.appendChild(card);
   });
-  const atpl=allTpl().find(t=>t.id===activeTpl);
-  document.getElementById('active-tpl-info').innerHTML=atpl?`<strong style="color:var(--tx0)">${atpl.name}</strong> <span style="color:var(--tx2);">von ${atpl.author||atpl.uploader}</span>`:'<span style="color:var(--tx2);">Keine Vorlage aktiv.</span>';
+  const atpl=allTpl().find(tp=>tp.id===activeTpl);
+  document.getElementById('active-tpl-info').innerHTML=atpl?`<strong style="color:var(--tx0)">${atpl.name}</strong> <span style="color:var(--tx2);">von ${atpl.author||atpl.uploader}</span>`:`<span style="color:var(--tx2);">${t('no_tpl')}</span>`;
 }
 function selectTpl(id){const db=lDB();db[CU].active_template=id;sDB(db);renderTpl(curTplFilter);toast('🎨 Vorlage aktiv!');}
 function removeTemplate(){const db=lDB();db[CU].active_template=null;sDB(db);renderTpl(curTplFilter);toast('Vorlage entfernt.');}
-function deleteTpl(id){if(!confirm('Vorlage löschen?'))return;let tpls=lTPL();tpls=tpls.filter(t=>t.id!==id);sTPL(tpls);const db=lDB();Object.values(db).forEach(u=>{if(u.active_template===id)u.active_template=null;});sDB(db);renderTpl(curTplFilter);toast('Vorlage gelöscht.');}
+function deleteTpl(id){if(!confirm('Vorlage löschen?'))return;let tpls=lTPL();tpls=tpls.filter(tp=>tp.id!==id);sTPL(tpls);const db=lDB();Object.values(db).forEach(u=>{if(u.active_template===id)u.active_template=null;});sDB(db);renderTpl(curTplFilter);toast('Vorlage gelöscht.');}
 function openTplModal(){document.getElementById('tpl-modal').style.display='flex';}
 function closeTplModal(){document.getElementById('tpl-modal').style.display='none';}
 function submitTemplate(){
@@ -963,7 +1223,7 @@ function submitTemplate(){
   if(f){const r=new FileReader();r.onload=e=>finish(e.target.result);r.readAsDataURL(f);}else finish('');
 }
 
-/* ── ADMIN ── */
+/* ─── ADMIN ─── */
 function admTab(name,btn){
   document.querySelectorAll('.adm-section').forEach(s=>s.style.display='none');
   document.querySelectorAll('.adm-tab').forEach(b=>b.classList.remove('on'));
@@ -980,7 +1240,7 @@ function renderAdmin(){
   document.getElementById('adm-stats').innerHTML=`
     <div class="stat"><div class="stat-l">Nutzer</div><div class="stat-v">${users.length}</div></div>
     <div class="stat"><div class="stat-l">Premium</div><div class="stat-v" style="color:var(--gold);">${premCount}</div></div>
-    <div class="stat"><div class="stat-l">Gesamt Views</div><div class="stat-v">${totalViews}</div></div>
+    <div class="stat"><div class="stat-l">Views</div><div class="stat-v">${totalViews}</div></div>
     <div class="stat"><div class="stat-l">Mit Song</div><div class="stat-v">${withSong}</div></div>`;
   renderUserTable(users);
   const badge=document.getElementById('admin-badge');badge.textContent=users.length+' Nutzer';badge.style.display='inline';
@@ -997,9 +1257,9 @@ function renderUserTable(users){
     const noteIcon=d.adm_note?'📝 ':'';
     const tr=document.createElement('tr');
     tr.innerHTML=`
-      <td><div class="user-cell"><div class="user-av">${u.slice(0,2).toUpperCase()}</div><div><div style="font-weight:500;color:var(--tx0);">${noteIcon}${d.display_name||u}</div><div style="font-size:.68rem;color:var(--tx3);font-family:var(--mono);">@${u}</div></div></div></td>
+      <td><div class="user-cell"><div class="user-av">${u.slice(0,2).toUpperCase()}</div><div><div style="font-weight:500;color:var(--tx0);">${noteIcon}${escHtml(d.display_name||u)}</div><div style="font-size:.68rem;color:var(--tx3);font-family:var(--mono);">@${u}</div></div></div></td>
       <td><span class="mono-tag" title="${link}">${shortLink}</span></td>
-      <td><span style="color:var(--tx1);">${d.views||0}</span> <button style="background:none;border:none;color:var(--tx3);cursor:pointer;font-size:.68rem;" onclick="admResetViews('${u}')" title="Views reset">↺</button></td>
+      <td><span style="color:var(--tx1);">${d.views||0}</span> <button style="background:none;border:none;color:var(--tx3);cursor:pointer;font-size:.68rem;" onclick="admResetViews('${u}')" title="reset">↺</button></td>
       <td style="color:var(--tx2);">${d.mp3_file_set?'✓':'—'}</td>
       <td>${d.is_premium?'<span class="badge badge-gold">💎</span>':'<span class="badge badge-free">—</span>'}</td>
       <td>${d.is_admin?'<span class="badge badge-admin">👑</span>':'—'}</td>
@@ -1023,72 +1283,52 @@ function viewUser(u){
     ['Display Name',d.display_name||'—'],['Username',u],
     ['Profil-Link',`<a href="${link}" target="_blank" style="color:var(--acc2);font-size:.7rem;font-family:var(--mono);">${link}</a>`],
     ['Custom Slug',d.custom_slug||'—'],['Premium',d.is_premium?'✓ Ja':'✗ Nein'],
-    ['Admin',d.is_admin?'✓ Ja':'✗ Nein'],['Views',d.views||0],['Bio',d.bio||'—'],
-    ['Discord',d.discord||'—'],['Instagram',d.instagram||'—'],
-    ['YouTube',d.youtube||'—'],['TikTok',d.tiktok||'—'],
-    ['Schriftart',d.font_choice||'Standard'],['Transparenz',d.opacity||80],
+    ['Admin',d.is_admin?'✓ Ja':'✗ Nein'],['Views',d.views||0],
+    ['Öffentlich',d.community_public?'✓ Ja':'✗ Nein'],
+    ['Bio',d.bio||'—'],['Schriftart',d.font_choice||'Standard'],['Name-Anim',d.name_anim||'none'],
+    ['Custom Links',(d.custom_links||[]).length+' Einträge'],
     ['Vorlage',d.active_template||'—'],
-    ['Avatar',d.avatar_set?'✓ Ja':'✗ Nein'],['Banner',d.banner_set?'✓ Ja':'✗ Nein'],
-    ['Hintergrund',d.background_file_set?'✓ Ja':'✗ Nein'],['Song',d.mp3_file_set?'✓ Ja':'✗ Nein'],
-    ['Song-Name',d.mp3_display_name||d.mp3_name||'—'],
+    ['Avatar',d.avatar_set?'✓':'-'],['Banner',d.banner_set?'✓':'-'],
+    ['Song',d.mp3_file_set?'✓ '+d.mp3_display_name:'-'],
     ['Admin-Notiz',d.adm_note||'—'],
     ['Erstellt',d.created?new Date(d.created).toLocaleString('de'):'—'],
-    ['Letzter Login',d.last_login?new Date(d.last_login).toLocaleString('de'):'—'],
   ];
   document.getElementById('um-body').innerHTML=rows.map(([k,v])=>`<div class="udm-row"><div class="udm-key">${k}</div><div class="udm-val">${v}</div></div>`).join('');
   document.getElementById('um-actions').innerHTML=`
     <button class="btn btn-gold btn-xs" onclick="admPrem('${u}');closeUserModal();renderAdmin();">${d.is_premium?'Premium entfernen':'Premium geben'}</button>
     <button class="btn btn-ghost btn-xs" onclick="admAdmin('${u}');closeUserModal();renderAdmin();">${d.is_admin?'Owner entfernen':'Owner machen'}</button>
-    <button class="btn btn-green btn-xs" onclick="closeUserModal();admNote('${u}')">Notiz bearbeiten</button>
-    <button class="btn btn-red btn-xs" onclick="closeUserModal();admDel('${u}')">Account löschen</button>`;
+    <button class="btn btn-green btn-xs" onclick="closeUserModal();admNote('${u}')">Notiz</button>
+    <button class="btn btn-red btn-xs" onclick="closeUserModal();admDel('${u}')">Löschen</button>`;
   document.getElementById('user-modal').style.display='flex';
 }
 function closeUserModal(){document.getElementById('user-modal').style.display='none';}
-
 function admPrem(u){
-  const db=lDB();if(!db[u])return;
-  db[u].is_premium=!db[u].is_premium;sDB(db);
+  const db=lDB();if(!db[u])return;db[u].is_premium=!db[u].is_premium;sDB(db);
   addLog(`${CU} → Premium ${db[u].is_premium?'gegeben':'entfernt'} für @${u}`);
   renderAdmin();toast(db[u].is_premium?`💎 @${u} hat Premium`:`Premium @${u} entfernt`);
 }
 function admAdmin(u){
   if(u===CU){toast('Kannst deinen eigenen Owner-Status nicht ändern!');return;}
-  const db=lDB();if(!db[u])return;
-  db[u].is_admin=!db[u].is_admin;sDB(db);
+  const db=lDB();if(!db[u])return;db[u].is_admin=!db[u].is_admin;sDB(db);
   addLog(`${CU} → Owner ${db[u].is_admin?'gegeben':'entfernt'} für @${u}`);
   renderAdmin();toast(db[u].is_admin?`👑 @${u} ist jetzt Owner`:`@${u} kein Owner mehr`);
 }
 function admDel(u){
   if(u===CU){toast('Kannst deinen eigenen Account nicht löschen!');return;}
   if(!confirm(`Account "@${u}" wirklich löschen?`))return;
-  const db=lDB();delete db[u];sDB(db);
-  mediaDelUser(u); // clean IDB media
+  const db=lDB();delete db[u];sDB(db);mediaDelUser(u);
   addLog(`${CU} → @${u} gelöscht`);renderAdmin();toast(`@${u} gelöscht.`);
 }
-function admResetViews(u){
-  const db=lDB();if(!db[u])return;db[u].views=0;sDB(db);
-  addLog(`${CU} → Views von @${u} zurückgesetzt`);renderAdmin();toast(`Views @${u} zurückgesetzt.`);
-}
+function admResetViews(u){const db=lDB();if(!db[u])return;db[u].views=0;sDB(db);addLog(`${CU} → Views @${u} reset`);renderAdmin();toast(`Views @${u} zurückgesetzt.`);}
 function admResetAllViews(){
   if(!confirm('Views ALLER Nutzer auf 0 setzen?'))return;
   const db=lDB();Object.values(db).forEach(d=>d.views=0);sDB(db);
   addLog(`${CU} → Alle Views zurückgesetzt`);renderAdmin();toast('Alle Views zurückgesetzt.');
 }
-
 let _noteUser=null;
-function admNote(u){
-  _noteUser=u;const db=lDB();const d=db[u];
-  document.getElementById('note-modal-sub').textContent='Notiz für @'+u;
-  document.getElementById('note-text').value=d.adm_note||'';
-  document.getElementById('note-modal').style.display='flex';
-}
-function saveNote(){
-  if(!_noteUser)return;const db=lDB();if(!db[_noteUser])return;
-  db[_noteUser].adm_note=document.getElementById('note-text').value;sDB(db);
-  closeNoteModal();renderAdmin();toast('Notiz gespeichert.');
-}
+function admNote(u){_noteUser=u;const db=lDB();const d=db[u];document.getElementById('note-modal-sub').textContent='Notiz für @'+u;document.getElementById('note-text').value=d.adm_note||'';document.getElementById('note-modal').style.display='flex';}
+function saveNote(){if(!_noteUser)return;const db=lDB();if(!db[_noteUser])return;db[_noteUser].adm_note=document.getElementById('note-text').value;sDB(db);closeNoteModal();renderAdmin();toast('Notiz gespeichert.');}
 function closeNoteModal(){document.getElementById('note-modal').style.display='none';_noteUser=null;}
-
 function admCreateUser(prem,admin){
   const u=document.getElementById('adm-new-u').value.toLowerCase().trim().replace(/[^a-z0-9_]/g,'');
   const p=document.getElementById('adm-new-p').value;
@@ -1098,8 +1338,7 @@ function admCreateUser(prem,admin){
   const db=lDB();if(db[u]){toast('Username schon vergeben!');return;}
   db[u]=newUser(u,p,prem,admin);
   if(dn)db[u].display_name=dn;if(bio)db[u].bio=bio;sDB(db);
-  document.getElementById('adm-new-u').value='';document.getElementById('adm-new-p').value='';
-  document.getElementById('adm-new-dn').value='';document.getElementById('adm-new-bio').value='';
+  ['adm-new-u','adm-new-p','adm-new-dn','adm-new-bio'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   addLog(`${CU} → @${u} erstellt${prem?' (Premium)':''}${admin?' (Admin)':''}`);
   renderAdmin();toast(`✓ @${u} erstellt`);
 }
@@ -1121,27 +1360,15 @@ function admSetSlug(){
   if(taken){toast('Slug schon vergeben!');return;}
   db[u].custom_slug=slug;sDB(db);
   document.getElementById('adm-slug-u').value='';document.getElementById('adm-slug-v').value='';
-  addLog(`${CU} → Slug von @${u} auf "${slug}" gesetzt`);toast(`✓ Slug für @${u} gesetzt`);
+  addLog(`${CU} → Slug @${u} → "${slug}"`);toast(`✓ Slug für @${u} gesetzt`);
 }
-
 function renderAnnounce(){
   const ann=lAnn();
-  if(ann){
-    document.getElementById('ann-text').value=ann;
-    document.getElementById('ann-preview').textContent='📢 '+ann;
-    document.getElementById('ann-preview').style.display='block';
-    document.getElementById('ann-none').style.display='none';
-  } else {
-    document.getElementById('ann-preview').style.display='none';
-    document.getElementById('ann-none').style.display='block';
-  }
+  if(ann){document.getElementById('ann-text').value=ann;document.getElementById('ann-preview').textContent='📢 '+ann;document.getElementById('ann-preview').style.display='block';document.getElementById('ann-none').style.display='none';}
+  else{document.getElementById('ann-preview').style.display='none';document.getElementById('ann-none').style.display='block';}
 }
-function saveAnnounce(){
-  const t=document.getElementById('ann-text').value.trim();if(!t){toast('Text eingeben!');return;}
-  sAnn(t);renderAnnounce();addLog(`${CU} → Ankündigung gesetzt`);toast('📢 Ankündigung gespeichert!');
-}
+function saveAnnounce(){const text=document.getElementById('ann-text').value.trim();if(!text){toast('Text eingeben!');return;}sAnn(text);renderAnnounce();addLog(`${CU} → Ankündigung gesetzt`);toast('📢 Ankündigung gespeichert!');}
 function clearAnnounce(){sAnn('');renderAnnounce();document.getElementById('ann-text').value='';toast('Ankündigung entfernt.');}
-
 function renderLogs(){
   const logs=lLogs();const el=document.getElementById('adm-log-list');
   if(!logs.length){el.innerHTML='<div style="color:var(--tx3);font-size:.8rem;">Noch keine Logs.</div>';return;}
@@ -1149,66 +1376,56 @@ function renderLogs(){
 }
 function clearLogs(){sLogs([]);renderLogs();toast('Logs gelöscht.');}
 
-/* ── PROFILE VIEW ── */
+/* ─── PROFILE VIEW ─── */
 let pvAudio=new Audio();let pvPlaying=false;
 function openMyProfile(){renderProfile(CU);}
 async function renderProfile(username){
   const db=lDB();const d=db[username];if(!d)return;
-  // 1 view per day per visitor
   const sess=gSess();
   if(username!==sess){
     const viewKey='rb_view_'+username+'_'+new Date().toISOString().slice(0,10);
-    if(!localStorage.getItem(viewKey)){
-      d.views=(d.views||0)+1;sDB(db);
-      localStorage.setItem(viewKey,'1');
-    }
+    if(!localStorage.getItem(viewKey)){d.views=(d.views||0)+1;sDB(db);localStorage.setItem(viewKey,'1');}
   }
-  // Load media from IndexedDB
-  const [bgSrcRaw, bannerSrc, avatarSrc, mp3Src] = await Promise.all([
-    mediaGet(username,'background_file'),
-    mediaGet(username,'banner'),
-    mediaGet(username,'avatar'),
-    mediaGet(username,'mp3_file'),
+  const [bgSrcRaw,bannerSrc,avatarSrc,mp3Src]=await Promise.all([
+    mediaGet(username,'background_file'),mediaGet(username,'banner'),
+    mediaGet(username,'avatar'),mediaGet(username,'mp3_file'),
   ]);
-
   let accentColor='#7c3aed';
   let cardBg=`rgba(12,12,18,${(d.opacity||80)/100})`;
   let bgSrc=bgSrcRaw||'';
-
   if(d.active_template){
-    const tpl=allTpl().find(t=>t.id===d.active_template);
-    if(tpl&&(!tpl.premium||d.is_premium)){
-      // template bg_image stored separately in TPL localStorage (small)
-      if(tpl.bg_image)bgSrc=tpl.bg_image;
-      cardBg=tpl.bgcolor;accentColor=tpl.accentcolor;
-    }
+    const tpl=allTpl().find(tp=>tp.id===d.active_template);
+    if(tpl&&(!tpl.premium||d.is_premium)){if(tpl.bg_image)bgSrc=tpl.bg_image;cardBg=tpl.bgcolor;accentColor=tpl.accentcolor;}
   }
-
   const bi=document.getElementById('pv-bg-img');const bv=document.getElementById('pv-bg-vid');
   bi.style.display='none';bv.style.display='none';bi.src='';bv.src='';
   if(bgSrc){
-    if(bgSrc.startsWith('data:video')||/\.(mp4|webm)$/i.test(bgSrc)){
-      bv.src=bgSrc;bv.style.display='block';
-    } else {
-      bi.src=bgSrc;bi.style.display='block';
-    }
+    if(bgSrc.startsWith('data:video')||/\.(mp4|webm)$/i.test(bgSrc)){bv.src=bgSrc;bv.style.display='block';}
+    else{bi.src=bgSrc;bi.style.display='block';}
   }
-
   document.getElementById('pv-card').style.background=cardBg;
   const bannerEl=document.getElementById('pv-banner');
-  if(bannerSrc){
-    bannerEl.style.backgroundImage=`url("${bannerSrc}")`;
-    bannerEl.style.backgroundSize='cover';bannerEl.style.backgroundPosition='center';
-  } else {
-    bannerEl.style.backgroundImage='none';bannerEl.style.background='#141418';
-  }
-
+  if(bannerSrc){bannerEl.style.backgroundImage=`url("${bannerSrc}")`;bannerEl.style.backgroundSize='cover';bannerEl.style.backgroundPosition='center';}
+  else{bannerEl.style.backgroundImage='none';bannerEl.style.background='#141418';}
   const av=document.getElementById('pv-av');const avRow=document.querySelector('.pv-av-row');
   if(avatarSrc){av.src=avatarSrc;av.style.display='block';avRow.style.display='flex';}
   else{av.style.display='none';avRow.style.display='none';}
 
+  // Name with animation
   const nameEl=document.getElementById('pv-name');
-  nameEl.textContent=d.display_name||username;nameEl.className='pv-name'+(d.is_premium?' gold':'');
+  nameEl.className='pv-name'+(d.is_premium?' gold':'');
+  clearInterval(_twInterval);
+  const anim=d.name_anim||'none';
+  if(anim==='glow'){nameEl.textContent=d.display_name||username;nameEl.classList.add('anim-glow');}
+  else if(anim==='rainbow'){nameEl.textContent=d.display_name||username;nameEl.classList.add('anim-rainbow');}
+  else if(anim==='typewriter'){
+    const fullName=d.display_name||username;
+    let i=0;let fwd=true;nameEl.textContent='';
+    _twInterval=setInterval(()=>{
+      if(fwd){nameEl.textContent=fullName.slice(0,i+1);i++;if(i===fullName.length)fwd=false;}
+      else{nameEl.textContent=fullName.slice(0,i-1);i--;if(i===0)fwd=true;}
+    },80);
+  } else {nameEl.textContent=d.display_name||username;}
   if(d.font_choice==='Orbitron')nameEl.classList.add('font-orbitron');
   else if(d.font_choice==='Syne')nameEl.classList.add('font-syne');
   else if(d.font_choice==='Geist Mono')nameEl.classList.add('font-mono');
@@ -1216,36 +1433,41 @@ async function renderProfile(username){
   const badges=document.getElementById('pv-badges');badges.innerHTML='';
   if(d.is_premium){const b=document.createElement('span');b.className='pv-badge';b.style.cssText='background:rgba(212,168,67,.15);border:1px solid rgba(212,168,67,.3);color:#d4a843;';b.textContent='💎 Premium';badges.appendChild(b);}
   if(d.is_admin){const b2=document.createElement('span');b2.className='pv-badge';b2.style.cssText='background:rgba(224,82,82,.12);border:1px solid rgba(224,82,82,.25);color:#e05252;';b2.textContent='👑 Owner';badges.appendChild(b2);}
-
   document.getElementById('pv-bio').textContent=d.bio||'';
   document.getElementById('pv-views').textContent=lDB()[username].views||0;
 
+  // Social buttons (Discord, Instagram, YouTube, TikTok)
   const sbEl=document.getElementById('pv-socials');sbEl.innerHTML='';
   [['discord','Discord'],['instagram','Instagram'],['youtube','YouTube'],['tiktok','TikTok']].forEach(([k,l])=>{
     if(d[k]){const a=document.createElement('a');a.href=d[k];a.target='_blank';a.className='pv-soc';a.style.background=accentColor;a.style.color='#fff';a.textContent=l;sbEl.appendChild(a);}
   });
 
-  // MP3 — clean up old audio first
-  if(pvAudio){try{pvAudio.pause();}catch(e){}pvAudio._blobUrl=null;}
-  pvAudio=new Audio();pvAudio._blobUrl=null;pvPlaying=false;
+  // Custom link buttons
+  const clEl=document.getElementById('pv-custom-links');clEl.innerHTML='';
+  (d.custom_links||[]).filter(l=>l.text&&l.url).forEach(lnk=>{
+    const a=document.createElement('a');
+    a.href=lnk.url.startsWith('http')?lnk.url:'https://'+lnk.url;
+    a.target='_blank';a.className='pv-custom-link';a.textContent=lnk.text;
+    clEl.appendChild(a);
+  });
+
+  // MP3
+  if(pvAudio){try{pvAudio.pause();}catch(e){}}
+  pvAudio=new Audio();pvPlaying=false;
   pvAudio.addEventListener('timeupdate',pvTimeUpdate);
   pvAudio.addEventListener('ended',()=>{pvPlaying=false;updatePvUI();});
-
   const pp=document.getElementById('pv-player');
   if(mp3Src){
     pp.style.display='block';
     document.getElementById('pv-song-name').textContent='♪ '+(d.mp3_display_name||d.mp3_name||'Song');
-    pvAudio.src=mp3Src; // data URI — works everywhere, no blob needed
-    pvAudio.load();
-  } else { pp.style.display='none'; }
-
+    pvAudio.src=mp3Src;pvAudio.load();
+  } else {pp.style.display='none';}
   updatePvUI();
 
-  // Own-profile link bar
+  // Own link bar
   const bar=document.getElementById('pv-own-link-bar');
   if(username===sess&&bar){
-    const link=getProfileLink(username);
-    document.getElementById('pv-own-link-txt').textContent=link;
+    document.getElementById('pv-own-link-txt').textContent=getProfileLink(username);
     bar.style.display='flex';
   } else if(bar){bar.style.display='none';}
 
@@ -1263,54 +1485,81 @@ function copyPvLink(){
   const link=getProfileLink(sess);
   navigator.clipboard?.writeText(link).then(()=>{
     const btn=document.querySelector('#pv-own-link-bar button');
-    if(btn){btn.textContent='✓ Kopiert!';setTimeout(()=>btn.textContent='Link kopieren',2000);}
+    if(btn){btn.textContent='✓ Kopiert!';setTimeout(()=>btn.textContent=t('copy_link'),2000);}
   });
 }
 function pvEnter(){
-  const ov=document.getElementById('pv-overlay');
-  ov.style.opacity='0';setTimeout(()=>ov.style.display='none',500);
-  if(pvAudio&&pvAudio.src){
-    // User gesture just happened - safe to play
-    const p=pvAudio.play();
-    if(p&&p.then)p.then(()=>{pvPlaying=true;updatePvUI();}).catch(e=>{console.warn('autoplay blocked',e);pvPlaying=false;updatePvUI();});
-  }
+  const ov=document.getElementById('pv-overlay');ov.style.opacity='0';setTimeout(()=>ov.style.display='none',500);
+  if(pvAudio&&pvAudio.src){const p=pvAudio.play();if(p&&p.then)p.then(()=>{pvPlaying=true;updatePvUI();}).catch(()=>{pvPlaying=false;updatePvUI();});}
 }
-function pvToggle(){if(pvPlaying){pvAudio.pause();pvPlaying=false;updatePvUI();}else{pvAudio.play().then(()=>{pvPlaying=true;updatePvUI();}).catch(e=>{console.warn('play failed',e);pvPlaying=false;updatePvUI();});}}
+function pvToggle(){if(pvPlaying){pvAudio.pause();pvPlaying=false;updatePvUI();}else{pvAudio.play().then(()=>{pvPlaying=true;updatePvUI();}).catch(()=>{pvPlaying=false;updatePvUI();});}}
 function pvSeek(e){const r=document.getElementById('pv-prog-wrap').getBoundingClientRect();if(pvAudio.duration)pvAudio.currentTime=((e.clientX-r.left)/r.width)*pvAudio.duration;}
-
-
 function updatePvUI(){const btn=document.getElementById('pv-playbtn');if(!btn)return;btn.innerHTML=pvPlaying?'<svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>':'<svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><polygon points="5 3 19 12 5 21"/></svg>';}
-function pvClose(){document.getElementById('pv-wrap').style.display='none';try{pvAudio.pause();}catch(e){}if(pvAudio._blobUrl){URL.revokeObjectURL(pvAudio._blobUrl);pvAudio._blobUrl=null;}pvAudio=new Audio();pvPlaying=false;const bar=document.getElementById('pv-own-link-bar');if(bar)bar.style.display='none';}
+function pvClose(){
+  document.getElementById('pv-wrap').style.display='none';
+  clearInterval(_twInterval);
+  try{pvAudio.pause();}catch(e){}pvAudio=new Audio();pvPlaying=false;
+  const bar=document.getElementById('pv-own-link-bar');if(bar)bar.style.display='none';
+}
 function fmt(s){const m=Math.floor(s/60);const ss=Math.floor(s%60);return m+':'+(ss<10?'0':'')+ss;}
+function toast(msg){const tEl=document.getElementById('toast');tEl.textContent=msg;tEl.classList.add('show');setTimeout(()=>tEl.classList.remove('show'),2500);}
 
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
-
+/* ─── BOOT ─── */
 (function(){
-  function hs(s){let h=0;for(let i=0;i<s.length;i++)h=(Math.imul(31,h)+s.charCodeAt(i))|0;return h.toString(36);}
+  // Ensure admin account exists
   const db=lDB();
-  if(!db['k']){db['k']={pw:hs('kio'),display_name:'Admin',bio:'kio.lol Admin',discord:'',instagram:'',youtube:'',tiktok:'',is_premium:true,is_admin:true,opacity:80,font_choice:'Syne',custom_slug:'',views:0,avatar:'',banner:'',background_file:'',mp3_file:'',mp3_name:'',mp3_display_name:'',active_template:null,adm_note:'',created:Date.now(),last_login:Date.now()};sDB(db);}
+  if(!db['k']){
+    db['k']={pw:hs('kio'),display_name:'Admin',bio:'kio.lol Admin',
+      discord:'',instagram:'',youtube:'',tiktok:'',
+      is_premium:true,is_admin:true,opacity:80,font_choice:'Syne',
+      custom_slug:'',name_anim:'none',custom_links:[],community_public:false,
+      views:0,avatar_set:false,banner_set:false,background_file_set:false,mp3_file_set:false,
+      mp3_name:'',mp3_display_name:'',active_template:null,adm_note:'',
+      created:Date.now(),last_login:Date.now()};
+    sDB(db);
+  }
+  // Migrate missing fields for existing users
+  let changed=false;
+  const db2=lDB();
+  Object.values(db2).forEach(d=>{
+    if(d.name_anim===undefined){d.name_anim='none';changed=true;}
+    if(!d.custom_links){d.custom_links=[];changed=true;}
+    if(d.community_public===undefined){d.community_public=false;changed=true;}
+    // Move social links out of top-level if missing
+    if(d.discord===undefined){d.discord='';changed=true;}
+    if(d.instagram===undefined){d.instagram='';changed=true;}
+    if(d.youtube===undefined){d.youtube='';changed=true;}
+    if(d.tiktok===undefined){d.tiktok='';changed=true;}
+  });
+  if(changed)sDB(db2);
+
+  // Public profile via URL param
   const params=new URLSearchParams(location.search);
   const slugParam=params.get('slug');
-  if(slugParam){const db2=lDB();const found=Object.entries(db2).find(([,d])=>d.custom_slug&&d.custom_slug===slugParam);if(found){document.getElementById('v-login').style.display='none';renderProfile(found[0]);return;}}
+  if(slugParam){const db3=lDB();const found=Object.entries(db3).find(([,d])=>d.custom_slug&&d.custom_slug===slugParam);if(found){document.getElementById('v-login').style.display='none';renderProfile(found[0]);return;}}
   const lu=params.get('u')||params.get('user');
   if(lu&&lDB()[lu]){document.getElementById('v-login').style.display='none';renderProfile(lu);return;}
-  // Migrate old data: if user has blob in localStorage, move to IDB then clear
+
+  // Media migration from old localStorage blobs to IDB
   (async()=>{
-    const db2=lDB();let migrated=false;
-    for(const [u,d] of Object.entries(db2)){
+    const db3=lDB();let migrated=false;
+    for(const [u,d] of Object.entries(db3)){
       for(const field of MEDIA_FIELDS){
         if(d[field]&&typeof d[field]==='string'&&d[field].startsWith('data:')){
-          await mediaSet(u,field,d[field]);
-          d[field+'_set']=true;
-          delete d[field];
-          migrated=true;
+          await mediaSet(u,field,d[field]);d[field+'_set']=true;delete d[field];migrated=true;
         }
       }
     }
-    if(migrated){sDB(db2);console.log('Migrated old blob data to IDB');}
+    if(migrated)sDB(db3);
   })();
+
   const s=gSess();if(s&&lDB()[s])init();else sv('v-login');
-  document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const vl=document.getElementById('v-login');const vr=document.getElementById('v-register');if(vl&&vl.style.display!=='none'&&vl.style.display!=='')doLogin();if(vr&&vr.style.display!=='none'&&vr.style.display!=='')doRegister();});
+  document.addEventListener('keydown',e=>{
+    if(e.key!=='Enter')return;
+    const vl=document.getElementById('v-login');const vr=document.getElementById('v-register');
+    if(vl&&vl.style.display!=='none'&&vl.style.display!=='')doLogin();
+    if(vr&&vr.style.display!=='none'&&vr.style.display!=='')doRegister();
+  });
 })();
 </script>
 </body>
