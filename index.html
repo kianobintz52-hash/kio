@@ -1,3 +1,6 @@
+cat > /tmp/apply_patch.py << 'PYEOF'
+import re
+
 src = r"""<!DOCTYPE html>
 <html lang="de">
 <head>
@@ -521,7 +524,7 @@ select.inp{cursor:pointer;}
           <input class="adm-search" id="adm-search" placeholder="Nutzer suchen..." oninput="filterUsers(this.value)">
           <div class="adm-wrap">
             <table class="adm-tbl">
-              <thead><tr><th>Nutzer</th><th>Link</th><th>Views</th><th>Song</th><th>Premium</th><th>Admin</th><th>Erstellt</th><th>Aktionen</th></tr></thead>
+              <thead><tr><th>Nutzer</th><th>Views</th><th>Song</th><th>Premium</th><th>Admin</th><th>Erstellt</th><th>Aktionen</th></tr></thead>
               <tbody id="adm-tbody"></tbody>
             </table>
           </div>
@@ -549,14 +552,6 @@ select.inp{cursor:pointer;}
             <div class="field"><label class="lbl">Neues Passwort</label><input id="adm-pw-p" class="inp" placeholder="neues passwort"></div>
           </div>
           <button class="btn btn-ghost btn-sm" onclick="admResetPw()">Passwort setzen</button>
-        </div>
-        <div class="card">
-          <div class="card-title">Custom Slug setzen (Admin)</div>
-          <div class="g2">
-            <div class="field"><label class="lbl">Username</label><input id="adm-slug-u" class="inp" placeholder="username"></div>
-            <div class="field"><label class="lbl">Slug</label><input id="adm-slug-v" class="inp" placeholder="wunsch-slug"></div>
-          </div>
-          <button class="btn btn-ghost btn-sm" onclick="admSetSlug()">Slug setzen</button>
         </div>
       </div>
       <div id="adm-announce" class="adm-section" style="display:none;">
@@ -590,7 +585,6 @@ select.inp{cursor:pointer;}
 
 <!-- PROFILE VIEW -->
 <div id="pv-wrap">
-  <!-- OVERLAY REMOVED: Profile shows immediately without click -->
   <div id="pv-overlay" style="display:none;"></div>
   <img id="pv-bg-img" src="" style="display:none;position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:9001;">
   <video id="pv-bg-vid" autoplay loop muted playsinline style="display:none;position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:9001;"></video>
@@ -676,7 +670,6 @@ select.inp{cursor:pointer;}
 <div id="toast"></div>
 
 <script>
-/* I18N */
 const TRANSLATIONS={
   de:{
     login_sub:'Dein persönlicher Bio-Link',login_err:'Falscher Username oder Passwort.',
@@ -767,7 +760,6 @@ function setLang(l,btn){
 }
 function t(k){return TRANSLATIONS[LANG][k]||k;}
 
-/* STORAGE */
 const DB='rb_db_v5_meta';const TPL='rb_tpl_v5';const SESS='rb_sess_v5';
 const LOGS_KEY='rb_logs_v5';const ANN_KEY='rb_ann_v5';
 const lDB=()=>{try{return JSON.parse(localStorage.getItem(DB)||'{}')}catch{return{}}};
@@ -786,7 +778,6 @@ const sLogs=l=>localStorage.setItem(LOGS_KEY,JSON.stringify(l));
 const lAnn=()=>localStorage.getItem(ANN_KEY)||'';
 const sAnn=t=>t?localStorage.setItem(ANN_KEY,t):localStorage.removeItem(ANN_KEY);
 
-/* INDEXEDDB MEDIA */
 const IDB_NAME='rb_media_v5';const IDB_STORE='media';
 let _idb=null;
 function openIDB(){
@@ -867,7 +858,6 @@ function newUser(u,p,prem=false,admin=false){
     created:Date.now(),last_login:Date.now()};
 }
 
-/* ANIMATED NAME */
 let _twInterval=null;
 function setNameAnim(anim){
   const db=lDB();if(!db[CU])return;
@@ -882,7 +872,6 @@ function highlightAnimBtn(anim){
   });
 }
 
-/* CUSTOM LINKS */
 function loadCustomLinks(){
   const db=lDB();const d=db[CU];
   const links=d.custom_links||[];
@@ -921,7 +910,6 @@ function saveCustomLinks(){
   sDB(db);toast('✓ '+t('save'));
 }
 
-/* CHANGE PASSWORD */
 function changePassword(){
   const db=lDB();if(!db[CU])return;
   const oldPw=document.getElementById('pw-old').value;
@@ -937,7 +925,6 @@ function changePassword(){
   toast('✓ Passwort geändert!');
 }
 
-/* COMMUNITY */
 function toggleCommunity(){
   const db=lDB();if(!db[CU])return;
   db[CU].community_public=!db[CU].community_public;sDB(db);
@@ -977,7 +964,6 @@ async function renderCommunity(q=''){
 }
 function openProfile(username){renderProfile(username);}
 
-/* PROFILE LINK */
 function getProfileLink(u){
   const db=lDB();const d=db[u];
   const slug=(d&&d.custom_slug)?d.custom_slug.trim():'';
@@ -1157,7 +1143,6 @@ function saveSettings(){
   updateStats();toast('✓ Gespeichert');
 }
 
-/* TEMPLATES */
 const BUILTIN=[
   {id:'b1',name:'Purple Void',author:'kio.lol',category:'dark',bgcolor:'rgba(10,5,20,0.88)',accentcolor:'#7c3aed',bg_image:'',builtin:true,premium:false},
   {id:'b2',name:'Midnight',author:'kio.lol',category:'dark',bgcolor:'rgba(5,10,25,0.88)',accentcolor:'#2563eb',bg_image:'',builtin:true,premium:false},
@@ -1207,7 +1192,6 @@ function submitTemplate(){
   if(f){const r=new FileReader();r.onload=e=>finish(e.target.result);r.readAsDataURL(f);}else finish('');
 }
 
-/* ADMIN */
 function admTab(name,btn){
   document.querySelectorAll('.adm-section').forEach(s=>s.style.display='none');
   document.querySelectorAll('.adm-tab').forEach(b=>b.classList.remove('on'));
@@ -1237,12 +1221,10 @@ function filterUsers(q){
 function renderUserTable(users){
   const tbody=document.getElementById('adm-tbody');tbody.innerHTML='';
   users.sort(([a],[b])=>a.localeCompare(b)).forEach(([u,d])=>{
-    const link=getProfileLinkFor(u,d);const shortLink=link.length>32?link.slice(0,30)+'\u2026':link;
     const noteIcon=d.adm_note?'\uD83D\uDCDD ':' ';
     const tr=document.createElement('tr');
     tr.innerHTML=`
       <td><div class="user-cell"><div class="user-av">${u.slice(0,2).toUpperCase()}</div><div><div style="font-weight:500;color:var(--tx0);">${noteIcon}${escHtml(d.display_name||u)}</div><div style="font-size:.68rem;color:var(--tx3);font-family:var(--mono);">@${u}</div></div></div></td>
-      <td><span class="mono-tag" title="${link}">${shortLink}</span></td>
       <td><span style="color:var(--tx1);">${d.views||0}</span> <button style="background:none;border:none;color:var(--tx3);cursor:pointer;font-size:.68rem;" onclick="admResetViews('${u}')" title="reset">\u21BA</button></td>
       <td style="color:var(--tx2);">${d.mp3_file_set?'\u2713':'\u2014'}</td>
       <td>${d.is_premium?'<span class="badge badge-gold">\uD83D\uDC8E</span>':'<span class="badge badge-free">\u2014</span>'}</td>
@@ -1266,7 +1248,7 @@ function viewUser(u){
   const rows=[
     ['Display Name',d.display_name||'\u2014'],['Username',u],
     ['Profil-Link',`<a href="${link}" target="_blank" style="color:var(--acc2);font-size:.7rem;font-family:var(--mono);">${link}</a>`],
-    ['Custom Slug',d.custom_slug||'\u2014'],['Premium',d.is_premium?'\u2713 Ja':'\u2717 Nein'],
+    ['Premium',d.is_premium?'\u2713 Ja':'\u2717 Nein'],
     ['Admin',d.is_admin?'\u2713 Ja':'\u2717 Nein'],['Views',d.views||0],
     ['\xD6ffentlich',d.community_public?'\u2713 Ja':'\u2717 Nein'],
     ['Bio',d.bio||'\u2014'],['Schriftart',d.font_choice||'Standard'],['Name-Anim',d.name_anim||'none'],
@@ -1335,17 +1317,6 @@ function admResetPw(){
   document.getElementById('adm-pw-u').value='';document.getElementById('adm-pw-p').value='';
   addLog(`${CU} \u2192 Passwort von @${u} zur\xFCckgesetzt`);toast(`\u2713 Passwort von @${u} ge\xE4ndert`);
 }
-function admSetSlug(){
-  const u=document.getElementById('adm-slug-u').value.toLowerCase().trim();
-  const slug=document.getElementById('adm-slug-v').value.replace(/[^a-z0-9-]/gi,'').toLowerCase();
-  if(!u||!slug){toast('Username und Slug eingeben!');return;}
-  const db=lDB();if(!db[u]){toast('Nutzer nicht gefunden!');return;}
-  const taken=Object.entries(db).find(([ou,od])=>ou!==u&&od.custom_slug===slug);
-  if(taken){toast('Slug schon vergeben!');return;}
-  db[u].custom_slug=slug;sDB(db);
-  document.getElementById('adm-slug-u').value='';document.getElementById('adm-slug-v').value='';
-  addLog(`${CU} \u2192 Slug @${u} \u2192 "${slug}"`);toast(`\u2713 Slug f\xFCr @${u} gesetzt`);
-}
 function renderAnnounce(){
   const ann=lAnn();
   if(ann){document.getElementById('ann-text').value=ann;document.getElementById('ann-preview').textContent='\uD83D\uDCE2 '+ann;document.getElementById('ann-preview').style.display='block';document.getElementById('ann-none').style.display='none';}
@@ -1360,7 +1331,6 @@ function renderLogs(){
 }
 function clearLogs(){sLogs([]);renderLogs();toast('Logs gel\xF6scht.');}
 
-/* PROFILE VIEW */
 let pvAudio=new Audio();let pvPlaying=false;
 function openMyProfile(){renderProfile(CU);}
 async function renderProfile(username){
@@ -1450,7 +1420,6 @@ async function renderProfile(username){
     bar.style.display='flex';
   } else if(bar){bar.style.display='none';}
 
-  // FIX: Show profile immediately without overlay
   document.getElementById('pv-overlay').style.display='none';
   document.getElementById('pv-wrap').style.display='block';
   if(username===sess)updateStats();
@@ -1467,7 +1436,6 @@ function copyPvLink(){
     if(btn){btn.textContent='\u2713 Kopiert!';setTimeout(()=>btn.textContent=t('copy_link'),2000);}
   });
 }
-// pvEnter no longer needed - overlay is removed
 function pvEnter(){}
 function pvToggle(){if(pvPlaying){pvAudio.pause();pvPlaying=false;updatePvUI();}else{pvAudio.play().then(()=>{pvPlaying=true;updatePvUI();}).catch(()=>{pvPlaying=false;updatePvUI();});}}
 function pvSeek(e){const r=document.getElementById('pv-prog-wrap').getBoundingClientRect();if(pvAudio.duration)pvAudio.currentTime=((e.clientX-r.left)/r.width)*pvAudio.duration;}
@@ -1481,7 +1449,6 @@ function pvClose(){
 function fmt(s){const m=Math.floor(s/60);const ss=Math.floor(s%60);return m+':'+(ss<10?'0':'')+ss;}
 function toast(msg){const tEl=document.getElementById('toast');tEl.textContent=msg;tEl.classList.add('show');setTimeout(()=>tEl.classList.remove('show'),2500);}
 
-/* BOOT */
 (function(){
   const db=lDB();
   if(!db['k']){
@@ -1537,6 +1504,8 @@ function toast(msg){const tEl=document.getElementById('toast');tEl.textContent=m
 </body>
 </html>"""
 
-print(src)
+with open('/mnt/user-data/outputs/regelbruch_fixed.html', 'w', encoding='utf-8') as f:
+    f.write(src)
+
+print(f"Done! {len(src)} chars written.")
 PYEOF
-echo "File written: $(wc -c < /mnt/user-data/outputs/regelbruch_fixed.html) bytes"
