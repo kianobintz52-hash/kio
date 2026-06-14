@@ -2,51 +2,41 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>OathNet Mini-Interface</title>
-    <style>
-        body { font-family: sans-serif; padding: 20px; background: #f4f4f9; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        input, button { width: 100%; padding: 10px; margin: 10px 0; }
-        #output { background: #eee; padding: 10px; border-radius: 4px; white-space: pre-wrap; }
-    </style>
+    <title>Discord Webhook Sender</title>
 </head>
 <body>
 
-<div class="container">
-    <h2>OathNet Such-Tool</h2>
-    <input type="text" id="queryInput" placeholder="Suchbegriff eingeben...">
-    <button onclick="performSearch()">Suche starten</button>
-    <div id="output">Ergebnisse erscheinen hier...</div>
-</div>
+    <h3>Discord Webhook Nachricht senden</h3>
+    <input type="text" id="webhookUrl" placeholder="Webhook URL einfügen" style="width: 300px;"><br>
+    <textarea id="messageContent" placeholder="Deine Nachricht..."></textarea><br>
+    <button onclick="sendWebhook()">Nachricht senden</button>
 
-<script>
-    // Hier wird die Logik aus den Service-Dateien eingebettet
-    async function performSearch() {
-        const query = document.getElementById('queryInput').value;
-        const output = document.getElementById('output');
-        
-        output.innerText = "Suche läuft für: " + query + "...";
+    <script>
+        async function sendWebhook() {
+            const url = document.getElementById('webhookUrl').value;
+            const content = document.getElementById('messageContent').value;
 
-        try {
-            // Beispiel: Simulation der Logik aus oathnet-js Services
-            // In einer echten Umgebung würdest du hier fetch() zu deinen API-Endpunkten nutzen
-            const results = await mockOathNetLookup(query);
-            output.innerText = JSON.stringify(results, null, 2);
-        } catch (error) {
-            output.innerText = "Fehler: " + error.message;
+            const payload = {
+                content: content,
+                username: "Mein Webhook Tool"
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    alert("Nachricht erfolgreich gesendet!");
+                } else {
+                    alert("Fehler: Konnte Nachricht nicht senden.");
+                }
+            } catch (error) {
+                console.error("Fehler:", error);
+            }
         }
-    }
-
-    // Simulierte Funktion basierend auf der oathnet-js Struktur
-    async function mockOathNetLookup(term) {
-        return {
-            status: "success",
-            term: term,
-            findings: ["Datenpunkt A", "Datenpunkt B"],
-            timestamp: new Date().toISOString()
-        };
-    }
-</script>
-
+    </script>
 </body>
 </html>
