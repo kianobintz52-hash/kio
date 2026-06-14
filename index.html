@@ -7,11 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         :root {
             --primary: #7289DA;
@@ -35,13 +31,8 @@
             overflow-x: hidden;
         }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         
-        /* Header */
         header {
             display: flex;
             justify-content: space-between;
@@ -58,44 +49,27 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            cursor: pointer;
         }
         
-        .logo i {
-            font-size: 28px;
-        }
+        .logo i { font-size: 28px; }
         
-        nav {
-            display: flex;
-            gap: 20px;
-        }
+        nav { display: flex; gap: 20px; }
         
         nav a {
             color: var(--text);
             text-decoration: none;
             font-weight: 500;
             transition: color 0.3s;
+            cursor: pointer;
         }
         
-        nav a:hover {
-            color: var(--primary);
-        }
+        nav a:hover { color: var(--primary); }
         
-        /* Pages */
-        .page {
-            display: none;
-            min-height: calc(100vh - 70px);
-            padding: 30px 0;
-        }
+        .page { display: none; min-height: calc(100vh - 70px); padding: 30px 0; }
+        .page.active { display: block; }
         
-        .page.active {
-            display: block;
-        }
-        
-        /* Home Page */
-        .hero {
-            text-align: center;
-            padding: 60px 0;
-        }
+        .hero { text-align: center; padding: 60px 0; }
         
         .hero h1 {
             font-size: 56px;
@@ -149,9 +123,7 @@
             transition: transform 0.3s;
         }
         
-        .feature:hover {
-            transform: translateY(-5px);
-        }
+        .feature:hover { transform: translateY(-5px); }
         
         .feature i {
             font-size: 48px;
@@ -165,15 +137,9 @@
             color: var(--text);
         }
         
-        .feature p {
-            color: var(--text-muted);
-        }
+        .feature p { color: var(--text-muted); }
         
-        /* Profile Page */
-        .profile-container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
+        .profile-container { max-width: 600px; margin: 0 auto; }
         
         .profile-card {
             background-color: var(--card);
@@ -207,10 +173,7 @@
             object-fit: cover;
         }
         
-        .profile-info {
-            padding: 70px 30px 30px;
-            text-align: center;
-        }
+        .profile-info { padding: 70px 30px 30px; text-align: center; }
         
         .profile-name {
             font-size: 28px;
@@ -218,10 +181,7 @@
             margin-bottom: 10px;
         }
         
-        .profile-bio {
-            color: var(--text-muted);
-            margin-bottom: 20px;
-        }
+        .profile-bio { color: var(--text-muted); margin-bottom: 20px; }
         
         .profile-stats {
             display: flex;
@@ -232,9 +192,7 @@
             border-radius: 12px;
         }
         
-        .stat {
-            text-align: center;
-        }
+        .stat { text-align: center; }
         
         .stat-value {
             font-size: 24px;
@@ -242,10 +200,7 @@
             color: var(--primary);
         }
         
-        .stat-label {
-            font-size: 14px;
-            color: var(--text-muted);
-        }
+        .stat-label { font-size: 14px; color: var(--text-muted); }
         
         .profile-links {
             display: flex;
@@ -265,20 +220,14 @@
             transition: background-color 0.3s;
         }
         
-        .profile-link:hover {
-            background-color: var(--border);
-        }
+        .profile-link:hover { background-color: var(--border); }
         
         .profile-link i {
             font-size: 20px;
             color: var(--primary);
         }
         
-        /* Create Page */
-        .create-container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
+        .create-container { max-width: 800px; margin: 0 auto; }
         
         .create-card {
             background-color: var(--card);
@@ -294,15 +243,9 @@
             text-align: center;
         }
         
-        .form-group {
-            margin-bottom: 20px;
-        }
+        .form-group { margin-bottom: 20px; }
         
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
+        .form-label { display: block; margin-bottom: 8px; font-weight: 500; }
         
         .form-input {
             width: 100%;
@@ -320,10 +263,7 @@
             border-color: var(--primary);
         }
         
-        .form-textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
+        .form-textarea { min-height: 100px; resize: vertical; }
         
         .links-container {
             display: flex;
@@ -332,17 +272,21 @@
             margin-bottom: 20px;
         }
         
-        .link-item {
-            display: flex;
-            gap: 10px;
-        }
+        .link-item { display: flex; gap: 10px; }
         
-        .link-input {
-            flex: 1;
-        }
+        .link-input { flex: 1; }
         
         .btn-remove {
             background-color: var(--error);
             color: white;
             border: none;
-            padding: 
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-remove:hover { background-color: #d83c3c; }
+        
+        .btn-add {
+            background-color: var
