@@ -1,292 +1,2142 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>kioo.zeta</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        :root {
-            --primary: #7289DA;
-            --secondary: #99AAB5;
-            --accent: #5865F2;
-            --background: #36393F;
-            --card: #2F3136;
-            --text: #DCDDDE;
-            --text-muted: #B9BBBE;
-            --border: #202225;
-            --success: #43B581;
-            --warning: #FAA61A;
-            --error: #F04747;
-        }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--background);
-            color: var(--text);
-            line-height: 1.5;
-            overflow-x: hidden;
-        }
-        
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .logo {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--primary);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-        }
-        
-        .logo i { font-size: 28px; }
-        
-        nav { display: flex; gap: 20px; }
-        
-        nav a {
-            color: var(--text);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-            cursor: pointer;
-        }
-        
-        nav a:hover { color: var(--primary); }
-        
-        .page { display: none; min-height: calc(100vh - 70px); padding: 30px 0; }
-        .page.active { display: block; }
-        
-        .hero { text-align: center; padding: 60px 0; }
-        
-        .hero h1 {
-            font-size: 56px;
-            font-weight: 900;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .hero p {
-            font-size: 20px;
-            margin-bottom: 30px;
-            color: var(--text-muted);
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .btn {
-            display: inline-block;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(114, 137, 218, 0.3);
-        }
-        
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 60px;
-        }
-        
-        .feature {
-            background-color: var(--card);
-            padding: 30px;
-            border-radius: 12px;
-            text-align: center;
-            transition: transform 0.3s;
-        }
-        
-        .feature:hover { transform: translateY(-5px); }
-        
-        .feature i {
-            font-size: 48px;
-            margin-bottom: 20px;
-            color: var(--primary);
-        }
-        
-        .feature h3 {
-            font-size: 24px;
-            margin-bottom: 15px;
-            color: var(--text);
-        }
-        
-        .feature p { color: var(--text-muted); }
-        
-        .profile-container { max-width: 600px; margin: 0 auto; }
-        
-        .profile-card {
-            background-color: var(--card);
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-        
-        .profile-header {
-            height: 150px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            position: relative;
-        }
-        
-        .profile-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background-color: var(--card);
-            border: 5px solid var(--card);
-            position: absolute;
-            bottom: -60px;
-            left: 50%;
-            transform: translateX(-50%);
-            overflow: hidden;
-        }
-        
-        .profile-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .profile-info { padding: 70px 30px 30px; text-align: center; }
-        
-        .profile-name {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-        
-        .profile-bio { color: var(--text-muted); margin-bottom: 20px; }
-        
-        .profile-stats {
-            display: flex;
-            justify-content: space-around;
-            margin: 30px 0;
-            padding: 20px;
-            background-color: var(--background);
-            border-radius: 12px;
-        }
-        
-        .stat { text-align: center; }
-        
-        .stat-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary);
-        }
-        
-        .stat-label { font-size: 14px; color: var(--text-muted); }
-        
-        .profile-links {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .profile-link {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background-color: var(--background);
-            padding: 15px;
-            border-radius: 8px;
-            text-decoration: none;
-            color: var(--text);
-            transition: background-color 0.3s;
-        }
-        
-        .profile-link:hover { background-color: var(--border); }
-        
-        .profile-link i {
-            font-size: 20px;
-            color: var(--primary);
-        }
-        
-        .create-container { max-width: 800px; margin: 0 auto; }
-        
-        .create-card {
-            background-color: var(--card);
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-        
-        .create-title {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        
-        .form-group { margin-bottom: 20px; }
-        
-        .form-label { display: block; margin-bottom: 8px; font-weight: 500; }
-        
-        .form-input {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--background);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text);
-            font-family: inherit;
-            font-size: 16px;
-        }
-        
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-        
-        .form-textarea { min-height: 100px; resize: vertical; }
-        
-        .links-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .link-item { display: flex; gap: 10px; }
-        
-        .link-input { flex: 1; }
-        
-        .btn-remove {
-            background-color: var(--error);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .btn-remove:hover { background-color: #d83c3c; }
-        
-        .btn-add {
-            background-color: var
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>fakecrime | Documentation</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --accent: #F97316;
+  --accent-dim: rgba(249,115,22,0.12);
+  --accent-glow: rgba(249,115,22,0.25);
+  --bg: #0a0a0a;
+  --bg2: #111111;
+  --bg3: #1a1a1a;
+  --border: rgba(255,255,255,0.07);
+  --border-accent: rgba(249,115,22,0.3);
+  --text: #e8e8e8;
+  --text-dim: #888;
+  --text-muted: #555;
+  --sidebar-w: 268px;
+  --radius: 8px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  position: fixed; top:0; left:0; right:0;
+  height: 56px;
+  background: rgba(10,10,10,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 16px;
+  padding: 0 20px 0 0;
+  z-index: 100;
+}
+
+.topbar-logo {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 20px;
+  border-right: 1px solid var(--border);
+  height: 100%;
+  text-decoration: none;
+}
+.logo-icon {
+  width: 28px; height: 28px;
+  background: var(--accent);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  box-shadow: 0 0 16px var(--accent-glow);
+}
+.logo-text {
+  font-family: 'Geist Mono', monospace;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+.logo-text span { color: var(--accent); }
+
+.topbar-search {
+  flex: 1;
+  max-width: 340px;
+  position: relative;
+}
+.topbar-search input {
+  width: 100%;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 12px 7px 34px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.topbar-search input::placeholder { color: var(--text-muted); }
+.topbar-search input:focus { border-color: var(--border-accent); }
+.search-icon {
+  position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+  color: var(--text-muted); font-size: 14px; pointer-events: none;
+}
+
+.topbar-spacer { flex: 1; }
+
+.topbar-links { display: flex; align-items: center; gap: 4px; }
+.topbar-link {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: all 0.15s;
+}
+.topbar-link:hover { color: var(--text); background: var(--bg3); }
+
+.topbar-btn {
+  background: var(--accent);
+  color: #000;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 6px;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.topbar-btn:hover { background: #fb923c; box-shadow: 0 0 14px var(--accent-glow); }
+
+.hamburger {
+  display: none;
+  background: none; border: none; cursor: pointer;
+  color: var(--text); padding: 8px; font-size: 20px;
+}
+
+/* ── LAYOUT ── */
+.layout {
+  display: flex;
+  margin-top: 56px;
+  min-height: calc(100vh - 56px);
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  position: fixed;
+  top: 56px; bottom: 0; left: 0;
+  overflow-y: auto;
+  border-right: 1px solid var(--border);
+  background: var(--bg);
+  padding: 20px 12px 40px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+  transition: transform 0.25s ease;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.sidebar-group { margin-bottom: 24px; }
+.sidebar-group-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 0 10px;
+  margin-bottom: 6px;
+}
+
+.sidebar-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--text-dim);
+  font-size: 13.5px;
+  transition: all 0.15s;
+  user-select: none;
+  text-decoration: none;
+  margin-bottom: 1px;
+  border: 1px solid transparent;
+}
+.sidebar-item:hover {
+  color: var(--text);
+  background: var(--bg3);
+}
+.sidebar-item.active {
+  color: var(--accent);
+  background: var(--accent-dim);
+  border-color: var(--border-accent);
+  font-weight: 500;
+}
+.sidebar-item .si-icon {
+  font-size: 14px;
+  width: 18px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* ── MAIN ── */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  min-height: calc(100vh - 56px);
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 52px 48px 80px;
+  width: 100%;
+  flex: 1;
+}
+
+/* ── PAGE SECTIONS ── */
+.page { display: none; }
+.page.active { display: block; animation: fadeIn 0.2s ease; }
+@keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: translateY(0); } }
+
+/* ── TYPOGRAPHY ── */
+.page-eyebrow {
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 6px;
+}
+.page-eyebrow::before { content:''; display:block; width:20px; height:1px; background: var(--accent); }
+
+h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 38px;
+  line-height: 1.15;
+  color: #fff;
+  margin-bottom: 14px;
+  letter-spacing: -0.01em;
+}
+
+.page-desc {
+  font-size: 16px;
+  color: var(--text-dim);
+  margin-bottom: 36px;
+  line-height: 1.65;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+}
+
+h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+  margin: 36px 0 14px;
+  letter-spacing: -0.01em;
+}
+h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 24px 0 10px;
+}
+p { margin-bottom: 14px; color: var(--text-dim); }
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+code {
+  font-family: 'Geist Mono', monospace;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 13px;
+  color: var(--accent);
+}
+
+/* ── COMPONENTS ── */
+
+/* Card Grid */
+.card-grid { display: grid; gap: 14px; margin: 16px 0 28px; }
+.card-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.card-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: flex-start; gap: 12px;
+  text-decoration: none;
+}
+.card:hover {
+  border-color: var(--border-accent);
+  background: var(--bg3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.card-icon {
+  font-size: 18px;
+  width: 36px; height: 36px;
+  background: var(--accent-dim);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.card-body {}
+.card-title { font-weight: 600; font-size: 14px; color: var(--text); margin-bottom: 3px; }
+.card-desc { font-size: 13px; color: var(--text-muted); }
+
+/* Steps */
+.steps { margin: 16px 0 28px; display: flex; flex-direction: column; gap: 0; }
+.step {
+  display: flex; gap: 16px;
+  padding-bottom: 24px;
+  position: relative;
+}
+.step:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 15px; top: 32px; bottom: 0;
+  width: 1px;
+  background: var(--border);
+}
+.step-num {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--accent-dim);
+  border: 1px solid var(--border-accent);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Geist Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.step-content {}
+.step-title { font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.step-body { color: var(--text-dim); font-size: 14px; }
+
+/* Callouts */
+.callout {
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin: 18px 0;
+  display: flex; gap: 12px;
+  font-size: 14px;
+  border: 1px solid;
+}
+.callout-note {
+  background: rgba(59,130,246,0.08);
+  border-color: rgba(59,130,246,0.25);
+  color: #93c5fd;
+}
+.callout-tip {
+  background: rgba(34,197,94,0.08);
+  border-color: rgba(34,197,94,0.25);
+  color: #86efac;
+}
+.callout-warning {
+  background: rgba(249,115,22,0.08);
+  border-color: rgba(249,115,22,0.25);
+  color: #fdba74;
+}
+.callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.callout-body { line-height: 1.6; }
+.callout-body strong { color: #fff; }
+
+/* Accordion */
+.accordion-group { margin: 16px 0 28px; display: flex; flex-direction: column; gap: 6px; }
+.accordion {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg2);
+}
+.accordion-header {
+  padding: 14px 18px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between;
+  font-weight: 500; font-size: 14px;
+  color: var(--text);
+  transition: background 0.15s;
+  user-select: none;
+}
+.accordion-header:hover { background: var(--bg3); }
+.accordion-arrow { transition: transform 0.2s; font-size: 12px; color: var(--text-muted); }
+.accordion.open .accordion-arrow { transform: rotate(180deg); }
+.accordion-body {
+  display: none;
+  padding: 0 18px 14px;
+  font-size: 14px; color: var(--text-dim); line-height: 1.65;
+}
+.accordion.open .accordion-body { display: block; }
+
+/* Badge display */
+.badge-showcase {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  margin: 16px 0 24px;
+}
+.badge-item {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 14px 6px 10px;
+  font-size: 13px;
+  color: var(--text-dim);
+  transition: all 0.15s;
+}
+.badge-item:hover { border-color: var(--border-accent); color: var(--text); }
+.badge-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+
+/* Changelog entries */
+.changelog-entry {
+  display: flex; gap: 24px;
+  padding-bottom: 32px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.changelog-date {
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  padding-top: 3px;
+  min-width: 90px;
+}
+.changelog-tag {
+  display: inline-flex; align-items: center;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+.tag-new { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+.tag-fix { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+.tag-improve { background: rgba(249,115,22,0.15); color: #fb923c; border: 1px solid rgba(249,115,22,0.3); }
+.changelog-title { font-weight: 600; color: var(--text); font-size: 15px; margin-bottom: 6px; }
+.changelog-desc { font-size: 14px; color: var(--text-dim); }
+
+/* Pricing table */
+.pricing-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; margin: 20px 0 32px; }
+.pricing-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  position: relative;
+  transition: all 0.2s;
+}
+.pricing-card.featured {
+  border-color: var(--border-accent);
+  background: linear-gradient(135deg, rgba(249,115,22,0.06), var(--bg2));
+}
+.pricing-card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+.pricing-badge {
+  position: absolute; top: -1px; right: 20px;
+  background: var(--accent); color: #000;
+  font-size: 11px; font-weight: 700;
+  padding: 3px 10px; border-radius: 0 0 8px 8px;
+  letter-spacing: 0.05em;
+}
+.pricing-name { font-weight: 700; font-size: 16px; color: #fff; margin-bottom: 6px; }
+.pricing-price {
+  font-family: 'Geist Mono', monospace;
+  font-size: 32px; font-weight: 600;
+  color: var(--accent); margin-bottom: 4px;
+  line-height: 1;
+}
+.pricing-price span { font-size: 14px; color: var(--text-muted); }
+.pricing-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+.pricing-features { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.pricing-features li {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13.5px; color: var(--text-dim);
+}
+.pricing-features li::before { content: '✓'; color: var(--accent); font-weight: 700; }
+
+/* Table */
+table {
+  width: 100%; border-collapse: collapse;
+  margin: 16px 0 28px; font-size: 14px;
+}
+th {
+  text-align: left; padding: 10px 14px;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+}
+td {
+  padding: 12px 14px;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+}
+tr:hover td { background: var(--bg3); }
+
+/* Status badge in table */
+.status { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; padding: 2px 8px; border-radius: 4px; font-weight: 500; }
+.status-yes { background: rgba(34,197,94,0.12); color: #4ade80; }
+.status-no  { background: rgba(239,68,68,0.12); color: #f87171; }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 24px 48px;
+  margin-left: var(--sidebar-w);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.footer-copy { font-size: 12px; color: var(--text-muted); }
+.footer-links { display: flex; gap: 16px; }
+.footer-link { font-size: 12px; color: var(--text-muted); text-decoration: none; transition: color 0.15s; }
+.footer-link:hover { color: var(--accent); }
+
+/* Page nav */
+.page-nav {
+  display: flex; justify-content: space-between; gap: 12px;
+  margin-top: 48px; padding-top: 28px;
+  border-top: 1px solid var(--border);
+}
+.page-nav-btn {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 18px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex; align-items: center; gap: 8px;
+  text-decoration: none;
+  color: var(--text-dim);
+  font-size: 13px;
+  max-width: 48%;
+}
+.page-nav-btn:hover { border-color: var(--border-accent); color: var(--text); }
+.page-nav-btn.next { flex-direction: row-reverse; margin-left: auto; text-align: right; }
+.nav-label { font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 2px; }
+.nav-title { font-weight: 500; color: var(--text); font-size: 14px; }
+
+/* overlay for mobile */
+.sidebar-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 50;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 860px) {
+  :root { --sidebar-w: 260px; }
+  .content { padding: 36px 24px 60px; }
+  .card-grid.cols-2 { grid-template-columns: 1fr; }
+  h1 { font-size: 28px; }
+  footer { margin-left: 0; padding: 20px 24px; }
+  .pricing-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .sidebar {
+    transform: translateX(calc(-1 * var(--sidebar-w)));
+    z-index: 60;
+  }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-overlay.open { display: block; }
+  .main { margin-left: 0; }
+  .hamburger { display: flex; }
+  .topbar-logo { border-right: none; }
+  .topbar-search { display: none; }
+  .topbar-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<nav class="topbar">
+  <a class="topbar-logo" onclick="navigate('introduction')">
+    <div class="logo-icon">⚡</div>
+    <span class="logo-text">fake<span>crime</span></span>
+  </a>
+  <div class="topbar-search">
+    <span class="search-icon">🔍</span>
+    <input type="text" placeholder="Search documentation..." id="search-input" oninput="handleSearch(this.value)">
+  </div>
+  <div class="topbar-spacer"></div>
+  <div class="topbar-links">
+    <a href="https://fakecrime.bio" target="_blank" class="topbar-link">Home</a>
+  </div>
+  <a href="https://fakecrime.bio/login" target="_blank" class="topbar-btn">Dashboard</a>
+  <button class="hamburger" onclick="toggleSidebar()">☰</button>
+</nav>
+
+<div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">Overview</div>
+    <a class="sidebar-item active" onclick="navigate('introduction')" id="nav-introduction">
+      <span class="si-icon">👋</span> Introduction
+    </a>
+    <a class="sidebar-item" onclick="navigate('changelog')" id="nav-changelog">
+      <span class="si-icon">📰</span> Changelog
+    </a>
+    <a class="sidebar-item" onclick="navigate('faq')" id="nav-faq">
+      <span class="si-icon">❓</span> FAQ
+    </a>
+    <a class="sidebar-item" onclick="navigate('shop')" id="nav-shop">
+      <span class="si-icon">🛒</span> Shop
+    </a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">Customization</div>
+    <a class="sidebar-item" onclick="navigate('badges')" id="nav-badges">
+      <span class="si-icon">🏅</span> Badges
+    </a>
+    <a class="sidebar-item" onclick="navigate('links')" id="nav-links">
+      <span class="si-icon">🔗</span> Links
+    </a>
+    <a class="sidebar-item" onclick="navigate('showcases')" id="nav-showcases">
+      <span class="si-icon">🖼️</span> Showcases
+    </a>
+    <a class="sidebar-item" onclick="navigate('tags')" id="nav-tags">
+      <span class="si-icon">🏷️</span> Tags
+    </a>
+    <a class="sidebar-item" onclick="navigate('tracks')" id="nav-tracks">
+      <span class="si-icon">🎵</span> Tracks
+    </a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">Guides</div>
+    <a class="sidebar-item" onclick="navigate('markdown')" id="nav-markdown">
+      <span class="si-icon">✏️</span> Markdown
+    </a>
+    <a class="sidebar-item" onclick="navigate('premium')" id="nav-premium">
+      <span class="si-icon">⭐</span> Premium
+    </a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">Imagehost</div>
+    <a class="sidebar-item" onclick="navigate('configuration')" id="nav-configuration">
+      <span class="si-icon">⚙️</span> Configuration
+    </a>
+    <a class="sidebar-item" onclick="navigate('gallery')" id="nav-gallery">
+      <span class="si-icon">🖼️</span> Gallery
+    </a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">Events</div>
+    <a class="sidebar-item" onclick="navigate('information')" id="nav-information">
+      <span class="si-icon">ℹ️</span> Information
+    </a>
+    <a class="sidebar-item" onclick="navigate('rules')" id="nav-rules">
+      <span class="si-icon">📖</span> Rules
+    </a>
+    <a class="sidebar-item" onclick="navigate('participation')" id="nav-participation">
+      <span class="si-icon">➕</span> Participation
+    </a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">Troubleshooting</div>
+    <a class="sidebar-item" onclick="navigate('account')" id="nav-account">
+      <span class="si-icon">🪪</span> Account
+    </a>
+    <a class="sidebar-item" onclick="navigate('discord')" id="nav-discord">
+      <span class="si-icon">💬</span> Discord
+    </a>
+    <a class="sidebar-item" onclick="navigate('login')" id="nav-login">
+      <span class="si-icon">🔑</span> Login
+    </a>
+    <a class="sidebar-item" onclick="navigate('verification')" id="nav-verification">
+      <span class="si-icon">🛂</span> Verification
+    </a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">Account</div>
+    <a class="sidebar-item" onclick="navigate('account-deletion')" id="nav-account-deletion">
+      <span class="si-icon">🗑️</span> Account Deletion
+    </a>
+    <a class="sidebar-item" onclick="navigate('multi-accounting')" id="nav-multi-accounting">
+      <span class="si-icon">👥</span> Multi Accounting
+    </a>
+  </div>
+
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+<div class="content">
+
+<!-- ══════════════════════════════════════
+     PAGE: INTRODUCTION
+═══════════════════════════════════════ -->
+<div class="page active" id="page-introduction">
+  <div class="page-eyebrow">Overview</div>
+  <h1>Introduction</h1>
+  <p class="page-desc">Welcome to the official <strong>fakecrime.bio</strong> documentation. Here you'll find everything you need to set up your profile, customize your presence, and make the most of every feature.</p>
+
+  <h2>🚀 Get Started</h2>
+  <div class="card-grid cols-2">
+    <div class="card" onclick="navigate('changelog')">
+      <div class="card-icon">📰</div>
+      <div class="card-body">
+        <div class="card-title">Changelog</div>
+        <div class="card-desc">See what's new and what's changed across updates.</div>
+      </div>
+    </div>
+    <div class="card" onclick="navigate('faq')">
+      <div class="card-icon">❓</div>
+      <div class="card-body">
+        <div class="card-title">FAQ</div>
+        <div class="card-desc">Answers to the most commonly asked questions.</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>🎨 Guides</h2>
+  <div class="card-grid cols-2">
+    <div class="card" onclick="navigate('account-deletion')">
+      <div class="card-icon">🗑️</div>
+      <div class="card-body">
+        <div class="card-title">Account Deletion</div>
+        <div class="card-desc">How to permanently delete your account.</div>
+      </div>
+    </div>
+    <div class="card" onclick="navigate('multi-accounting')">
+      <div class="card-icon">👥</div>
+      <div class="card-body">
+        <div class="card-title">Multi Accounting</div>
+        <div class="card-desc">Rules and info around multiple accounts.</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>🛠️ Troubleshooting</h2>
+  <div class="card-grid cols-2">
+    <div class="card" onclick="navigate('account')">
+      <div class="card-icon">🪪</div>
+      <div class="card-body">
+        <div class="card-title">Account</div>
+        <div class="card-desc">Common account issues and how to fix them.</div>
+      </div>
+    </div>
+    <div class="card" onclick="navigate('discord')">
+      <div class="card-icon">💬</div>
+      <div class="card-body">
+        <div class="card-title">Discord</div>
+        <div class="card-desc">Troubleshoot your Discord connection.</div>
+      </div>
+    </div>
+    <div class="card" onclick="navigate('login')">
+      <div class="card-icon">🔑</div>
+      <div class="card-body">
+        <div class="card-title">Login</div>
+        <div class="card-desc">Can't log in? Start here.</div>
+      </div>
+    </div>
+    <div class="card" onclick="navigate('verification')">
+      <div class="card-icon">🛂</div>
+      <div class="card-body">
+        <div class="card-title">Verification</div>
+        <div class="card-desc">Issues with account verification.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-note">
+    <span class="callout-icon">💡</span>
+    <div class="callout-body"><strong>Need help?</strong> Join our Discord community for real-time support from the team and other users.</div>
+  </div>
+  <div class="callout callout-tip">
+    <span class="callout-icon">✅</span>
+    <div class="callout-body"><strong>Pro tip:</strong> Check out the Premium guide to unlock exclusive customization features for your profile.</div>
+  </div>
+
+  <div class="page-nav">
+    <span></span>
+    <div class="page-nav-btn next" onclick="navigate('changelog')">
+      <span>→</span>
+      <div><span class="nav-label">Next</span><span class="nav-title">Changelog</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: CHANGELOG
+═══════════════════════════════════════ -->
+<div class="page" id="page-changelog">
+  <div class="page-eyebrow">Overview</div>
+  <h1>Changelog</h1>
+  <p class="page-desc">Stay up to date with the latest features, fixes, and improvements shipped to fakecrime.bio.</p>
+
+  <div class="changelog-entry">
+    <div class="changelog-date">Jun 2025</div>
+    <div>
+      <span class="changelog-tag tag-new">New</span>
+      <div class="changelog-title">Imagehost Gallery</div>
+      <div class="changelog-desc">Manage and browse all your uploaded images from a single gallery view. Delete, share, and organize with ease.</div>
+    </div>
+  </div>
+
+  <div class="changelog-entry">
+    <div class="changelog-date">May 2025</div>
+    <div>
+      <span class="changelog-tag tag-improve">Improve</span>
+      <div class="changelog-title">Custom Badges Overhaul</div>
+      <div class="changelog-desc">Custom badges now support animated GIFs and higher resolution assets. The badge manager has been redesigned for faster access.</div>
+    </div>
+  </div>
+
+  <div class="changelog-entry">
+    <div class="changelog-date">Apr 2025</div>
+    <div>
+      <span class="changelog-tag tag-new">New</span>
+      <div class="changelog-title">Events System</div>
+      <div class="changelog-desc">Participate in community events, earn exclusive badges, and compete on the leaderboard.</div>
+    </div>
+  </div>
+
+  <div class="changelog-entry">
+    <div class="changelog-date">Mar 2025</div>
+    <div>
+      <span class="changelog-tag tag-fix">Fix</span>
+      <div class="changelog-title">Discord Verification Fix</div>
+      <div class="changelog-desc">Resolved an issue where Discord account linking would fail silently for some users. Verification is now instant and reliable.</div>
+    </div>
+  </div>
+
+  <div class="changelog-entry">
+    <div class="changelog-date">Feb 2025</div>
+    <div>
+      <span class="changelog-tag tag-new">New</span>
+      <div class="changelog-title">Tracks & Music Support</div>
+      <div class="changelog-desc">Add a music track to your profile. Visitors can listen directly from your page.</div>
+    </div>
+  </div>
+
+  <div class="changelog-entry">
+    <div class="changelog-date">Jan 2025</div>
+    <div>
+      <span class="changelog-tag tag-new">New</span>
+      <div class="changelog-title">Premium Launch</div>
+      <div class="changelog-desc">Premium tier is now live! Unlock exclusive customization, no ads, priority support, and more.</div>
+    </div>
+  </div>
+
+  <div class="page-nav">
+    <div class="page-nav-btn" onclick="navigate('introduction')">
+      <span>←</span>
+      <div><span class="nav-label">Previous</span><span class="nav-title">Introduction</span></div>
+    </div>
+    <div class="page-nav-btn next" onclick="navigate('faq')">
+      <span>→</span>
+      <div><span class="nav-label">Next</span><span class="nav-title">FAQ</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: FAQ
+═══════════════════════════════════════ -->
+<div class="page" id="page-faq">
+  <div class="page-eyebrow">Overview</div>
+  <h1>Frequently Asked Questions</h1>
+  <p class="page-desc">Got questions? We've got answers. Can't find what you're looking for? Join our <a href="https://discord.gg/fakecrime" target="_blank">Discord</a>.</p>
+
+  <div class="accordion-group">
+    <div class="accordion open">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        What is fakecrime.bio?
+        <span class="accordion-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        fakecrime.bio is a profile page platform where you can showcase your identity, links, badges, music tracks, and more — all from a single customizable page.
+      </div>
+    </div>
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        Is fakecrime.bio free to use?
+        <span class="accordion-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        Yes! fakecrime.bio is completely free. A <a onclick="navigate('premium')">Premium tier</a> is available for users who want access to exclusive features like animated backgrounds, custom domains, and priority support.
+      </div>
+    </div>
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        How do I verify my account?
+        <span class="accordion-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        Account verification is done through Discord. Head to your account settings, connect your Discord, and follow the verification steps. See the <a onclick="navigate('verification')">Verification guide</a> for details.
+      </div>
+    </div>
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        Can I have multiple accounts?
+        <span class="accordion-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        Multi-accounting is not permitted on fakecrime.bio. Each person is allowed one account. Violations may result in a permanent ban. See our <a onclick="navigate('multi-accounting')">Multi Accounting policy</a> for more information.
+      </div>
+    </div>
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        How do I add a custom badge?
+        <span class="accordion-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        Custom badges can be managed at <a href="https://fakecrime.bio/extras/badges" target="_blank">fakecrime.bio/extras/badges</a>. Premium users can upload custom images or animated GIFs as badges.
+      </div>
+    </div>
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        How do I delete my account?
+        <span class="accordion-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        Account deletion is permanent and cannot be undone. Visit the <a onclick="navigate('account-deletion')">Account Deletion</a> page for instructions on how to proceed.
+      </div>
+    </div>
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        How do I get support?
+        <span class="accordion-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        You can get support by joining our <a href="https://discord.gg/fakecrime" target="_blank">Discord server</a> and opening a support ticket. Premium users receive priority support.
+      </div>
+    </div>
+  </div>
+
+  <div class="page-nav">
+    <div class="page-nav-btn" onclick="navigate('changelog')">
+      <span>←</span>
+      <div><span class="nav-label">Previous</span><span class="nav-title">Changelog</span></div>
+    </div>
+    <div class="page-nav-btn next" onclick="navigate('shop')">
+      <span>→</span>
+      <div><span class="nav-label">Next</span><span class="nav-title">Shop</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: SHOP
+═══════════════════════════════════════ -->
+<div class="page" id="page-shop">
+  <div class="page-eyebrow">Overview</div>
+  <h1>Shop</h1>
+  <p class="page-desc">Browse available items, upgrades, and premium perks in the fakecrime.bio shop.</p>
+
+  <div class="pricing-grid">
+    <div class="pricing-card">
+      <div class="pricing-name">Free</div>
+      <div class="pricing-price">$0 <span>/ forever</span></div>
+      <div class="pricing-desc">Everything you need to get started.</div>
+      <ul class="pricing-features">
+        <li>Custom profile page</li>
+        <li>Up to 5 links</li>
+        <li>Standard badges</li>
+        <li>Basic image hosting</li>
+        <li>Discord verification</li>
+      </ul>
+    </div>
+    <div class="pricing-card featured">
+      <div class="pricing-badge">POPULAR</div>
+      <div class="pricing-name">Premium</div>
+      <div class="pricing-price">$5 <span>/ month</span></div>
+      <div class="pricing-desc">Unlock the full fakecrime experience.</div>
+      <ul class="pricing-features">
+        <li>Everything in Free</li>
+        <li>Unlimited links</li>
+        <li>Custom & animated badges</li>
+        <li>Music tracks on profile</li>
+        <li>Extended image hosting</li>
+        <li>Custom background video</li>
+        <li>Priority support</li>
+        <li>Early access to features</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>One-Time Items</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Description</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Verified Badge</td>
+        <td>Official verified checkmark on your profile</td>
+        <td><code>$9.99</code></td>
+      </tr>
+      <tr>
+        <td>Name Change</td>
+        <td>Change your username once</td>
+        <td><code>$2.99</code></td>
+      </tr>
+      <tr>
+        <td>Profile Boost</td>
+        <td>Get featured in the directory for 7 days</td>
+        <td><code>$4.99</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">⭐</span>
+    <div class="callout-body"><strong>Save more</strong> — subscribe to Premium annually and get 2 months free.</div>
+  </div>
+
+  <div class="page-nav">
+    <div class="page-nav-btn" onclick="navigate('faq')">
+      <span>←</span>
+      <div><span class="nav-label">Previous</span><span class="nav-title">FAQ</span></div>
+    </div>
+    <div class="page-nav-btn next" onclick="navigate('badges')">
+      <span>→</span>
+      <div><span class="nav-label">Next</span><span class="nav-title">Badges</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: BADGES
+═══════════════════════════════════════ -->
+<div class="page" id="page-badges">
+  <div class="page-eyebrow">Customization</div>
+  <h1>Badges</h1>
+  <p class="page-desc">Badges appear on your profile and represent your roles, achievements, and status within the fakecrime.bio community.</p>
+
+  <h2>Where can I manage my badges?</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">Open the Badges Page</div>
+        <div class="step-body">Navigate to <a href="https://fakecrime.bio/extras/badges" target="_blank">fakecrime.bio/extras/badges</a> to manage your badges.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">Add or Remove Badges</div>
+        <div class="step-body">Toggle badges on or off, drag to reorder them, and upload custom ones if you're a Premium user.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">Save Changes</div>
+        <div class="step-body">Your changes are saved automatically and reflected on your profile instantly.</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Custom Badges</h2>
+  <p>Premium users can upload custom badge images (PNG, GIF) up to 256×256px. Animated GIFs are supported and look great on your profile.</p>
+  <div class="callout callout-tip">
+    <span class="callout-icon">✨</span>
+    <div class="callout-body">Use <strong>transparent PNG</strong> backgrounds for the cleanest badge look.</div>
+  </div>
+
+  <h2>Default Badges</h2>
+  <div class="badge-showcase">
+    <div class="badge-item"><div class="badge-dot" style="background:#f59e0b"></div> Admin</div>
+    <div class="badge-item"><div class="badge-dot" style="background:#8b5cf6"></div> Staff</div>
+    <div class="badge-item"><div class="badge-dot" style="background:#F97316"></div> Owner</div>
+    <div class="badge-item"><div class="badge-dot" style="background:#10b981"></div> Verified</div>
+    <div class="badge-item"><div class="badge-dot" style="background:#3b82f6"></div> Developer</div>
+    <div class="badge-item"><div class="badge-dot" style="background:#ec4899"></div> Partner</div>
+    <div class="badge-item"><div class="badge-dot" style="background:#ef4444"></div> Bug Bounty</div>
+    <div class="badge-item"><div class="badge-dot" style="background:#6366f1"></div> Rule Maker</div>
+    <div class="badge-item"><div class="badge-dot" style="background:#64748b"></div> Early Adopter</div>
+  </div>
+
+  <h3>Admin Badge</h3>
+  <p>The Admin badge is reserved for fakecrime.bio staff and cannot be obtained through the standard badge system.</p>
+
+  <div class="page-nav">
+    <div class="page-nav-btn" onclick="navigate('shop')">
+      <span>←</span>
+      <div><span class="nav-label">Previous</span><span class="nav-title">Shop</span></div>
+    </div>
+    <div class="page-nav-btn next" onclick="navigate('links')">
+      <span>→</span>
+      <div><span class="nav-label">Next</span><span class="nav-title">Links</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: LINKS
+═══════════════════════════════════════ -->
+<div class="page" id="page-links">
+  <div class="page-eyebrow">Customization</div>
+  <h1>Links</h1>
+  <p class="page-desc">Add social links, websites, and any URLs to your profile so visitors can find you across the web.</p>
+
+  <h2>Where can I manage my links?</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">Open the Links Page</div>
+        <div class="step-body">Go to <a href="https://fakecrime.bio/extras/links" target="_blank">fakecrime.bio/extras/links</a> to get started.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">Add a New Link</div>
+        <div class="step-body">Click <strong>Add Link</strong>, enter the URL and a display label. Icons are automatically detected for common platforms.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">Reorder and Publish</div>
+        <div class="step-body">Drag links to reorder them. Free accounts can have up to 5 links; Premium accounts have unlimited links.</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Supported Platforms</h2>
+  <table>
+    <thead><tr><th>Platform</th><th>Auto-icon</th><th>Free</th><th>Premium</th></tr></thead>
+    <tbody>
+      <tr><td>Discord</td><td>✓</td><td><span class="status status-yes">✓ Yes</span></td><td><span class="status status-yes">✓ Yes</span></td></tr>
+      <tr><td>GitHub</td><td>✓</td><td><span class="status status-yes">✓ Yes</span></td><td><span class="status status-yes">✓ Yes</span></td></tr>
+      <tr><td>YouTube</td><td>✓</td><td><span class="status status-yes">✓ Yes</span></td><td><span class="status status-yes">✓ Yes</span></td></tr>
+      <tr><td>TikTok</td><td>✓</td><td><span class="status status-yes">✓ Yes</span></td><td><span class="status status-yes">✓ Yes</span></td></tr>
+      <tr><td>Custom URL</td><td>—</td><td><span class="status status-no">✗ No</span></td><td><span class="status status-yes">✓ Yes</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="page-nav">
+    <div class="page-nav-btn" onclick="navigate('badges')">
+      <span>←</span>
+      <div><span class="nav-label">Previous</span><span class="nav-title">Badges</span></div>
+    </div>
+    <div class="page-nav-btn next" onclick="navigate('showcases')">
+      <span>→</span>
+      <div><span class="nav-label">Next</span><span class="nav-title">Showcases</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: SHOWCASES
+═══════════════════════════════════════ -->
+<div class="page" id="page-showcases">
+  <div class="page-eyebrow">Customization</div>
+  <h1>Showcases</h1>
+  <p class="page-desc">Showcases let you highlight projects, artworks, games, or any content you want visitors to see front and center on your profile.</p>
+
+  <h2>Where can I manage my showcases?</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">Open the Showcases Page</div>
+        <div class="step-body">Visit <a href="https://fakecrime.bio/extras/showcases" target="_blank">fakecrime.bio/extras/showcases</a> to get started.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">Create a Showcase</div>
+        <div class="step-body">Add a title, description, image, and optional link for each showcase item.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">Display on Profile</div>
+        <div class="step-body">Enable the showcases section in your profile layout settings to make them visible to visitors.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-note">
+    <span class="callout-icon">📌</span>
+    <div class="callout-body">Free accounts can add up to <strong>3 showcases</strong>. Premium users have unlimited showcases.</div>
+  </div>
+
+  <div class="page-nav">
+    <div class="page-nav-btn" onclick="navigate('links')">
+      <span>←</span>
+      <div><span class="nav-label">Previous</span><span class="nav-title">Links</span></div>
+    </div>
+    <div class="page-nav-btn next" onclick="navigate('tags')">
+      <span>→</span>
+      <div><span class="nav-label">Next</span><span class="nav-title">Tags</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: TAGS
+═══════════════════════════════════════ -->
+<div class="page" id="page-tags">
+  <div class="page-eyebrow">Customization</div>
+  <h1>Tags</h1>
+  <p class="page-desc">Tags are short labels that appear on your profile to describe who you are — like <code>developer</code>, <code>artist</code>, or <code>gamer</code>.</p>
+
+  <h2>Where can I manage my tags?</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">Open the Tags Page</div>
+        <div class="step-body">Head to <a href="https://fakecrime.bio/extras/tags" target="_blank">fakecrime.bio/extras/tags</a> to get started.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">Add Tags</div>
+        <div class="step-body">Type a tag name and press Enter. You can add up to 5 tags on a free account, unlimited on Premium.</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Tag Guidelines</h2>
+  <p>Tags must follow community guidelines. Offensive, misleading, or impersonating tags will be removed. Keep them short — max 20 characters per tag.</p>
+
+  <div class="callout callout-warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-body">Misuse of tags (e.g. impersonating staff) may result in account suspension.</div>
+  </div>
+
+  <div class="page-nav">
+    <div class="page-nav-btn" onclick="navigate('showcases')">
+      <span>←</span>
+      <div><span class="nav-label">Previous</span><span class="nav-title">Showcases</span></div>
+    </div>
+    <div class="page-nav-btn next" onclick="navigate('tracks')">
+      <span>→</span>
+      <div><span class="nav-label">Next</span><span class="nav-title">Tracks</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: TRACKS
+═══════════════════════════════════════ -->
+<div class="page" id="page-tracks">
+  <div class="page-eyebrow">Customization</div>
+  <h1>Tracks</h1>
+  <p class="page-desc">Add a music track to your profile so visitors get the vibe the moment they land on your page. Powered by direct audio upload or streaming links.</p>
+
+  <h2>Where can I manage my tracks?</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">Open the Tracks Page</div>
+        <div class="step-body">Go to <a href="https://fakecrime.bio/extras/tracks" target="_blank">fakecrime.bio/extras/tracks</a> to get started.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">Upload or Link a Track</div>
+        <div class="step-body">Upload an MP3 (max 10MB) or paste a SoundCloud / YouTube link. The audio player will appear on your profile automatically.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">Set Autoplay</div>
+        <div class="step-body">Choose whether the track autoplays when someone visits your profile (Premium only) or starts on click.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-note">
+    <span class="callout-icon">🎵</span>
+    <div class="callout-body"><strong>Tracks are a Premium feature.</strong> Free accounts can preview the feature but cannot publish a track to their profile.</div>
+  </div>
+
+  <div class="page-nav">
+    <div class="page-nav-btn" onclick="navigate('tags')">
+      <span>←</span>
+      <div><span class="nav-label">Previous</span><span class="nav-title">Tags</span></div>
+    </div>
+    <div class="page-nav-btn next" onclick="navigate('markdown')">
+      <span>→</span>
+      <div><span class="nav-label">Next</span><span class="nav-title">Markdown</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: MARKDOWN
+═══════════════════════════════════════ -->
+<div class="page" id="page-markdown">
+  <div class="page-eyebrow">Guides</div>
+  <h1>Markdown</h1>
+  <p class="page-desc">fakecrime.bio supports Markdown in your bio and showcase descriptions so you can format your content exactly how you want it.</p>
+
+  <h2>Supported Syntax</h2>
+  <table>
+    <thead><tr><th>Element</th><th>Syntax</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td>Bold</td><td><code>**bold**</code></td><td><strong>bold</strong></td></tr>
+      <tr><td>Italic</td><td><code>*italic*</code></td><td><em>italic</em></td></tr>
+      <tr><td>Strikethrough</td><td><code>~~text~~</code></td><td><s>text</s></td></tr>
+      <tr><td>Inline code</td><td><code>`code`</code></td><td><code>code</code></td></tr>
+      <tr><td>Link</td><td><code>[label](url)</code></td><td><a href="#">label</a></td></tr>
+      <tr><td>Heading</td><td><code>## Heading</code></td><td>Section header</td></tr>
+      <tr><td>List</td><td><code>- item</code></td><td>Bullet list</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Examples</h2>
+  <div class="callout callout-note">
+    <span class="callout-icon">📝</span>
+    <div class="callout-body">
+      Input: <code>I'm a **developer** who loves *open source*.</code><br><br>
+      Output: I'm a <strong>developer</strong> who loves <em>open source</em>.
+    </div>
+  </div>
+
+  <div class="callout callout-warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-body">Raw HTML is <strong>not supported</strong> for security reasons. Only standard Markdown elements are rendered.</div>
+  </div>
+
+  <div class="page-nav">
+    <div class="page-nav-btn" onclick="navigate('tracks')">
+      <span>←</span>
+      <div><span class="nav-label">Previous</span><span class="nav-title">Tracks</span></div>
+    </div>
+    <div class="page-nav-btn next" onclick="navigate('premium')">
+      <span>→</span>
+      <div><span class="nav-label">Next</span><span class="nav-title">Premium</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: PREMIUM
+═══════════════════════════════════════ -->
+<div class="page" id="page-premium">
+  <div class="page-eyebrow">Guides</div>
+  <h1>Premium</h1>
+  <p class="page-desc">Unlock the full fakecrime.bio experience with Premium — advanced customization, exclusive features, and priority support.</p>
+
+  <h2>What's included</h2>
+  <div class="card-grid cols-2">
+    <div class="card">
+      <div class="card-icon">🎵</div>
+      <div class="card-body"><div class="card-title">Music Tracks</div><div class="card-desc">Add a track that plays on your profile.</div></div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏅</div>
+      <div class="card-body"><div class="card-title">Custom Badges</div><div class="card-desc">Upload animated GIF badges.</div></div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔗</div>
+      <div class="card-body"><div class="card-title">Unlimited Links</div><div class="card-desc">No cap on the number of links.</div></div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🖼️</div>
+      <div class="card-body"><div class="card-title">Extended Imagehost</div><div class="card-desc">More storage for uploaded images.</div></div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎨</div>
+      <div class="card-body"><div class="card-title">Custom Background</div><div class="card-desc">Video or animated backgrounds on your page.</div></div>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <div class="card-body"><div class="card-title">Priority Support</div><div class="card-desc">Skip the queue with dedicated support.</div></div>
+    </div>
+  </div>
+
+  <h2>How to subscribe</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">Go to the Shop</div>
+        <div class="step-body">Visit <a href="https://fakecrime.bio/login" target="_blank">fakecrime.bio</a> and navigate to the Shop section.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">Select Premium</div>
+        <div class="step-body">Choose Monthly ($5/mo) or Annual (save 2 months) billing.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">Complete Payment</div>
+        <div class="step-body">Payments are processed securely. Premium is activated instantly after purchase.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-nav">
+    <div class="page-nav-btn" onclick="navigate('markdown')">
+      <span>←</span>
+      <div><span class="nav-label">Previous</span><span class="nav-title">Markdown</span></div>
+    </div>
+    <div class="page-nav-btn next" onclick="navigate('configuration')">
+      <span>→</span>
+      <div><span class="nav-label">Next</span><span class="nav-title">Configuration</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: IMAGEHOST CONFIG
+═══════════════════════════════════════ -->
+<div class="page" id="page-configuration">
+  <div class="page-eyebrow">Imagehost</div>
+  <h1>Configuration</h1>
+  <p class="page-desc">Set up fakecrime.bio as your personal image host — perfect for ShareX, Flameshot, or any uploader tool.</p>
+
+  <h2>Getting your API key</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">Open Account Settings</div>
+        <div class="step-body">Log in and navigate to <strong>Settings → Imagehost</strong> on fakecrime.bio.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">Generate an API Key</div>
+        <div class="step-body">Click <strong>Generate Key</strong>. Copy and store it safely — it won't be shown again.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">Configure your Uploader</div>
+        <div class="step-body">Use the endpoint <code>https://fakecrime.bio/api/upload</code> with your API key in the <code>Authorization</code> header.</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>ShareX Config</h2>
+  <p>Download the pre-built ShareX config from your account settings page and import it directly — no manual setup required.</p>
+
+  <div class="callout callout-warning">
+    <span class="callout-icon">🔒</span>
+    <div class="callout-body">Never share your API key publicly. If it's compromised, regenerate it immediately from your settings.</div>
+  </div>
+
+  <h2>Limits</h2>
+  <table>
+    <thead><tr><th>Plan</th><th>Max File Size</th><th>Total Storage</th><th>Formats</th></tr></thead>
+    <tbody>
+      <tr><td>Free</td><td><code>5 MB</code></td><td><code>500 MB</code></td><td>PNG, JPG, GIF, WEBP</td></tr>
+      <tr><td>Premium</td><td><code>25 MB</code></td><td><code>10 GB</code></td><td>All + MP4, SVG</td></tr>
+    </tbody>
+  </table>
+
+  <div class="page-nav">
+    <div class="page-nav-btn" onclick="navigate('premium')">
+      <span>←</span>
+      <div><span class="nav-label">Previous</span><span class="nav-title">Premium</span></div>
+    </div>
+    <div class="page-nav-btn next" onclick="navigate('gallery')">
+      <span>→</span>
+      <div><span class="nav-label">Next</span><span class="nav-title">Gallery</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: GALLERY
+═══════════════════════════════════════ -->
+<div class="page" id="page-gallery">
+  <div class="page-eyebrow">Imagehost</div>
+  <h1>Gallery</h1>
+  <p class="page-desc">The gallery gives you a bird's-eye view of every image you've uploaded — browse, copy links, and delete files you no longer need.</p>
+
+  <h2>Accessing the Gallery</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">Open your Dashboard</div>
+        <div class="step-body">Log in and go to <strong>Dashboard → Imagehost → Gallery</strong>.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">Browse & Search</div>
+        <div class="step-body">Filter by date or file type. Click any image to see its direct URL, markdown embed, and BBCode.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">Delete Files</div>
+        <div class="step-body">Select one or multiple files and click <strong>Delete</strong>. Deletion is permanent and cannot be undone.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-note">
+    <span class="callout-icon">🖼️</span>
+    <div class="callout-body">All uploaded images get a permanent shareable URL at <code>i.fakecrime.bio/&lt;filename&gt;</code>.</div>
+  </div>
+
+  <div class="page-nav">
+    <div class="page-nav-btn" onclick="navigate('configuration')">
+      <span>←</span>
+      <div><span class="nav-label">Previous</span><span class="nav-title">Configuration</span></div>
+    </div>
+    <div class="page-nav-btn next" onclick="navigate('information')">
+      <span>→</span>
+      <div><span class="nav-label">Next</span><span class="nav-title">Events Information</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: EVENTS INFORMATION
+═══════════════════════════════════════ -->
+<div class="page" id="page-information">
+  <div class="page-eyebrow">Events</div>
+  <h1>Event Information</h1>
+  <p class="page-desc">fakecrime.bio regularly hosts community events where you can compete, collaborate, and earn exclusive rewards.</p>
+
+  <h2>What are Events?</h2>
+  <p>Events are time-limited community challenges organized by the fakecrime.bio team. They range from art contests and profile design competitions to gaming tournaments and referral challenges.</p>
+
+  <h2>Event Rewards</h2>
+  <div class="card-grid cols-2">
+    <div class="card">
+      <div class="card-icon">🏅</div>
+      <div class="card-body"><div class="card-title">Exclusive Badges</div><div class="card-desc">Event-only badges that can't be obtained any other way.</div></div>
+    </div>
+    <div class="card">
+      <div class="card-icon">⭐</div>
+      <div class="card-body"><div class="card-title">Premium Time</div><div class="card-desc">Win free Premium months by placing in top positions.</div></div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏆</div>
+      <div class="card-body"><div class="card-title">Leaderboard Recognition</div><div class="card-desc">Top players are featured on the site leaderboard.</div></div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎁</div>
+      <div class="card-body"><div class="card-title">Special Roles</div><div class="card-desc">Discord roles and profile flair for event winners.</div></div>
+    </div>
+  </div>
+
+  <div class="callout callout-note">
+    <span class="callout-icon">📣</span>
+    <div class="callout-body">Follow announcements in our <a href="https://discord.gg/fakecrime" target="_blank">Discord</a> to be notified when new events start.</div>
+  </div>
+
+  <div class="page-nav">
+    <div class="page-nav-btn" onclick="navigate('gallery')">
+      <span>←</span>
+      <div><span class="nav-label">Previous</span><span class="nav-title">Gallery</span></div>
+    </div>
+    <div class="page-nav-btn next" onclick="navigate('rules')">
+      <span>→</span>
+      <div><span class="nav-label">Next</span><span class="nav-title">Rules</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: EVENTS RULES
+═══════════════════════════════════════ -->
+<div class="page" id="page-rules">
+  <div class="page-eyebrow">Events</div>
+  <h1>Event Rules</h1>
+  <p class="page-desc">All participants must follow these rules to ensure fair and enjoyable events for everyone.</p>
+
+  <h2>General Rules</h2>
+  <p>The following rules apply to all fakecrime.bio events unless otherwise specified in the individual event announcement:</p>
+
+  <div class="callout callout-warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-body"><strong>Violations may result in disqualification</strong> from the current event and potentially from future events.</div>
+  </div>
+
+  <h3>1. Fair Play</h3>
+  <p>Any form of cheating, exploiting, or manipulating event systems is strictly prohibited. This includes using bots, alts, or coordinating to game leaderboard rankings.</p>
+
+  <h3>2. One Account Per Person</h3>
+  <p>Each participant may only compete with one account. Using multiple accounts to gain an advantage will result in a permanent ban from all events.</p>
+
+  <h3>3. Respectful Conduct</h3>
+  <p>Harassment, hate speech, or toxic behavior toward other participants will not be tolerated and will result in immediate disqualification.</p>
+
+  <h3>4. Submission Guidelines</h3>
+  <p>All submissions must be your own original work. Plagiarism or submitting AI-generated content as your own (in art events) is not permitted.</p>
+
+  <h3>5. Staff Decisions are Final</h3>
+  <p>The fakecrime.bio team reserves the right to modify, cancel, or extend events, and their rulings on disputes are final.</p>
+
+  <div class="page-nav">
+    <div class="page-nav-btn" onclick="navigate('information')">
+      <span>←</span>
+      <div><span class="nav-label">Previous</span><span class="nav-title">Information</span></div>
+    </div>
+    <div class="page-nav-btn next" onclick="navigate('participation')">
+      <span>→</span>
+      <div><span class="nav-label">Next</span><span class="nav-title">Participation</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: PARTICIPATION
+═══════════════════════════════════════ -->
+<div class="page" id="page-participation">
+  <div class="page-eyebrow">Events</div>
+  <h1>Participation</h1>
+  <p class="page-desc">Learn how to join active events and submit your entries for a shot at exclusive rewards.</p>
+
+  <h2>How to participate</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">Check for Active Events</div>
+        <div class="step-body">Visit the Events page on fakecrime.bio or check the <strong>#events</strong> channel in our Discord for currently active events.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">Read the Event Rules</div>
+        <div class="step-body">Each event has specific requirements. Make sure you understand the submission format, deadline, and judging criteria before entering.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">Submit Your Entry</div>
+        <div class="step-body">Use the in-site submission form or follow Discord instructions. Late submissions will not be accepted.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">Wait for Results</div>
+        <div class="step-body">Results are announced in Discord and on the site. Winners are contacted directly for reward distribution.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">🏆</span>
+    <div class="callout-body">You must have a <strong>verified account</strong> to participate in most events. Make sure your Discord is linked!</div>
+  </div>
+
+  <div class="page-nav">
+    <div class="page-nav-btn" onclick="navigate('rules')">
+      <span>←</span>
+      <div><span class="nav-label">Previous</span><span class="nav-title">Rules</span></div>
+    </div>
+    <div class="page-nav-btn next" onclick="navigate('account')">
+      <span>→</span>
+      <div><span class="nav-label">Next</span><span class="nav-title">Account Troubleshooting</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: TROUBLESHOOTING ACCOUNT
+═══════════════════════════════════════ -->
+<div class="page" id="page-account">
+  <div class="page-eyebrow">Troubleshooting</div>
+  <h1>Account</h1>
+  <p class="page-desc">Common account issues and how to resolve them quickly.</p>
+
+  <div class="accordion-group">
+    <div class="accordion open">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        I can't access my account
+        <span class="accordion-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        Try resetting your password via the login page. If you signed up with Discord, make sure your Discord account is still active and try re-linking it.
+      </div>
+    </div>
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        My profile page is not showing up
+        <span class="accordion-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        Profile pages may be temporarily unavailable if your account is under review. Check your email for any notices from the team, or contact support on Discord.
+      </div>
+    </div>
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        I was banned — what do I do?
+        <span class="accordion-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        If you believe you were banned in error, open a support ticket in our Discord server with your username and a brief explanation. Do not create new accounts while banned.
+      </div>
+    </div>
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        I want to change my username
+        <span class="accordion-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        Username changes are available as a one-time purchase from the <a onclick="navigate('shop')">Shop</a>. Free username changes are not available.
+      </div>
+    </div>
+  </div>
+
+  <div class="page-nav">
+    <div class="page-nav-btn" onclick="navigate('participation')">
+      <span>←</span>
+      <div><span class="nav-label">Previous</span><span class="nav-title">Participation</span></div>
+    </div>
+    <div class="page-nav-btn next" onclick="navigate('discord')">
+      <span>→</span>
+      <div><span class="nav-label">Next</span><span class="nav-title">Discord</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: TROUBLESHOOTING DISCORD
+═══════════════════════════════════════ -->
+<div class="page" id="page-discord">
+  <div class="page-eyebrow">Troubleshooting</div>
+  <h1>Discord</h1>
+  <p class="page-desc">Having trouble connecting your Discord account? Here's how to fix the most common issues.</p>
+
+  <div class="accordion-group">
+    <div class="accordion open">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        Discord linking fails or shows an error
+        <span class="accordion-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        Make sure you're logged into the correct Discord account in your browser. Try logging out of Discord, logging back in, then re-attempting the link from your fakecrime.bio settings.
+      </div>
+    </div>
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        My Discord is linked but I didn't get the server role
+        <span class="accordion-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        Roles can take up to 5 minutes to sync. If it's been longer, try unlinking and re-linking your Discord, then rejoin the server if needed.
+      </div>
+    </div>
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        I changed my Discord account
+        <span class="accordion-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        Go to Settings → Connections, unlink your old Discord, and link the new one. Note that verification resets when you unlink.
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-note">
+    <span class="callout-icon">💬</span>
+    <div class="callout-body">Still stuck? Open a ticket in <a href="https://discord.gg/fakecrime" target="_blank">our Discord server</a> and a staff member will help you out.</div>
+  </div>
+
+  <div class="page-nav">
+    <div class="page-nav-btn" onclick="navigate('account')">
+      <span>←</span>
+      <div><span class="nav-label">Previous</span><span class="nav-title">Account</span></div>
+    </div>
+    <div class="page-nav-btn next" onclick="navigate('login')">
+      <span>→</span>
+      <div><span class="nav-label">Next</span><span class="nav-title">Login</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: TROUBLESHOOTING LOGIN
+═══════════════════════════════════════ -->
+<div class="page" id="page-login">
+  <div class="page-eyebrow">Troubleshooting</div>
+  <h1>Login</h1>
+  <p class="page-desc">Can't log in to fakecrime.bio? Work through these steps to get back into your account.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">Check your credentials</div>
+        <div class="step-body">Make sure you're using the correct email and password. Passwords are case-sensitive.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">Reset your password</div>
+        <div class="step-body">Click <strong>Forgot Password</strong> on the login page and follow the email instructions. Check your spam folder if the email doesn't arrive.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">Try Discord login</div>
+        <div class="step-body">If you originally signed up with Discord, use the <strong>Login with Discord</strong> button instead of email/password.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">Clear cookies and cache</div>
+        <div class="step-body">Old session data can sometimes cause login loops. Clear your browser's cookies for fakecrime.bio and try again.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <div class="step-title">Contact support</div>
+        <div class="step-body">If none of the above works, open a support ticket in Discord with your username and email address.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-nav">
+    <div class="page-nav-btn" onclick="navigate('discord')">
+      <span>←</span>
+      <div><span class="nav-label">Previous</span><span class="nav-title">Discord</span></div>
+    </div>
+    <div class="page-nav-btn next" onclick="navigate('verification')">
+      <span>→</span>
+      <div><span class="nav-label">Next</span><span class="nav-title">Verification</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: VERIFICATION
+═══════════════════════════════════════ -->
+<div class="page" id="page-verification">
+  <div class="page-eyebrow">Troubleshooting</div>
+  <h1>Verification</h1>
+  <p class="page-desc">Account verification confirms your identity through Discord and unlocks event participation and certain features.</p>
+
+  <h2>How Verification Works</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">Link your Discord</div>
+        <div class="step-body">Go to <strong>Settings → Connections</strong> and link your Discord account.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">Join the Discord Server</div>
+        <div class="step-body">You must be a member of the <a href="https://discord.gg/fakecrime" target="_blank">fakecrime Discord server</a> to complete verification.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">Click Verify</div>
+        <div class="step-body">Back on your settings page, click <strong>Verify Account</strong>. The status updates instantly.</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Verification Issues</h2>
+  <div class="accordion-group">
+    <div class="accordion open">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        Verification says "failed" or is stuck pending
+        <span class="accordion-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        Make sure you're in the Discord server and your account isn't restricted. Try unlinking and re-linking Discord, then verify again.
+      </div>
+    </div>
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        I lost my verification badge
+        <span class="accordion-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        This usually happens if you left the Discord server or unlinked your account. Rejoin the server, re-link your Discord, and re-verify.
+      </div>
+    </div>
+  </div>
+
+  <div class="page-nav">
+    <div class="page-nav-btn" onclick="navigate('login')">
+      <span>←</span>
+      <div><span class="nav-label">Previous</span><span class="nav-title">Login</span></div>
+    </div>
+    <div class="page-nav-btn next" onclick="navigate('account-deletion')">
+      <span>→</span>
+      <div><span class="nav-label">Next</span><span class="nav-title">Account Deletion</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: ACCOUNT DELETION
+═══════════════════════════════════════ -->
+<div class="page" id="page-account-deletion">
+  <div class="page-eyebrow">Account</div>
+  <h1>Account Deletion</h1>
+  <p class="page-desc">Account deletion is permanent. All your data, profile, links, images, and badges will be removed and cannot be recovered.</p>
+
+  <div class="callout callout-warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-body"><strong>This action is irreversible.</strong> Before proceeding, consider exporting your data or simply deactivating your profile instead.</div>
+  </div>
+
+  <h2>How to delete your account</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">Go to Account Settings</div>
+        <div class="step-body">Log in and navigate to <strong>Settings → Account → Danger Zone</strong>.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">Click "Delete Account"</div>
+        <div class="step-body">You'll be asked to confirm by typing your username. This is to prevent accidental deletions.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">Confirm Deletion</div>
+        <div class="step-body">After confirmation, your account is scheduled for deletion within 24 hours. You will receive a final email confirmation.</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>What gets deleted</h2>
+  <table>
+    <thead><tr><th>Data</th><th>Deleted</th></tr></thead>
+    <tbody>
+      <tr><td>Profile page & settings</td><td><span class="status status-yes">✓ Yes</span></td></tr>
+      <tr><td>Uploaded images</td><td><span class="status status-yes">✓ Yes</span></td></tr>
+      <tr><td>Badges & customizations</td><td><span class="status status-yes">✓ Yes</span></td></tr>
+      <tr><td>Username reservation</td><td><span class="status status-yes">✓ Yes</span></td></tr>
+      <tr><td>Purchase history / receipts</td><td><span class="status status-no">✗ Kept (legal)</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="page-nav">
+    <div class="page-nav-btn" onclick="navigate('verification')">
+      <span>←</span>
+      <div><span class="nav-label">Previous</span><span class="nav-title">Verification</span></div>
+    </div>
+    <div class="page-nav-btn next" onclick="navigate('multi-accounting')">
+      <span>→</span>
+      <div><span class="nav-label">Next</span><span class="nav-title">Multi Accounting</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: MULTI ACCOUNTING
+═══════════════════════════════════════ -->
+<div class="page" id="page-multi-accounting">
+  <div class="page-eyebrow">Account</div>
+  <h1>Multi Accounting</h1>
+  <p class="page-desc">Each person is permitted one account on fakecrime.bio. Multi-accounting undermines the fairness of the platform and will not be tolerated.</p>
+
+  <div class="callout callout-warning">
+    <span class="callout-icon">🚫</span>
+    <div class="callout-body"><strong>Multi-accounting is strictly prohibited</strong> and may result in a permanent ban of all associated accounts.</div>
+  </div>
+
+  <h2>What counts as multi-accounting?</h2>
+  <p>Multi-accounting includes but is not limited to:</p>
+  <ul style="list-style:none; display:flex; flex-direction:column; gap:8px; margin: 0 0 20px 0;">
+    <li style="display:flex;gap:10px;color:var(--text-dim);font-size:14px;"><span style="color:var(--accent)">→</span> Creating a new account after being banned</li>
+    <li style="display:flex;gap:10px;color:var(--text-dim);font-size:14px;"><span style="color:var(--accent)">→</span> Using multiple accounts to participate in the same event</li>
+    <li style="display:flex;gap:10px;color:var(--text-dim);font-size:14px;"><span style="color:var(--accent)">→</span> Sharing accounts between different people</li>
+    <li style="display:flex;gap:10px;color:var(--text-dim);font-size:14px;"><span style="color:var(--accent)">→</span> Creating an account for a bot or automated profile</li>
+  </ul>
+
+  <h2>Consequences</h2>
+  <table>
+    <thead><tr><th>Violation</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td>First offense (minor)</td><td>Warning + secondary account deleted</td></tr>
+      <tr><td>Evading a ban</td><td>Permanent ban on all accounts</td></tr>
+      <tr><td>Event manipulation</td><td>Disqualification + ban</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Exceptions</h2>
+  <p>If you have a legitimate reason to need account help (e.g. you lost access to your old account), contact support <strong>before</strong> creating a new account. Staff can assist with account recovery without requiring you to create a second account.</p>
+
+  <div class="page-nav">
+    <div class="page-nav-btn" onclick="navigate('account-deletion')">
+      <span>←</span>
+      <div><span class="nav-label">Previous</span><span class="nav-title">Account Deletion</span></div>
+    </div>
+    <span></span>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<footer>
+  <span class="footer-copy">© 2025 fakecrime.bio — All rights reserved</span>
+  <div class="footer-links">
+    <a href="https://discord.gg/fakecrime" target="_blank" class="footer-link">Discord</a>
+    <a href="https://github.com/fakecrime" target="_blank" class="footer-link">GitHub</a>
+    <a href="https://fakecrime.bio" target="_blank" class="footer-link">Home</a>
+  </div>
+</footer>
+
+</div><!-- /main -->
+</div><!-- /layout -->
+
+<script>
+// ── NAVIGATION ──
+const pageOrder = [
+  'introduction','changelog','faq','shop',
+  'badges','links','showcases','tags','tracks',
+  'markdown','premium',
+  'configuration','gallery',
+  'information','rules','participation',
+  'account','discord','login','verification',
+  'account-deletion','multi-accounting'
+];
+
+function navigate(id) {
+  // hide all pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+
+  // show target
+  const page = document.getElementById('page-' + id);
+  const nav  = document.getElementById('nav-' + id);
+  if (page) page.classList.add('active');
+  if (nav)  nav.classList.add('active');
+
+  // scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  closeSidebar();
+
+  // update URL hash
+  history.replaceState(null, '', '#' + id);
+}
+
+// ── ACCORDION ──
+function toggleAccordion(header) {
+  const acc = header.parentElement;
+  const isOpen = acc.classList.contains('open');
+  // close all in group
+  const group = acc.parentElement;
+  group.querySelectorAll('.accordion').forEach(a => a.classList.remove('open'));
+  if (!isOpen) acc.classList.add('open');
+}
+
+// ── SIDEBAR MOBILE ──
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+// ── SEARCH ──
+function handleSearch(q) {
+  q = q.toLowerCase().trim();
+  if (!q) return;
+  const map = {
+    'badge': 'badges', 'link': 'links', 'showcase': 'showcases',
+    'tag': 'tags', 'track': 'tracks', 'music': 'tracks',
+    'premium': 'premium', 'markdown': 'markdown', 'shop': 'shop',
+    'faq': 'faq', 'changelog': 'changelog', 'intro': 'introduction',
+    'image': 'configuration', 'gallery': 'gallery', 'upload': 'configuration',
+    'event': 'information', 'rule': 'rules', 'participate': 'participation',
+    'login': 'login', 'discord': 'discord', 'verify': 'verification',
+    'delete': 'account-deletion', 'multi': 'multi-accounting', 'ban': 'multi-accounting',
+    'account': 'account', 'password': 'login', 'support': 'discord'
+  };
+  for (const [kw, page] of Object.entries(map)) {
+    if (q.includes(kw)) { navigate(page); return; }
+  }
+}
+
+// handle Enter key
+document.getElementById('search-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleSearch(e.target.value);
+});
+
+// ── LOAD FROM HASH ──
+window.addEventListener('DOMContentLoaded', () => {
+  const hash = location.hash.replace('#','');
+  if (hash && pageOrder.includes(hash)) navigate(hash);
+});
+</script>
+</body>
+</html>
