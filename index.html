@@ -1,47 +1,52 @@
 <!DOCTYPE html>
-<html lang="de" class="h-full bg-slate-950 text-white">
+<html lang="de">
 <head>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <title>OathNet Mini-Interface</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f9; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        input, button { width: 100%; padding: 10px; margin: 10px 0; }
+        #output { background: #eee; padding: 10px; border-radius: 4px; white-space: pre-wrap; }
+    </style>
 </head>
-<body class="h-full flex flex-col items-center justify-center p-4">
+<body>
 
-    <!-- Header / Navigation -->
-    <nav class="absolute top-0 w-full p-6 flex justify-between items-center">
-        <div class="font-bold text-xl">OathNet</div>
-        <div class="space-x-6 text-sm opacity-80">
-            <span>Home</span><span>Pricing</span><span>API</span>
-        </div>
-        <div class="space-x-3">
-            <button class="px-4 py-2 text-sm border border-white/20 rounded-full">Sign Up</button>
-            <button class="px-4 py-2 text-sm bg-violet-600 rounded-full">Login</button>
-        </div>
-    </nav>
+<div class="container">
+    <h2>OathNet Such-Tool</h2>
+    <input type="text" id="queryInput" placeholder="Suchbegriff eingeben...">
+    <button onclick="performSearch()">Suche starten</button>
+    <div id="output">Ergebnisse erscheinen hier...</div>
+</div>
 
-    <!-- Zentrum: Logo/Icon -->
-    <div class="mb-12">
-        <div class="w-24 h-24 border border-white/20 rounded-full flex items-center justify-center bg-white/5">
-            <span class="text-3xl">🛡️</span>
-        </div>
-    </div>
-
-    <!-- Suchfeld Bereich aus image_64cea6.jpg -->
-    <div class="w-full max-w-2xl bg-white/5 p-2 rounded-2xl border border-white/10 shadow-2xl">
-        <div class="flex items-center px-4 py-3">
-            <input type="text" placeholder="e.g. username: winterfox" 
-                   class="bg-transparent w-full outline-none text-white placeholder-white/30">
-            <button class="bg-violet-600 px-6 py-2 rounded-xl text-sm font-medium">Search →</button>
-        </div>
+<script>
+    // Hier wird die Logik aus den Service-Dateien eingebettet
+    async function performSearch() {
+        const query = document.getElementById('queryInput').value;
+        const output = document.getElementById('output');
         
-        <!-- Untere Optionen -->
-        <div class="flex justify-between items-center px-4 py-3 border-t border-white/10 text-xs opacity-70">
-            <div class="bg-black/40 rounded-full px-3 py-1">Automated / Manual</div>
-            <div class="flex space-x-4">
-                <span>⊞ Bulk Search</span>
-                <span>🛡 Secure Search</span>
-                <span>🗄 15+ Sources</span>
-            </div>
-        </div>
-    </div>
+        output.innerText = "Suche läuft für: " + query + "...";
+
+        try {
+            // Beispiel: Simulation der Logik aus oathnet-js Services
+            // In einer echten Umgebung würdest du hier fetch() zu deinen API-Endpunkten nutzen
+            const results = await mockOathNetLookup(query);
+            output.innerText = JSON.stringify(results, null, 2);
+        } catch (error) {
+            output.innerText = "Fehler: " + error.message;
+        }
+    }
+
+    // Simulierte Funktion basierend auf der oathnet-js Struktur
+    async function mockOathNetLookup(term) {
+        return {
+            status: "success",
+            term: term,
+            findings: ["Datenpunkt A", "Datenpunkt B"],
+            timestamp: new Date().toISOString()
+        };
+    }
+</script>
 
 </body>
 </html>
