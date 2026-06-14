@@ -26,6 +26,7 @@
             background-color: var(--background-color);
             color: var(--text-color);
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
         .container {
@@ -48,6 +49,7 @@
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            cursor: pointer;
         }
 
         nav {
@@ -59,10 +61,19 @@
             color: var(--text-color);
             text-decoration: none;
             transition: color 0.3s ease;
+            cursor: pointer;
         }
 
         .nav-link:hover {
             color: var(--primary-color);
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
         }
 
         .hero {
@@ -215,9 +226,7 @@
             opacity: 1;
         }
 
-        /* Profil-Seite Styles */
         .profile-container {
-            display: none;
             max-width: 500px;
             margin: 0 auto;
             padding: 40px 20px;
@@ -264,69 +273,4 @@
 
         .profile-link:hover {
             transform: translateY(-3px);
-            background-color: rgba(99, 102, 241, 0.2);
-        }
-
-        .profile-link-icon {
-            font-size: 1.5rem;
-        }
-
-        .profile-stats {
-            display: flex;
-            justify-content: space-around;
-            margin: 30px 0;
-            padding: 20px;
-            background-color: var(--card-background);
-            border-radius: 12px;
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.7;
-        }
-
-        /* Erstellen-Seite Styles */
-        .create-container {
-            display: none;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        .create-form {
-            background-color: var(--card-background);
-            padding: 30px;
-            border-radius: 12px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 12px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            color: var(--text-color);
-            font-family: inherit;
-        }
-
-        .form
+           
