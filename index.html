@@ -1,42 +1,137 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <title>High-Speed Webhook Sender</title>
+<meta charset="UTF-8">
+<title>NeoShop SaaS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<style>
+body {
+  margin:0;
+  font-family: Arial;
+  background:black;
+  color:white;
+  overflow-x:hidden;
+}
+
+/* 🎬 ANIME BACKGROUND */
+#bg {
+  position:fixed;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:-1;
+  filter: brightness(0.5) saturate(1.5);
+}
+
+/* NAV */
+nav {
+  display:flex;
+  justify-content:space-between;
+  padding:20px;
+  background:rgba(0,0,0,0.6);
+}
+
+h1 {
+  color:#00f7ff;
+}
+
+/* SHOP */
+.grid {
+  display:flex;
+  gap:20px;
+  padding:40px;
+}
+
+.card {
+  background:#111;
+  padding:20px;
+  border:1px solid #00f7ff;
+  width:200px;
+}
+
+button {
+  background:#00f7ff;
+  border:none;
+  padding:10px;
+  cursor:pointer;
+}
+
+/* ADMIN */
+#admin {
+  display:none;
+  padding:40px;
+  background:#050505;
+}
+</style>
 </head>
+
 <body>
 
-    <h3>Discord Webhook Sender (Turbo-Modus)</h3>
-    <input type="text" id="webhookUrl" placeholder="Webhook URL" style="width: 300px;"><br>
-    <textarea id="messageContent" placeholder="Deine Nachricht..."></textarea><br>
-    
-    <label>Anzahl:</label>
-    <input type="number" id="count" value="10">
-    
-    <label>Pause (ms):</label>
-    <input type="number" id="delay" value="100"> <button onclick="sendWebhook()">Jetzt senden</button>
+<!-- 🎬 CYBERPUNK ANIME BACKGROUND -->
+<video autoplay muted loop id="bg">
+  <source src="https://cdn.coverr.co/videos/coverr-neon-city-8570/1080p.mp4">
+</video>
 
-    <script>
-        async function sendWebhook() {
-            const url = document.getElementById('webhookUrl').value;
-            const content = document.getElementById('messageContent').value;
-            const count = parseInt(document.getElementById('count').value);
-            const delay = parseInt(document.getElementById('delay').value);
+<nav>
+  <h1>NeoShop</h1>
+  <div>
+    <button onclick="login()">Login</button>
+    <button onclick="openAdmin()">Admin</button>
+  </div>
+</nav>
 
-            for (let i = 0; i < count; i++) {
-                fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ content: content })
-                }).then(res => {
-                    if (res.status === 429) console.warn("Rate Limit erreicht!");
-                });
-                
-                // Warten basierend auf der Eingabe
-                await new Promise(r => setTimeout(r, delay));
-            }
-            alert("Vorgang beendet.");
-        }
-    </script>
+<!-- 🛒 SHOP -->
+<div class="grid" id="shop">
+  <div class="card">
+    <h3>Crypto Course</h3>
+    <p>Premium PDF</p>
+    <button onclick="buy(29)">Kaufen 29€</button>
+  </div>
+
+  <div class="card">
+    <h3>Business Pack</h3>
+    <p>Full System</p>
+    <button onclick="buy(99)">Kaufen 99€</button>
+  </div>
+</div>
+
+<!-- 🧠 ADMIN PANEL -->
+<div id="admin">
+  <h2>Admin Panel</h2>
+  <input placeholder="Produkt Name"><br><br>
+  <input placeholder="Preis"><br><br>
+  <button>Produkt erstellen</button>
+</div>
+
+<script>
+/* 🔐 SUPABASE SETUP */
+const supabase = supabase.createClient(
+  "https://YOUR_PROJECT.supabase.co",
+  "YOUR_ANON_KEY"
+);
+
+/* 💳 STRIPE (PLACEHOLDER) */
+function buy(price){
+  // echte Stripe Integration kommt im Backend
+  alert("Weiterleitung zu Stripe: " + price + "€");
+
+  // später:
+  // window.location.href = "https://checkout.stripe.com/xxx";
+}
+
+/* 🔐 LOGIN (Supabase später aktiv) */
+function login(){
+  alert("Login System wird mit Supabase verbunden 🔐");
+}
+
+/* 🧠 ADMIN */
+function openAdmin(){
+  document.getElementById("admin").style.display="block";
+}
+</script>
+
 </body>
 </html>
