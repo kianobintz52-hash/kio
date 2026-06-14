@@ -6,97 +6,47 @@
     <title>kioo.zeta</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #6366f1;
-            --secondary-color: #8b5cf6;
-            --background-color: #0f0f23;
-            --card-background: #1a1a2e;
-            --text-color: #e2e8f0;
-            --accent-color: #f472b6;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
+            background-color: #0f0f23;
+            color: #e2e8f0;
             line-height: 1.6;
-            overflow-x: hidden;
         }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-
         .logo {
             font-size: 1.5rem;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             cursor: pointer;
         }
-
-        nav {
-            display: flex;
-            gap: 20px;
-        }
-
+        nav { display: flex; gap: 20px; }
         .nav-link {
-            color: var(--text-color);
+            color: #e2e8f0;
             text-decoration: none;
-            transition: color 0.3s ease;
             cursor: pointer;
         }
-
-        .nav-link:hover {
-            color: var(--primary-color);
-        }
-
-        .page {
-            display: none;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        .hero {
-            text-align: center;
-            padding: 80px 0;
-        }
-
+        .nav-link:hover { color: #6366f1; }
+        .hero { text-align: center; padding: 80px 0; }
         .hero h1 {
             font-size: 3rem;
             margin-bottom: 20px;
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            background: linear-gradient(135deg, #6366f1, #f472b6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 30px;
-            opacity: 0.8;
-        }
-
+        .hero p { font-size: 1.2rem; margin-bottom: 30px; opacity: 0.8; }
         .cta-button {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
             color: white;
             border: none;
             padding: 12px 30px;
@@ -104,173 +54,130 @@
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
-        }
-
         .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
             padding: 60px 0;
         }
-
         .feature {
-            background-color: var(--card-background);
+            background-color: #1a1a2e;
             padding: 30px;
             border-radius: 12px;
             text-align: center;
-            transition: transform 0.3s ease;
         }
-
-        .feature:hover {
-            transform: translateY(-5px);
-        }
-
-        .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
-
-        .feature h3 {
-            margin-bottom: 10px;
-            color: var(--primary-color);
-        }
-
-        .examples {
-            padding: 60px 0;
-        }
-
-        .examples h2 {
-            text-align: center;
-            margin-bottom: 40px;
-            font-size: 2rem;
-        }
-
-        .example-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 30px;
-        }
-
         .example-card {
-            background-color: var(--card-background);
+            background-color: #1a1a2e;
             border-radius: 12px;
             padding: 30px;
             text-align: center;
-            transition: transform 0.3s ease;
         }
-
-        .example-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .example-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            margin: 0 auto 20px;
-        }
-
-        .example-name {
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-
-        .example-links {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .example-links a {
-            background-color: rgba(99, 102, 241, 0.2);
-            color: var(--text-color);
-            text-decoration: none;
-            padding: 8px 15px;
-            border-radius: 6px;
-            transition: background-color 0.3s ease;
-        }
-
-        .example-links a:hover {
-            background-color: rgba(99, 102, 241, 0.4);
-        }
-
-        footer {
-            padding: 30px 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .footer-links a {
-            color: var(--text-color);
-            text-decoration: none;
-            opacity: 0.7;
-            transition: opacity 0.3s ease;
-        }
-
-        .footer-links a:hover {
-            opacity: 1;
-        }
-
-        .profile-container {
+        .profile-container, .create-container {
             max-width: 500px;
             margin: 0 auto;
             padding: 40px 20px;
         }
-
         .profile-avatar {
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
             margin: 0 auto 20px;
         }
-
-        .profile-name {
-            font-size: 1.8rem;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .profile-bio {
-            text-align: center;
-            margin-bottom: 30px;
-            opacity: 0.8;
-        }
-
-        .profile-links {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
+        .profile-name { font-size: 1.8rem; font-weight: 700; text-align: center; }
         .profile-link {
-            background-color: var(--card-background);
-            color: var(--text-color);
+            background-color: #1a1a2e;
+            color: #e2e8f0;
             text-decoration: none;
             padding: 15px;
             border-radius: 8px;
             display: flex;
             align-items: center;
             gap: 15px;
-            transition: transform 0.3s ease, background-color 0.3s ease;
+            margin-bottom: 15px;
         }
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; margin-bottom: 8px; font-weight: 500; }
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            background-color: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 6px;
+            color: #e2e8f0;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo" onclick="showPage('home')">kioo.zeta</div>
+            <nav>
+                <span class="nav-link" onclick="showPage('home')">Home</span>
+                <span class="nav-link" onclick="showPage('create')">Erstellen</span>
+            </nav>
+        </header>
 
-        .profile-link:hover {
-            transform: translateY(-3px);
-           
+        <!-- HOME PAGE -->
+        <div id="home" class="page active">
+            <div class="hero">
+                <h1>Dein Profil, vereinfacht</h1>
+                <p>Erstelle deine persönliche Link-Seite mit kioo.zeta</p>
+                <button class="cta-button" onclick="showPage('create')">Jetzt starten</button>
+            </div>
+
+            <div class="features">
+                <div class="feature">
+                    <h3>🔗 Link-Verkürzung</h3>
+                    <p>Kürze deine Links und teile sie einfach</p>
+                </div>
+                <div class="feature">
+                    <h3>📊 Statistiken</h3>
+                    <p>Verfolge Klicks und Besucher</p>
+                </div>
+                <div class="feature">
+                    <h3>🎨 Personalisierung</h3>
+                    <p>Passe dein Profil an</p>
+                </div>
+            </div>
+
+            <div class="examples">
+                <h2 style="text-align: center; margin-bottom: 40px;">Beispiele</h2>
+                <div class="example-card">
+                    <div class="profile-avatar"></div>
+                    <div class="profile-name">Benutzer123</div>
+                    <p>Ich liebe Coding! 💻</p>
+                    <div style="margin-top: 20px;">
+                        <a href="#" style="color: #6366f1; text-decoration: none;">🌐 Website</a>
+                        <a href="#" style="color: #6366f1; text-decoration: none;">🐦 Twitter</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CREATE PAGE -->
+        <div id="create" class="page">
+            <div class="create-container">
+                <h2 style="text-align: center; margin-bottom: 30px;">Profil erstellen</h2>
+                <div class="form-group">
+                    <label class="form-label">Benutzername</label>
+                    <input type="text" id="username" class="form-input" placeholder="Dein Name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Bio</label>
+                    <input type="text" id="bio" class="form-input" placeholder="Kurze Beschreibung">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Links (komma-get
