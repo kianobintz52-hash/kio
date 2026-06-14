@@ -1,35 +1,47 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" class="h-full bg-slate-950 text-white">
 <head>
-    <meta charset="UTF-8">
-    <title>Einfacher Browser-Proxy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h2>Web-Inhalt abrufen</h2>
-    <input type="text" id="url" placeholder="https://beispiel.de" style="width: 300px;">
-    <button onclick="fetchContent()">Laden</button>
-    
-    <div id="output" style="margin-top: 20px; border: 1px solid #ccc; padding: 10px;">
-        Hier erscheint der Inhalt...
+<body class="h-full flex flex-col items-center justify-center p-4">
+
+    <!-- Header / Navigation -->
+    <nav class="absolute top-0 w-full p-6 flex justify-between items-center">
+        <div class="font-bold text-xl">OathNet</div>
+        <div class="space-x-6 text-sm opacity-80">
+            <span>Home</span><span>Pricing</span><span>API</span>
+        </div>
+        <div class="space-x-3">
+            <button class="px-4 py-2 text-sm border border-white/20 rounded-full">Sign Up</button>
+            <button class="px-4 py-2 text-sm bg-violet-600 rounded-full">Login</button>
+        </div>
+    </nav>
+
+    <!-- Zentrum: Logo/Icon -->
+    <div class="mb-12">
+        <div class="w-24 h-24 border border-white/20 rounded-full flex items-center justify-center bg-white/5">
+            <span class="text-3xl">🛡️</span>
+        </div>
     </div>
 
-    <script>
-        async function fetchContent() {
-            const url = document.getElementById('url').value;
-            const output = document.getElementById('output');
-            // Hinweis: cors-anywhere ist nur für Demos geeignet
-            const proxy = 'https://cors-anywhere.herokuapp.com/'; 
-            
-            output.innerHTML = "Lade...";
-            
-            try {
-                const response = await fetch(proxy + url);
-                const data = await response.text();
-                output.innerText = data; // Zeigt den rohen Quelltext an
-            } catch (error) {
-                output.innerText = "Fehler: " + error.message;
-            }
-        }
-    </script>
+    <!-- Suchfeld Bereich aus image_64cea6.jpg -->
+    <div class="w-full max-w-2xl bg-white/5 p-2 rounded-2xl border border-white/10 shadow-2xl">
+        <div class="flex items-center px-4 py-3">
+            <input type="text" placeholder="e.g. username: winterfox" 
+                   class="bg-transparent w-full outline-none text-white placeholder-white/30">
+            <button class="bg-violet-600 px-6 py-2 rounded-xl text-sm font-medium">Search →</button>
+        </div>
+        
+        <!-- Untere Optionen -->
+        <div class="flex justify-between items-center px-4 py-3 border-t border-white/10 text-xs opacity-70">
+            <div class="bg-black/40 rounded-full px-3 py-1">Automated / Manual</div>
+            <div class="flex space-x-4">
+                <span>⊞ Bulk Search</span>
+                <span>🛡 Secure Search</span>
+                <span>🗄 15+ Sources</span>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
