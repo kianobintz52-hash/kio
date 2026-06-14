@@ -4,180 +4,345 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>kioo.zeta</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #7289DA;
+            --secondary: #99AAB5;
+            --accent: #5865F2;
+            --background: #36393F;
+            --card: #2F3136;
+            --text: #DCDDDE;
+            --text-muted: #B9BBBE;
+            --border: #202225;
+            --success: #43B581;
+            --warning: #FAA61A;
+            --error: #F04747;
+        }
+        
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0f0f23;
-            color: #e2e8f0;
-            line-height: 1.6;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.5;
+            overflow-x: hidden;
         }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border);
         }
+        
         .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            cursor: pointer;
-        }
-        nav { display: flex; gap: 20px; }
-        .nav-link {
-            color: #e2e8f0;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary);
             text-decoration: none;
-            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .nav-link:hover { color: #6366f1; }
-        .hero { text-align: center; padding: 80px 0; }
+        
+        .logo i {
+            font-size: 28px;
+        }
+        
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+        
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: var(--primary);
+        }
+        
+        /* Pages */
+        .page {
+            display: none;
+            min-height: calc(100vh - 70px);
+            padding: 30px 0;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        /* Home Page */
+        .hero {
+            text-align: center;
+            padding: 60px 0;
+        }
+        
         .hero h1 {
-            font-size: 3rem;
+            font-size: 56px;
+            font-weight: 900;
             margin-bottom: 20px;
-            background: linear-gradient(135deg, #6366f1, #f472b6);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .hero p { font-size: 1.2rem; margin-bottom: 30px; opacity: 0.8; }
-        .cta-button {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
             border: none;
-            padding: 12px 30px;
+            padding: 12px 24px;
             border-radius: 8px;
-            font-size: 1rem;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(114, 137, 218, 0.3);
+        }
+        
         .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
-            padding: 60px 0;
+            margin-bottom: 60px;
         }
+        
         .feature {
-            background-color: #1a1a2e;
+            background-color: var(--card);
             padding: 30px;
             border-radius: 12px;
             text-align: center;
+            transition: transform 0.3s;
         }
-        .example-card {
-            background-color: #1a1a2e;
-            border-radius: 12px;
-            padding: 30px;
-            text-align: center;
+        
+        .feature:hover {
+            transform: translateY(-5px);
         }
-        .profile-container, .create-container {
-            max-width: 500px;
+        
+        .feature i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .feature h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: var(--text);
+        }
+        
+        .feature p {
+            color: var(--text-muted);
+        }
+        
+        /* Profile Page */
+        .profile-container {
+            max-width: 600px;
             margin: 0 auto;
-            padding: 40px 20px;
         }
+        
+        .profile-card {
+            background-color: var(--card);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .profile-header {
+            height: 150px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            position: relative;
+        }
+        
         .profile-avatar {
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            margin: 0 auto 20px;
+            background-color: var(--card);
+            border: 5px solid var(--card);
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            overflow: hidden;
         }
-        .profile-name { font-size: 1.8rem; font-weight: 700; text-align: center; }
+        
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .profile-info {
+            padding: 70px 30px 30px;
+            text-align: center;
+        }
+        
+        .profile-name {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .profile-bio {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+        
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+            padding: 20px;
+            background-color: var(--background);
+            border-radius: 12px;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        
+        .profile-links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
         .profile-link {
-            background-color: #1a1a2e;
-            color: #e2e8f0;
-            text-decoration: none;
-            padding: 15px;
-            border-radius: 8px;
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-bottom: 15px;
+            background-color: var(--background);
+            padding: 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text);
+            transition: background-color 0.3s;
         }
-        .form-group { margin-bottom: 20px; }
-        .form-label { display: block; margin-bottom: 8px; font-weight: 500; }
+        
+        .profile-link:hover {
+            background-color: var(--border);
+        }
+        
+        .profile-link i {
+            font-size: 20px;
+            color: var(--primary);
+        }
+        
+        /* Create Page */
+        .create-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .create-card {
+            background-color: var(--card);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .create-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
         .form-input {
             width: 100%;
             padding: 12px;
-            background-color: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 6px;
-            color: #e2e8f0;
+            background-color: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 16px;
         }
-        .btn-primary {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .links-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .link-item {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .link-input {
+            flex: 1;
+        }
+        
+        .btn-remove {
+            background-color: var(--error);
             color: white;
             border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <header>
-            <div class="logo" onclick="showPage('home')">kioo.zeta</div>
-            <nav>
-                <span class="nav-link" onclick="showPage('home')">Home</span>
-                <span class="nav-link" onclick="showPage('create')">Erstellen</span>
-            </nav>
-        </header>
-
-        <!-- HOME PAGE -->
-        <div id="home" class="page active">
-            <div class="hero">
-                <h1>Dein Profil, vereinfacht</h1>
-                <p>Erstelle deine persönliche Link-Seite mit kioo.zeta</p>
-                <button class="cta-button" onclick="showPage('create')">Jetzt starten</button>
-            </div>
-
-            <div class="features">
-                <div class="feature">
-                    <h3>🔗 Link-Verkürzung</h3>
-                    <p>Kürze deine Links und teile sie einfach</p>
-                </div>
-                <div class="feature">
-                    <h3>📊 Statistiken</h3>
-                    <p>Verfolge Klicks und Besucher</p>
-                </div>
-                <div class="feature">
-                    <h3>🎨 Personalisierung</h3>
-                    <p>Passe dein Profil an</p>
-                </div>
-            </div>
-
-            <div class="examples">
-                <h2 style="text-align: center; margin-bottom: 40px;">Beispiele</h2>
-                <div class="example-card">
-                    <div class="profile-avatar"></div>
-                    <div class="profile-name">Benutzer123</div>
-                    <p>Ich liebe Coding! 💻</p>
-                    <div style="margin-top: 20px;">
-                        <a href="#" style="color: #6366f1; text-decoration: none;">🌐 Website</a>
-                        <a href="#" style="color: #6366f1; text-decoration: none;">🐦 Twitter</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- CREATE PAGE -->
-        <div id="create" class="page">
-            <div class="create-container">
-                <h2 style="text-align: center; margin-bottom: 30px;">Profil erstellen</h2>
-                <div class="form-group">
-                    <label class="form-label">Benutzername</label>
-                    <input type="text" id="username" class="form-input" placeholder="Dein Name">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Bio</label>
-                    <input type="text" id="bio" class="form-input" placeholder="Kurze Beschreibung">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Links (komma-get
+            padding: 
