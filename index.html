@@ -1,18 +1,47 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Dein Profil-Overlay</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kioo.zeta | Your Bio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Hier kommt dein Custom CSS für den Look */
-        body { background-color: #0a0a0a; color: white; }
+        body { background-color: #0a0a0a; color: white; font-family: sans-serif; }
     </style>
 </head>
-<body class="flex items-center justify-center h-screen">
-    <div class="p-8 border border-gray-800 rounded-lg shadow-2xl">
-        <h1 class="text-2xl font-bold">Willkommen bei Kioo</h1>
-        <button class="mt-4 bg-blue-600 px-4 py-2 rounded">Login/Register</button>
-    </div>
+<body>
+
+    <nav class="flex justify-between items-center p-6 bg-black/50 border-b border-white/10">
+        <div class="text-2xl font-bold tracking-tighter">kioo<span class="text-purple-500">.zeta</span></div>
+        <div class="space-x-6 text-sm text-gray-400">
+            <a href="https://discord.gg/mYJXNE5fu" class="hover:text-white">Discord</a>
+            <a href="https://discord.gg/mYJXNE5fu" class="hover:text-white">Help Center</a>
+            <a href="#" onclick="alert('Lifetime kioo.zeta - 5 Euro')" class="hover:text-white">Pricing</a>
+            <a href="#" class="text-white font-bold">Login</a>
+            <a href="#" class="bg-purple-600 px-4 py-2 rounded-full text-white hover:bg-purple-700">Register</a>
+        </div>
+    </nav>
+
+    <main class="text-center py-24 px-4">
+        <img src="image_6fb4c7.jpg" alt="Profile" class="w-40 h-40 rounded-full mx-auto mb-8 border-4 border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.5)]">
+        <h1 class="text-6xl font-extrabold mb-4">Everything you need, right here.</h1>
+        <p class="text-gray-400 text-lg mb-8 max-w-2xl mx-auto">kioo.zeta is your home for modern, feature-rich link-in-bio pages and fast, secure file hosting.</p>
+        
+        <div class="space-x-4">
+            <button class="bg-purple-600 px-8 py-3 rounded-lg font-bold hover:bg-purple-700">Get Started</button>
+            <button class="border border-white/20 px-8 py-3 rounded-lg hover:bg-white/10">View Pricing</button>
+        </div>
+    </main>
+
+    <script>
+        // Logik für Support & Links
+        document.querySelectorAll('a[href="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                if(this.textContent.includes('Help Center')) {
+                    alert('Please open a ticket in our Discord for support.');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
