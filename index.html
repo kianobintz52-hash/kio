@@ -2,40 +2,46 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Discord Webhook Sender</title>
+    <title>Discord Webhook Sender Pro</title>
 </head>
 <body>
 
-    <h3>Discord Webhook Nachricht senden</h3>
-    <input type="text" id="webhookUrl" placeholder="Webhook URL einfügen" style="width: 300px;"><br>
+    <h3>Discord Webhook Nachrichten-Sender</h3>
+    <input type="text" id="webhookUrl" placeholder="Webhook URL" style="width: 300px;"><br>
     <textarea id="messageContent" placeholder="Deine Nachricht..."></textarea><br>
-    <button onclick="sendWebhook()">Nachricht senden</button>
+    
+    <label for="count">Anzahl der Nachrichten:</label>
+    <input type="number" id="count" value="1" min="1" max="50">
+    
+    <button onclick="sendWebhook()">Jetzt senden</button>
 
     <script>
         async function sendWebhook() {
             const url = document.getElementById('webhookUrl').value;
             const content = document.getElementById('messageContent').value;
+            const count = document.getElementById('count').value;
 
-            const payload = {
-                content: content,
-                username: "Mein Webhook Tool"
-            };
+            for (let i = 0; i < count; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ content: content })
+                    });
 
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (response.ok) {
-                    alert("Nachricht erfolgreich gesendet!");
-                } else {
-                    alert("Fehler: Konnte Nachricht nicht senden.");
+                    if (response.ok) {
+                        console.log(`Nachricht ${i + 1} gesendet.`);
+                    } else {
+                        console.error(`Fehler bei Nachricht ${i + 1}`);
+                    }
+                } catch (error) {
+                    console.error("Netzwerkfehler:", error);
                 }
-            } catch (error) {
-                console.error("Fehler:", error);
+                
+                // Kurze Pause, um Discord-Rate-Limits zu respektieren (500ms)
+                await new Promise(r => setTimeout(r, 500));
             }
+            alert("Vorgang abgeschlossen!");
         }
     </script>
 </body>
