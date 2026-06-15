@@ -75,7 +75,7 @@
   <div id="page-sell" class="page hidden max-w-2xl mx-auto p-8">
     <h2 class="text-4xl font-bold mb-8">Neues Produkt einstellen</h2>
     <div class="space-y-6">
-      <input id="new-name" placeholder="Produktname (z.B. Crunchyroll Premium Code)" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
+      <input id="new-name" placeholder="Produktname" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
       <input id="new-price" type="number" step="0.01" placeholder="Preis €" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
       <input id="new-stock" type="number" value="10" placeholder="Verfügbare Menge" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
       <textarea id="new-desc" placeholder="Beschreibung" class="w-full h-32 bg-gray-800 border border-purple-500 rounded-3xl px-6 py-5"></textarea>
@@ -88,8 +88,13 @@
     <h2 class="text-4xl font-bold mb-8">Mein Profil</h2>
     <div class="bg-gray-900 rounded-3xl p-10 border border-purple-500">
       <p class="text-xl"><strong>Username:</strong> <span id="profile-username"></span></p>
-      <p class="mt-6 text-gray-400">Hier siehst du später deine Bestellungen und Daten.</p>
     </div>
+  </div>
+
+  <!-- Orders -->
+  <div id="page-orders" class="page hidden max-w-4xl mx-auto p-8">
+    <h2 class="text-4xl font-bold mb-8">Meine Bestellungen</h2>
+    <div id="my-orders" class="space-y-6"></div>
   </div>
 
   <!-- Admin -->
@@ -110,23 +115,20 @@
     <div class="bg-gray-900 rounded-3xl p-10 max-w-lg w-full border border-purple-500">
       <h3 class="text-3xl font-bold mb-6">Warenkorb</h3>
       <div id="cart-items" class="space-y-4 max-h-96 overflow-auto"></div>
-      <div id="cart-total" class="text-3xl font-bold mt-8 mb-10"></div>
-      <button onclick="checkout()" class="w-full bg-[#003087] hover:bg-[#002d6b] text-white py-6 rounded-2xl text-xl font-bold flex items-center justify-center gap-3">
-        <i class="fab fa-paypal"></i> Mit PayPal bezahlen
-      </button>
-      <button onclick="hideCart()" class="w-full mt-4 py-4 border border-gray-600 rounded-2xl">Schließen</button>
+      <div id="cart-total" class="text-3xl font-bold mt-8 mb-8"></div>
+      
+      <div id="paypal-button-container" class="mb-6"></div>
+      
+      <button onclick="hideCart()" class="w-full py-4 border border-gray-600 rounded-2xl">Schließen</button>
     </div>
   </div>
 
-  <!-- Bestell-Ticket Modal -->
+  <!-- Ticket Modal -->
   <div id="ticket-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
     <div class="bg-gray-900 rounded-3xl p-10 max-w-md w-full border border-purple-500 text-center">
       <h2 class="text-3xl font-bold neon-purple mb-2">✅ Bestellung erfolgreich!</h2>
-      <p class="text-gray-400 mb-8">Vielen Dank für deinen Einkauf</p>
-      
-      <div id="ticket-content" class="bg-black/50 p-6 rounded-2xl text-left mb-8"></div>
-      
-      <button onclick="hideTicket()" class="w-full bg-purple-600 py-4 rounded-2xl font-bold">Ticket schließen</button>
+      <div id="ticket-content" class="bg-black/50 p-6 rounded-2xl text-left my-8"></div>
+      <button onclick="hideTicket()" class="w-full bg-purple-600 py-4 rounded-2xl font-bold">Schließen</button>
     </div>
   </div>
 
@@ -135,11 +137,13 @@
   </button>
 
   <script>
+    const PAYPAL_CLIENT_ID = "AfePx5V-Tru6WXLs1fwvK3RjuYKC5No0UmUgB9jmEr0IjsZ3v6BwqeQ0ur3leNkU87nz-RTFDswULn5S";
+
     let currentUser = null;
     let products = JSON.parse(localStorage.getItem('products')) || [
-      {id:1, name:"Crunchyroll Premium 12 Monate", price:79.90, stock:8, desc:"Mega Abo mit vielen Vorteilen", img:"https://picsum.photos/id/1015/300/300"},
-      {id:2, name:"One Piece Manga Band 1-10 Bundle", price:89.90, stock:15, desc:"Offizielle deutsche Ausgabe", img:"https://picsum.photos/id/237/300/300"},
-      {id:3, name:"Jujutsu Kaisen Keychain Set", price:14.90, stock:30, desc:"Limited Edition", img:"https://picsum.photos/id/201/300/300"}
+      {id:1, name:"Crunchyroll Premium 12 Monate", price:79.90, stock:8, desc:"Voller Zugriff auf alle Animes", img:"https://picsum.photos/id/1015/300/300"},
+      {id:2, name:"One Piece Manga Bundle 1-10", price:89.90, stock:15, desc:"Offizielle Ausgabe", img:"https://picsum.photos/id/237/300/300"},
+      {id:3, name:"Jujutsu Kaisen Merch Set", price:29.90, stock:25, desc:"Keychains + Sticker", img:"https://picsum.photos/id/201/300/300"}
     ];
 
     let cart = [];
@@ -154,13 +158,7 @@
 
     function loadUser() {
       const saved = localStorage.getItem('currentUser');
-      if (saved) {
-        currentUser = JSON.parse(saved);
-        if (currentUser.username === owner.username) {
-          document.getElementById('sellBtn').classList.remove('hidden');
-          document.getElementById('adminBtn').classList.remove('hidden');
-        }
-      }
+      if (saved) currentUser = JSON.parse(saved);
     }
 
     function navigate(page) {
@@ -170,6 +168,7 @@
 
       if (page === 'shop') renderProducts();
       if (page === 'admin') renderAdmin();
+      if (page === 'orders') renderMyOrders();
       if (page === 'profile') document.getElementById('profile-username').textContent = currentUser.username;
     }
 
@@ -179,91 +178,99 @@
         <div class="anime-card bg-gray-900/95 border border-purple-500 rounded-3xl overflow-hidden">
           <img src="${p.img}" class="w-full h-64 object-cover">
           <div class="p-6">
-            <h3 class="font-bold text-xl mb-1">${p.name}</h3>
+            <h3 class="font-bold text-xl">${p.name}</h3>
             <p class="text-3xl font-bold text-purple-400">${p.price} €</p>
-            <p class="text-sm text-gray-400 mt-1">Noch ${p.stock} verfügbar</p>
-            <p class="text-gray-400 text-sm mt-3">${p.desc}</p>
+            <p class="text-sm text-gray-400">Noch ${p.stock} verfügbar</p>
+            <p class="text-gray-400 text-sm mt-2">${p.desc}</p>
             <button onclick="addToCart(${p.id})" class="mt-6 w-full bg-purple-600 hover:bg-purple-700 py-4 rounded-2xl">In den Warenkorb</button>
           </div>
         </div>
       `).join('');
     }
 
-    function filterProducts() {
-      const search = document.getElementById('searchInput').value.toLowerCase();
-      const filtered = products.filter(p => p.name.toLowerCase().includes(search));
-      renderProducts(filtered);
-    }
-
     function addToCart(id) {
       const product = products.find(p => p.id === id);
-      if (product && product.stock > 0) {
+      if (product?.stock > 0) {
         cart.push({...product});
         alert(`${product.name} hinzugefügt!`);
       } else {
-        alert("Leider nicht mehr auf Lager!");
+        alert("Nicht mehr auf Lager!");
       }
     }
 
     function showCart() {
       if (cart.length === 0) return alert("Warenkorb ist leer.");
+      
       const itemsDiv = document.getElementById('cart-items');
       itemsDiv.innerHTML = cart.map(item => `
         <div class="flex justify-between bg-gray-800 p-4 rounded-2xl">
           <span>${item.name}</span>
-          <span class="text-purple-400">${item.price} €</span>
+          <span>${item.price} €</span>
         </div>
       `).join('');
-      
-      const total = cart.reduce((a, b) => a + b.price, 0);
+
+      const total = cart.reduce((sum, item) => sum + item.price, 0);
       document.getElementById('cart-total').innerHTML = `Gesamt: <span class="text-purple-400">${total.toFixed(2)} €</span>`;
+
       document.getElementById('cart-modal').classList.remove('hidden');
+      renderPayPalButtons(total);
     }
 
-    function hideCart() {
-      document.getElementById('cart-modal').classList.add('hidden');
+    function renderPayPalButtons(total) {
+      document.getElementById('paypal-button-container').innerHTML = '';
+      paypal.Buttons({
+        style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'paypal' },
+        createOrder: (data, actions) => {
+          return actions.order.create({
+            purchase_units: [{ amount: { value: total.toFixed(2), currency_code: 'EUR' } }]
+          });
+        },
+        onApprove: (data, actions) => {
+          return actions.order.capture().then(details => {
+            completeOrder(details);
+          });
+        }
+      }).render('#paypal-button-container');
     }
 
-    function checkout() {
-      const total = cart.reduce((a, b) => a + b.price, 0);
-      if (!confirm(`Bestellung für ${total.toFixed(2)} € abschließen?`)) return;
-
+    function completeOrder(details) {
+      const total = cart.reduce((sum, item) => sum + item.price, 0);
       const order = {
         id: Date.now(),
         user: currentUser.username,
         items: cart.map(c => c.name),
         total: total,
         date: new Date().toLocaleDateString('de-DE'),
-        ticketNr: "T-" + String(Date.now()).slice(-8)
+        ticketNr: "T-" + String(Date.now()).slice(-8),
+        paypalId: details.id
       };
 
       orders.push(order);
       
-      // Stock reduzieren
       cart.forEach(item => {
         const prod = products.find(p => p.id === item.id);
         if (prod) prod.stock = Math.max(0, prod.stock - 1);
       });
 
       saveData();
+      hideCart();
       showTicket(order);
       cart = [];
-      hideCart();
+    }
+
+    function hideCart() {
+      document.getElementById('cart-modal').classList.add('hidden');
     }
 
     function showTicket(order) {
       const content = document.getElementById('ticket-content');
       content.innerHTML = `
-        <div class="space-y-3">
-          <p><strong>Ticket Nr:</strong> ${order.ticketNr}</p>
-          <p><strong>Datum:</strong> ${order.date}</p>
-          <p><strong>Kunde:</strong> ${order.user}</p>
-          <hr class="border-purple-500">
-          <p class="font-bold">Gekaufte Produkte:</p>
-          ${order.items.map(item => `<p>• ${item}</p>`).join('')}
-          <hr class="border-purple-500">
-          <p class="text-2xl font-bold text-purple-400">Gesamt: ${order.total.toFixed(2)} €</p>
-        </div>
+        <p><strong>Ticket Nr:</strong> ${order.ticketNr}</p>
+        <p><strong>Datum:</strong> ${order.date}</p>
+        <p><strong>PayPal ID:</strong> ${order.paypalId}</p>
+        <hr class="my-4 border-purple-500">
+        ${order.items.map(item => `<p>• ${item}</p>`).join('')}
+        <p class="text-2xl font-bold text-purple-400 mt-6">Gesamt: ${order.total.toFixed(2)} €</p>
       `;
       document.getElementById('ticket-modal').classList.remove('hidden');
     }
@@ -309,7 +316,7 @@
     }
 
     function addProduct() {
-      if (currentUser.username !== owner.username) return alert("Nur Owner darf Produkte einstellen");
+      if (currentUser?.username !== owner.username) return alert("Nur der Owner darf Produkte einstellen");
       
       const name = document.getElementById('new-name').value;
       const price = parseFloat(document.getElementById('new-price').value);
@@ -326,13 +333,13 @@
           img: `https://picsum.photos/id/${Math.floor(Math.random()*900)}/300/300`
         });
         saveData();
-        alert("Produkt erfolgreich hochgeladen!");
+        alert("Produkt hochgeladen!");
         navigate('shop');
       }
     }
 
     function deleteProduct(id) {
-      if (!confirm("Produkt löschen?")) return;
+      if (!confirm("Produkt wirklich löschen?")) return;
       products = products.filter(p => p.id !== id);
       saveData();
       renderAdmin();
@@ -351,11 +358,22 @@
 
       document.getElementById('admin-orders').innerHTML = orders.map(o => `
         <div class="bg-gray-900 p-6 rounded-3xl border border-purple-500">
-          <p><strong>Ticket:</strong> ${o.ticketNr || '—'}</p>
+          <p><strong>Ticket:</strong> ${o.ticketNr}</p>
           <p><strong>Kunde:</strong> ${o.user} | ${o.date}</p>
           <p><strong>Gesamt:</strong> ${o.total} €</p>
         </div>
       `).join('');
+    }
+
+    function renderMyOrders() {
+      const myOrders = orders.filter(o => o.user === currentUser.username);
+      document.getElementById('my-orders').innerHTML = myOrders.length ? myOrders.map(o => `
+        <div class="bg-gray-900 p-6 rounded-3xl border border-purple-500">
+          <p><strong>Ticket:</strong> ${o.ticketNr}</p>
+          <p><strong>${o.date}</strong> — ${o.total.toFixed(2)} €</p>
+          <p class="text-sm text-gray-400">${o.items.join(' • ')}</p>
+        </div>
+      `).join('') : "<p class='text-gray-400'>Noch keine Bestellungen.</p>";
     }
 
     function switchAuthTab(n) {
@@ -363,9 +381,18 @@
       document.getElementById('register-form').classList.toggle('hidden', n !== 1);
     }
 
+    // PayPal SDK laden
+    const script = document.createElement('script');
+    script.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&currency=EUR`;
+    document.head.appendChild(script);
+
     window.onload = () => {
       loadUser();
-      document.getElementById('searchInput').addEventListener('input', filterProducts);
+      document.getElementById('searchInput').addEventListener('input', () => {
+        const term = document.getElementById('searchInput').value.toLowerCase();
+        const filtered = products.filter(p => p.name.toLowerCase().includes(term));
+        renderProducts(filtered);
+      });
       if (currentUser) navigate('shop');
       else navigate('login');
     };
