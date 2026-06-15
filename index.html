@@ -3,215 +3,340 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KIOSHOP</title>
+<title>KIOSHOP Platform</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 body{margin:0;font-family:Inter,sans-serif;background:#0a0a0a;color:#e8e4dc}
-.hidden{display:none}
+
+/* NAV */
+nav{
+  display:flex;
+  justify-content:space-between;
+  padding:14px;
+  border-bottom:1px solid #222;
+  position:sticky;
+  top:0;
+  background:#0a0a0a;
+}
+
+button{cursor:pointer}
 
 /* LOGIN */
-.login{
-  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
-  background:rgba(0,0,0,.85);z-index:1000
+#auth{
+  position:fixed;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.9);
+  z-index:999;
 }
-.login-box{
-  width:320px;background:#111;padding:20px;border:1px solid #222
+.box{
+  width:320px;
+  background:#111;
+  padding:20px;
+  border:1px solid #222;
 }
 input{
-  width:100%;margin:6px 0;padding:10px;background:#000;border:1px solid #333;color:#fff
+  width:100%;
+  padding:10px;
+  margin:6px 0;
+  background:#000;
+  border:1px solid #333;
+  color:#fff;
 }
 
 /* LAYOUT */
-nav{padding:16px;border-bottom:1px solid #222;display:flex;justify-content:space-between}
-.products{padding:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
-.card{background:#111;border:1px solid #222;padding:12px;cursor:pointer}
-button{background:#0051ff;color:#fff;border:none;padding:8px;cursor:pointer}
+.products{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:12px;
+  padding:20px;
+}
+.card{
+  background:#111;
+  border:1px solid #222;
+  padding:10px;
+}
 
-/* MODAL */
-.modal{
-  position:fixed;inset:0;background:rgba(0,0,0,.9);
-  display:flex;align-items:center;justify-content:center;z-index:999
+/* PROFILE */
+.profile{
+  padding:20px;
 }
-.modal-box{
-  width:420px;background:#111;padding:20px;border:1px solid #222
+
+/* NOTIF */
+.bell{
+  position:relative;
+  background:transparent;
+  border:1px solid #333;
+  color:#fff;
+  padding:6px 10px;
 }
-.small{font-size:.8rem;color:#aaa}
-.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.badge{font-size:.7rem;padding:4px 6px;border:1px solid #333;cursor:pointer}
+#notifCount{
+  position:absolute;
+  top:-6px;right:-6px;
+  background:red;
+  font-size:10px;
+  padding:2px 5px;
+  border-radius:10px;
+}
+
+/* DROPDOWN */
+.dropdown{
+  position:absolute;
+  right:10px;
+  top:50px;
+  background:#111;
+  border:1px solid #333;
+  width:240px;
+  display:none;
+}
+.dropdown div{
+  padding:8px;
+  border-bottom:1px solid #222;
+  font-size:12px;
+}
+.hidden{display:none}
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN / REGISTER -->
-<div id="auth" class="login">
-  <div class="login-box">
+<!-- AUTH -->
+<div id="auth">
+  <div class="box">
     <h3>KIOSHOP</h3>
-
     <input id="email" placeholder="Email">
     <input id="password" type="password" placeholder="Passwort">
     <input id="username" placeholder="Username (nur Register)">
-
-    <button onclick="signup()">Register</button>
-    <button onclick="signin()">Login</button>
-
-    <p id="authMsg" class="small"></p>
+    <button onclick="register()">Register</button>
+    <button onclick="login()">Login</button>
   </div>
 </div>
 
 <!-- NAV -->
 <nav>
-  <b>KIOSHOP</b>
+  <b onclick="goHome()" style="cursor:pointer">KIOSHOP</b>
+
+  <div style="position:relative">
+    <button class="bell" onclick="toggleNotif()">🔔 <span id="notifCount"></span></button>
+
+    <div id="notifBox" class="dropdown"></div>
+  </div>
+
   <button onclick="logout()">Logout</button>
 </nav>
 
-<!-- PRODUCTS -->
-<div id="products" class="products"></div>
+<!-- APP -->
+<div id="app">
 
-<!-- MODAL -->
-<div id="modal" class="modal hidden">
-  <div class="modal-box">
-    <h3 id="mTitle"></h3>
-    <p id="mPrice"></p>
+  <div id="feed" class="products"></div>
 
-    <div class="row">
-      <button onclick="likeProduct()">❤️ Like</button>
-      <button onclick="saveProduct()">🔖 Save</button>
-    </div>
+  <div id="profile" class="profile hidden"></div>
 
-    <div class="row">
-      <input id="commentText" placeholder="Kommentar">
-      <button onclick="addComment()">Send</button>
-    </div>
+  <div id="admin" class="profile hidden"></div>
 
-    <div id="comments"></div>
-
-    <button onclick="closeModal()">Close</button>
-  </div>
 </div>
 
 <script>
-/* SUPABASE INIT */
-const supabaseUrl = "YOUR_SUPABASE_URL";
-const supabaseKey = "YOUR_SUPABASE_ANON_KEY";
-const sb = supabase.createClient(supabaseUrl, supabaseKey);
+/* SUPABASE */
+const sb = supabase.createClient(
+  "YOUR_SUPABASE_URL",
+  "YOUR_SUPABASE_ANON_KEY"
+);
 
 /* STATE */
 let user = null;
-let currentProduct = null;
+let routeUser = null;
 
-/* AUTH */
-async function signup(){
-  const email = email.value;
-  const password = password.value;
-  const username = username.value;
+/* ROUTER */
+function getRoute(){
+  const url = new URL(location.href);
+  return url.searchParams.get("user");
+}
 
-  const { data, error } = await sb.auth.signUp({ email, password });
+/* INIT */
+async function init(){
+
+  routeUser = getRoute();
+
+  const { data } = await sb.auth.getUser();
 
   if(data.user){
-    await sb.from("profiles").insert({
-      id: data.user.id,
-      username
-    });
-    msg("Registered");
+    user = data.user;
+    document.getElementById("auth").style.display="none";
+    loadFeed();
+    loadNotifications();
+  }
+
+  if(routeUser){
+    loadProfile(routeUser);
   }
 }
 
-async function signin(){
-  const { data, error } = await sb.auth.signInWithPassword({
+init();
+
+/* REGISTER */
+async function register(){
+  const { data } = await sb.auth.signUp({
     email: email.value,
     password: password.value
   });
 
   if(data.user){
-    user = data.user;
-    document.getElementById("auth").classList.add("hidden");
-    loadProducts();
+    await sb.from("profiles").insert({
+      id:data.user.id,
+      username:username.value
+    });
   }
 }
 
+/* LOGIN */
+async function login(){
+  const { data } = await sb.auth.signInWithPassword({
+    email:email.value,
+    password:password.value
+  });
+
+  if(data.user){
+    location.reload();
+  }
+}
+
+/* LOGOUT */
 async function logout(){
   await sb.auth.signOut();
   location.reload();
 }
 
-/* PRODUCTS */
-async function loadProducts(){
+/* FEED */
+async function loadFeed(){
+
   const { data } = await sb.from("products").select("*");
-  const box = document.getElementById("products");
 
-  box.innerHTML = data.map(p => `
-    <div class="card" onclick='openProduct(${JSON.stringify(p)})'>
-      <b>${p.title}</b>
-      <p>€${p.price}</p>
-    </div>
-  `).join("");
+  document.getElementById("feed").innerHTML =
+    data.map(p=>`
+      <div class="card">
+        <b>${p.title}</b>
+        <p>€${p.price}</p>
+
+        <button onclick="like('${p.id}')">❤️</button>
+        <button onclick="save('${p.id}')">🔖</button>
+        <button onclick="comment('${p.id}')">💬</button>
+
+        <button onclick="openProfile('${p.creator_id}')">Creator</button>
+      </div>
+    `).join("");
 }
 
-/* MODAL */
-function openProduct(p){
-  currentProduct = p;
+/* PROFILE */
+async function loadProfile(id){
 
-  mTitle.innerText = p.title;
-  mPrice.innerText = "€" + p.price;
+  document.getElementById("feed").classList.add("hidden");
+  document.getElementById("profile").classList.remove("hidden");
 
-  modal.classList.remove("hidden");
-  loadComments();
+  const { data: profile } = await sb.from("profiles").select("*").eq("id",id).single();
+  const { data: products } = await sb.from("products").select("*").eq("creator_id",id);
+  const { data: followers } = await sb.from("follows").select("*").eq("following_id",id);
+
+  document.getElementById("profile").innerHTML = `
+    <h2>${profile.username}</h2>
+    <p>Followers: ${followers.length}</p>
+
+    <button onclick="follow('${id}')">Follow</button>
+
+    <h3>Produkte</h3>
+    ${products.map(p=>`<div class="card">${p.title}</div>`).join("")}
+  `;
 }
 
-function closeModal(){
-  modal.classList.add("hidden");
+/* FOLLOW */
+async function follow(id){
+  await sb.from("follows").insert({
+    follower_id:user.id,
+    following_id:id
+  });
+
+  notify(id,"follow");
 }
 
 /* LIKE */
-async function likeProduct(){
+async function like(pid){
   await sb.from("likes").insert({
-    user_id: user.id,
-    product_id: currentProduct.id
+    user_id:user.id,
+    product_id:pid
   });
+
+  notify(null,"like",pid);
 }
 
 /* SAVE */
-async function saveProduct(){
+async function save(pid){
   await sb.from("wishlist").insert({
-    user_id: user.id,
-    product_id: currentProduct.id
+    user_id:user.id,
+    product_id:pid
   });
 }
 
-/* COMMENTS */
-async function addComment(){
+/* COMMENT */
+async function comment(pid){
+  const text = prompt("Kommentar:");
+  if(!text)return;
+
   await sb.from("comments").insert({
-    user_id: user.id,
-    product_id: currentProduct.id,
-    text: commentText.value
+    user_id:user.id,
+    product_id:pid,
+    text
   });
 
-  commentText.value = "";
-  loadComments();
+  notify(null,"comment",pid);
 }
 
-async function loadComments(){
+/* NOTIFICATIONS */
+async function notify(to,type,pid=null){
+
+  await sb.from("notifications").insert({
+    user_id:to || user.id,
+    from_user:user.id,
+    type,
+    product_id:pid,
+    read:false
+  });
+
+  loadNotifications();
+}
+
+/* LOAD NOTIFS */
+async function loadNotifications(){
+
   const { data } = await sb
-    .from("comments")
+    .from("notifications")
     .select("*")
-    .eq("product_id", currentProduct.id);
+    .eq("user_id",user.id)
+    .eq("read",false);
 
-  comments.innerHTML = data.map(c => `
-    <p class="small">💬 ${c.text}</p>
-  `).join("");
+  notifCount.innerText = data.length || "";
+
+  document.getElementById("notifBox").innerHTML =
+    data.map(n=>`
+      <div>${n.type} event</div>
+    `).join("");
 }
 
-/* INIT */
-sb.auth.getUser().then(res=>{
-  if(res.data.user){
-    user = res.data.user;
-    document.getElementById("auth").classList.add("hidden");
-    loadProducts();
-  }
-});
+/* TOGGLE NOTIF */
+function toggleNotif(){
+  const box = document.getElementById("notifBox");
+  box.style.display = box.style.display==="block"?"none":"block";
+}
+
+/* PROFILE LINK */
+function openProfile(id){
+  location.href = "/?user="+id;
+}
+
+/* HOME */
+function goHome(){
+  location.href = "/";
+}
 </script>
 
 </body>
