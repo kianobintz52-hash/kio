@@ -1,76 +1,120 @@
 <?php
-
-include('inc/inc.php');
-?>
-<!--<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">-->
-<head>
-<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
-<title>DOXBIN</title>
-<!--<link href="style/blue.css" rel="stylesheet" type="text/css" />-->
-</head>
-<body>
-<!--a href="index.php">Post Dox</a> <a href="doxviewer.php">Back to the archive</a> <a href="proscription.php"> Proscription List</a><br />
-New twitter: <a href="https://www.twitter.com/TheREALDoxbin">@TheREALDoxbin</a><br />-->
-<?php
-
-/* This page does a lot of the heavy lifting. It displays the dox and calls archive.php
-when a variable isn't given for "dox." It's mostly boring stuff, so the comments will 
-be minimal. */
-
-header('Content-Disposition: inline; filename="doxviewer.php"');
-
-if (!isset($_GET['dox'])) {
-    $_GET['dox'] = "undefine";
+if(file_exists("install.php"))
+{
+  die("please rename or run install.php");
 }
 
-/* Some built-in defense against skids attempting directory traversal. 
-Feel free to replace the ED link with goatse, The Last Measure, or even
-your own drive-by download page. No legitimate user is going to trigger 
-these ifs, so feel comfortable in being as evil as you want. */
+include("Db.class.php");
+include("smarty/libs/Smarty.class.php");
 
-$filename = $_GET['dox'];
-if($filename == "") { include("archive.php"); die(); }
-if(stripos($filename, '.') !== false) { die('<script>document.location="http://edramalpl7oq5npk.onion/Offended"</script><meta http-equiv="refresh" content="2;url=http://edramalpl7oq5npk.onion/Offended">'); }
-if(stripos($filename, '/') !== false ) { die('<script>document.location="http://edramalpl7oq5npk.onion/Offended"</script><meta http-equiv="refresh" content="2;url=http://edramalpl7oq5npk.onion/Offended">'); }
-if(stripos($filename, '%2f') !== false) { die('<script>document.location="http://edramalpl7oq5npk.onion/Offended"</script><meta http-equiv="refresh" content="2;url=http://edramalpl7oq5npk.onion/Offended">'); }
+$smarty = new Smarty;
+$smarty->setCaching(false);
+$smarty->setTemplateDir("smarty/templates/default/");
 
-// Just some HTML rendering and adding the dox icon text.
+if($_GET['page']) $page = filter_var($_GET['page'], FILTER_SANITIZE_STRING);
 
-if(file_exists('dox/'.$filename.'.txt')) {
-    echo '<div class="container">';
-    echo '<div class="doxheader">';
-    echo '<h1>' . $filename . '</h1><hr />';
-    if(file_exists('img/verification/'.$filename.'.txt')) {
-       $ver = file_get_contents('img/verification/'.$filename.'.txt');
-        echo '<div class="verified">'.$ver.'</div>';
-    }
-    if(file_exists('img/ssn/'.$filename.'.txt')) {
-       $ver = file_get_contents('img/ssn/'.$filename.'.txt');
-        echo '<div class="ssn">'.$ver.'</div>';
-    }
-    if(file_exists('img/rip/'.$filename.'.txt')) {
-       $ver = file_get_contents('img/rip/'.$filename.'.txt');
-        echo '<div class="rip">'.$ver.'</div>';
-    }
+switch($page)
+{
+  default:
+    $db = new Db();
+    $doxList =$db->getDoxList();
+    $smarty->assign("doxCount", count($doxList));
+    $smarty->assign("doxList", $doxList);
 
-    if(file_exists('img/mail/'.$filename.'.txt')) {
-       $ver = file_get_contents('img/mail/'.$filename.'.txt');
-        echo '<div class="mail">'.$ver.'</div>';
+    $smarty->display("header.tpl");
+    $smarty->display("nav.tpl");
+    $smarty->display("index.tpl");
+    $smarty->display("footer.tpl");
+  break;
+
+  case "add":
+    $config = json_decode(file_get_contents("config"));
+
+    if($config->cap_site_key != "" && $config->cap_sec_key != "")
+    {
+        $smarty->assign("cap_sec_key", $config->cap_sec_key);
+        $smarty->assign("cap_site_key", $config->cap_site_key);
     }
 
-/* The reason the textarea has rows and cols set is because it helps work
-around a corner case in which the rest of the page loads before the style
-sheet. If rows and cols were left undeclared, the dox would be temporarily 
-unreadable, and that just won't do. */
+    $smarty->assign("page", "add");
 
-    echo '</div><div class="well" style="word-wrap:break-word;">';
-    $dox = file_get_contents('dox/'.$filename.'.txt');
-    //echo '<div class="col-xs-8">';
-    echo '<textarea class="form-group" style="width:100%;height:100%;background-color:303030;color:fff;" readonly="readonly">' . $dox . '</textarea>';
-    //echo '</div>';
-    echo '</div></container></body></html>';
-}
-else {
-include('archive.php'); // Just breaking the spaghetti into easier to manage chunks.
+    $smarty->display("header.tpl");
+    $smarty->display("nav.tpl");
+    $smarty->display("add.tpl");
+    $smarty->display("footer.tpl");
+  break;
+
+  case "tos":
+    $smarty->display("header.tpl");
+    $smarty->display("nav.tpl");
+    $smarty->display("tos.tpl");
+    $smarty->display("footer.tpl");
+  break;
+
+  case "upload":
+    $id = filter_var($_GET['id'], FILTER_SANITIZE_STRING);
+
+    $db = new Db();
+    $dox = $db->getDox($id);
+    $db->addView($id);
+
+    $smarty->assign("dox", $dox);
+    $smarty->assign("page", "upload");
+    $smarty->display("header.tpl");
+    $smarty->display("nav.tpl");
+    $smarty->display("upload.tpl");
+    $smarty->display("footer.tpl");
+  break;
+
+  case "raw":
+    $id = filter_var($_GET['id'], FILTER_SANITIZE_STRING);
+
+    $db = new Db();
+    $dox = $db->getDox($id);
+    $db->addView($id);
+    $smarty->assign("dox", $dox);
+    $smarty->display("raw.tpl");
+  break;
+
+  case "submit":
+    //check captcha
+    $config = json_decode(file_get_contents("config"));
+    $cap_url = "https://www.google.com/recaptcha/api/siteverify";
+
+    $fields = array(
+    	'secret' => $config->cap_sec_key,
+    	'response' => $_POST['g-recaptcha-response'],
+    	'remoteip' => $_SERVER['REMOTE_ADDR']
+    );
+
+    //url-ify the data for the POST
+    foreach($fields as $key=>$value)
+    {
+        $fields_string .= $key.'='.$value.'&';
+    }
+    rtrim($fields_string, '&');
+
+    //open connection
+    $ch = curl_init();
+
+    //set the url, number of POST vars, POST data
+    curl_setopt($ch,CURLOPT_URL, $cap_url);
+    curl_setopt($ch,CURLOPT_POST, count($fields));
+    curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+
+    //execute post
+    $res = curl_exec($ch);
+
+    //close connection
+    curl_close($ch);
+
+    if($res)
+    {
+      $db = new Db();
+      $title = filter_var($_POST['doxTitle'], FILTER_SANITIZE_STRING);
+      $dox = $_POST['dox'];
+      $db->addDox($title, $dox, $_SERVER['REMOTE_ADDR']);
+    }
+  break;
 }
 ?>
