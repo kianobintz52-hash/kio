@@ -3,685 +3,216 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ATELIER – Shop</title>
+<title>KIOSHOP</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-/* ─── FONTS ──────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+body{margin:0;font-family:Inter,sans-serif;background:#0a0a0a;color:#e8e4dc}
+.hidden{display:none}
 
-/* ─── RESET & BASE ───────────────────────── */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#0a0a0a;--fg:#e8e4dc;--card:#111;--sec:#1a1a1a;
-  --border:#262626;--muted:#888;--pri:#0051ff;--pri-fg:#fff;
-  --amber:#d97706;--emerald:#10b981;--red:#ef4444;
-  --font-heading:'Playfair Display',serif;--font-body:'Inter',sans-serif;
+/* LOGIN */
+.login{
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.85);z-index:1000
 }
-html{scroll-behavior:smooth}
-body{font-family:var(--font-body);background:var(--bg);color:var(--fg);line-height:1.6;min-height:100vh}
-img{display:block;max-width:100%}
-button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
-input,select,textarea{font:inherit}
-
-/* ─── UTILITY ────────────────────────────── */
-.hidden{display:none!important}.flex{display:flex}.grid{display:grid}
-.items-center{align-items:center}.justify-between{justify-content:space-between}.justify-center{justify-content:center}
-.gap-1{gap:4px}.gap-2{gap:8px}.gap-3{gap:12px}.gap-4{gap:16px}.gap-6{gap:24px}
-.w-full{width:100%}.relative{position:relative}.fixed{position:fixed}.absolute{position:absolute}
-.overflow-hidden{overflow:hidden}.overflow-auto{overflow:auto}.overflow-y-auto{overflow-y:auto}
-.text-center{text-align:center}.text-right{text-align:right}.text-left{text-align:left}
-.truncate{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
-/* ─── NAV ─────────────────────────────────── */
-nav{position:fixed;inset:0 0 auto;z-index:50;background:rgba(10,10,10,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
-.nav-inner{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:64px}
-.logo{font-family:var(--font-heading);font-size:1.25rem;font-weight:600;letter-spacing:-.02em;color:var(--fg)}
-.nav-links{display:flex;align-items:center;gap:28px}
-.nav-link{font-size:.675rem;letter-spacing:.35em;text-transform:uppercase;color:var(--muted);transition:color .2s}
-.nav-link.active,.nav-link:hover{color:var(--fg)}
-.cart-btn{position:relative}.cart-btn svg{width:20px;height:20px;stroke:var(--muted);transition:stroke .2s}.cart-btn:hover svg{stroke:var(--fg)}
-.cart-badge{position:absolute;top:-8px;right:-8px;width:16px;height:16px;background:var(--pri);border-radius:50%;color:var(--pri-fg);font-size:.5rem;font-weight:600;display:flex;align-items:center;justify-content:center}
-
-/* ─── HERO ────────────────────────────────── */
-.hero{min-height:90vh;display:flex;align-items:center;justify-content:center;padding:0 32px}
-.hero-inner{text-align:center;max-width:700px}
-.hero-kicker{font-size:.6rem;letter-spacing:.55em;text-transform:uppercase;color:var(--muted);margin-bottom:32px}
-.hero h1{font-family:var(--font-heading);font-size:clamp(2.5rem,8vw,5.5rem);line-height:1.02;color:var(--fg);margin-bottom:32px}
-.hero h1 em{color:var(--muted);font-style:italic}.hero-divider{width:48px;height:1px;background:var(--border);margin:0 auto 32px}
-.hero p{font-size:.8rem;color:var(--muted);max-width:380px;margin:0 auto;line-height:1.7}
-
-/* ─── PRODUCT LIST ────────────────────────── */
-.products{padding:80px 32px;max-width:1400px;margin:0 auto}
-.product-row{padding:32px 0;display:grid;grid-template-columns:7fr 4fr;gap:48px;align-items:center;cursor:pointer;border-bottom:1px solid var(--border)}
-.product-row:nth-child(even){grid-template-columns:4fr 7fr}
-.product-row:nth-child(even) .product-info{order:-1}
-.product-img{aspect-ratio:4/5;background:var(--sec);overflow:hidden;display:flex;align-items:center;justify-content:center}
-.product-img img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.16,1,.3,1)}
-.product-row:hover .product-img img{transform:scale(1.05)}
-.product-img .placeholder{font-family:var(--font-heading);font-size:5rem;color:rgba(136,136,136,.15)}
-.product-info{padding:0 0 0 32px}
-.product-row:nth-child(even) .product-info{padding:0 32px 0 0}
-.product-cat{font-size:.6rem;letter-spacing:.45em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
-.product-info h2{font-family:var(--font-heading);font-size:1.6rem;line-height:1.15;color:var(--fg);margin-bottom:8px}
-.product-info .price{font-size:1.05rem;font-weight:300;color:var(--fg)}
-.product-info .low-stock{display:inline-flex;align-items:center;gap:6px;font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;color:rgba(217,119,6,.8);margin-top:8px}
-.product-info .low-stock span{width:6px;height:6px;background:var(--amber);border-radius:50%;animation:pulse 2s infinite}
-.product-info .cta{font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-top:18px;display:inline-block;transition:color .5s}
-.product-row:hover .cta{color:var(--pri)}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-
-/* ─── FOOTER ──────────────────────────────── */
-footer{border-top:1px solid var(--border);padding:64px 32px}
-.footer-grid{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:48px}
-footer h2{font-family:var(--font-heading);font-size:clamp(1.5rem,4vw,3rem);line-height:1.07;color:var(--fg)}
-footer h2 em{color:var(--muted)}footer p{font-size:.8rem;color:var(--muted);max-width:380px;margin-top:16px}
-.footer-links{display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-end;gap:12px}
-.footer-links span{font-size:.6rem;letter-spacing:.45em;text-transform:uppercase;color:var(--muted);cursor:pointer}
-.footer-copy{font-size:.7rem;color:rgba(136,136,136,.5)}
-
-/* ─── CART DRAWER ─────────────────────────── */
-.overlay{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.65)}
-.drawer{position:fixed;right:0;top:0;bottom:0;z-index:61;width:100%;max-width:420px;background:var(--card);border-left:1px solid var(--border);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .35s cubic-bezier(.16,1,.3,1)}
-.drawer.open{transform:translateX(0)}
-.drawer-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-.drawer-header h2{font-family:var(--font-heading);font-size:1.35rem;color:var(--fg)}
-.drawer-close{color:var(--muted);transition:color .2s}.drawer-close:hover{color:var(--fg)}
-.drawer-body{flex:1;padding:24px;overflow-y:auto}
-.drawer-empty{text-align:center;padding:48px 0;color:var(--muted);font-size:.8rem}
-.cart-item{display:flex;gap:14px;margin-bottom:20px}.cart-item-img{width:64px;height:80px;background:var(--sec);flex-shrink:0;overflow:hidden}
-.cart-item-img img{width:100%;height:100%;object-fit:cover}
-.cart-item-info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:space-between}
-.cart-item-info h4{font-size:.8rem;color:var(--fg);margin-bottom:2px}.cart-item-info .ci-price{font-size:.7rem;color:var(--muted)}
-.cart-item-row{display:flex;align-items:center;justify-content:space-between}
-.qty-ctrl{display:flex;align-items:center;border:1px solid var(--border)}
-.qty-ctrl button{padding:5px 6px;color:var(--muted);transition:color .2s}.qty-ctrl button:hover{color:var(--fg)}.qty-ctrl span{width:24px;text-align:center;font-size:.7rem}
-.ci-total{font-size:.8rem;color:var(--fg)}
-.drawer-foot{padding:24px;border-top:1px solid var(--border)}
-.drawer-foot .total-line{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.drawer-foot .total-label{font-size:.65rem;letter-spacing:.35em;text-transform:uppercase;color:var(--muted)}
-.drawer-foot .total-amount{font-family:var(--font-heading);font-size:1.2rem;color:var(--fg)}
-.btn{display:flex;align-items:center;justify-content:center;width:100%;height:48px;font-size:.65rem;letter-spacing:.3em;text-transform:uppercase;font-weight:500;transition:background .2s}
-.btn-pri{background:var(--pri);color:var(--pri-fg)}.btn-pri:hover{filter:brightness(1.1)}
-.btn-out{background:transparent;color:var(--muted);border:1px solid var(--border)}.btn-out:hover{color:var(--fg)}
-
-/* ─── PRODUCT MODAL ───────────────────────── */
-.modal-screen{position:fixed;inset:0;z-index:70;background:var(--bg);overflow-y:auto}
-.modal-close{position:sticky;top:0;float:right;z-index:5;margin:20px 24px;padding:8px 10px;background:rgba(10,10,10,.8);backdrop-filter:blur(8px);color:var(--muted);font-size:1.1rem}
-.modal-content{display:grid;grid-template-columns:1fr 1fr;min-height:100vh}
-.modal-gallery{background:var(--sec);display:flex;align-items:center;justify-content:center;position:relative}
-.modal-gallery .main-img{width:100%;aspect-ratio:4/5;object-fit:cover}
-.modal-gallery .placeholder-big{font-family:var(--font-heading);font-size:10rem;color:rgba(136,136,136,.07)}
-.modal-thumbs{position:absolute;bottom:24px;left:24px;right:24px;display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
-.modal-thumbs img{width:56px;height:72px;object-fit:cover;cursor:pointer;border:2px solid transparent;transition:border-color .2s}
-.modal-thumbs img.active{border-color:var(--pri)}
-.modal-info{padding:40px 40px 40px 24px;display:flex;flex-direction:column;justify-content:center}
-.modal-info .mi-cat{font-size:.6rem;letter-spacing:.45em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
-.modal-info h1{font-family:var(--font-heading);font-size:clamp(1.8rem,3.5vw,2.8rem);line-height:1.07;color:var(--fg);margin-bottom:12px}
-.modal-info .mi-price{font-size:1.5rem;font-weight:300;color:var(--fg);margin-bottom:24px}
-.modal-info .mi-desc{font-size:.78rem;color:var(--muted);line-height:1.7;margin-bottom:20px}
-.mi-stock{display:flex;align-items:center;gap:8px;margin-bottom:28px}
-.mi-stock .dot{width:8px;height:8px;border-radius:50%}.mi-stock .dot.green{background:var(--emerald)}.mi-stock .dot.amber{background:var(--amber);animation:pulse 2s infinite}.mi-stock .dot.red{background:var(--red)}
-.mi-stock span{font-size:.7rem;color:var(--muted)}
-.mi-qty{display:flex;align-items:center;gap:14px;margin-bottom:20px}
-.mi-qty label{font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:var(--muted)}
-.btn-lg{height:56px}
-.modal-details{margin-top:28px;padding-top:20px;border-top:1px solid var(--border);font-size:.7rem;color:var(--muted);line-height:1.8;white-space:pre-line}
-
-/* ─── CHECKOUT ────────────────────────────── */
-.checkout{padding:40px 32px;max-width:640px;margin:0 auto}
-.checkout h2{font-family:var(--font-heading);font-size:2rem;color:var(--fg);margin-bottom:32px}
-.chk-items{border-bottom:1px solid var(--border);padding-bottom:24px;margin-bottom:32px}
-.chk-item{display:flex;justify-content:space-between;margin-bottom:8px}
-.chk-item span{font-size:.8rem;color:var(--muted)}.chk-item .chk-price{font-size:.8rem;color:var(--fg)}
-.chk-total{display:flex;justify-content:space-between;padding-top:16px;border-top:1px solid var(--border);margin-bottom:28px}
-.chk-total .label{font-size:.65rem;letter-spacing:.35em;text-transform:uppercase;color:var(--muted)}
-.chk-total .amount{font-family:var(--font-heading);font-size:1.2rem;color:var(--fg)}
-.field{margin-bottom:16px}.field label{display:block;font-size:.6rem;letter-spacing:.35em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
-.field input,.field textarea,.field select{width:100%;height:48px;padding:0 14px;background:transparent;border:1px solid var(--border);color:var(--fg);font-size:.8rem}
-.field textarea{height:80px;padding:12px 14px;resize:none}
-.field input:focus,.field textarea:focus{outline:none;border-color:var(--pri)}
-.field input::placeholder,.field textarea::placeholder{color:rgba(136,136,136,.25)}
-.success{text-align:center;padding:80px 24px}
-.success .check{width:48px;height:48px;margin:0 auto 24px;color:var(--emerald)}
-.success h2{font-family:var(--font-heading);font-size:1.8rem;color:var(--fg);margin-bottom:12px}
-.success p{font-size:.8rem;color:var(--muted);margin-bottom:28px}
-
-/* ─── ADMIN ───────────────────────────────── */
-.admin{padding:40px 32px;max-width:1000px;margin:0 auto}
-.admin h1{font-family:var(--font-heading);font-size:2.5rem;color:var(--fg);margin-bottom:32px}
-.admin-tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:32px;overflow-x:auto}
-.admin-tab{display:flex;align-items:center;gap:6px;padding:10px 16px;font-size:.75rem;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;transition:color .2s,border-color .2s}
-.admin-tab.active{border-bottom-color:var(--pri);color:var(--fg)}
-.admin-tab svg{width:16px;height:16px;stroke-width:1.5}
-
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:40px}
-.stat{background:var(--card);border:1px solid var(--border);padding:18px}
-.stat .stat-label{font-size:.6rem;letter-spacing:.35em;text-transform:uppercase;color:var(--muted)}
-.stat .stat-val{font-family:var(--font-heading);font-size:1.5rem;color:var(--fg);margin-top:4px}
-.stat .stat-sub{font-size:.7rem;color:var(--muted);margin-top:2px}
-
-.recent-orders h3{font-size:.65rem;letter-spacing:.35em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
-.recent-order{background:var(--card);border:1px solid var(--border);padding:14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.ro-info h4{font-size:.8rem;color:var(--fg)}.ro-info p{font-size:.7rem;color:var(--muted)}
-.ro-right{text-align:right}.ro-right .ro-price{font-size:.8rem;color:var(--fg)}.ro-right .ro-date{font-size:.65rem;color:var(--muted)}
-
-.badge{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;padding:3px 8px;border-radius:3px;font-weight:500}
-.badge-pending{background:rgba(217,119,6,.1);color:var(--amber);border:1px solid rgba(217,119,6,.2)}
-.badge-confirmed{background:rgba(0,81,255,.1);color:var(--pri);border:1px solid rgba(0,81,255,.2)}
-.badge-shipped{background:rgba(59,130,246,.1);color:#3b82f6;border:1px solid rgba(59,130,246,.2)}
-.badge-delivered{background:rgba(16,185,129,.1);color:var(--emerald);border:1px solid rgba(16,185,129,.2)}
-.badge-cancelled{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2)}
-
-.admin-list{border:1px solid var(--border)}.admin-list>div{border-bottom:1px solid var(--border);padding:14px;display:flex;align-items:center;gap:14px}
-.admin-list>div:last-child{border-bottom:none}
-.al-img{width:56px;height:72px;background:var(--sec);flex-shrink:0;overflow:hidden}
-.al-img img{width:100%;height:100%;object-fit:cover}
-.al-info{flex:1;min-width:0}.al-info h4{font-size:.8rem;color:var(--fg)}.al-info .al-meta{font-size:.7rem;color:var(--muted);margin-top:2px}
-.al-actions{display:flex;gap:4px}.al-actions button{padding:6px;color:var(--muted);transition:color .2s}.al-actions button:hover{color:var(--fg)}.al-actions button.danger:hover{color:var(--red)}
-
-.form-panel{max-width:600px}.form-panel h2{font-family:var(--font-heading);font-size:1.8rem;color:var(--fg);margin-bottom:24px}
-.form-back{font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;display:inline-block;cursor:pointer}
-.image-preview{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
-.image-preview .ip-item{width:80px;height:105px;background:var(--sec);position:relative;overflow:hidden}
-.image-preview .ip-item img{width:100%;height:100%;object-fit:cover}
-.ip-item .rm{position:absolute;top:4px;right:4px;width:18px;height:18px;background:rgba(10,10,10,.8);display:flex;align-items:center;justify-content:center;font-size:.65rem;color:var(--muted);opacity:0;transition:opacity .2s}
-.ip-item:hover .rm{opacity:1}
-.upload-label{width:80px;height:105px;border:1px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font-size:.6rem;color:var(--muted);transition:border-color .2s}
-.upload-label:hover{border-color:var(--muted)}.upload-label svg{width:16px;height:16px;margin-bottom:4px}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.form-actions{display:flex;gap:12px;margin-top:24px}.form-actions .btn{flex:1}
-
-.confirm-dialog{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:24px}
-.confirm-box{background:var(--card);border:1px solid var(--border);padding:24px;max-width:360px;width:100%}
-.confirm-box p{font-size:.85rem;color:var(--fg);margin-bottom:8px}.confirm-box .sub{font-size:.7rem;color:var(--muted);margin-bottom:16px}
-.confirm-btns{display:flex;gap:12px}
-
-.order-detail{background:rgba(255,255,255,.02);padding:0 14px 20px}
-.order-detail .od-section{margin-bottom:20px}.od-section h4{font-size:.6rem;letter-spacing:.35em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
-.od-section p{font-size:.78rem;color:var(--fg);line-height:1.7}
-.od-item{display:flex;gap:10px;align-items:center;margin-bottom:8px}.od-item-img{width:40px;height:50px;background:var(--sec);flex-shrink:0;overflow:hidden}
-.od-item-img img{width:100%;height:100%;object-fit:cover}.od-item h5{font-size:.78rem;color:var(--fg);flex:1;min-width:0}.od-item span{font-size:.7rem;color:var(--muted)}
-
-/* ─── RESPONSIVE ──────────────────────────── */
-@media(max-width:768px){
-  .product-row,.product-row:nth-child(even){grid-template-columns:1fr;gap:20px}
-  .product-row:nth-child(even) .product-info{order:0}.product-info{padding:0!important}
-  .modal-content{grid-template-columns:1fr}.modal-gallery{min-height:50vh}.modal-info{padding:28px 24px}
-  .footer-grid{grid-template-columns:1fr;gap:28px}.footer-links{align-items:flex-start}
-  .form-row{grid-template-columns:1fr}
+.login-box{
+  width:320px;background:#111;padding:20px;border:1px solid #222
 }
+input{
+  width:100%;margin:6px 0;padding:10px;background:#000;border:1px solid #333;color:#fff
+}
+
+/* LAYOUT */
+nav{padding:16px;border-bottom:1px solid #222;display:flex;justify-content:space-between}
+.products{padding:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.card{background:#111;border:1px solid #222;padding:12px;cursor:pointer}
+button{background:#0051ff;color:#fff;border:none;padding:8px;cursor:pointer}
+
+/* MODAL */
+.modal{
+  position:fixed;inset:0;background:rgba(0,0,0,.9);
+  display:flex;align-items:center;justify-content:center;z-index:999
+}
+.modal-box{
+  width:420px;background:#111;padding:20px;border:1px solid #222
+}
+.small{font-size:.8rem;color:#aaa}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.badge{font-size:.7rem;padding:4px 6px;border:1px solid #333;cursor:pointer}
 </style>
 </head>
+
 <body>
 
-<!-- ─── NAV ─────────────────────────────────── -->
-<nav>
-  <div class="nav-inner">
-    <span class="logo">ATELIER</span>
-    <div class="nav-links">
-      <button class="nav-link active" data-view="shop">Shop</button>
-      <button class="nav-link" data-view="admin">Admin</button>
-      <button class="cart-btn" onclick="openCart()">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-        <span class="cart-badge hidden" id="cartBadge">0</span>
-      </button>
-    </div>
+<!-- LOGIN / REGISTER -->
+<div id="auth" class="login">
+  <div class="login-box">
+    <h3>KIOSHOP</h3>
+
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Passwort">
+    <input id="username" placeholder="Username (nur Register)">
+
+    <button onclick="signup()">Register</button>
+    <button onclick="signin()">Login</button>
+
+    <p id="authMsg" class="small"></p>
   </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <b>KIOSHOP</b>
+  <button onclick="logout()">Logout</button>
 </nav>
 
-<!-- ─── SHOP ────────────────────────────────── -->
-<div id="shopView" style="padding-top:64px">
-  <section class="hero">
-    <div class="hero-inner">
-      <span class="hero-kicker">Kuratierte Kollektion</span>
-      <h1>Jedes Stück<br><em>erzählt</em></h1>
-      <div class="hero-divider"></div>
-      <p>Handverlesene Stücke, direkt vom Macher. Limitiert, authentisch, einzigartig.</p>
-    </div>
-  </section>
-  <div style="height:1px;background:var(--border)"></div>
-  <section class="products" id="productList"></section>
-  <footer>
-    <div class="footer-grid">
-      <div>
-        <h2>Handgefertigt.<br><em>Einzigartig.</em></h2>
-        <p>Jedes Stück ist ein Original — mit Sorgfalt und Hingabe hergestellt. Direkt vom Macher zu dir.</p>
-      </div>
-      <div class="footer-links">
-        <span onclick="document.getElementById('productList').scrollIntoView({behavior:'smooth'})">Kollektion</span>
-        <span class="footer-copy">&copy; 2026 ATELIER</span>
-      </div>
-    </div>
-  </footer>
-</div>
+<!-- PRODUCTS -->
+<div id="products" class="products"></div>
 
-<!-- ─── ADMIN ───────────────────────────────── -->
-<div id="adminView" class="admin hidden" style="padding-top:64px">
-  <h1>Admin</h1>
-  <div class="admin-tabs" id="adminTabs">
-    <button class="admin-tab active" data-tab="dashboard">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      Übersicht
-    </button>
-    <button class="admin-tab" data-tab="products">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
-      Produkte
-    </button>
-    <button class="admin-tab" data-tab="orders">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      Bestellungen
-    </button>
-  </div>
-  <div id="adminContent"></div>
-</div>
+<!-- MODAL -->
+<div id="modal" class="modal hidden">
+  <div class="modal-box">
+    <h3 id="mTitle"></h3>
+    <p id="mPrice"></p>
 
-<!-- ─── CART DRAWER ─────────────────────────── -->
-<div class="overlay hidden" id="cartOverlay" onclick="closeCart()"></div>
-<div class="drawer" id="cartDrawer">
-  <div class="drawer-header">
-    <h2>Warenkorb</h2>
-    <button class="drawer-close" onclick="closeCart()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-  </div>
-  <div class="drawer-body" id="cartBody"></div>
-  <div class="drawer-foot hidden" id="cartFoot">
-    <div class="total-line">
-      <span class="total-label">Gesamt</span>
-      <span class="total-amount" id="cartTotal">€0,00</span>
+    <div class="row">
+      <button onclick="likeProduct()">❤️ Like</button>
+      <button onclick="saveProduct()">🔖 Save</button>
     </div>
-    <button class="btn btn-pri" onclick="openCheckout()">Zur Kasse</button>
+
+    <div class="row">
+      <input id="commentText" placeholder="Kommentar">
+      <button onclick="addComment()">Send</button>
+    </div>
+
+    <div id="comments"></div>
+
+    <button onclick="closeModal()">Close</button>
   </div>
 </div>
 
-<!-- ─── CHECKOUT ────────────────────────────── -->
-<div class="modal-screen hidden" id="checkoutView">
-  <div class="checkout" id="checkoutContent"></div>
-</div>
-
-<!-- ─── PRODUCT MODAL ───────────────────────── -->
-<div class="modal-screen hidden" id="productModal"></div>
-
-<!-- ─── SCRIPTS ─────────────────────────────── -->
 <script>
-/* ─── DATA ─────────────────────────────────── */
-const LS_PRODUCTS = 'atelier_products';
-const LS_ORDERS = 'atelier_orders';
-const LS_CART = 'atelier_cart';
+/* SUPABASE INIT */
+const supabaseUrl = "YOUR_SUPABASE_URL";
+const supabaseKey = "YOUR_SUPABASE_ANON_KEY";
+const sb = supabase.createClient(supabaseUrl, supabaseKey);
 
-const defaultProducts = [
-  {id:'p1',title:'Keramik Vase',description:'Handgedrehte Vase aus Steinzeug. Jedes Stück ein Unikat mit feiner Glasur in Erdtönen.',price:89,category:'Keramik',stock:3,status:'published',details:'Material: Steinzeug\nHöhe: ca. 24 cm\nHandwäsche empfohlen',image_urls:['https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?w=800&q=80']},
-  {id:'p2',title:'Leinen Schal',description:'Naturbelassener Leinenschal, handgewebt in einem kleinen Atelier. Weich, leicht und zeitlos.',price:65,category:'Textil',stock:5,status:'published',details:'Material: 100% Leinen\nMaße: 180 x 60 cm\nNaturfarben, leichte Variationen möglich',image_urls:['https://images.unsplash.com/photo-1601924638867-3a6de6b7a500?w=800&q=80']},
-  {id:'p3',title:'Holz Schneidebrett',description:'Massives Eichenholz-Schneidebrett, von Hand geölt. Perfekt für die tägliche Küche.',price:120,category:'Holz',stock:2,status:'published',details:'Material: Eiche massiv\nMaße: 45 x 30 x 3 cm\nRegelmäßig mit Holzöl pflegen',image_urls:['https://images.unsplash.com/photo-1594226801341-41427b4e5c22?w=800&q=80']},
-  {id:'p4',title:'Kerzen Set',description:'Dreier-Set handgegossener Kerzen aus reinem Bienenwachs. Sanfter Honigduft.',price:34,category:'Kerzen',stock:10,status:'published',details:'Material: 100% Bienenwachs\nBrenndauer: ca. 8 Std. pro Kerze\nHöhe: je 20 cm',image_urls:['https://images.unsplash.com/photo-1603006905003-be41d6e4cd11?w=800&q=80']},
-];
+/* STATE */
+let user = null;
+let currentProduct = null;
 
-function getProducts(){try{return JSON.parse(localStorage.getItem(LS_PRODUCTS))||[...defaultProducts]}catch(e){return[...defaultProducts]}}
-function saveProducts(p){localStorage.setItem(LS_PRODUCTS,JSON.stringify(p))}
-function getOrders(){try{return JSON.parse(localStorage.getItem(LS_ORDERS))||[]}catch(e){return[]}}
-function saveOrders(o){localStorage.setItem(LS_ORDERS,JSON.stringify(o))}
-function getCart(){try{return JSON.parse(localStorage.getItem(LS_CART))||[]}catch(e){return[]}}
-function saveCart(c){localStorage.setItem(LS_CART,JSON.stringify(c))}
-function generateId(){return 'id_'+Date.now()+'_'+Math.random().toString(36).slice(2,9)}
+/* AUTH */
+async function signup(){
+  const email = email.value;
+  const password = password.value;
+  const username = username.value;
 
-// Init
-if(!localStorage.getItem(LS_PRODUCTS)) saveProducts(defaultProducts);
-let currentView = 'shop';
+  const { data, error } = await sb.auth.signUp({ email, password });
 
-/* ─── CART ─────────────────────────────────── */
-function addToCart(product, qty=1){
-  const cart=getCart();const ex=cart.find(i=>i.product_id===product.id);
-  if(ex){ex.quantity+=qty}else{cart.push({product_id:product.id,title:product.title,price:product.price,quantity:qty,image_url:product.image_urls?.[0]||''})}
-  saveCart(cart);updateCartBadge();
-}
-function removeFromCart(id){saveCart(getCart().filter(i=>i.product_id!==id));updateCartBadge();renderCart()}
-function updateQty(id,qty){if(qty<=0){removeFromCart(id);return}const cart=getCart();const it=cart.find(i=>i.product_id===id);if(it)it.quantity=qty;saveCart(cart);updateCartBadge();renderCart()}
-function clearCart(){saveCart([]);updateCartBadge()}
-function cartTotal(){return getCart().reduce((s,i)=>s+i.price*i.quantity,0)}
-function cartCount(){return getCart().reduce((s,i)=>s+i.quantity,0)}
-
-function updateCartBadge(){
-  const b=document.getElementById('cartBadge');const n=cartCount();
-  if(n>0){b.textContent=n;b.classList.remove('hidden')}else{b.classList.add('hidden')}
-}
-
-function openCart(){document.getElementById('cartOverlay').classList.remove('hidden');document.getElementById('cartDrawer').classList.add('open');renderCart()}
-function closeCart(){document.getElementById('cartOverlay').classList.add('hidden');document.getElementById('cartDrawer').classList.remove('open')}
-
-function renderCart(){
-  const cart=getCart();const body=document.getElementById('cartBody');const foot=document.getElementById('cartFoot');
-  if(cart.length===0){
-    body.innerHTML='<div class="drawer-empty"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="margin:0 auto 12px;opacity:.15"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/></svg><p>Leer.</p></div>';
-    foot.classList.add('hidden');
-  }else{
-    body.innerHTML=cart.map(it=>`
-      <div class="cart-item">
-        <div class="cart-item-img">${it.image_url?`<img src="${it.image_url}" alt="">`:`<div style="display:flex;align-items:center;justify-content:center;height:100%;font-family:var(--font-heading);font-size:2rem;color:rgba(136,136,136,.15)">${it.title[0]}</div>`}</div>
-        <div class="cart-item-info">
-          <div><h4>${esc(it.title)}</h4><span class="ci-price">€${it.price.toFixed(2)}</span></div>
-          <div class="cart-item-row">
-            <div class="qty-ctrl">
-              <button onclick="updateQty('${it.product_id}',${it.quantity-1})"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-              <span>${it.quantity}</span>
-              <button onclick="updateQty('${it.product_id}',${it.quantity+1})"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-            </div>
-            <span class="ci-total">€${(it.price*it.quantity).toFixed(2)}</span>
-          </div>
-        </div>
-      </div>
-    `).join('');
-    foot.classList.remove('hidden');
-    document.getElementById('cartTotal').textContent='€'+cartTotal().toFixed(2);
+  if(data.user){
+    await sb.from("profiles").insert({
+      id: data.user.id,
+      username
+    });
+    msg("Registered");
   }
 }
 
-/* ─── CHECKOUT ─────────────────────────────── */
-function openCheckout(){
-  closeCart();
-  const v=document.getElementById('checkoutView');v.classList.remove('hidden');
-  const cart=getCart();
-  document.getElementById('checkoutContent').innerHTML=`
-    <button class="drawer-close" style="position:absolute;top:20px;right:24px" onclick="closeCheckout()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-    <h2>Kasse</h2>
-    <div class="chk-items">${cart.map(it=>`<div class="chk-item"><span>${esc(it.title)} &times; ${it.quantity}</span><span class="chk-price">€${(it.price*it.quantity).toFixed(2)}</span></div>`).join('')}</div>
-    <div class="chk-total"><span class="label">Gesamt</span><span class="amount">€${cartTotal().toFixed(2)}</span></div>
-    <form onsubmit="submitOrder(event)">
-      <div class="field"><label>Name *</label><input required name="customer_name"></div>
-      <div class="field"><label>E-Mail *</label><input required type="email" name="customer_email"></div>
-      <div class="field"><label>Adresse *</label><input required name="customer_address"></div>
-      <div class="form-row">
-        <div class="field"><label>PLZ *</label><input required name="customer_zip"></div>
-        <div class="field"><label>Stadt *</label><input required name="customer_city"></div>
-      </div>
-      <div class="field"><label>Land</label><input value="Deutschland" name="customer_country"></div>
-      <div class="field"><label>Nachricht</label><textarea name="customer_note" placeholder="Hinterlasse eine Nachricht..."></textarea></div>
-      <button type="submit" class="btn btn-pri btn-lg" id="checkoutBtn">Bestellung aufgeben</button>
-    </form>
-  `;
-  window.scrollTo(0,0);
+async function signin(){
+  const { data, error } = await sb.auth.signInWithPassword({
+    email: email.value,
+    password: password.value
+  });
+
+  if(data.user){
+    user = data.user;
+    document.getElementById("auth").classList.add("hidden");
+    loadProducts();
+  }
 }
 
-function closeCheckout(){document.getElementById('checkoutView').classList.add('hidden')}
+async function logout(){
+  await sb.auth.signOut();
+  location.reload();
+}
 
-function submitOrder(e){
-  e.preventDefault();const f=new FormData(e.target);
-  const order={
-    id:generateId(),customer_name:f.get('customer_name'),customer_email:f.get('customer_email'),
-    customer_address:f.get('customer_address'),customer_zip:f.get('customer_zip'),
-    customer_city:f.get('customer_city'),customer_country:f.get('customer_country'),
-    customer_note:f.get('customer_note'),items:getCart(),total:cartTotal(),
-    status:'pending',created_date:new Date().toISOString()
-  };
-  const orders=getOrders();orders.unshift(order);saveOrders(orders);clearCart();updateCartBadge();
-  document.getElementById('checkoutContent').innerHTML=`
-    <div class="success">
-      <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg>
-      <h2>Vielen Dank!</h2><p>Deine Bestellung ist eingegangen. Wir melden uns per E-Mail bei dir.</p>
-      <button class="btn btn-out" onclick="closeCheckout();switchView('shop')">Zurück zum Shop</button>
+/* PRODUCTS */
+async function loadProducts(){
+  const { data } = await sb.from("products").select("*");
+  const box = document.getElementById("products");
+
+  box.innerHTML = data.map(p => `
+    <div class="card" onclick='openProduct(${JSON.stringify(p)})'>
+      <b>${p.title}</b>
+      <p>€${p.price}</p>
     </div>
-  `;
-  // Auto-close after 3s
-  setTimeout(()=>{closeCheckout();switchView('shop')},4000);
+  `).join("");
 }
 
-/* ─── PRODUCT MODAL ────────────────────────── */
-function openProductModal(product){
-  const m=document.getElementById('productModal');m.classList.remove('hidden');
-  const imgs=product.image_urls?.length?product.image_urls:[];
-  m.innerHTML=`
-    <button class="modal-close" onclick="closeProductModal()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-    <div class="modal-content">
-      <div class="modal-gallery">
-        ${imgs.length?`<img src="${imgs[0]}" class="main-img" id="modalMainImg" alt="">`:`<span class="placeholder-big">${product.title[0]}</span>`}
-        ${imgs.length>1?`<div class="modal-thumbs">${imgs.map((u,i)=>`<img src="${u}" class="${i===0?'active':''}" onclick="document.getElementById('modalMainImg').src='${u}';this.parentElement.querySelectorAll('img').forEach(e=>e.classList.remove('active'));this.classList.add('active')">`).join('')}</div>`:''}
-      </div>
-      <div class="modal-info">
-        ${product.category?`<span class="mi-cat">${esc(product.category)}</span>`:''}
-        <h1>${esc(product.title)}</h1>
-        <p class="mi-price">€${product.price.toFixed(2)}</p>
-        ${product.description?`<p class="mi-desc">${esc(product.description)}</p>`:''}
-        <div class="mi-stock">
-          <span class="dot ${product.stock<=0?'red':product.stock<=3?'amber':'green'}"></span>
-          <span>${product.stock<=0?'Ausverkauft':product.stock<=3?`Nur ${product.stock} verfügbar`:'Auf Lager'}</span>
-        </div>
-        ${product.stock>0?`
-          <div class="mi-qty"><label>Menge</label>
-            <div class="qty-ctrl">
-              <button onclick="const s=document.getElementById('modalQty');s.textContent=Math.max(1,parseInt(s.textContent)-1)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-              <span id="modalQty">1</span>
-              <button onclick="const s=document.getElementById('modalQty');s.textContent=Math.min(${product.stock},parseInt(s.textContent)+1)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-            </div>
-          </div>
-          <button class="btn btn-pri btn-lg" id="modalAddBtn" onclick="addToCart(${JSON.stringify(product).replace(/"/g,'&quot;')},parseInt(document.getElementById('modalQty')?.textContent||1));const b=this;b.innerHTML='<svg width=16 height=16 viewBox=\\'0 0 24 24\\' fill=none stroke=currentColor stroke-width=2><polyline points=\\'20 6 9 17 4 12\\'/></svg> Hinzugefügt';b.style.background='var(--emerald)';setTimeout(()=>{b.innerHTML='In den Warenkorb';b.style.background='var(--pri)'},2000)">In den Warenkorb</button>
-        `:''}
-        ${product.details?`<div class="modal-details"><strong>Details</strong><br>${esc(product.details)}</div>`:''}
-      </div>
-    </div>
-  `;
-  window.scrollTo(0,0);
+/* MODAL */
+function openProduct(p){
+  currentProduct = p;
+
+  mTitle.innerText = p.title;
+  mPrice.innerText = "€" + p.price;
+
+  modal.classList.remove("hidden");
+  loadComments();
 }
 
-function closeProductModal(){document.getElementById('productModal').classList.add('hidden')}
-
-/* ─── SHOP RENDER ──────────────────────────── */
-function renderShop(){
-  const products=getProducts().filter(p=>p.status==='published');
-  const list=document.getElementById('productList');
-  if(products.length===0){list.innerHTML='<p style="text-align:center;color:var(--muted);padding:60px 0">Kollektion kommt bald.</p>';return}
-  list.innerHTML=products.map((p,i)=>`
-    <div class="product-row" style="${i%2?'':'--order:0'}" onclick='openProductModal(${JSON.stringify(p).replace(/'/g,"&#39;")})'>
-      <div class="product-img">${p.image_urls?.[0]?`<img src="${p.image_urls[0]}" alt="">`:`<span class="placeholder">${esc(p.title[0])}</span>`}</div>
-      <div class="product-info">
-        ${p.category?`<span class="product-cat">${esc(p.category)}</span>`:''}
-        <h2>${esc(p.title)}</h2>
-        <div class="price">€${p.price.toFixed(2)}</div>
-        ${p.stock>0&&p.stock<=3?`<div class="low-stock"><span></span>Nur ${p.stock} übrig</div>`:''}
-        <span class="cta">Entdecken &rarr;</span>
-      </div>
-    </div>
-  `).join('');
+function closeModal(){
+  modal.classList.add("hidden");
 }
 
-/* ─── ADMIN ────────────────────────────────── */
-function renderAdmin(){
-  const tab=document.querySelector('.admin-tab.active')?.dataset?.tab||'dashboard';
-  const content=document.getElementById('adminContent');
-  if(tab==='dashboard')renderDashboard(content);
-  else if(tab==='products')renderAdminProducts(content);
-  else if(tab==='orders')renderAdminOrders(content);
-}
-
-function renderDashboard(el){
-  const products=getProducts();
-  const orders=getOrders();
-  const pub=products.filter(p=>p.status==='published').length;
-  const rev=orders.reduce((s,o)=>s+(o.total||0),0);
-  const pend=orders.filter(o=>o.status==='pending').length;
-  el.innerHTML=`
-    <div class="stats">
-      <div class="stat"><span class="stat-label">Produkte</span><div class="stat-val">${pub}</div><div class="stat-sub">${products.length} gesamt</div></div>
-      <div class="stat"><span class="stat-label">Bestellungen</span><div class="stat-val">${orders.length}</div><div class="stat-sub">${pend} offen</div></div>
-      <div class="stat"><span class="stat-label">Umsatz</span><div class="stat-val">€${rev.toFixed(2)}</div></div>
-      <div class="stat"><span class="stat-label">&Oslash; Bestellung</span><div class="stat-val">${orders.length>0?'€'+(rev/orders.length).toFixed(2):'—'}</div></div>
-    </div>
-    <div class="recent-orders"><h3>Letzte Bestellungen</h3>${
-      orders.slice(0,5).map(o=>`
-        <div class="recent-order">
-          <div class="ro-info"><h4>${esc(o.customer_name)}</h4><p>${esc(o.customer_email)}</p></div>
-          <div class="ro-right"><div class="ro-price">€${(o.total||0).toFixed(2)}</div><div class="ro-date">${new Date(o.created_date).toLocaleDateString('de-DE')}</div></div>
-          <span class="badge badge-${o.status||'pending'}">${statusLabel(o.status)}</span>
-        </div>
-      `).join('')
-    }${orders.length===0?'<p style="color:var(--muted);font-size:.75rem">Noch keine Bestellungen.</p>':''}</div>
-  `;
-}
-
-function renderAdminProducts(el){
-  const products=getProducts();
-  const form=window._adminProductForm;
-  if(form){renderProductForm(el,form);return}
-  el.innerHTML=`
-    <button class="btn btn-pri" style="width:auto;padding:0 20px;margin-bottom:20px" onclick="window._adminProductForm={};renderAdmin()">+ Neues Produkt</button>
-    ${products.length===0?'<p style="color:var(--muted);font-size:.8rem">Keine Produkte.</p>':`
-    <div class="admin-list">${products.map(p=>`
-      <div>
-        <div class="al-img">${p.image_urls?.[0]?`<img src="${p.image_urls[0]}" alt="">`:`<div style="display:flex;align-items:center;justify-content:center;height:100%;font-family:var(--font-heading);font-size:1.5rem;color:rgba(136,136,136,.15)">${p.title[0]}</div>`}</div>
-        <div class="al-info"><h4>${esc(p.title)}</h4><div class="al-meta">€${p.price.toFixed(2)} &middot; <span class="badge badge-${p.status==='published'?'delivered':p.status==='sold_out'?'cancelled':'pending'}">${p.status==='draft'?'Entwurf':p.status==='published'?'Aktiv':'Ausverkauft'}</span></div></div>
-        <div class="al-actions">
-          <button onclick="window._adminProductForm=${JSON.stringify(p).replace(/"/g,'&quot;')};renderAdmin()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.85 0 114 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>
-          <button class="danger" onclick="deleteProduct('${p.id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
-        </div>
-      </div>
-    `).join('')}</div>`}
-  `;
-}
-
-function renderProductForm(el,product){
-  const isEdit=!!product.id;
-  const imgs=product.image_urls||[];
-  el.innerHTML=`
-    <div class="form-panel">
-      <span class="form-back" onclick="window._adminProductForm=null;renderAdmin()">&larr; Zurück</span>
-      <h2>${isEdit?'Bearbeiten':'Neues Produkt'}</h2>
-      <form onsubmit="saveProduct(event,'${product.id||''}')">
-        <div class="field"><label>Bilder</label>
-          <div class="image-preview">${imgs.map((u,i)=>`<div class="ip-item"><img src="${u}"><span class="rm" onclick="this.parentElement.remove();updateFormImages()">×</span></div>`).join('')}
-            <label class="upload-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Upload<input type="file" multiple accept="image/*" onchange="handleImageUpload(event)" style="display:none"></label>
-          </div>
-          <input type="hidden" id="formImages" value='${JSON.stringify(imgs)}'>
-        </div>
-        <div class="field"><label>Titel *</label><input required name="title" value="${esc(product.title||'')}"></div>
-        <div class="field"><label>Beschreibung</label><textarea name="description">${esc(product.description||'')}</textarea></div>
-        <div class="form-row">
-          <div class="field"><label>Preis (€) *</label><input required type="number" step="0.01" min="0" name="price" value="${product.price||''}"></div>
-          <div class="field"><label>Bestand</label><input type="number" min="0" name="stock" value="${product.stock||0}"></div>
-        </div>
-        <div class="form-row">
-          <div class="field"><label>Kategorie</label><input name="category" value="${esc(product.category||'')}" placeholder="z.B. Keramik"></div>
-          <div class="field"><label>Status</label><select name="status"><option value="draft" ${product.status==='draft'?'selected':''}>Entwurf</option><option value="published" ${product.status==='published'?'selected':''}>Veröffentlicht</option><option value="sold_out" ${product.status==='sold_out'?'selected':''}>Ausverkauft</option></select></div>
-        </div>
-        <div class="field"><label>Details</label><textarea name="details" placeholder="Material, Maße...">${esc(product.details||'')}</textarea></div>
-        <div class="form-actions">
-          <button type="button" class="btn btn-out" onclick="window._adminProductForm=null;renderAdmin()">Abbrechen</button>
-          <button type="submit" class="btn btn-pri">${isEdit?'Speichern':'Erstellen'}</button>
-        </div>
-      </form>
-    </div>
-  `;
-}
-
-function handleImageUpload(e){
-  const files=Array.from(e.target.files);if(!files.length)return;
-  const input=document.getElementById('formImages');let urls=JSON.parse(input.value||'[]');
-  files.forEach(f=>{
-    const reader=new FileReader();
-    reader.onload=function(ev){urls.push(ev.target.result);input.value=JSON.stringify(urls);renderAdmin()};
-    reader.readAsDataURL(f);
+/* LIKE */
+async function likeProduct(){
+  await sb.from("likes").insert({
+    user_id: user.id,
+    product_id: currentProduct.id
   });
 }
 
-function updateFormImages(){
-  const items=document.querySelectorAll('.ip-item img');const urls=[];
-  items.forEach(img=>urls.push(img.src));
-  document.getElementById('formImages').value=JSON.stringify(urls);
+/* SAVE */
+async function saveProduct(){
+  await sb.from("wishlist").insert({
+    user_id: user.id,
+    product_id: currentProduct.id
+  });
 }
 
-function saveProduct(e,existingId){
-  e.preventDefault();const f=new FormData(e.target);
-  const images=JSON.parse(document.getElementById('formImages')?.value||'[]');
-  const data={
-    id:existingId||generateId(),title:f.get('title'),description:f.get('description'),
-    price:parseFloat(f.get('price'))||0,category:f.get('category'),stock:parseInt(f.get('stock'))||0,
-    status:f.get('status'),details:f.get('details'),image_urls:images
-  };
-  let products=getProducts();
-  if(existingId){products=products.map(p=>p.id===existingId?{...p,...data}:p)}
-  else{products.unshift(data)}
-  saveProducts(products);window._adminProductForm=null;
-  renderShop();renderAdmin();
+/* COMMENTS */
+async function addComment(){
+  await sb.from("comments").insert({
+    user_id: user.id,
+    product_id: currentProduct.id,
+    text: commentText.value
+  });
+
+  commentText.value = "";
+  loadComments();
 }
 
-function deleteProduct(id){
-  if(!confirm('Produkt unwiderruflich löschen?'))return;
-  saveProducts(getProducts().filter(p=>p.id!==id));
-  renderShop();renderAdmin();
+async function loadComments(){
+  const { data } = await sb
+    .from("comments")
+    .select("*")
+    .eq("product_id", currentProduct.id);
+
+  comments.innerHTML = data.map(c => `
+    <p class="small">💬 ${c.text}</p>
+  `).join("");
 }
 
-/* ─── ADMIN ORDERS ─────────────────────────── */
-let expandedOrder=null;
-
-function renderAdminOrders(el){
-  const orders=getOrders();
-  el.innerHTML=orders.length===0?'<p style="color:var(--muted);font-size:.8rem">Keine Bestellungen.</p>':`
-    <div class="admin-list">${orders.map(o=>`
-      <div style="display:block;padding:0">
-        <button style="width:100%;padding:14px;display:flex;align-items:center;gap:14px;text-align:left;background:transparent;border:none;color:inherit;cursor:pointer" onclick="toggleOrderDetail('${o.id}')">
-          <div class="al-info" style="flex:1"><h4>${esc(o.customer_name)}</h4><div class="al-meta"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 01-2.06 0L2 7"/></svg> ${esc(o.customer_email)}</div></div>
-          <div style="text-align:right"><div style="font-size:.8rem;color:var(--fg)">€${(o.total||0).toFixed(2)}</div><div style="font-size:.65rem;color:var(--muted)">${new Date(o.created_date).toLocaleDateString('de-DE')}</div></div>
-          <span class="badge badge-${o.status||'pending'}">${statusLabel(o.status)}</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="chevron-${o.id}"><polyline points="${expandedOrder===o.id?'18 15 12 9 6 15':'6 9 12 15 18 9'}"/></svg>
-        </button>
-        <div class="order-detail" id="detail-${o.id}" style="display:${expandedOrder===o.id?'block':'none'}">
-          <div class="od-section" style="display:flex;align-items:center;gap:12px">
-            <h4 style="margin-bottom:0">Status</h4>
-            <select onchange="updateOrderStatus('${o.id}',this.value)" style="background:transparent;border:1px solid var(--border);color:var(--fg);padding:4px 8px;font-size:.75rem">
-              <option value="pending" ${o.status==='pending'?'selected':''}>Offen</option>
-              <option value="confirmed" ${o.status==='confirmed'?'selected':''}>Bestätigt</option>
-              <option value="shipped" ${o.status==='shipped'?'selected':''}>Versendet</option>
-              <option value="delivered" ${o.status==='delivered'?'selected':''}>Geliefert</option>
-              <option value="cancelled" ${o.status==='cancelled'?'selected':''}>Storniert</option>
-            </select>
-          </div>
-          <div class="od-section"><h4>Lieferadresse</h4><p>${esc(o.customer_address)}<br>${esc(o.customer_zip)} ${esc(o.customer_city)}<br>${esc(o.customer_country)}</p></div>
-          ${o.customer_note?`<div class="od-section"><h4>Nachricht</h4><p style="font-style:italic;font-family:var(--font-heading)">"${esc(o.customer_note)}"</p></div>`:''}
-          <div class="od-section"><h4>Artikel</h4>${(o.items||[]).map(it=>`
-            <div class="od-item">
-              <div class="od-item-img">${it.image_url?`<img src="${it.image_url}" alt="">`:`<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:.6rem;color:rgba(136,136,136,.2)">${esc(it.title[0])}</div>`}</div>
-              <h5>${esc(it.title)}</h5><span>&times; ${it.quantity}</span>
-              <span>€${(it.price*it.quantity).toFixed(2)}</span>
-            </div>
-          `).join('')}</div>
-        </div>
-      </div>
-    `).join('')}</div>
-  `;
-}
-
-function toggleOrderDetail(id){
-  expandedOrder=expandedOrder===id?null:id;
-  renderAdmin();
-}
-
-function updateOrderStatus(id,status){
-  const orders=getOrders();const o=orders.find(o=>o.id===id);if(o)o.status=status;
-  saveOrders(orders);renderAdmin();
-}
-
-function statusLabel(s){
-  const map={pending:'Offen',confirmed:'Bestätigt',shipped:'Versendet',delivered:'Geliefert',cancelled:'Storniert'};
-  return map[s]||s||'Offen';
-}
-
-/* ─── VIEW SWITCHING ───────────────────────── */
-function switchView(view){
-  currentView=view;
-  document.querySelectorAll('.nav-link').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
-  document.getElementById('shopView').classList.toggle('hidden',view!=='shop');
-  document.getElementById('adminView').classList.toggle('hidden',view!=='admin');
-  if(view==='shop')renderShop();
-  if(view==='admin')renderAdmin();
-}
-
-/* ─── HELPERS ──────────────────────────────── */
-function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML}
-
-/* ─── INIT ─────────────────────────────────── */
-document.querySelectorAll('.nav-link').forEach(b=>b.addEventListener('click',()=>switchView(b.dataset.view)));
-document.querySelectorAll('.admin-tab').forEach(b=>b.addEventListener('click',()=>{
-  document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
-  b.classList.add('active');renderAdmin();
-}));
-switchView('shop');
-updateCartBadge();
+/* INIT */
+sb.auth.getUser().then(res=>{
+  if(res.data.user){
+    user = res.data.user;
+    document.getElementById("auth").classList.add("hidden");
+    loadProducts();
+  }
+});
 </script>
+
 </body>
 </html>
