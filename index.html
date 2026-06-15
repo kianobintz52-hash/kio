@@ -43,7 +43,7 @@
     </div>
   </nav>
 
-  <!-- Login Page -->
+  <!-- Login -->
   <div id="page-login" class="page max-w-md mx-auto mt-20 p-10 bg-gray-900/95 rounded-3xl border border-purple-500">
     <h2 class="text-5xl font-bold text-center neon-purple mb-10">ANIME SHOP</h2>
     <div class="flex gap-4 justify-center mb-8 bg-gray-800 rounded-3xl p-1">
@@ -84,7 +84,14 @@
   <!-- Admin -->
   <div id="page-admin" class="page hidden max-w-7xl mx-auto p-8">
     <h2 class="text-4xl font-bold mb-8 neon-purple">Admin Panel - KiolLegend</h2>
-    <div id="admin-content"></div>
+    <div class="mb-12">
+      <h3 class="text-2xl mb-6">Produkte verwalten</h3>
+      <div id="admin-products" class="grid grid-cols-1 md:grid-cols-2 gap-8"></div>
+    </div>
+    <div>
+      <h3 class="text-2xl mb-6">Registrierte User</h3>
+      <div id="admin-users" class="bg-gray-900 p-6 rounded-3xl border border-purple-500"></div>
+    </div>
   </div>
 
   <!-- Warenkorb Modal -->
@@ -106,15 +113,12 @@
 
   <script>
     const PAYPAL_CLIENT_ID = "AfePx5V-Tru6WXLs1fwvK3RjuYKC5No0UmUgB9jmEr0IjsZ3v6BwqeQ0ur3leNkU87nz-RTFDswULn5S";
+
     let currentUser = null;
-    let products = JSON.parse(localStorage.getItem('products')) || [
-      {id:1, name:"Premium Abo Code", price:79.90, stock:12, desc:"12 Monate Zugang"},
-      {id:2, name:"Manga Sammelband Bundle", price:89.90, stock:8, desc:"10 Bände"},
-      {id:3, name:"Anime Figur Limited", price:59.90, stock:15, desc:"Hochwertige Figur"},
-      {id:4, name:"Poster Set", price:24.90, stock:30, desc:"3 große Poster"}
-    ];
+    let products = JSON.parse(localStorage.getItem('products')) || [];
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     let orders = JSON.parse(localStorage.getItem('orders')) || [];
+    let users = JSON.parse(localStorage.getItem('users')) || [];
 
     const owner = { username: "kiollegend", password: "kiollegend" };
 
@@ -122,6 +126,7 @@
       localStorage.setItem('products', JSON.stringify(products));
       localStorage.setItem('cart', JSON.stringify(cart));
       localStorage.setItem('orders', JSON.stringify(orders));
+      localStorage.setItem('users', JSON.stringify(users));
     }
 
     function loadUser() {
@@ -139,8 +144,12 @@
     function renderProducts() {
       const container = document.getElementById('products');
       container.innerHTML = products.map(p => `
-        <div class="anime-card bg-gray-900/95 border border-purple-500 rounded-3xl overflow-hidden">
-          <img src="${p.img || `https://picsum.photos/id/${p.id + 100}/300/300`}" class="w-full h-64 object-cover">
+        <div class="anime-card bg-gray-900/95 border border-purple-500 rounded-3xl overflow-hidden relative">
+          ${currentUser?.username === owner.username ? `
+            <button onclick="deleteProduct(${p.id});event.stopImmediatePropagation()" class="absolute top-3 right-3 bg-red-600 text-white p-2 rounded-full z-10">
+              <i class="fas fa-trash"></i>
+            </button>` : ''}
+          <img src="${p.img || `https://picsum.photos/id/${p.id % 900 + 100}/300/300`}" class="w-full h-64 object-cover">
           <div class="p-6">
             <h3 class="font-bold text-xl">${p.name}</h3>
             <p class="text-3xl font-bold text-purple-400">${p.price} €</p>
@@ -180,12 +189,12 @@
         html += `
           <div class="flex justify-between items-center bg-gray-800 p-4 rounded-2xl">
             <div>
-              <p>${item.name}</p>
+              <p class="font-medium">${item.name}</p>
               <p class="text-sm text-gray-400">${item.price} €</p>
             </div>
             <div class="flex items-center gap-4">
               <button onclick="changeQuantity(${index}, -1)" class="px-3 py-1 bg-gray-700 rounded">-</button>
-              <span>${item.quantity}</span>
+              <span class="w-8 text-center">${item.quantity}</span>
               <button onclick="changeQuantity(${index}, 1)" class="px-3 py-1 bg-gray-700 rounded">+</button>
               <button onclick="removeFromCart(${index})" class="ml-4 text-red-500"><i class="fas fa-trash"></i></button>
               <span class="font-bold ml-4">${itemTotal.toFixed(2)} €</span>
@@ -228,14 +237,13 @@
         },
         onApprove: (data, actions) => {
           return actions.order.capture().then(details => {
-            completePurchase(details);
+            completePurchase(details, total);
           });
         }
       }).render('#paypal-button-container');
     }
 
-    function completePurchase(details) {
-      const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    function completePurchase(details, total) {
       const order = {
         id: Date.now(),
         user: currentUser.username,
@@ -248,7 +256,6 @@
 
       orders.push(order);
       
-      // Stock reduzieren
       cart.forEach(item => {
         const prod = products.find(p => p.id === item.id);
         if (prod) prod.stock -= item.quantity;
@@ -258,25 +265,28 @@
       hideCart();
       cart = [];
       updateCartCount();
-      alert(`✅ Bezahlung erfolgreich! Ticket: ${order.ticketNr}\n\nVielen Dank!`);
+      
+      alert(`✅ Bezahlung erfolgreich!\nTicket: ${order.ticketNr}\nVielen Dank für deinen Einkauf!`);
       navigate('orders');
     }
 
-    // Rest der Funktionen (login, addProduct, etc.)
-    function login() { /* ... wie vorher */ }
+    function login() { /* ... (wie in deiner Version) */ }
     function register() { /* ... */ }
     function logout() { /* ... */ }
     function toggleTheme() { /* ... */ }
     function switchAuthTab(n) { /* ... */ }
     function addProduct() { /* ... */ }
+    function deleteProduct(id) { /* ... */ }
     function renderAdmin() { /* ... */ }
 
+    // PayPal Script
     const script = document.createElement('script');
     script.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&currency=EUR`;
     document.head.appendChild(script);
 
     window.onload = () => {
       loadUser();
+      if (localStorage.getItem('theme') === 'light') document.documentElement.classList.remove('dark');
       if (currentUser) navigate('shop');
       else navigate('login');
       updateCartCount();
