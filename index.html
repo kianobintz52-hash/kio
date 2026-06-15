@@ -1,120 +1,259 @@
-<?php
-if(file_exists("install.php"))
-{
-  die("please rename or run install.php");
-}
+<!DOCTYPE html>
+<html lang="de" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KiolLegend Anime Shop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <style>
+    body { font-family: 'Segoe UI', system-ui, sans-serif; }
+    .anime-card { transition: all 0.3s; }
+    .anime-card:hover { transform: scale(1.05) rotate(2deg); box-shadow: 0 0 25px rgba(168, 85, 247, 0.6); }
+    .neon-text { text-shadow: 0 0 10px #a855f7; }
+  </style>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen">
 
-include("Db.class.php");
-include("smarty/libs/Smarty.class.php");
+  <!-- Navbar -->
+  <nav class="bg-black border-b border-purple-500 p-4 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <h1 onclick="navigate('shop')" class="text-3xl font-bold neon-text cursor-pointer">KIOLLEGEND <span class="text-purple-400">ANIME</span></h1>
+      
+      <div class="flex gap-6 items-center">
+        <button onclick="navigate('shop')" class="hover:text-purple-400">Shop</button>
+        <button onclick="navigate('sell')" id="sellBtn" class="hover:text-purple-400 hidden">Verkaufen</button>
+        <button onclick="navigate('orders')" class="hover:text-purple-400">Bestellungen</button>
+        <button onclick="navigate('profile')" class="hover:text-purple-400">Profil</button>
+        <button onclick="navigate('admin')" id="adminBtn" class="hover:text-purple-400 hidden">Admin</button>
+        
+        <div class="flex items-center gap-2">
+          <input id="searchInput" type="text" placeholder="Suche Anime..." 
+                 class="bg-gray-900 border border-purple-500 rounded-full px-4 py-2 w-64 focus:outline-none focus:border-purple-400">
+          <button onclick="toggleDarkMode()" class="text-xl"><i class="fas fa-moon"></i></button>
+          <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-full text-sm">Logout</button>
+        </div>
+      </div>
+    </div>
+  </nav>
 
-$smarty = new Smarty;
-$smarty->setCaching(false);
-$smarty->setTemplateDir("smarty/templates/default/");
+  <!-- Shop Page -->
+  <div id="page-shop" class="page max-w-7xl mx-auto p-8">
+    <div class="flex justify-between mb-8">
+      <h2 class="text-4xl font-bold">Anime Shop</h2>
+      <div class="flex gap-4">
+        <select id="categoryFilter" onchange="filterProducts()" class="bg-gray-900 border border-purple-500 rounded-xl px-4 py-3">
+          <option value="">Alle Kategorien</option>
+          <option value="figure">Figuren</option>
+          <option value="merch">Merch</option>
+          <option value="poster">Poster</option>
+        </select>
+      </div>
+    </div>
 
-if($_GET['page']) $page = filter_var($_GET['page'], FILTER_SANITIZE_STRING);
+    <div id="products" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
+  </div>
 
-switch($page)
-{
-  default:
-    $db = new Db();
-    $doxList =$db->getDoxList();
-    $smarty->assign("doxCount", count($doxList));
-    $smarty->assign("doxList", $doxList);
+  <!-- Login / Register Page -->
+  <div id="page-login" class="page hidden max-w-md mx-auto mt-20 p-8 bg-gray-900 rounded-3xl border border-purple-500">
+    <h2 class="text-3xl font-bold text-center mb-8">Willkommen</h2>
+    <div class="flex gap-4 justify-center mb-8">
+      <button onclick="switchAuthTab(0)" id="tab-login" class="tab-btn active px-6 py-2">Login</button>
+      <button onclick="switchAuthTab(1)" id="tab-register" class="tab-btn px-6 py-2">Registrieren</button>
+    </div>
 
-    $smarty->display("header.tpl");
-    $smarty->display("nav.tpl");
-    $smarty->display("index.tpl");
-    $smarty->display("footer.tpl");
-  break;
+    <div id="login-form">
+      <input id="login-user" placeholder="Username" class="w-full mb-4 bg-gray-800 border border-purple-500 rounded-2xl px-5 py-4">
+      <input id="login-pass" type="password" placeholder="Passwort" class="w-full mb-6 bg-gray-800 border border-purple-500 rounded-2xl px-5 py-4">
+      <button onclick="login()" class="w-full bg-purple-600 hover:bg-purple-700 py-4 rounded-2xl font-bold">Einloggen</button>
+    </div>
 
-  case "add":
-    $config = json_decode(file_get_contents("config"));
+    <div id="register-form" class="hidden">
+      <input id="reg-user" placeholder="Username" class="w-full mb-4 bg-gray-800 border border-purple-500 rounded-2xl px-5 py-4">
+      <input id="reg-pass" type="password" placeholder="Passwort" class="w-full mb-6 bg-gray-800 border border-purple-500 rounded-2xl px-5 py-4">
+      <button onclick="register()" class="w-full bg-purple-600 hover:bg-purple-700 py-4 rounded-2xl font-bold">Registrieren</button>
+    </div>
+  </div>
 
-    if($config->cap_site_key != "" && $config->cap_sec_key != "")
-    {
-        $smarty->assign("cap_sec_key", $config->cap_sec_key);
-        $smarty->assign("cap_site_key", $config->cap_site_key);
+  <!-- Sell Page (Owner) -->
+  <div id="page-sell" class="page hidden max-w-2xl mx-auto mt-10 p-8">
+    <h2 class="text-3xl font-bold mb-8">Neues Produkt einstellen</h2>
+    <!-- Formular für neues Produkt -->
+    <input id="new-name" placeholder="Produktname" class="w-full mb-4 bg-gray-800 border border-purple-500 rounded-2xl px-5 py-4">
+    <input id="new-price" type="number" placeholder="Preis in €" class="w-full mb-4 bg-gray-800 border border-purple-500 rounded-2xl px-5 py-4">
+    <select id="new-cat" class="w-full mb-4 bg-gray-800 border border-purple-500 rounded-2xl px-5 py-4">
+      <option value="figure">Figure</option>
+      <option value="merch">Merch</option>
+      <option value="poster">Poster</option>
+    </select>
+    <textarea id="new-desc" placeholder="Beschreibung" class="w-full h-32 mb-6 bg-gray-800 border border-purple-500 rounded-3xl px-5 py-4"></textarea>
+    <button onclick="addProduct()" class="w-full bg-purple-600 hover:bg-purple-700 py-5 rounded-2xl text-xl font-bold">Produkt hochladen</button>
+  </div>
+
+  <!-- Profile, Orders, Admin Pages (vereinfacht) -->
+  <div id="page-profile" class="page hidden max-w-2xl mx-auto p-8">Profil-Seite (kannst du später ausbauen)</div>
+  <div id="page-orders" class="page hidden max-w-4xl mx-auto p-8">Deine Bestellungen</div>
+  <div id="page-admin" class="page hidden max-w-5xl mx-auto p-8">
+    <h2 class="text-3xl font-bold mb-8">Admin Dashboard - Bestellungen</h2>
+    <div id="admin-orders" class="space-y-6"></div>
+  </div>
+
+  <!-- Warenkorb Button -->
+  <button onclick="showCart()" class="fixed bottom-8 right-8 bg-purple-600 hover:bg-purple-700 w-16 h-16 rounded-full flex items-center justify-center text-3xl shadow-2xl">
+    🛒
+  </button>
+
+  <script>
+    let currentUser = null;
+    let products = JSON.parse(localStorage.getItem('products')) || [
+      {id:1, name:"Ichigo Kurosaki Bankai Figure", price:89.90, cat:"figure", desc:"Limited Edition", img:"https://picsum.photos/id/1015/300/300"},
+      {id:2, name:"One Piece Luffy Poster", price:19.90, cat:"poster", desc:"Giga Size", img:"https://picsum.photos/id/237/300/300"},
+      {id:3, name:"Genshin Impact Hoodie", price:54.90, cat:"merch", desc:"Premium Quality", img:"https://picsum.photos/id/201/300/300"}
+    ];
+
+    let cart = [];
+    let orders = JSON.parse(localStorage.getItem('orders')) || [];
+
+    const owner = { username: "kiollegend", password: "kiollegend" };
+
+    function saveData() {
+      localStorage.setItem('products', JSON.stringify(products));
+      localStorage.setItem('orders', JSON.stringify(orders));
     }
 
-    $smarty->assign("page", "add");
-
-    $smarty->display("header.tpl");
-    $smarty->display("nav.tpl");
-    $smarty->display("add.tpl");
-    $smarty->display("footer.tpl");
-  break;
-
-  case "tos":
-    $smarty->display("header.tpl");
-    $smarty->display("nav.tpl");
-    $smarty->display("tos.tpl");
-    $smarty->display("footer.tpl");
-  break;
-
-  case "upload":
-    $id = filter_var($_GET['id'], FILTER_SANITIZE_STRING);
-
-    $db = new Db();
-    $dox = $db->getDox($id);
-    $db->addView($id);
-
-    $smarty->assign("dox", $dox);
-    $smarty->assign("page", "upload");
-    $smarty->display("header.tpl");
-    $smarty->display("nav.tpl");
-    $smarty->display("upload.tpl");
-    $smarty->display("footer.tpl");
-  break;
-
-  case "raw":
-    $id = filter_var($_GET['id'], FILTER_SANITIZE_STRING);
-
-    $db = new Db();
-    $dox = $db->getDox($id);
-    $db->addView($id);
-    $smarty->assign("dox", $dox);
-    $smarty->display("raw.tpl");
-  break;
-
-  case "submit":
-    //check captcha
-    $config = json_decode(file_get_contents("config"));
-    $cap_url = "https://www.google.com/recaptcha/api/siteverify";
-
-    $fields = array(
-    	'secret' => $config->cap_sec_key,
-    	'response' => $_POST['g-recaptcha-response'],
-    	'remoteip' => $_SERVER['REMOTE_ADDR']
-    );
-
-    //url-ify the data for the POST
-    foreach($fields as $key=>$value)
-    {
-        $fields_string .= $key.'='.$value.'&';
+    function navigate(page) {
+      document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+      document.getElementById(`page-${page}`).classList.remove('hidden');
+      
+      if (page === 'shop') renderProducts();
+      if (page === 'admin' && currentUser?.username === owner.username) renderAdmin();
     }
-    rtrim($fields_string, '&');
 
-    //open connection
-    $ch = curl_init();
-
-    //set the url, number of POST vars, POST data
-    curl_setopt($ch,CURLOPT_URL, $cap_url);
-    curl_setopt($ch,CURLOPT_POST, count($fields));
-    curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
-
-    //execute post
-    $res = curl_exec($ch);
-
-    //close connection
-    curl_close($ch);
-
-    if($res)
-    {
-      $db = new Db();
-      $title = filter_var($_POST['doxTitle'], FILTER_SANITIZE_STRING);
-      $dox = $_POST['dox'];
-      $db->addDox($title, $dox, $_SERVER['REMOTE_ADDR']);
+    function renderProducts(filtered = products) {
+      const container = document.getElementById('products');
+      container.innerHTML = '';
+      filtered.forEach(p => {
+        container.innerHTML += `
+          <div class="anime-card bg-gray-900 border border-purple-500 rounded-3xl overflow-hidden">
+            <img src="${p.img}" class="w-full h-64 object-cover">
+            <div class="p-6">
+              <h3 class="font-bold text-xl">${p.name}</h3>
+              <p class="text-purple-400 text-2xl font-bold mt-2">${p.price} €</p>
+              <p class="text-gray-400 text-sm mt-2">${p.desc}</p>
+              <button onclick="addToCart(${p.id})" class="mt-6 w-full bg-purple-600 hover:bg-purple-700 py-3 rounded-2xl">In den Warenkorb</button>
+            </div>
+          </div>`;
+      });
     }
-  break;
-}
-?>
+
+    function filterProducts() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const cat = document.getElementById('categoryFilter').value;
+      const filtered = products.filter(p => 
+        p.name.toLowerCase().includes(search) && 
+        (!cat || p.cat === cat)
+      );
+      renderProducts(filtered);
+    }
+
+    function addToCart(id) {
+      const product = products.find(p => p.id === id);
+      cart.push(product);
+      alert(`${product.name} wurde zum Warenkorb hinzugefügt!`);
+    }
+
+    function showCart() {
+      if (cart.length === 0) return alert("Warenkorb ist leer!");
+      
+      let total = cart.reduce((sum, item) => sum + item.price, 0);
+      if (confirm(`Gesamt: ${total.toFixed(2)} €\n\nZur Kasse gehen?`)) {
+        orders.push({user: currentUser.username, items: [...cart], total, date: new Date().toLocaleDateString('de-DE')});
+        saveData();
+        cart = [];
+        alert("✅ Bestellung erfolgreich simuliert! (PayPal-Style)");
+        navigate('orders');
+      }
+    }
+
+    function login() {
+      const user = document.getElementById('login-user').value;
+      const pass = document.getElementById('login-pass').value;
+
+      if (user === owner.username && pass === owner.password) {
+        currentUser = owner;
+        document.getElementById('sellBtn').classList.remove('hidden');
+        document.getElementById('adminBtn').classList.remove('hidden');
+      } else if (user && pass) {
+        currentUser = {username: user};
+      } else {
+        return alert("Falsche Daten");
+      }
+      navigate('shop');
+    }
+
+    function register() {
+      const user = document.getElementById('reg-user').value;
+      if (user) {
+        currentUser = {username: user};
+        alert("Registrierung erfolgreich!");
+        navigate('shop');
+      }
+    }
+
+    function logout() {
+      if (confirm("Wirklich ausloggen?")) {
+        currentUser = null;
+        location.reload();
+      }
+    }
+
+    function addProduct() {
+      if (currentUser.username !== owner.username) return;
+      const name = document.getElementById('new-name').value;
+      const price = parseFloat(document.getElementById('new-price').value);
+      const cat = document.getElementById('new-cat').value;
+      const desc = document.getElementById('new-desc').value;
+
+      if (name && price) {
+        products.push({
+          id: Date.now(),
+          name,
+          price,
+          cat,
+          desc: desc || "Anime Merch",
+          img: `https://picsum.photos/id/${Math.floor(Math.random()*1000)}/300/300`
+        });
+        saveData();
+        alert("Produkt hinzugefügt!");
+        navigate('shop');
+      }
+    }
+
+    function renderAdmin() {
+      const container = document.getElementById('admin-orders');
+      container.innerHTML = orders.map((o, i) => `
+        <div class="bg-gray-900 p-6 rounded-3xl border border-purple-500">
+          <p><strong>Kunde:</strong> ${o.user}</p>
+          <p><strong>Datum:</strong> ${o.date}</p>
+          <p><strong>Gesamt:</strong> ${o.total} €</p>
+        </div>
+      `).join('');
+    }
+
+    function switchAuthTab(n) {
+      document.getElementById('login-form').classList.toggle('hidden', n !== 0);
+      document.getElementById('register-form').classList.toggle('hidden', n !== 1);
+    }
+
+    function toggleDarkMode() {
+      document.documentElement.classList.toggle('dark');
+    }
+
+    // Init
+    window.onload = () => {
+      navigate('login');
+      document.getElementById('searchInput').addEventListener('input', filterProducts);
+    };
+  </script>
+</body>
+</html>
