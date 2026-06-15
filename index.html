@@ -3,340 +3,228 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KIOSHOP Platform</title>
+<title>KIOSHOP</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-body{margin:0;font-family:Inter,sans-serif;background:#0a0a0a;color:#e8e4dc}
-
-/* NAV */
-nav{
-  display:flex;
-  justify-content:space-between;
-  padding:14px;
-  border-bottom:1px solid #222;
-  position:sticky;
-  top:0;
-  background:#0a0a0a;
-}
-
+body{margin:0;font-family:Inter,sans-serif;background:#0a0a0a;color:#eaeaea}
+nav{padding:14px 20px;display:flex;justify-content:space-between;border-bottom:1px solid #222}
 button{cursor:pointer}
-
-/* LOGIN */
-#auth{
-  position:fixed;inset:0;
-  display:flex;align-items:center;justify-content:center;
-  background:rgba(0,0,0,.9);
-  z-index:999;
-}
-.box{
-  width:320px;
-  background:#111;
-  padding:20px;
-  border:1px solid #222;
-}
-input{
-  width:100%;
-  padding:10px;
-  margin:6px 0;
-  background:#000;
-  border:1px solid #333;
-  color:#fff;
-}
-
-/* LAYOUT */
-.products{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:12px;
-  padding:20px;
-}
-.card{
-  background:#111;
-  border:1px solid #222;
-  padding:10px;
-}
-
-/* PROFILE */
-.profile{
-  padding:20px;
-}
-
-/* NOTIF */
-.bell{
-  position:relative;
-  background:transparent;
-  border:1px solid #333;
-  color:#fff;
-  padding:6px 10px;
-}
-#notifCount{
-  position:absolute;
-  top:-6px;right:-6px;
-  background:red;
-  font-size:10px;
-  padding:2px 5px;
-  border-radius:10px;
-}
-
-/* DROPDOWN */
-.dropdown{
-  position:absolute;
-  right:10px;
-  top:50px;
-  background:#111;
-  border:1px solid #333;
-  width:240px;
-  display:none;
-}
-.dropdown div{
-  padding:8px;
-  border-bottom:1px solid #222;
-  font-size:12px;
-}
+.container{max-width:900px;margin:0 auto;padding:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.card{background:#111;border:1px solid #222;padding:12px;border-radius:12px}
+img{width:100%;border-radius:8px}
+.small{font-size:12px;color:#aaa}
+.row{display:flex;justify-content:space-between;align-items:center}
+.iconbtn{background:#1a1a1a;border:1px solid #333;color:#fff;padding:6px 10px;border-radius:8px}
+.authbox{position:fixed;inset:0;background:#000c;display:flex;align-items:center;justify-content:center}
+.auth{background:#111;padding:20px;border-radius:12px;width:300px}
+input{width:100%;margin:6px 0;padding:10px;background:#000;border:1px solid #333;color:#fff}
 .hidden{display:none}
+.modal{position:fixed;inset:0;background:#000d;display:flex;align-items:center;justify-content:center}
+.modalbox{background:#111;padding:16px;border-radius:12px;width:400px}
+.like{color:#ff4d6d}
+.save{color:#ffd166}
 </style>
 </head>
 
 <body>
 
+<nav>
+  <b>KIOSHOP</b>
+  <div>
+    <button onclick="openAuth()">Login</button>
+    <button onclick="logout()">Logout</button>
+    <button onclick="goProfile()">Profil</button>
+    <button onclick="goAdmin()">Admin</button>
+  </div>
+</nav>
+
+<div class="container">
+  <h2>Shop</h2>
+  <div id="products" class="grid"></div>
+</div>
+
 <!-- AUTH -->
-<div id="auth">
-  <div class="box">
-    <h3>KIOSHOP</h3>
+<div id="auth" class="authbox hidden">
+  <div class="auth">
+    <h3>Login / Register</h3>
     <input id="email" placeholder="Email">
     <input id="password" type="password" placeholder="Passwort">
-    <input id="username" placeholder="Username (nur Register)">
-    <button onclick="register()">Register</button>
     <button onclick="login()">Login</button>
+    <button onclick="register()">Register</button>
   </div>
 </div>
 
-<!-- NAV -->
-<nav>
-  <b onclick="goHome()" style="cursor:pointer">KIOSHOP</b>
-
-  <div style="position:relative">
-    <button class="bell" onclick="toggleNotif()">🔔 <span id="notifCount"></span></button>
-
-    <div id="notifBox" class="dropdown"></div>
+<!-- COMMENTS MODAL -->
+<div id="modal" class="modal hidden">
+  <div class="modalbox">
+    <h3>Kommentare</h3>
+    <div id="comments"></div>
+    <input id="commentText" placeholder="Kommentar...">
+    <button onclick="addComment()">Senden</button>
+    <button onclick="closeModal()">Close</button>
   </div>
-
-  <button onclick="logout()">Logout</button>
-</nav>
-
-<!-- APP -->
-<div id="app">
-
-  <div id="feed" class="products"></div>
-
-  <div id="profile" class="profile hidden"></div>
-
-  <div id="admin" class="profile hidden"></div>
-
 </div>
 
 <script>
-/* SUPABASE */
-const sb = supabase.createClient(
-  "YOUR_SUPABASE_URL",
-  "YOUR_SUPABASE_ANON_KEY"
-);
+/* ===================== SUPABASE ===================== */
+const supabaseUrl = "YOUR_SUPABASE_URL";
+const supabaseKey = "YOUR_SUPABASE_ANON_KEY";
+const sb = supabase.createClient(supabaseUrl, supabaseKey);
 
-/* STATE */
+/* ===================== STATE ===================== */
 let user = null;
-let routeUser = null;
+let activeProduct = null;
 
-/* ROUTER */
-function getRoute(){
-  const url = new URL(location.href);
-  return url.searchParams.get("user");
-}
-
-/* INIT */
-async function init(){
-
-  routeUser = getRoute();
-
-  const { data } = await sb.auth.getUser();
-
-  if(data.user){
-    user = data.user;
-    document.getElementById("auth").style.display="none";
-    loadFeed();
-    loadNotifications();
-  }
-
-  if(routeUser){
-    loadProfile(routeUser);
-  }
-}
-
-init();
-
-/* REGISTER */
-async function register(){
-  const { data } = await sb.auth.signUp({
-    email: email.value,
-    password: password.value
-  });
-
-  if(data.user){
-    await sb.from("profiles").insert({
-      id:data.user.id,
-      username:username.value
-    });
-  }
-}
-
-/* LOGIN */
+/* ===================== AUTH ===================== */
 async function login(){
-  const { data } = await sb.auth.signInWithPassword({
-    email:email.value,
-    password:password.value
-  });
+  const email = emailEl().value;
+  const password = passEl().value;
 
-  if(data.user){
-    location.reload();
-  }
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if(error) return alert(error.message);
+  user = data.user;
+  closeAuth();
+  loadProducts();
 }
 
-/* LOGOUT */
+async function register(){
+  const email = emailEl().value;
+  const password = passEl().value;
+
+  const { data, error } = await sb.auth.signUp({ email, password });
+  if(error) return alert(error.message);
+
+  alert("Check Email (Supabase Confirmation)");
+}
+
 async function logout(){
   await sb.auth.signOut();
-  location.reload();
+  user = null;
 }
 
-/* FEED */
-async function loadFeed(){
+function emailEl(){ return document.getElementById("email") }
+function passEl(){ return document.getElementById("password") }
 
+function openAuth(){ document.getElementById("auth").classList.remove("hidden") }
+function closeAuth(){ document.getElementById("auth").classList.add("hidden") }
+
+/* ===================== PRODUCTS ===================== */
+async function loadProducts(){
   const { data } = await sb.from("products").select("*");
+  renderProducts(data);
+}
 
-  document.getElementById("feed").innerHTML =
-    data.map(p=>`
+function renderProducts(products){
+  const el = document.getElementById("products");
+  el.innerHTML = "";
+
+  products.forEach(p => {
+    el.innerHTML += `
       <div class="card">
-        <b>${p.title}</b>
-        <p>€${p.price}</p>
+        <img src="${p.image_url}">
+        <h3>${p.title}</h3>
+        <p class="small">${p.description}</p>
+        <div class="row">
+          <b>€${p.price}</b>
+        </div>
 
-        <button onclick="like('${p.id}')">❤️</button>
-        <button onclick="save('${p.id}')">🔖</button>
-        <button onclick="comment('${p.id}')">💬</button>
-
-        <button onclick="openProfile('${p.creator_id}')">Creator</button>
+        <div class="row">
+          <button class="iconbtn like" onclick="like('${p.id}')">♥ Like</button>
+          <button class="iconbtn save" onclick="save('${p.id}')">★ Save</button>
+          <button class="iconbtn" onclick="openComments('${p.id}')">💬</button>
+        </div>
       </div>
-    `).join("");
-}
-
-/* PROFILE */
-async function loadProfile(id){
-
-  document.getElementById("feed").classList.add("hidden");
-  document.getElementById("profile").classList.remove("hidden");
-
-  const { data: profile } = await sb.from("profiles").select("*").eq("id",id).single();
-  const { data: products } = await sb.from("products").select("*").eq("creator_id",id);
-  const { data: followers } = await sb.from("follows").select("*").eq("following_id",id);
-
-  document.getElementById("profile").innerHTML = `
-    <h2>${profile.username}</h2>
-    <p>Followers: ${followers.length}</p>
-
-    <button onclick="follow('${id}')">Follow</button>
-
-    <h3>Produkte</h3>
-    ${products.map(p=>`<div class="card">${p.title}</div>`).join("")}
-  `;
-}
-
-/* FOLLOW */
-async function follow(id){
-  await sb.from("follows").insert({
-    follower_id:user.id,
-    following_id:id
+    `;
   });
-
-  notify(id,"follow");
 }
 
-/* LIKE */
-async function like(pid){
+/* ===================== LIKE ===================== */
+async function like(product_id){
+  if(!user) return openAuth();
+
   await sb.from("likes").insert({
     user_id:user.id,
-    product_id:pid
+    product_id
   });
 
-  notify(null,"like",pid);
+  alert("Liked ❤️");
 }
 
-/* SAVE */
-async function save(pid){
-  await sb.from("wishlist").insert({
+/* ===================== SAVE ===================== */
+async function save(product_id){
+  if(!user) return openAuth();
+
+  await sb.from("saves").insert({
     user_id:user.id,
-    product_id:pid
+    product_id
   });
+
+  alert("Saved ⭐");
 }
 
-/* COMMENT */
-async function comment(pid){
-  const text = prompt("Kommentar:");
-  if(!text)return;
+/* ===================== COMMENTS ===================== */
+async function openComments(id){
+  activeProduct = id;
+  document.getElementById("modal").classList.remove("hidden");
+
+  const { data } = await sb.from("comments")
+    .select("*")
+    .eq("product_id", id);
+
+  document.getElementById("comments").innerHTML =
+    data.map(c => `<p>💬 ${c.text}</p>`).join("");
+}
+
+async function addComment(){
+  if(!user) return openAuth();
+
+  const text = document.getElementById("commentText").value;
 
   await sb.from("comments").insert({
     user_id:user.id,
-    product_id:pid,
+    product_id:activeProduct,
     text
   });
 
-  notify(null,"comment",pid);
+  openComments(activeProduct);
 }
 
-/* NOTIFICATIONS */
-async function notify(to,type,pid=null){
-
-  await sb.from("notifications").insert({
-    user_id:to || user.id,
-    from_user:user.id,
-    type,
-    product_id:pid,
-    read:false
-  });
-
-  loadNotifications();
+function closeModal(){
+  document.getElementById("modal").classList.add("hidden");
 }
 
-/* LOAD NOTIFS */
-async function loadNotifications(){
+/* ===================== PROFILE ===================== */
+async function goProfile(){
+  if(!user) return openAuth();
 
-  const { data } = await sb
-    .from("notifications")
+  const { data } = await sb.from("profiles")
     .select("*")
-    .eq("user_id",user.id)
-    .eq("read",false);
+    .eq("id", user.id)
+    .single();
 
-  notifCount.innerText = data.length || "";
-
-  document.getElementById("notifBox").innerHTML =
-    data.map(n=>`
-      <div>${n.type} event</div>
-    `).join("");
+  alert("Profil: " + (data?.username || user.email));
 }
 
-/* TOGGLE NOTIF */
-function toggleNotif(){
-  const box = document.getElementById("notifBox");
-  box.style.display = box.style.display==="block"?"none":"block";
+/* ===================== ADMIN ===================== */
+async function goAdmin(){
+  if(!user) return;
+
+  const { data } = await sb.from("profiles")
+    .select("*");
+
+  console.log("USERS:", data);
+  alert("Admin: Users im Console Log");
 }
 
-/* PROFILE LINK */
-function openProfile(id){
-  location.href = "/?user="+id;
-}
+/* ===================== INIT ===================== */
+sb.auth.onAuthStateChange((event, session)=>{
+  user = session?.user || null;
+});
 
-/* HOME */
-function goHome(){
-  location.href = "/";
-}
+loadProducts();
 </script>
 
 </body>
