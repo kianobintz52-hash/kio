@@ -1,231 +1,42 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KIOSHOP</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doxbin Clone</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 1rem 0;
+            text-align: center;
+        }
+        nav {
+            background-color: #444;
+            padding: 0.5rem;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+        nav ul li {
+            margin: 0 1rem;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+        main {
+            padding
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
-body{margin:0;font-family:Inter,sans-serif;background:#0a0a0a;color:#eaeaea}
-nav{padding:14px 20px;display:flex;justify-content:space-between;border-bottom:1px solid #222}
-button{cursor:pointer}
-.container{max-width:900px;margin:0 auto;padding:20px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-.card{background:#111;border:1px solid #222;padding:12px;border-radius:12px}
-img{width:100%;border-radius:8px}
-.small{font-size:12px;color:#aaa}
-.row{display:flex;justify-content:space-between;align-items:center}
-.iconbtn{background:#1a1a1a;border:1px solid #333;color:#fff;padding:6px 10px;border-radius:8px}
-.authbox{position:fixed;inset:0;background:#000c;display:flex;align-items:center;justify-content:center}
-.auth{background:#111;padding:20px;border-radius:12px;width:300px}
-input{width:100%;margin:6px 0;padding:10px;background:#000;border:1px solid #333;color:#fff}
-.hidden{display:none}
-.modal{position:fixed;inset:0;background:#000d;display:flex;align-items:center;justify-content:center}
-.modalbox{background:#111;padding:16px;border-radius:12px;width:400px}
-.like{color:#ff4d6d}
-.save{color:#ffd166}
-</style>
-</head>
-
-<body>
-
-<nav>
-  <b>KIOSHOP</b>
-  <div>
-    <button onclick="openAuth()">Login</button>
-    <button onclick="logout()">Logout</button>
-    <button onclick="goProfile()">Profil</button>
-    <button onclick="goAdmin()">Admin</button>
-  </div>
-</nav>
-
-<div class="container">
-  <h2>Shop</h2>
-  <div id="products" class="grid"></div>
-</div>
-
-<!-- AUTH -->
-<div id="auth" class="authbox hidden">
-  <div class="auth">
-    <h3>Login / Register</h3>
-    <input id="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Passwort">
-    <button onclick="login()">Login</button>
-    <button onclick="register()">Register</button>
-  </div>
-</div>
-
-<!-- COMMENTS MODAL -->
-<div id="modal" class="modal hidden">
-  <div class="modalbox">
-    <h3>Kommentare</h3>
-    <div id="comments"></div>
-    <input id="commentText" placeholder="Kommentar...">
-    <button onclick="addComment()">Senden</button>
-    <button onclick="closeModal()">Close</button>
-  </div>
-</div>
-
-<script>
-/* ===================== SUPABASE ===================== */
-const supabaseUrl = "YOUR_SUPABASE_URL";
-const supabaseKey = "YOUR_SUPABASE_ANON_KEY";
-const sb = supabase.createClient(supabaseUrl, supabaseKey);
-
-/* ===================== STATE ===================== */
-let user = null;
-let activeProduct = null;
-
-/* ===================== AUTH ===================== */
-async function login(){
-  const email = emailEl().value;
-  const password = passEl().value;
-
-  const { data, error } = await sb.auth.signInWithPassword({ email, password });
-  if(error) return alert(error.message);
-  user = data.user;
-  closeAuth();
-  loadProducts();
-}
-
-async function register(){
-  const email = emailEl().value;
-  const password = passEl().value;
-
-  const { data, error } = await sb.auth.signUp({ email, password });
-  if(error) return alert(error.message);
-
-  alert("Check Email (Supabase Confirmation)");
-}
-
-async function logout(){
-  await sb.auth.signOut();
-  user = null;
-}
-
-function emailEl(){ return document.getElementById("email") }
-function passEl(){ return document.getElementById("password") }
-
-function openAuth(){ document.getElementById("auth").classList.remove("hidden") }
-function closeAuth(){ document.getElementById("auth").classList.add("hidden") }
-
-/* ===================== PRODUCTS ===================== */
-async function loadProducts(){
-  const { data } = await sb.from("products").select("*");
-  renderProducts(data);
-}
-
-function renderProducts(products){
-  const el = document.getElementById("products");
-  el.innerHTML = "";
-
-  products.forEach(p => {
-    el.innerHTML += `
-      <div class="card">
-        <img src="${p.image_url}">
-        <h3>${p.title}</h3>
-        <p class="small">${p.description}</p>
-        <div class="row">
-          <b>€${p.price}</b>
-        </div>
-
-        <div class="row">
-          <button class="iconbtn like" onclick="like('${p.id}')">♥ Like</button>
-          <button class="iconbtn save" onclick="save('${p.id}')">★ Save</button>
-          <button class="iconbtn" onclick="openComments('${p.id}')">💬</button>
-        </div>
-      </div>
-    `;
-  });
-}
-
-/* ===================== LIKE ===================== */
-async function like(product_id){
-  if(!user) return openAuth();
-
-  await sb.from("likes").insert({
-    user_id:user.id,
-    product_id
-  });
-
-  alert("Liked ❤️");
-}
-
-/* ===================== SAVE ===================== */
-async function save(product_id){
-  if(!user) return openAuth();
-
-  await sb.from("saves").insert({
-    user_id:user.id,
-    product_id
-  });
-
-  alert("Saved ⭐");
-}
-
-/* ===================== COMMENTS ===================== */
-async function openComments(id){
-  activeProduct = id;
-  document.getElementById("modal").classList.remove("hidden");
-
-  const { data } = await sb.from("comments")
-    .select("*")
-    .eq("product_id", id);
-
-  document.getElementById("comments").innerHTML =
-    data.map(c => `<p>💬 ${c.text}</p>`).join("");
-}
-
-async function addComment(){
-  if(!user) return openAuth();
-
-  const text = document.getElementById("commentText").value;
-
-  await sb.from("comments").insert({
-    user_id:user.id,
-    product_id:activeProduct,
-    text
-  });
-
-  openComments(activeProduct);
-}
-
-function closeModal(){
-  document.getElementById("modal").classList.add("hidden");
-}
-
-/* ===================== PROFILE ===================== */
-async function goProfile(){
-  if(!user) return openAuth();
-
-  const { data } = await sb.from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .single();
-
-  alert("Profil: " + (data?.username || user.email));
-}
-
-/* ===================== ADMIN ===================== */
-async function goAdmin(){
-  if(!user) return;
-
-  const { data } = await sb.from("profiles")
-    .select("*");
-
-  console.log("USERS:", data);
-  alert("Admin: Users im Console Log");
-}
-
-/* ===================== INIT ===================== */
-sb.auth.onAuthStateChange((event, session)=>{
-  user = session?.user || null;
-});
-
-loadProducts();
-</script>
-
-</body>
-</html>
+---
+💡 *Notice: You are using a limited Free Trial. Upgrade to WORMGPT Professional to get unlimited completions, longer responses, and access to more powerful coding models!*
