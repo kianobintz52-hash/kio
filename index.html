@@ -43,7 +43,7 @@
     </div>
   </nav>
 
-  <!-- Login -->
+  <!-- Login Page -->
   <div id="page-login" class="page max-w-md mx-auto mt-20 p-10 bg-gray-900/95 rounded-3xl border border-purple-500">
     <h2 class="text-5xl font-bold text-center neon-purple mb-10">ANIME SHOP</h2>
     <div class="flex gap-4 justify-center mb-8 bg-gray-800 rounded-3xl p-1">
@@ -100,9 +100,7 @@
       <h3 class="text-3xl font-bold mb-6">Warenkorb</h3>
       <div id="cart-items" class="space-y-4 max-h-96 overflow-auto"></div>
       <div id="cart-total" class="text-3xl font-bold mt-8 mb-8"></div>
-      
       <div id="paypal-button-container" class="mb-6"></div>
-      
       <button onclick="hideCart()" class="w-full py-4 border border-gray-600 rounded-2xl">Schließen</button>
     </div>
   </div>
@@ -236,9 +234,7 @@
           });
         },
         onApprove: (data, actions) => {
-          return actions.order.capture().then(details => {
-            completePurchase(details, total);
-          });
+          return actions.order.capture().then(details => completePurchase(details, total));
         }
       }).render('#paypal-button-container');
     }
@@ -255,7 +251,6 @@
       };
 
       orders.push(order);
-      
       cart.forEach(item => {
         const prod = products.find(p => p.id === item.id);
         if (prod) prod.stock -= item.quantity;
@@ -265,21 +260,101 @@
       hideCart();
       cart = [];
       updateCartCount();
-      
-      alert(`✅ Bezahlung erfolgreich!\nTicket: ${order.ticketNr}\nVielen Dank für deinen Einkauf!`);
+      alert(`✅ Bezahlung erfolgreich!\nTicket: ${order.ticketNr}\nVielen Dank!`);
       navigate('orders');
     }
 
-    function login() { /* ... (wie in deiner Version) */ }
-    function register() { /* ... */ }
-    function logout() { /* ... */ }
-    function toggleTheme() { /* ... */ }
-    function switchAuthTab(n) { /* ... */ }
-    function addProduct() { /* ... */ }
-    function deleteProduct(id) { /* ... */ }
-    function renderAdmin() { /* ... */ }
+    function login() {
+      const user = document.getElementById('login-user').value.trim();
+      const pass = document.getElementById('login-pass').value;
 
-    // PayPal Script
+      if (user === owner.username && pass === owner.password) {
+        currentUser = owner;
+        document.getElementById('sellBtn').classList.remove('hidden');
+        document.getElementById('adminBtn').classList.remove('hidden');
+      } else if (user && pass) {
+        currentUser = { username: user };
+        if (!users.find(u => u.username === user)) {
+          users.push({ username: user, date: new Date().toLocaleDateString('de-DE') });
+          saveData();
+        }
+      } else {
+        return alert("Falsche Login-Daten");
+      }
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      navigate('shop');
+    }
+
+    function register() {
+      const user = document.getElementById('reg-user').value.trim();
+      if (user) {
+        currentUser = { username: user };
+        users.push({ username: user, date: new Date().toLocaleDateString('de-DE') });
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        saveData();
+        alert("Registrierung erfolgreich!");
+        navigate('shop');
+      }
+    }
+
+    function logout() {
+      if (confirm("Wirklich ausloggen?")) {
+        localStorage.removeItem('currentUser');
+        location.reload();
+      }
+    }
+
+    function toggleTheme() {
+      document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+    }
+
+    function switchAuthTab(n) {
+      document.getElementById('login-form').classList.toggle('hidden', n !== 0);
+      document.getElementById('register-form').classList.toggle('hidden', n !== 1);
+    }
+
+    function addProduct() {
+      if (!currentUser || currentUser.username !== owner.username) return alert("Nur der Owner darf Produkte einstellen!");
+      
+      const name = document.getElementById('new-name').value;
+      const price = parseFloat(document.getElementById('new-price').value);
+      const stock = parseInt(document.getElementById('new-stock').value) || 10;
+      const desc = document.getElementById('new-desc').value;
+      const img = document.getElementById('new-img').value || `https://picsum.photos/id/${Date.now() % 900 + 100}/300/300`;
+
+      if (name && price) {
+        products.push({ id: Date.now(), name, price, stock, desc: desc || "Anime Produkt", img });
+        saveData();
+        alert("Produkt erfolgreich hochgeladen!");
+        navigate('shop');
+      }
+    }
+
+    function deleteProduct(id) {
+      if (confirm("Produkt wirklich löschen?")) {
+        products = products.filter(p => p.id !== id);
+        saveData();
+        renderProducts();
+        renderAdmin();
+      }
+    }
+
+    function renderAdmin() {
+      document.getElementById('admin-products').innerHTML = products.map(p => `
+        <div class="bg-gray-900 p-6 rounded-3xl border border-purple-500">
+          <img src="${p.img}" class="w-full h-48 object-cover rounded-2xl mb-4">
+          <h4 class="font-bold">${p.name}</h4>
+          <p>${p.price} € | Stock: ${p.stock}</p>
+          <button onclick="deleteProduct(${p.id})" class="mt-4 w-full bg-red-600 py-3 rounded-2xl">Löschen</button>
+        </div>
+      `).join('');
+
+      document.getElementById('admin-users').innerHTML = users.length ? 
+        users.map(u => `<div class="bg-gray-800 p-4 rounded-2xl"><strong>${u.username}</strong> <span class="text-gray-400">(${u.date})</span></div>`).join('') : 
+        "<p class='text-gray-400'>Noch keine User registriert.</p>";
+    }
+
     const script = document.createElement('script');
     script.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&currency=EUR`;
     document.head.appendChild(script);
