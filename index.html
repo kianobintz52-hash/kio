@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  <script src="https://www.paypal.com/sdk/js?client-id=AfePx5V-Tru6WXLs1fwvK3RjuYKC5No0UmUgB9jmEr0IjsZ3v6BwqeQ0ur3leNkU87nz-RTFDswULn5S&currency=EUR"></script>
 
   <style>
     body { 
@@ -68,19 +67,13 @@
   <!-- Sell -->
   <div id="page-sell" class="page hidden max-w-2xl mx-auto p-8">
     <h2 class="text-4xl font-bold mb-8">Neues Produkt einstellen</h2>
-    <div class="glass p-8 rounded-3xl space-y-6 text-center">
-      <p class="text-pink-400 mb-6">⚠️ Bitte zuerst dem Discord beitreten:</p>
-      <a href="https://discord.gg/v2kKvxrDv" target="_blank" class="bg-indigo-600 hover:bg-indigo-700 px-8 py-4 rounded-2xl inline-block mb-6">
-        Discord Server beitreten
-      </a>
-      <div class="space-y-6">
-        <input id="new-name" placeholder="Produktname" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
-        <input id="new-price" type="number" step="0.01" placeholder="Preis €" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
-        <input id="new-stock" type="number" value="10" placeholder="Menge" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
-        <input id="new-img" placeholder="Bild URL" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
-        <textarea id="new-desc" placeholder="Beschreibung" class="w-full h-32 bg-gray-800 border border-purple-500 rounded-3xl px-6 py-5"></textarea>
-        <button onclick="addProduct()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-6 rounded-3xl text-xl font-bold">Produkt hochladen</button>
-      </div>
+    <div class="glass p-8 rounded-3xl space-y-6">
+      <input id="new-name" placeholder="Produktname" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
+      <input id="new-price" type="number" step="0.01" placeholder="Preis €" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
+      <input id="new-stock" type="number" value="10" placeholder="Menge" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
+      <input id="new-img" placeholder="Bild URL" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
+      <textarea id="new-desc" placeholder="Beschreibung" class="w-full h-32 bg-gray-800 border border-purple-500 rounded-3xl px-6 py-5"></textarea>
+      <button onclick="addProduct()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-6 rounded-3xl text-xl font-bold">Produkt hochladen</button>
     </div>
   </div>
 
@@ -94,25 +87,31 @@
   <div id="page-admin" class="page hidden max-w-7xl mx-auto p-8">
     <h2 class="text-5xl font-bold neon-purple mb-10">👑 Owner Panel</h2>
     <div class="glass p-8 rounded-3xl space-y-8">
-      <div class="flex gap-4">
-        <button onclick="deleteAllProducts()" class="bg-red-600 hover:bg-red-700 px-8 py-4 rounded-2xl flex-1">Alle Produkte löschen</button>
-        <button onclick="resetDatabase()" class="bg-red-700 hover:bg-red-800 px-8 py-4 rounded-2xl flex-1">Datenbank zurücksetzen</button>
-      </div>
       <div id="admin-content"></div>
     </div>
   </div>
 
-  <!-- Warenkorb -->
+  <!-- Warenkorb Button -->
   <button onclick="showCart()" class="fixed bottom-10 right-10 bg-gradient-to-r from-purple-600 to-pink-600 w-20 h-20 rounded-full flex items-center justify-center text-4xl shadow-2xl hover:scale-110">
     🛒 <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-xs w-6 h-6 rounded-full flex items-center justify-center">0</span>
   </button>
 
+  <!-- Cart Modal -->
   <div id="cart-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
     <div class="glass rounded-3xl p-8 max-w-lg w-full max-h-[90vh] overflow-auto">
       <h3 class="text-3xl font-bold mb-6">Warenkorb</h3>
       <div id="cart-items" class="space-y-4"></div>
       <div id="cart-total" class="text-3xl font-bold mt-8 mb-8"></div>
-      <div id="paypal-button-container" class="my-6"></div>
+      
+      <!-- Discord Kauf Button -->
+      <div class="bg-indigo-600 text-center py-6 rounded-2xl mb-6">
+        <p class="mb-3 text-lg">Um zu bestellen, tritt bitte dem Discord bei:</p>
+        <a href="https://discord.gg/v2kKvxrDv" target="_blank" 
+           class="inline-block bg-white text-indigo-700 font-bold px-10 py-4 rounded-2xl hover:bg-gray-100">
+          Discord Server beitreten
+        </a>
+      </div>
+      
       <button onclick="hideCart()" class="w-full py-4 border border-gray-600 rounded-2xl">Schließen</button>
     </div>
   </div>
@@ -187,32 +186,6 @@
       });
     }
 
-    function loadAdminPanel() {
-      let html = `<h3 class="text-2xl mb-6">👑 Owner Panel - ${currentUser.username}</h3>`;
-
-      db.ref('products').once('value', (snap) => {
-        html += `<p>Produkte: ${Object.keys(snap.val() || {}).length}</p>`;
-      });
-
-      db.ref('users').once('value', (snap) => {
-        const users = snap.val() || {};
-        html += `<h4 class="text-xl mt-8 mb-4">Registrierte User (${Object.keys(users).length})</h4>`;
-        Object.keys(users).forEach(u => {
-          html += `<div class="glass p-4 rounded-2xl mb-2">${u}</div>`;
-        });
-        document.getElementById('admin-content').innerHTML = html;
-      });
-    }
-
-    function deleteAllProducts() {
-      if (confirm("Alle Produkte löschen?")) db.ref('products').remove();
-    }
-
-    function resetDatabase() {
-      if (confirm("Alles löschen?")) db.ref('/').remove().then(() => location.reload());
-    }
-
-    // ==================== WARENKORB ====================
     function addToCart(id) {
       db.ref('products/' + id).once('value', (snap) => {
         const prod = snap.val();
@@ -221,20 +194,21 @@
         if (existing) existing.quantity++;
         else cart.push({...prod, id, quantity: 1});
         updateCartCount();
-        alert(`${prod.name} wurde hinzugefügt!`);
+        alert(`${prod.name} hinzugefügt!`);
       });
     }
 
     function updateCartCount() {
-      const count = cart.reduce((a, b) => a + (b.quantity || 1), 0);
+      const count = cart.reduce((a, b) => a + b.quantity, 0);
       document.getElementById('cart-count').textContent = count;
     }
 
     function showCart() {
       if (cart.length === 0) return alert("Warenkorb ist leer");
+      
       let html = '';
       let total = 0;
-      cart.forEach((item, index) => {
+      cart.forEach(item => {
         const itemTotal = item.price * item.quantity;
         total += itemTotal;
         html += `
@@ -243,30 +217,24 @@
             <div>${itemTotal.toFixed(2)} €</div>
           </div>`;
       });
+
       document.getElementById('cart-items').innerHTML = html;
       document.getElementById('cart-total').innerHTML = `Gesamt: <span class="text-purple-400">${total.toFixed(2)} €</span>`;
       document.getElementById('cart-modal').classList.remove('hidden');
-
-      // PayPal
-      document.getElementById('paypal-button-container').innerHTML = '';
-      paypal.Buttons({
-        createOrder: (data, actions) => actions.order.create({ purchase_units: [{ amount: { value: total.toFixed(2) }}]}),
-        onApprove: (data, actions) => actions.order.capture().then(() => {
-          alert("✅ Bezahlung erfolgreich! Danke für deinen Kauf.");
-          cart = [];
-          updateCartCount();
-          hideCart();
-        })
-      }).render('#paypal-button-container');
     }
 
     function hideCart() {
       document.getElementById('cart-modal').classList.add('hidden');
     }
 
-    function renderProfile() {
-      document.getElementById('profile-name').textContent = currentUser.username;
-      document.getElementById('profile-products').innerHTML = `<p class="text-xl">Willkommen zurück, ${currentUser.username}!</p>`;
+    function loadAdminPanel() {
+      let html = `<h3 class="text-2xl mb-6">👑 Owner Panel - ${currentUser.username}</h3>`;
+      db.ref('users').once('value', (snap) => {
+        const users = snap.val() || {};
+        html += `<h4 class="text-xl mb-4">Registrierte User (${Object.keys(users).length})</h4>`;
+        Object.keys(users).forEach(u => html += `<div class="glass p-4 rounded-2xl mb-2">${u}</div>`);
+        document.getElementById('admin-content').innerHTML = html;
+      });
     }
 
     function login() {
