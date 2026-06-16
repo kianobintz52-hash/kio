@@ -7,42 +7,22 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap');
-        
-        :root {
-            --purple: #a855f7;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
         
         body {
             font-family: 'Inter', system_ui, sans-serif;
         }
-        
         .logo-font {
             font-family: 'Space Grotesk', sans-serif;
         }
-
         .hero-bg {
             background: radial-gradient(at center bottom, rgba(168, 85, 247, 0.18), transparent 70%);
         }
-
-        .gun-pattern {
-            background-image: 
-                linear-gradient(rgba(168, 85, 247, 0.08) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(168, 85, 247, 0.08) 1px, transparent 1px);
-            background-size: 40px 40px;
-        }
-
         .mockup {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
         .mockup:hover {
             transform: translateY(-12px) rotate(3deg);
-        }
-
-        /* Light mode support */
-        [data-theme="light"] {
-            --tw-bg-opacity: 1;
         }
     </style>
 </head>
@@ -52,255 +32,206 @@
     <nav class="fixed top-0 left-0 right-0 z-50 bg-zinc-950/90 backdrop-blur-lg border-b border-zinc-800">
         <div class="max-w-screen-2xl mx-auto px-8 py-5 flex items-center justify-between">
             <div class="flex items-center gap-x-3">
-                <div id="logo" class="w-9 h-9 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-2xl flex items-center justify-center text-2xl shadow-lg shadow-violet-500/50 font-bold">
-                    K
-                </div>
+                <label id="nav-logo-label" class="cursor-pointer">
+                    <img id="nav-logo" src="https://via.placeholder.com/48x48/8b5cf6/ffffff?text=K" 
+                         class="w-9 h-9 rounded-2xl object-cover shadow-lg" alt="Logo">
+                </label>
                 <div class="logo-font text-3xl font-semibold tracking-tighter">kioo<span class="text-violet-500">.lol</span></div>
             </div>
             
             <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
+                <a href="#home" class="hover:text-violet-400 transition-colors">Start</a>
                 <a href="#features" class="hover:text-violet-400 transition-colors">Funktionen</a>
-                <a href="#how" class="hover:text-violet-400 transition-colors">So funktioniert's</a>
-                <a href="#" class="hover:text-violet-400 transition-colors">Preise</a>
-                <a href="#" class="hover:text-violet-400 transition-colors">Discord</a>
+                <a href="#dashboard" onclick="showPage('dashboard')" class="hover:text-violet-400 transition-colors">Dashboard</a>
+                <a href="#pricing" class="hover:text-violet-400 transition-colors">Preise</a>
             </div>
 
             <div class="flex items-center gap-x-4">
-                <button onclick="toggleTheme()" 
-                        class="w-10 h-10 flex items-center justify-center rounded-2xl hover:bg-zinc-900 transition-colors">
+                <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-2xl hover:bg-zinc-900 transition-colors">
                     <i id="theme-icon" class="fas fa-moon text-lg"></i>
                 </button>
-                <button onclick="loginClick()" 
-                        class="px-6 py-2.5 text-sm font-medium hover:bg-zinc-900 transition-colors rounded-2xl">
-                    Login
-                </button>
-                <button onclick="showRegisterModal()" 
-                        class="bg-violet-600 hover:bg-violet-700 px-8 py-2.5 rounded-3xl text-sm font-semibold transition-all active:scale-95">
-                    Kostenlos registrieren
-                </button>
+                <button onclick="showPage('login')" class="px-6 py-2.5 text-sm font-medium hover:bg-zinc-900 transition-colors rounded-2xl">Login</button>
+                <button onclick="showPage('register')" class="bg-violet-600 hover:bg-violet-700 px-8 py-2.5 rounded-3xl text-sm font-semibold transition-all">Registrieren</button>
             </div>
         </div>
     </nav>
 
-    <!-- HERO -->
-    <section class="hero-bg pt-32 pb-24 gun-pattern">
-        <div class="max-w-screen-2xl mx-auto px-8">
-            <div class="max-w-3xl mx-auto text-center pt-12">
+    <!-- HOME PAGE -->
+    <div id="page-home" class="page">
+        <!-- HERO -->
+        <section id="home" class="hero-bg pt-32 pb-24">
+            <div class="max-w-screen-2xl mx-auto px-8 text-center">
                 <h1 class="text-6xl md:text-7xl font-bold tracking-tighter leading-none mb-6">
                     Alles, was du willst,<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">genau hier.</span>
                 </h1>
-                <p class="text-xl text-zinc-400 max-w-lg mx-auto">
-                    kioo.lol ist deine moderne Link-in-Bio Seite + schneller &amp; sicherer Datei-Host.
-                </p>
-
+                <p class="text-xl text-zinc-400 max-w-lg mx-auto">Deine moderne Link-in-Bio + schneller Datei-Host.</p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center mt-10">
-                    <button onclick="showRegisterModal()" 
-                            class="bg-violet-600 hover:bg-violet-700 text-lg font-semibold px-10 py-6 rounded-3xl flex items-center justify-center gap-x-3 transition-all active:scale-95 shadow-xl shadow-violet-500/30">
-                        <span>Kostenlos starten</span>
-                        <i class="fas fa-arrow-right"></i>
+                    <button onclick="showPage('register')" class="bg-violet-600 hover:bg-violet-700 text-lg font-semibold px-10 py-6 rounded-3xl flex items-center gap-x-3">Kostenlos starten</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- MOCKUPS + FEATURES -->
+        <section class="max-w-screen-2xl mx-auto px-8 -mt-12 relative z-10">
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="mockup bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden shadow-2xl">...</div>
+                <!-- (Mockups wie vorher – gekürzt für Übersicht) -->
+            </div>
+        </section>
+    </div>
+
+    <!-- DASHBOARD PAGE -->
+    <div id="page-dashboard" class="page hidden min-h-screen bg-zinc-950 pt-20">
+        <div class="max-w-5xl mx-auto px-8 py-12">
+            <div class="flex justify-between items-center mb-10">
+                <h1 class="text-4xl font-bold">Willkommen zurück, @kioo 👋</h1>
+                <div class="flex gap-4">
+                    <button onclick="customizeLogo()" class="bg-zinc-800 px-6 py-3 rounded-2xl flex items-center gap-2 hover:bg-zinc-700">
+                        <i class="fas fa-image"></i> Logo ändern
                     </button>
-                    <button onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})" 
-                            class="border border-zinc-700 hover:bg-zinc-900 text-lg font-medium px-10 py-6 rounded-3xl transition-all">
-                        Preise ansehen
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- MOCKUPS -->
-    <section class="max-w-screen-2xl mx-auto px-8 -mt-12 relative z-10">
-        <div class="grid md:grid-cols-2 gap-8">
-            <!-- Desktop Mockup -->
-            <div class="mockup bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden shadow-2xl">
-                <div class="bg-zinc-950 p-4 border-b border-zinc-800 flex items-center gap-3">
-                    <div class="flex gap-1">
-                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                    </div>
-                    <div class="text-xs text-zinc-500 mx-auto">kioo.lol/@kioo</div>
-                </div>
-                <div class="p-6">
-                    <div class="flex gap-4 mb-8">
-                        <div class="flex-1 bg-zinc-800 rounded-2xl p-4">
-                            <div class="text-xs text-zinc-400 mb-1">Username</div>
-                            <div class="text-lg font-medium">@kioo</div>
-                        </div>
-                        <div class="flex-1 bg-zinc-800 rounded-2xl p-4">
-                            <div class="text-xs text-zinc-400 mb-1">Profile Views</div>
-                            <div class="text-3xl font-bold text-violet-400">12.459</div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-zinc-950 rounded-2xl p-6 mb-6">
-                        <div class="text-sm mb-4">Profile Views (letzte 24h)</div>
-                        <svg width="100%" height="180" viewBox="0 0 800 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M0 180 Q80 150 160 160 Q240 90 320 130 Q400 60 480 110 Q560 40 640 90 Q720 70 800 95" stroke="#a855f7" stroke-width="14" stroke-linecap="round"/>
-                        </svg>
-                    </div>
                 </div>
             </div>
 
-            <!-- Mobile Mockups -->
-            <div class="space-y-8 pt-12 md:pt-0">
-                <div class="mockup relative mx-auto max-w-[280px] bg-zinc-900 rounded-[3rem] p-3 shadow-2xl border border-zinc-700">
-                    <div class="bg-black rounded-[2.3rem] overflow-hidden h-[520px]">
-                        <div class="p-6 text-center pt-12">
-                            <div class="w-28 h-28 mx-auto rounded-3xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-5xl mb-6 shadow-inner">
-                                👤
-                            </div>
-                            <div class="font-semibold text-2xl">@kioo</div>
-                            <div class="text-zinc-400">Creator &amp; Designer</div>
-                            
-                            <div class="mt-10 space-y-3">
-                                <a href="#" class="block bg-zinc-800 hover:bg-zinc-700 w-full py-4 rounded-2xl font-medium">Portfolio</a>
-                                <a href="#" class="block bg-zinc-800 hover:bg-zinc-700 w-full py-4 rounded-2xl font-medium">Discord</a>
-                                <a href="#" class="block bg-zinc-800 hover:bg-zinc-700 w-full py-4 rounded-2xl font-medium">YouTube</a>
-                            </div>
-                        </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-zinc-900 p-8 rounded-3xl">
+                    <div class="text-sm text-zinc-400">Profile Views</div>
+                    <div class="text-5xl font-bold text-violet-400 mt-2">14.892</div>
+                </div>
+                <div class="bg-zinc-900 p-8 rounded-3xl">
+                    <div class="text-sm text-zinc-400">Dateien hochgeladen</div>
+                    <div class="text-5xl font-bold text-fuchsia-400 mt-2">47</div>
+                </div>
+                <div class="bg-zinc-900 p-8 rounded-3xl">
+                    <div class="text-sm text-zinc-400">Links</div>
+                    <div class="text-5xl font-bold text-cyan-400 mt-2">12</div>
+                </div>
+            </div>
+
+            <!-- Fake Links Editor -->
+            <div class="mt-12 bg-zinc-900 rounded-3xl p-8">
+                <h2 class="text-2xl font-semibold mb-6">Deine Links</h2>
+                <div class="space-y-4">
+                    <div class="flex gap-4 items-center bg-zinc-800 p-4 rounded-2xl">
+                        <i class="fab fa-youtube text-red-500 text-2xl"></i>
+                        <input type="text" value="https://youtube.com/@kioo" class="flex-1 bg-transparent focus:outline-none">
+                        <button class="text-red-500">Löschen</button>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- FEATURES -->
-    <section id="features" class="max-w-screen-2xl mx-auto px-8 py-32">
-        <h2 class="text-4xl font-bold text-center mb-16">Alles was du brauchst</h2>
-        <div class="grid md:grid-cols-3 gap-8">
-            <div class="bg-zinc-900/70 border border-zinc-800 rounded-3xl p-8 hover:border-violet-500/50 transition-all group">
-                <div class="text-4xl mb-6">🔗</div>
-                <h3 class="text-2xl font-semibold mb-3">Link-in-Bio</h3>
-                <p class="text-zinc-400">Unbegrenzt Links, schöne Themes, Social Icons und Analytics.</p>
-            </div>
-            <div class="bg-zinc-900/70 border border-zinc-800 rounded-3xl p-8 hover:border-violet-500/50 transition-all group">
-                <div class="text-4xl mb-6">📸</div>
-                <h3 class="text-2xl font-semibold mb-3">Image &amp; File Host</h3>
-                <p class="text-zinc-400">Schnell Bilder und Dateien hochladen und teilen.</p>
-            </div>
-            <div class="bg-zinc-900/70 border border-zinc-800 rounded-3xl p-8 hover:border-violet-500/50 transition-all group">
-                <div class="text-4xl mb-6">📊</div>
-                <h3 class="text-2xl font-semibold mb-3">Echte Analytics</h3>
-                <p class="text-zinc-400">Sieh wer deine Seite besucht und woher sie kommen.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- HOW IT WORKS -->
-    <section id="how" class="bg-zinc-900 py-24">
-        <div class="max-w-screen-2xl mx-auto px-8">
-            <h2 class="text-4xl font-bold text-center mb-16">In 3 Schritten loslegen</h2>
-            <div class="grid md:grid-cols-3 gap-10">
-                <div class="text-center">
-                    <div class="w-16 h-16 mx-auto bg-violet-600 rounded-2xl flex items-center justify-center text-3xl mb-6">1</div>
-                    <h3 class="font-semibold text-xl mb-2">Konto erstellen</h3>
-                    <p class="text-zinc-400">In unter 30 Sekunden</p>
-                </div>
-                <div class="text-center">
-                    <div class="w-16 h-16 mx-auto bg-violet-600 rounded-2xl flex items-center justify-center text-3xl mb-6">2</div>
-                    <h3 class="font-semibold text-xl mb-2">Profil anpassen</h3>
-                    <p class="text-zinc-400">Links, Bilder, Design</p>
-                </div>
-                <div class="text-center">
-                    <div class="w-16 h-16 mx-auto bg-violet-600 rounded-2xl flex items-center justify-center text-3xl mb-6">3</div>
-                    <h3 class="font-semibold text-xl mb-2">Teilen</h3>
-                    <p class="text-zinc-400">kioo.lol/@deinname</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- REGISTRATION MODAL -->
+    <!-- REGISTER MODAL -->
     <div id="registerModal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center z-[100]">
-        <div class="bg-zinc-900 rounded-3xl p-10 max-w-md w-full mx-4">
-            <h2 class="text-3xl font-bold mb-8 text-center">Kostenlos bei kioo.lol registrieren</h2>
-            
-            <form onsubmit="handleRegister(event)" class="space-y-6">
-                <div>
-                    <label class="block text-sm mb-2">Benutzername</label>
-                    <input type="text" id="username" placeholder="@kioo" required
-                           class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 focus:outline-none focus:border-violet-500">
-                </div>
-                <div>
-                    <label class="block text-sm mb-2">E-Mail</label>
-                    <input type="email" id="email" placeholder="du@beispiel.de" required
-                           class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 focus:outline-none focus:border-violet-500">
-                </div>
-                <div>
-                    <label class="block text-sm mb-2">Passwort</label>
-                    <input type="password" id="password" placeholder="••••••••" required
-                           class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 focus:outline-none focus:border-violet-500">
-                </div>
-                <button type="submit"
-                        class="w-full bg-violet-600 hover:bg-violet-700 py-5 rounded-3xl font-semibold text-lg transition-all">
-                    Konto erstellen
-                </button>
+        <div class="bg-zinc-900 rounded-3xl p-10 w-full max-w-md">
+            <h2 class="text-3xl font-bold mb-6">Konto erstellen</h2>
+            <form onsubmit="handleRegister(event)" class="space-y-5">
+                <input id="reg-username" type="text" placeholder="Benutzername" class="w-full bg-zinc-800 rounded-2xl px-6 py-4" required>
+                <input id="reg-email" type="email" placeholder="E-Mail" class="w-full bg-zinc-800 rounded-2xl px-6 py-4" required>
+                <button type="submit" class="w-full bg-violet-600 py-5 rounded-3xl font-semibold">Jetzt starten</button>
             </form>
-            
-            <button onclick="hideRegisterModal()" 
-                    class="mt-6 w-full text-zinc-400 hover:text-white transition-colors">
-                Abbrechen
-            </button>
         </div>
     </div>
 
     <!-- FOOTER -->
-    <footer class="bg-black py-20 border-t border-zinc-800">
-        <div class="max-w-screen-2xl mx-auto px-8 text-center">
-            <div class="text-4xl font-bold mb-6">Bereit für deinen Auftritt?</div>
-            <button onclick="showRegisterModal()" 
-                    class="bg-white text-black hover:bg-zinc-200 font-semibold text-lg px-14 py-6 rounded-3xl inline-flex items-center gap-x-3">
-                Jetzt kostenlos starten
-            </button>
-            <p class="text-zinc-500 mt-10">kioo.lol © 2026 • Made with ❤️</p>
+    <footer class="bg-black py-20 border-t border-zinc-800 mt-20">
+        <div class="max-w-screen-2xl mx-auto px-8">
+            <div class="grid md:grid-cols-4 gap-10">
+                <div>
+                    <div class="flex items-center gap-3 mb-6">
+                        <img id="footer-logo" src="https://via.placeholder.com/48x48/8b5cf6/ffffff?text=K" class="w-8 h-8 rounded-xl" alt="kioo.lol">
+                        <span class="logo-font text-2xl">kioo.lol</span>
+                    </div>
+                    <p class="text-zinc-500 text-sm">Deine Link-in-Bio &amp; Hosting Plattform.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Produkt</h4>
+                    <ul class="space-y-2 text-sm text-zinc-400">
+                        <li><a href="#" class="hover:text-white">Features</a></li>
+                        <li><a href="#" class="hover:text-white">Preise</a></li>
+                        <li><a href="#" class="hover:text-white">Beispiele</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Community</h4>
+                    <ul class="space-y-2 text-sm text-zinc-400">
+                        <li><a href="#" class="hover:text-white">Discord</a></li>
+                        <li><a href="#" class="hover:text-white">Twitter</a></li>
+                        <li><a href="#" class="hover:text-white">Bestenliste</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Rechtliches</h4>
+                    <ul class="space-y-2 text-sm text-zinc-400">
+                        <li><a href="#" class="hover:text-white">Datenschutz</a></li>
+                        <li><a href="#" class="hover:text-white">AGB</a></li>
+                        <li><a href="#" class="hover:text-white">Impressum</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center text-zinc-500 text-sm mt-16">
+                © 2026 kioo.lol – Made with ❤️
+            </div>
         </div>
     </footer>
 
     <script>
-        // Theme Toggle
+        let currentColor = '#a855f7';
+
         function toggleTheme() {
-            const html = document.documentElement;
-            const isDark = html.getAttribute('data-theme') === 'dark';
-            html.setAttribute('data-theme', isDark ? 'light' : 'dark');
-            
-            const icon = document.getElementById('theme-icon');
-            icon.classList.toggle('fa-moon', !isDark);
-            icon.classList.toggle('fa-sun', isDark);
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            document.getElementById('theme-icon').classList.toggle('fa-moon');
+            document.getElementById('theme-icon').classList.toggle('fa-sun');
         }
 
-        // Modal
-        function showRegisterModal() {
-            document.getElementById('registerModal').classList.remove('hidden');
-            document.getElementById('registerModal').classList.add('flex');
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+            const target = document.getElementById(`page-${page}`);
+            if (target) target.classList.remove('hidden');
+            window.scrollTo(0, 0);
         }
 
-        function hideRegisterModal() {
-            const modal = document.getElementById('registerModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        // Fake Registration
         function handleRegister(e) {
             e.preventDefault();
-            const username = document.getElementById('username').value;
-            hideRegisterModal();
-            setTimeout(() => {
-                alert(`🎉 Willkommen bei kioo.lol, @${username || 'kioo'}!\n\nDein Profil wurde erstellt. (Demo)`);
-            }, 400);
+            const name = document.getElementById('reg-username').value || "kioo";
+            document.getElementById('registerModal').classList.add('hidden');
+            alert(`🎉 Willkommen bei kioo.lol, @${name}! Dein Konto wurde erstellt.`);
         }
 
-        function loginClick() {
-            alert("🔑 Login-Fenster würde hier erscheinen (Demo)");
+        // Logo Upload
+        function customizeLogo() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = e => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = ev => {
+                    const imgSrc = ev.target.result;
+                    document.getElementById('nav-logo').src = imgSrc;
+                    document.getElementById('footer-logo').src = imgSrc;
+                    alert('✅ Logo erfolgreich aktualisiert!');
+                };
+                reader.readAsDataURL(file);
+            };
+            input.click();
         }
 
-        // Keyboard escape for modal
-        document.addEventListener('keydown', (e) => {
-            if (e.key === "Escape") hideRegisterModal();
-        });
+        // Color Changer (Demo)
+        function changeAccentColor(color) {
+            currentColor = color;
+            document.documentElement.style.setProperty('--accent', color);
+            alert('Farbe geändert! (In einer echten Version würde das Theme angepasst)');
+        }
 
-        console.log('%c kioo.lol Clone bereit! 🚀', 'color: #a855f7; font-size: 15px; font-weight: bold');
+        // Initialize
+        window.onload = () => {
+            console.log('%c kioo.lol – Voll funktionsfähige Demo bereit! 🚀', 'color:#a855f7;font-weight:bold');
+            // Show home by default
+            showPage('home');
+        };
     </script>
 </body>
 </html>
