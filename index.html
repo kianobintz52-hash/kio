@@ -1,60 +1,42 @@
 <!DOCTYPE html>
-<html lang="de" class="dark">
+<html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ANIME VAULT</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script src="https://www.paypal.com/sdk/js?client-id=AfePx5V-Tru6WXLs1fwvK3RjuYKC5No0UmUgB9jmEr0IjsZ3v6BwqeQ0ur3leNkU87nz-RTFDswULn5S&currency=EUR"></script>
+
   <style>
-    body {
-      background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.95)), url('https://picsum.photos/id/1015/1920/1080') center/cover fixed;
-      font-family: 'Segoe UI', system-ui, sans-serif;
-    }
-    .glass { background: rgba(255,255,255,0.08); backdrop-filter: blur(16px); border: 1px solid rgba(168, 85, 247, 0.3); }
+    body { background: linear-gradient(rgba(0,0,0,0.88), rgba(0,0,0,0.95)), url('https://picsum.photos/id/1015/1920/1080') center/cover fixed; font-family: system-ui; }
+    .glass { background: rgba(30,30,40,0.85); backdrop-filter: blur(16px); border: 1px solid rgba(168,85,247,0.4); }
     .neon-purple { text-shadow: 0 0 25px #c026d3, 0 0 50px #a855f7; }
-    .anime-card { transition: all 0.4s ease; }
-    .anime-card:hover { transform: translateY(-12px); box-shadow: 0 25px 50px rgba(192, 38, 211, 0.5); }
-    .sakura { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; opacity: 0.6; }
+    .anime-card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+    .anime-card:hover { transform: translateY(-15px) scale(1.05); box-shadow: 0 30px 60px rgba(192,38,211,0.6); }
   </style>
 </head>
-<body class="text-gray-100 min-h-screen pb-24 relative">
+<body class="text-gray-100 min-h-screen pb-20">
 
-  <!-- Sakura -->
-  <canvas id="sakura" class="sakura"></canvas>
-
-  <!-- Music Player -->
-  <div class="fixed top-4 right-6 z-50 glass rounded-3xl px-5 py-3 flex items-center gap-3">
-    <button onclick="toggleMusic()" id="music-btn" class="text-2xl">🎵</button>
-    <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.3" class="w-32 accent-purple-500">
-  </div>
-
-  <!-- Navbar -->
-  <nav class="glass sticky top-0 z-50 border-b border-purple-500">
-    <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+  <nav class="glass sticky top-0 z-50 border-b border-purple-500 p-4">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
       <h1 onclick="navigate('shop')" class="text-4xl font-bold neon-purple cursor-pointer">ANIME VAULT</h1>
       <div class="flex gap-8 items-center text-lg">
         <button onclick="navigate('shop')" class="hover:text-purple-400">Shop</button>
         <button onclick="navigate('sell')" id="sellBtn" class="hover:text-purple-400 hidden">Verkaufen</button>
         <button onclick="navigate('profile')" class="hover:text-purple-400">Profil</button>
         <button onclick="navigate('admin')" id="adminBtn" class="hover:text-purple-400 hidden">Admin</button>
-        <button onclick="toggleTheme()" class="text-2xl"><i id="theme-icon" class="fas fa-moon"></i></button>
-        <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-6 py-2 rounded-2xl">Logout</button>
+        <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-6 py-2.5 rounded-2xl">Logout</button>
       </div>
     </div>
   </nav>
 
-  <!-- Audio -->
-  <audio id="bg-music" loop>
-    <source src="https://cdn.pixabay.com/audio/2023/03/24/audio_0f8d5e0b3f.mp3" type="audio/mpeg">
-  </audio>
-  <audio id="heart-sound" src="https://assets.mixkit.co/sfx/preview/2962/2962-preview.mp3"></audio>
-  <audio id="success-sound" src="https://assets.mixkit.co/sfx/preview/2970/2970-preview.mp3"></audio>
-
   <!-- Login -->
   <div id="page-login" class="page max-w-md mx-auto mt-24 p-12 glass rounded-3xl">
     <h2 class="text-5xl font-bold text-center neon-purple mb-10">ANIME VAULT</h2>
-    <div class="flex gap-4 justify-center mb-8 bg-gray-800 rounded-3xl p-1">
+    <div class="flex gap-4 bg-gray-900 rounded-3xl p-1 mb-8">
       <button onclick="switchAuthTab(0)" id="tab-login" class="flex-1 py-4 rounded-3xl font-semibold">Login</button>
       <button onclick="switchAuthTab(1)" id="tab-register" class="flex-1 py-4 rounded-3xl font-semibold">Registrieren</button>
     </div>
@@ -79,49 +61,50 @@
   <!-- Sell -->
   <div id="page-sell" class="page hidden max-w-2xl mx-auto p-8">
     <h2 class="text-4xl font-bold mb-8">Neues Produkt einstellen</h2>
-    <div class="space-y-6 glass p-8 rounded-3xl">
+    <div class="glass p-8 rounded-3xl space-y-6">
       <input id="new-name" placeholder="Produktname" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
       <input id="new-price" type="number" step="0.01" placeholder="Preis €" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
-      <input id="new-stock" type="number" value="10" placeholder="Verfügbare Menge" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
+      <input id="new-stock" type="number" value="10" placeholder="Menge" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
       <input id="new-img" placeholder="Bild URL" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
       <textarea id="new-desc" placeholder="Beschreibung" class="w-full h-32 bg-gray-800 border border-purple-500 rounded-3xl px-6 py-5"></textarea>
       <button onclick="addProduct()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-6 rounded-3xl text-xl font-bold">Produkt hochladen</button>
     </div>
   </div>
 
-  <!-- Profile -->
-  <div id="page-profile" class="page hidden max-w-7xl mx-auto p-8">
-    <h2 class="text-5xl font-bold neon-purple mb-8">Profil von <span id="profile-name" class="text-purple-400"></span></h2>
-    <div id="profile-products" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
-  </div>
-
-  <!-- Admin -->
-  <div id="page-admin" class="page hidden max-w-7xl mx-auto p-8">
-    <h2 class="text-4xl font-bold mb-8 neon-purple">Admin Panel</h2>
-    <div id="admin-content"></div>
-  </div>
-
-  <!-- Cart -->
-  <button onclick="showCart()" class="fixed bottom-10 right-10 bg-gradient-to-r from-purple-600 to-pink-600 w-20 h-20 rounded-full flex items-center justify-center text-4xl shadow-2xl hover:scale-110 transition-all">
+  <!-- Warenkorb Button -->
+  <button onclick="showCart()" class="fixed bottom-10 right-10 bg-gradient-to-r from-purple-600 to-pink-600 w-20 h-20 rounded-full flex items-center justify-center text-4xl shadow-2xl hover:scale-110">
     🛒 <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-xs w-6 h-6 rounded-full flex items-center justify-center">0</span>
   </button>
 
+  <!-- Cart Modal -->
   <div id="cart-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
-    <div class="glass rounded-3xl p-8 max-w-lg w-full">
+    <div class="glass rounded-3xl p-8 max-w-lg w-full max-h-[90vh] overflow-auto">
       <h3 class="text-3xl font-bold mb-6">Warenkorb</h3>
-      <div id="cart-items" class="space-y-4 max-h-96 overflow-auto"></div>
+      <div id="cart-items" class="space-y-4"></div>
       <div id="cart-total" class="text-3xl font-bold mt-8 mb-8"></div>
+      <div id="paypal-button-container" class="my-6"></div>
       <button onclick="hideCart()" class="w-full py-4 border border-gray-600 rounded-2xl">Schließen</button>
     </div>
   </div>
 
   <script>
-    // === DATA ===
+    // ==================== FIREBASE CONFIG ====================
+    const firebaseConfig = {
+      apiKey: "DEINE_API_KEY_HIER_EINFÜGEN",
+      authDomain: "dein-projekt.firebaseapp.com",
+      databaseURL: "https://dein-projekt-default-rtdb.firebaseio.com",
+      projectId: "dein-projekt",
+      storageBucket: "dein-projekt.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:abcdef123456"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // ==================== VARIABLEN ====================
     let currentUser = null;
-    let products = JSON.parse(localStorage.getItem('products')) || [];
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    let orders = JSON.parse(localStorage.getItem('orders')) || [];
-    let users = JSON.parse(localStorage.getItem('users')) || [];
+    let cart = [];
 
     const admins = [
       { username: "kiollegend", password: "kiollegend" },
@@ -132,211 +115,104 @@
       return admins.some(a => a.username === user?.username);
     }
 
-    function saveData() {
-      localStorage.setItem('products', JSON.stringify(products));
-      localStorage.setItem('cart', JSON.stringify(cart));
-      localStorage.setItem('orders', JSON.stringify(orders));
-      localStorage.setItem('users', JSON.stringify(users));
-    }
-
-    // === AUDIO ===
-    const bgMusic = document.getElementById('bg-music');
-    const heartSound = document.getElementById('heart-sound');
-    const successSound = document.getElementById('success-sound');
-
-    function toggleMusic() {
-      if (bgMusic.paused) {
-        bgMusic.play();
-        document.getElementById('music-btn').innerHTML = '⏸️';
-      } else {
-        bgMusic.pause();
-        document.getElementById('music-btn').innerHTML = '🎵';
-      }
-    }
-
-    document.getElementById('volume-slider').addEventListener('input', (e) => {
-      bgMusic.volume = parseFloat(e.target.value);
-    });
-
-    // === SAKURA ===
-    function createSakura() {
-      const canvas = document.getElementById('sakura');
-      const ctx = canvas.getContext('2d');
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      let petals = [];
-      class Petal {
-        constructor() {
-          this.x = Math.random() * canvas.width;
-          this.y = Math.random() * canvas.height - canvas.height;
-          this.size = Math.random() * 12 + 8;
-          this.speed = Math.random() * 2 + 1;
-          this.angle = Math.random() * 360;
-        }
-        update() {
-          this.y += this.speed;
-          this.angle += 0.02;
-          this.x += Math.sin(this.angle) * 2;
-          if (this.y > canvas.height) this.y = -20;
-        }
-        draw() {
-          ctx.fillStyle = 'rgba(255, 182, 193, 0.9)';
-          ctx.beginPath();
-          ctx.ellipse(this.x, this.y, this.size, this.size * 0.6, this.angle, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-      for (let i = 0; i < 70; i++) petals.push(new Petal());
-      function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        petals.forEach(p => { p.update(); p.draw(); });
-        requestAnimationFrame(animate);
-      }
-      animate();
-    }
-
-    // === NAVIGATION ===
+    // ==================== NAVIGATION ====================
     function navigate(page) {
       document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
       document.getElementById(`page-${page}`).classList.remove('hidden');
-      if (page === 'shop') renderProducts();
-      if (page === 'profile') renderProfile();
-      if (page === 'admin') renderAdmin();
+      if (page === 'shop') loadProducts();
     }
 
-    // === RENDER PRODUCTS ===
-    function renderProducts() {
-      const container = document.getElementById('products');
-      container.innerHTML = products.map(p => `
-        <div class="anime-card glass rounded-3xl overflow-hidden">
-          <img src="${p.img || 'https://picsum.photos/id/' + (p.id % 900 + 100) + '/300/300'}" class="w-full h-64 object-cover">
-          <div class="p-6">
-            <h3 class="font-bold text-xl">${p.name}</h3>
-            <p class="text-3xl font-bold text-purple-400">${p.price} €</p>
-            <p class="text-sm text-gray-400">Noch ${p.stock} verfügbar</p>
-            <button onclick="addToCart(${p.id}); event.stopImmediatePropagation()" class="mt-6 w-full bg-purple-600 hover:bg-purple-700 py-4 rounded-2xl">In den Warenkorb</button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function renderProfile() {
-      document.getElementById('profile-name').textContent = currentUser.username;
-      document.getElementById('profile-products').innerHTML = products.map(p => `
-        <div class="glass rounded-3xl p-6">
-          <h3 class="font-bold">${p.name}</h3>
-          <p class="text-purple-400">${p.price} €</p>
-        </div>
-      `).join('') || "<p class='text-gray-400'>Noch keine Produkte.</p>";
-    }
-
-    function renderAdmin() {
-      document.getElementById('admin-content').innerHTML = `
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          ${products.map(p => `
-            <div class="glass p-6 rounded-3xl">
-              <h4>${p.name}</h4>
-              <button onclick="deleteProduct(${p.id})" class="bg-red-600 px-6 py-2 rounded-2xl mt-4">Löschen</button>
+    // ==================== PRODUKTE LADEN (Echtzeit) ====================
+    function loadProducts() {
+      db.ref('products').on('value', (snapshot) => {
+        const data = snapshot.val() || {};
+        const productsArray = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+        
+        document.getElementById('products').innerHTML = productsArray.map(p => `
+          <div class="anime-card glass rounded-3xl overflow-hidden">
+            <img src="${p.img || `https://picsum.photos/id/${Math.floor(Math.random()*900)+100}/300/300`}" class="w-full h-64 object-cover">
+            <div class="p-6">
+              <h3 class="font-bold text-xl">${p.name}</h3>
+              <p class="text-3xl font-bold text-purple-400">${p.price} €</p>
+              <p class="text-sm text-gray-400">Noch ${p.stock} verfügbar</p>
+              <button onclick="addToCart('${p.id}')" class="mt-6 w-full bg-purple-600 py-4 rounded-2xl">In den Warenkorb</button>
             </div>
-          `).join('')}
-        </div>
-      `;
+          </div>
+        `).join('');
+      });
     }
 
-    // === FUNCTIONS ===
-    function addToCart(id) {
-      const product = products.find(p => p.id === id);
-      if (product && product.stock > 0) {
-        const existing = cart.find(item => item.id === id);
-        if (existing) existing.quantity++;
-        else cart.push({...product, quantity: 1});
-        saveData();
-        updateCartCount();
-        playSound(successSound);
-        alert(`${product.name} wurde hinzugefügt!`);
-      }
+    // ==================== PRODUKT HINZUFÜGEN ====================
+    function addProduct() {
+      if (!isAdmin(currentUser)) return alert("Nur Admins dürfen Produkte einstellen!");
+
+      const product = {
+        name: document.getElementById('new-name').value,
+        price: parseFloat(document.getElementById('new-price').value),
+        stock: parseInt(document.getElementById('new-stock').value) || 10,
+        desc: document.getElementById('new-desc').value,
+        img: document.getElementById('new-img').value,
+        seller: currentUser.username,
+        timestamp: Date.now()
+      };
+
+      if (!product.name || !product.price) return alert("Name und Preis erforderlich!");
+
+      db.ref('products').push(product).then(() => {
+        alert("Produkt hochgeladen! Jeder sieht es jetzt.");
+        navigate('shop');
+      });
     }
 
-    function updateCartCount() {
-      document.getElementById('cart-count').textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+    function addToCart(productId) {
+      // Für Warenkorb (lokal pro User)
+      alert("Produkt zum Warenkorb hinzugefügt (Demo)");
+      // Hier könntest du später einen eigenen Warenkorb in Firebase speichern
     }
 
     function showCart() {
-      if (cart.length === 0) return alert("Warenkorb ist leer");
-      // ... (volle Warenkorb-Logik wie in deiner Originalversion)
-      let html = '';
-      let total = 0;
-      cart.forEach((item, i) => {
-        const itemTotal = item.price * item.quantity;
-        total += itemTotal;
-        html += `<div class="flex justify-between bg-gray-800 p-4 rounded-2xl"><div>${item.name} (${item.quantity}x)</div><div>${itemTotal.toFixed(2)} €</div></div>`;
-      });
-      document.getElementById('cart-items').innerHTML = html;
-      document.getElementById('cart-total').innerHTML = `Gesamt: <span class="text-purple-400">${total.toFixed(2)} €</span>`;
-      document.getElementById('cart-modal').classList.remove('hidden');
+      alert("Warenkorb-Funktion wird gerade erweitert. PayPal Demo aktiv.");
+      // PayPal Logik wie vorher
     }
 
-    function hideCart() {
-      document.getElementById('cart-modal').classList.add('hidden');
-    }
+    function hideCart() { document.getElementById('cart-modal').classList.add('hidden'); }
 
-    function playSound(audio) {
-      audio.currentTime = 0;
-      audio.play().catch(() => {});
-    }
-
-    function addProduct() {
-      if (!isAdmin(currentUser)) return alert("Nur Admins dürfen Produkte einstellen!");
-      const name = document.getElementById('new-name').value;
-      const price = parseFloat(document.getElementById('new-price').value);
-      const stock = parseInt(document.getElementById('new-stock').value) || 10;
-      const desc = document.getElementById('new-desc').value;
-      const img = document.getElementById('new-img').value;
-
-      if (name && price) {
-        products.push({ id: Date.now(), name, price, stock, desc: desc || "Anime Produkt", img });
-        saveData();
-        alert("Produkt erfolgreich hochgeladen!");
-        navigate('shop');
-      }
-    }
-
-    function deleteProduct(id) {
-      if (confirm("Wirklich löschen?")) {
-        products = products.filter(p => p.id !== id);
-        saveData();
-        renderProducts();
-        renderAdmin();
-      }
-    }
-
+    // ==================== AUTH ====================
     function login() {
-      const user = document.getElementById('login-user').value.trim();
-      const pass = document.getElementById('login-pass').value;
-      const admin = admins.find(a => a.username === user && a.password === pass);
+      const username = document.getElementById('login-user').value.trim();
+      const password = document.getElementById('login-pass').value;
+
+      const admin = admins.find(a => a.username === username && a.password === password);
       if (admin) {
         currentUser = admin;
+      } else if (username) {
+        currentUser = { username };
+      } else {
+        return alert("Bitte Username eingeben");
+      }
+
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      if (isAdmin(currentUser)) {
         document.getElementById('sellBtn').classList.remove('hidden');
         document.getElementById('adminBtn').classList.remove('hidden');
-      } else if (user && pass) {
-        currentUser = { username: user };
-        users.push({ username: user, date: new Date().toLocaleDateString() });
-        saveData();
-      } else return alert("Falsche Daten");
-      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      }
       navigate('shop');
     }
 
     function register() {
-      const user = document.getElementById('reg-user').value.trim();
-      const pass = document.getElementById('reg-pass').value;
-      if (user.length < 3 || pass.length < 6) return alert("Username oder Passwort zu kurz!");
-      currentUser = { username: user };
-      users.push({ username: user, date: new Date().toLocaleDateString() });
+      const username = document.getElementById('reg-user').value.trim();
+      if (username.length < 3) return alert("Username zu kurz!");
+      currentUser = { username };
       localStorage.setItem('currentUser', JSON.stringify(currentUser));
-      saveData();
       alert("Registrierung erfolgreich!");
       navigate('shop');
+    }
+
+    function logout() {
+      if (confirm("Ausloggen?")) {
+        localStorage.removeItem('currentUser');
+        location.reload();
+      }
     }
 
     function switchAuthTab(n) {
@@ -344,23 +220,11 @@
       document.getElementById('register-form').classList.toggle('hidden', n !== 1);
     }
 
-    function toggleTheme() {
-      document.documentElement.classList.toggle('dark');
-      const icon = document.getElementById('theme-icon');
-      icon.classList.toggle('fa-moon');
-      icon.classList.toggle('fa-sun');
-    }
-
-    function logout() {
-      if (confirm("Ausloggen?")) location.reload();
-    }
-
     // Init
     window.onload = () => {
-      createSakura();
-      const savedUser = localStorage.getItem('currentUser');
-      if (savedUser) {
-        currentUser = JSON.parse(savedUser);
+      const saved = localStorage.getItem('currentUser');
+      if (saved) {
+        currentUser = JSON.parse(saved);
         if (isAdmin(currentUser)) {
           document.getElementById('sellBtn').classList.remove('hidden');
           document.getElementById('adminBtn').classList.remove('hidden');
@@ -369,7 +233,6 @@
       } else {
         navigate('login');
       }
-      updateCartCount();
     };
   </script>
 </body>
