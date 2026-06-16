@@ -86,33 +86,41 @@
   <!-- Owner Panel -->
   <div id="page-admin" class="page hidden max-w-7xl mx-auto p-8">
     <h2 class="text-5xl font-bold neon-purple mb-10">👑 Owner Panel</h2>
-    <div class="glass p-8 rounded-3xl space-y-8">
-      <div id="admin-content"></div>
+    <div class="glass p-8 rounded-3xl">
+      <div class="flex border-b border-purple-500 mb-8 overflow-x-auto">
+        <button onclick="switchAdminTab(0)" class="admin-tab px-8 py-4 border-b-4 border-purple-500" id="tab-0">Statistiken</button>
+        <button onclick="switchAdminTab(1)" class="admin-tab px-8 py-4" id="tab-1">Produkte</button>
+        <button onclick="switchAdminTab(2)" class="admin-tab px-8 py-4" id="tab-2">User</button>
+        <button onclick="switchAdminTab(3)" class="admin-tab px-8 py-4" id="tab-3">Mitteilungen</button>
+      </div>
+
+      <div id="admin-tab-0" class="admin-tab-content">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="stats"></div>
+      </div>
+      <div id="admin-tab-1" class="admin-tab-content hidden" id="products-admin"></div>
+      <div id="admin-tab-2" class="admin-tab-content hidden" id="users-admin"></div>
+      <div id="admin-tab-3" class="admin-tab-content hidden">
+        <textarea id="announcement" class="w-full h-32 glass rounded-2xl p-6" placeholder="Mitteilung an alle User..."></textarea>
+        <button onclick="sendAnnouncement()" class="mt-4 bg-purple-600 px-10 py-4 rounded-2xl">Senden</button>
+      </div>
     </div>
   </div>
 
-  <!-- Warenkorb Button -->
+  <!-- Warenkorb -->
   <button onclick="showCart()" class="fixed bottom-10 right-10 bg-gradient-to-r from-purple-600 to-pink-600 w-20 h-20 rounded-full flex items-center justify-center text-4xl shadow-2xl hover:scale-110">
     🛒 <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-xs w-6 h-6 rounded-full flex items-center justify-center">0</span>
   </button>
 
-  <!-- Cart Modal -->
   <div id="cart-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
-    <div class="glass rounded-3xl p-8 max-w-lg w-full max-h-[90vh] overflow-auto">
+    <div class="glass rounded-3xl p-8 max-w-lg w-full">
       <h3 class="text-3xl font-bold mb-6">Warenkorb</h3>
       <div id="cart-items" class="space-y-4"></div>
       <div id="cart-total" class="text-3xl font-bold mt-8 mb-8"></div>
-      
-      <!-- Discord Kauf Button -->
-      <div class="bg-indigo-600 text-center py-6 rounded-2xl mb-6">
-        <p class="mb-3 text-lg">Um zu bestellen, tritt bitte dem Discord bei:</p>
-        <a href="https://discord.gg/v2kKvxrDv" target="_blank" 
-           class="inline-block bg-white text-indigo-700 font-bold px-10 py-4 rounded-2xl hover:bg-gray-100">
-          Discord Server beitreten
-        </a>
+      <div class="bg-indigo-600 text-center py-6 rounded-2xl">
+        <p class="mb-4">Um zu bestellen, tritt dem Discord bei:</p>
+        <a href="https://discord.gg/v2kKvxrDv" target="_blank" class="inline-block bg-white text-indigo-700 font-bold px-10 py-4 rounded-2xl">Discord beitreten</a>
       </div>
-      
-      <button onclick="hideCart()" class="w-full py-4 border border-gray-600 rounded-2xl">Schließen</button>
+      <button onclick="hideCart()" class="w-full py-4 border border-gray-600 rounded-2xl mt-6">Schließen</button>
     </div>
   </div>
 
@@ -147,27 +155,88 @@
       if (page === 'admin' && isAdmin(currentUser)) loadAdminPanel();
     }
 
-    function loadProducts() {
-      db.ref('products').on('value', (snapshot) => {
-        const data = snapshot.val() || {};
-        let html = '';
-        Object.keys(data).forEach(key => {
-          const p = data[key];
-          html += `
-            <div class="anime-card glass rounded-3xl overflow-hidden">
-              <img src="${p.img || 'https://picsum.photos/300/300'}" class="w-full h-64 object-cover">
-              <div class="p-6">
-                <h3 class="font-bold text-xl">${p.name}</h3>
-                <p class="text-3xl font-bold text-purple-400">${p.price} €</p>
-                <p class="text-sm text-gray-400">Von: ${p.seller} • ${p.stock} verfügbar</p>
-                <button onclick="addToCart('${key}')" class="mt-6 w-full bg-purple-600 py-4 rounded-2xl">In den Warenkorb</button>
-              </div>
-            </div>`;
-        });
-        document.getElementById('products').innerHTML = html || "<p class='text-center text-gray-400'>Noch keine Produkte.</p>";
+    function switchAdminTab(n) {
+      document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`admin-tab-${n}`).classList.remove('hidden');
+    }
+
+    function loadAdminPanel() {
+      switchAdminTab(0);
+      loadStats();
+      loadProductsAdmin();
+      loadUsersAdmin();
+    }
+
+    function loadStats() {
+      db.ref('products').once('value', (snap) => {
+        const prods = snap.val() || {};
+        let value = 0;
+        Object.values(prods).forEach(p => value += (p.price || 0) * (p.stock || 0));
+
+        document.getElementById('stats').innerHTML = `
+          <div class="glass p-8 rounded-3xl text-center">
+            <p class="text-5xl font-bold text-purple-400">${Object.keys(prods).length}</p>
+            <p>Produkte</p>
+          </div>
+          <div class="glass p-8 rounded-3xl text-center">
+            <p class="text-5xl font-bold text-pink-400" id="user-stat">0</p>
+            <p>User</p>
+          </div>
+          <div class="glass p-8 rounded-3xl text-center">
+            <p class="text-5xl font-bold text-green-400">${value.toFixed(0)} €</p>
+            <p>Gesamtwert</p>
+          </div>
+        `;
       });
     }
 
+    function loadProductsAdmin() {
+      db.ref('products').on('value', (snap) => {
+        const prods = snap.val() || {};
+        let html = '';
+        Object.keys(prods).forEach(key => {
+          const p = prods[key];
+          html += `
+            <div class="glass p-6 rounded-3xl mb-6 flex justify-between items-center">
+              <div>
+                <h3 class="font-bold">${p.name}</h3>
+                <p>${p.price} € • Stock: ${p.stock}</p>
+              </div>
+              <button onclick="editProduct('${key}')" class="bg-blue-600 px-6 py-2 rounded-2xl">Bearbeiten</button>
+            </div>`;
+        });
+        document.getElementById('products-admin').innerHTML = html;
+      });
+    }
+
+    function editProduct(key) {
+      const newPrice = prompt("Neuer Preis:");
+      if (newPrice) db.ref('products/' + key + '/price').set(parseFloat(newPrice));
+    }
+
+    function loadUsersAdmin() {
+      db.ref('users').once('value', (snap) => {
+        const users = snap.val() || {};
+        let html = '<h3 class="text-2xl mb-6">Registrierte User</h3>';
+        Object.keys(users).forEach(u => {
+          html += `<div class="glass p-4 rounded-2xl mb-3 flex justify-between"><span>${u}</span><button onclick="deleteUser('${u}')" class="text-red-500">Löschen</button></div>`;
+        });
+        document.getElementById('users-admin').innerHTML = html;
+      });
+    }
+
+    function deleteUser(username) {
+      if (confirm(`User ${username} löschen?`)) db.ref('users/' + username).remove();
+    }
+
+    function sendAnnouncement() {
+      const text = document.getElementById('announcement').value;
+      if (!text) return alert("Text eingeben!");
+      db.ref('announcements').push({ message: text, from: currentUser.username, time: Date.now() });
+      alert("Mitteilung gesendet!");
+    }
+
+    // Rest der Funktionen (loadProducts, addProduct, Warenkorb, Login etc.)
     function addProduct() {
       if (!currentUser) return alert("Bitte einloggen!");
       const product = {
@@ -205,19 +274,13 @@
 
     function showCart() {
       if (cart.length === 0) return alert("Warenkorb ist leer");
-      
       let html = '';
       let total = 0;
       cart.forEach(item => {
         const itemTotal = item.price * item.quantity;
         total += itemTotal;
-        html += `
-          <div class="flex justify-between bg-gray-800 p-4 rounded-2xl mb-3">
-            <div>${item.name} (${item.quantity}x)</div>
-            <div>${itemTotal.toFixed(2)} €</div>
-          </div>`;
+        html += `<div class="flex justify-between bg-gray-800 p-4 rounded-2xl mb-3"><div>${item.name} (${item.quantity}x)</div><div>${itemTotal.toFixed(2)} €</div></div>`;
       });
-
       document.getElementById('cart-items').innerHTML = html;
       document.getElementById('cart-total').innerHTML = `Gesamt: <span class="text-purple-400">${total.toFixed(2)} €</span>`;
       document.getElementById('cart-modal').classList.remove('hidden');
@@ -227,14 +290,8 @@
       document.getElementById('cart-modal').classList.add('hidden');
     }
 
-    function loadAdminPanel() {
-      let html = `<h3 class="text-2xl mb-6">👑 Owner Panel - ${currentUser.username}</h3>`;
-      db.ref('users').once('value', (snap) => {
-        const users = snap.val() || {};
-        html += `<h4 class="text-xl mb-4">Registrierte User (${Object.keys(users).length})</h4>`;
-        Object.keys(users).forEach(u => html += `<div class="glass p-4 rounded-2xl mb-2">${u}</div>`);
-        document.getElementById('admin-content').innerHTML = html;
-      });
+    function renderProfile() {
+      document.getElementById('profile-name').textContent = currentUser.username;
     }
 
     function login() {
