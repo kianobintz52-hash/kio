@@ -3,36 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Produkt Marketplace Bot</title>
+    <title>Marketplace - Produktverwaltung</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background: #36393f; color: #dcddde; }
-        .container { max-width: 800px; margin: auto; }
-        input, button, select { padding: 10px; margin: 5px; background: #40444b; color: white; border: none; border-radius: 4px; }
-        button { background: #7289da; cursor: pointer; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #2f3136;
+            color: #dcddde;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #36393f;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            overflow: hidden;
+        }
+        header {
+            background: #202225;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 { margin: 0; color: #7289da; }
+        .main { padding: 25px; }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: #40444b;
+            border: none;
+            border-radius: 6px;
+            color: white;
+        }
+        button {
+            padding: 12px 20px;
+            background: #7289da;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
         button:hover { background: #5b6bbe; }
-        .product { background: #2f3136; padding: 15px; margin: 10px 0; border-radius: 8px; }
-        .owner-controls { background: #f04747; padding: 10px; border-radius: 4px; }
+        .delete-btn { background: #f04747; }
+        .delete-btn:hover { background: #d63f3f; }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .product {
+            background: #2f3136;
+            border-radius: 10px;
+            padding: 16px;
+            transition: 0.2s;
+        }
+        .product:hover { transform: translateY(-4px); box-shadow: 0 6px 15px rgba(0,0,0,0.3); }
+        .product img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        .owner-controls {
+            background: #faa61a;
+            color: black;
+            font-size: 0.9em;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Discord Produkt Marketplace Bot - Verbesserte Version</h1>
-        
-        <h2>Produkt hinzufügen / Verwalten (als Owner)</h2>
-        <input type="text" id="name" placeholder="Produktname">
-        <input type="text" id="price" placeholder="Preis">
-        <input type="text" id="description" placeholder="Beschreibung">
-        <input type="text" id="image" placeholder="Bild-URL (optional)">
-        <button onclick="addProduct()">Produkt hinzufügen</button>
+        <header>
+            <h1>🛒 Produkt Marketplace</h1>
+            <p>Owner: Alles verwalten • User: Nur eigene Produkte löschen</p>
+        </header>
 
-        <h2>Meine Produkte / Alle Produkte (Owner sieht alles)</h2>
-        <div id="products"></div>
+        <div class="main">
+            <h2>Neues Produkt hinzufügen (Owner)</h2>
+            <input type="text" id="name" placeholder="Produktname">
+            <input type="text" id="price" placeholder="Preis (z.B. 49,99€)">
+            <textarea id="description" rows="3" placeholder="Beschreibung..."></textarea>
+            <input type="text" id="image" placeholder="Bild-URL (optional)">
+            
+            <button onclick="addProduct()">Produkt hinzufügen</button>
+
+            <h2 style="margin-top: 30px;">Alle Produkte</h2>
+            <div id="products" class="product-grid"></div>
+        </div>
     </div>
 
     <script>
         let products = JSON.parse(localStorage.getItem('products')) || [];
-        let isOwner = true; // Im Bot später über User ID prüfen
-        let currentUser = "DeinDiscordName#1234"; // Im Bot: message.author.tag
+        let isOwner = true;           // Später im Bot über User-ID prüfen
+        let currentUser = "DeinName#1234";
 
         function saveProducts() {
             localStorage.setItem('products', JSON.stringify(products));
@@ -40,12 +113,12 @@
         }
 
         function addProduct() {
-            const name = document.getElementById('name').value;
-            const price = document.getElementById('price').value;
-            const description = document.getElementById('description').value;
-            const image = document.getElementById('image').value;
+            const name = document.getElementById('name').value.trim();
+            const price = document.getElementById('price').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const image = document.getElementById('image').value.trim();
 
-            if (!name || !price) return alert("Name und Preis erforderlich!");
+            if (!name || !price) return alert("Produktname und Preis sind Pflichtfelder!");
 
             products.push({
                 id: Date.now(),
@@ -58,28 +131,23 @@
             });
 
             saveProducts();
-            clearInputs();
+            clearForm();
         }
 
         function deleteProduct(id) {
-            if (!isOwner) {
-                const product = products.find(p => p.id === id);
-                if (product.seller !== currentUser) {
-                    return alert("Du darfst nur deine eigenen Produkte löschen!");
-                }
+            if (confirm("Produkt wirklich löschen?")) {
+                products = products.filter(p => p.id !== id);
+                saveProducts();
             }
-            products = products.filter(p => p.id !== id);
-            saveProducts();
         }
 
         function markAsSold(id) {
             const product = products.find(p => p.id === id);
             if (product) {
                 product.sold = true;
-                // Bei Verkauf: Bild-URL entfernen und nur Discord-Name anzeigen
-                product.image = null;
+                product.image = null;           // Bild-URL beim Verkauf entfernen
                 saveProducts();
-                alert(`Produkt "${product.name}" als verkauft markiert. Kontakt: ${product.seller}`);
+                alert(`✅ ${product.name} als verkauft markiert!\nKontakt: ${product.seller}`);
             }
         }
 
@@ -91,27 +159,34 @@
                 const div = document.createElement('div');
                 div.className = 'product';
                 div.innerHTML = `
-                    <h3>${product.name} - ${product.price}€</h3>
+                    ${product.sold ? '<div class="owner-controls">VERKAUFT</div>' : ''}
+                    <h3>${product.name}</h3>
+                    <strong>${product.price}</strong>
                     <p>${product.description || 'Keine Beschreibung'}</p>
-                    ${product.image ? `<img src="${product.image}" width="150" style="border-radius:4px;">` : ''}
+                    
+                    ${product.image ? `<img src="${product.image}" alt="Produktbild">` : ''}
+                    
                     <p><strong>Verkäufer:</strong> ${product.seller}</p>
-                    ${product.sold ? '<span style="color:#43b581;">✓ Verkauft</span>' : ''}
-                    <br>
-                    <button onclick="markAsSold(${product.id})">Als verkauft markieren</button>
-                    <button onclick="deleteProduct(${product.id})" style="background:#f04747;">Löschen</button>
+
+                    <button onclick="markAsSold(${product.id})" style="background:#43b581; width:100%; margin:8px 0;">
+                        Als verkauft markieren
+                    </button>
+                    <button onclick="deleteProduct(${product.id})" class="delete-btn" style="width:100%;">
+                        Löschen
+                    </button>
                 `;
                 container.appendChild(div);
             });
         }
 
-        function clearInputs() {
+        function clearForm() {
             document.getElementById('name').value = '';
             document.getElementById('price').value = '';
             document.getElementById('description').value = '';
             document.getElementById('image').value = '';
         }
 
-        // Initial render
+        // Start
         renderProducts();
     </script>
 </body>
