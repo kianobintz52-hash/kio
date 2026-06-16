@@ -19,18 +19,22 @@
     .neon-purple { text-shadow: 0 0 25px #c026d3, 0 0 50px #a855f7; }
     .anime-card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
     .anime-card:hover { transform: translateY(-15px) scale(1.05); box-shadow: 0 30px 60px rgba(192,38,211,0.6); }
+    .pink-text { color: #f472b6; }
   </style>
 </head>
 <body class="text-gray-100 min-h-screen pb-20">
 
   <nav class="glass sticky top-0 z-50 border-b border-purple-500 p-4">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
-      <h1 onclick="navigate('shop')" class="text-4xl font-bold neon-purple cursor-pointer">ANIME VAULT</h1>
+      <div class="flex items-center gap-3">
+        <h1 onclick="navigate('shop')" class="text-4xl font-bold neon-purple cursor-pointer">ANIME VAULT</h1>
+        <span class="text-sm pink-text font-medium">Owner & Kiano</span>
+      </div>
       <div class="flex gap-8 items-center text-lg">
         <button onclick="navigate('shop')" class="hover:text-purple-400">Shop</button>
         <button onclick="navigate('sell')" id="sellBtn" class="hover:text-purple-400">Verkaufen</button>
         <button onclick="navigate('profile')" class="hover:text-purple-400">Profil</button>
-        <button onclick="navigate('admin')" id="adminBtn" class="hover:text-purple-400 hidden">👑 Admin</button>
+        <button onclick="navigate('admin')" id="adminBtn" class="hover:text-purple-400 hidden">👑 Owner</button>
         <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-6 py-2.5 rounded-2xl">Logout</button>
       </div>
     </div>
@@ -80,13 +84,13 @@
     <div id="profile-products" class="glass p-8 rounded-3xl"></div>
   </div>
 
-  <!-- Admin Panel -->
+  <!-- Owner Panel -->
   <div id="page-admin" class="page hidden max-w-7xl mx-auto p-8">
-    <h2 class="text-5xl font-bold neon-purple mb-10">👑 Admin Panel (nur für Owner)</h2>
+    <h2 class="text-5xl font-bold neon-purple mb-10">👑 Owner Panel</h2>
     <div class="glass p-8 rounded-3xl space-y-8">
       <div class="flex gap-4">
         <button onclick="deleteAllProducts()" class="bg-red-600 hover:bg-red-700 px-8 py-4 rounded-2xl flex-1">Alle Produkte löschen</button>
-        <button onclick="resetDatabase()" class="bg-red-700 hover:bg-red-800 px-8 py-4 rounded-2xl flex-1">Gesamte Datenbank zurücksetzen</button>
+        <button onclick="resetDatabase()" class="bg-red-700 hover:bg-red-800 px-8 py-4 rounded-2xl flex-1">Datenbank komplett zurücksetzen</button>
       </div>
       <div id="admin-content"></div>
     </div>
@@ -107,7 +111,6 @@
     const db = firebase.database();
 
     let currentUser = null;
-
     const admins = ["kiollegend", "ZayTox"];
 
     function isAdmin(user) {
@@ -145,7 +148,6 @@
 
     function addProduct() {
       if (!currentUser) return alert("Bitte einloggen!");
-
       const product = {
         name: document.getElementById('new-name').value.trim(),
         price: parseFloat(document.getElementById('new-price').value),
@@ -155,9 +157,7 @@
         seller: currentUser.username,
         timestamp: Date.now()
       };
-
       if (!product.name || !product.price) return alert("Name und Preis ausfüllen!");
-
       db.ref('products').push(product).then(() => {
         alert("✅ Produkt hochgeladen!");
         navigate('shop');
@@ -165,51 +165,36 @@
     }
 
     function loadAdminPanel() {
-      db.ref('products').once('value', (snapshot) => {
-        const data = snapshot.val() || {};
-        let count = Object.keys(data).length;
-        let html = `<h3 class="text-2xl mb-4">Produkte gesamt: ${count}</h3>`;
+      let html = `<h3 class="text-2xl mb-6">Owner Panel - Willkommen ${currentUser.username}</h3>`;
 
-        Object.keys(data).forEach(key => {
-          const p = data[key];
-          html += `
-            <div class="glass p-6 rounded-3xl mb-4 flex justify-between items-center">
-              <div>
-                <strong>${p.name}</strong> — ${p.price}€ 
-                <small class="text-gray-400">(von ${p.seller})</small>
-              </div>
-              <button onclick="deleteProduct('${key}')" class="bg-red-600 px-6 py-2 rounded-2xl text-sm">Löschen</button>
-            </div>`;
+      // Produkte
+      db.ref('products').once('value', (snap) => {
+        const products = snap.val() || {};
+        html += `<p class="mb-4">Produkte: ${Object.keys(products).length}</p>`;
+
+        // Registrierte User
+        db.ref('users').once('value', (userSnap) => {
+          const users = userSnap.val() || {};
+          html += `<h4 class="text-xl mt-8 mb-4">Registrierte User (${Object.keys(users).length})</h4>`;
+          Object.keys(users).forEach(username => {
+            html += `<div class="glass p-4 rounded-2xl mb-2">${username}</div>`;
+          });
+          document.getElementById('admin-content').innerHTML = html;
         });
-
-        document.getElementById('admin-content').innerHTML = html;
       });
     }
 
-    function deleteProduct(key) {
-      if (confirm("Dieses Produkt löschen?")) {
-        db.ref('products/' + key).remove();
-      }
-    }
-
     function deleteAllProducts() {
-      if (confirm("Wirklich ALLE Produkte löschen?")) {
-        db.ref('products').remove().then(() => alert("Alle Produkte gelöscht!"));
-      }
+      if (confirm("Alle Produkte löschen?")) db.ref('products').remove();
     }
 
     function resetDatabase() {
-      if (confirm("GESAMTE Datenbank zurücksetzen? Das löscht wirklich alles!")) {
-        db.ref('/').remove().then(() => {
-          alert("Datenbank wurde zurückgesetzt.");
-          location.reload();
-        });
-      }
+      if (confirm("GESAMTE Datenbank löschen?")) db.ref('/').remove().then(() => location.reload());
     }
 
     function renderProfile() {
       document.getElementById('profile-name').textContent = currentUser.username;
-      document.getElementById('profile-products').innerHTML = `<p class="text-xl">Willkommen zurück, <span class="text-purple-400">${currentUser.username}</span>!</p>`;
+      document.getElementById('profile-products').innerHTML = `<p class="text-xl">Willkommen zurück!</p>`;
     }
 
     function addToCart(id) {
@@ -231,6 +216,10 @@
       if (username.length < 3) return alert("Username zu kurz!");
       currentUser = { username };
       localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      
+      // User in Firebase speichern
+      db.ref('users/' + username).set({ registered: Date.now() });
+      
       alert("Registrierung erfolgreich!");
       navigate('shop');
     }
