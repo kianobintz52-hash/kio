@@ -49,14 +49,16 @@
       <button onclick="switchAuthTab(0)" id="tab-login" class="flex-1 py-4 rounded-3xl font-semibold">Login</button>
       <button onclick="switchAuthTab(1)" id="tab-register" class="flex-1 py-4 rounded-3xl font-semibold">Registrieren</button>
     </div>
+
     <div id="login-form">
       <input id="login-user" placeholder="Username" class="w-full mb-5 bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
       <input id="login-pass" type="password" placeholder="Passwort" class="w-full mb-8 bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
       <button onclick="login()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-5 rounded-2xl text-xl font-bold">Einloggen</button>
     </div>
+
     <div id="register-form" class="hidden">
       <input id="reg-user" placeholder="Username" class="w-full mb-5 bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
-      <input id="reg-pass" type="password" placeholder="Passwort" class="w-full mb-8 bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
+      <input id="reg-pass" type="password" placeholder="Passwort (mind. 6 Zeichen)" class="w-full mb-8 bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
       <button onclick="register()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-5 rounded-2xl text-xl font-bold">Konto erstellen</button>
     </div>
   </div>
@@ -83,7 +85,7 @@
   <!-- Profile -->
   <div id="page-profile" class="page hidden max-w-7xl mx-auto p-8">
     <h2 class="text-5xl font-bold neon-purple mb-8">Profil von <span id="profile-name" class="text-purple-400"></span></h2>
-    <h3 class="text-2xl mb-6">Alle Produkte im Shop</h3>
+    <h3 class="text-2xl mb-6">Alle Produkte</h3>
     <div id="profile-products" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
   </div>
 
@@ -117,14 +119,14 @@
     let orders = JSON.parse(localStorage.getItem('orders')) || [];
     let users = JSON.parse(localStorage.getItem('users')) || [];
 
-    // === MEHRERE ADMINS ===
+    // Mehrere Admins
     const admins = [
       { username: "kiollegend", password: "kiollegend" },
       { username: "ZayTox", password: "ZayTox!!!" }
     ];
 
     function isAdmin(user) {
-      return admins.some(admin => admin.username === user.username);
+      return admins.some(a => a.username === user.username);
     }
 
     function saveData() {
@@ -144,17 +146,14 @@
       document.getElementById(`page-${page}`).classList.remove('hidden');
       if (page === 'shop') renderProducts();
       if (page === 'profile') renderProfile();
-      if (page === 'admin') renderAdmin();
+      if (page === 'admin' && isAdmin(currentUser)) renderAdmin();
     }
 
     function renderProducts() {
       const container = document.getElementById('products');
       container.innerHTML = products.map(p => `
         <div class="anime-card bg-gray-900/95 border border-purple-500 rounded-3xl overflow-hidden relative">
-          ${isAdmin(currentUser) ? `
-            <button onclick="deleteProduct(${p.id});event.stopImmediatePropagation()" class="absolute top-3 right-3 bg-red-600 text-white p-2 rounded-full z-10">
-              <i class="fas fa-trash"></i>
-            </button>` : ''}
+          ${isAdmin(currentUser) ? `<button onclick="deleteProduct(${p.id});event.stopImmediatePropagation()" class="absolute top-3 right-3 bg-red-600 text-white p-2 rounded-full z-10"><i class="fas fa-trash"></i></button>` : ''}
           <img src="${p.img || `https://picsum.photos/id/${p.id % 900 + 100}/300/300`}" class="w-full h-64 object-cover">
           <div class="p-6">
             <h3 class="font-bold text-xl">${p.name}</h3>
@@ -165,6 +164,19 @@
           </div>
         </div>
       `).join('');
+    }
+
+    function renderProfile() {
+      document.getElementById('profile-name').textContent = currentUser.username;
+      document.getElementById('profile-products').innerHTML = products.map(p => `
+        <div class="anime-card bg-gray-900/95 border border-purple-500 rounded-3xl overflow-hidden">
+          <img src="${p.img || `https://picsum.photos/id/${p.id % 900 + 100}/300/300`}" class="w-full h-64 object-cover">
+          <div class="p-6">
+            <h3 class="font-bold">${p.name}</h3>
+            <p class="text-3xl font-bold text-purple-400">${p.price} €</p>
+          </div>
+        </div>
+      `).join('') || "<p class='text-gray-400'>Noch keine Produkte.</p>";
     }
 
     function addToCart(id) {
@@ -185,7 +197,6 @@
 
     function showCart() {
       if (cart.length === 0) return alert("Warenkorb ist leer");
-      // Voller Warenkorb Code (wie vorher)
       let html = '';
       let total = 0;
       cart.forEach((item, index) => {
@@ -256,7 +267,7 @@
       hideCart();
       cart = [];
       updateCartCount();
-      alert(`✅ Bezahlung erfolgreich!\nTicket: ${order.ticketNr}`);
+      alert(`✅ Bezahlung erfolgreich!\nTicket: ${order.ticketNr}\nVielen Dank!`);
       navigate('orders');
     }
 
@@ -285,17 +296,21 @@
 
     function register() {
       const user = document.getElementById('reg-user').value.trim();
-      if (user) {
-        if (users.find(u => u.username.toLowerCase() === user.toLowerCase())) {
-          return alert("Dieser Username ist bereits vergeben!");
-        }
-        currentUser = { username: user };
-        users.push({ username: user, date: new Date().toLocaleDateString('de-DE') });
-        localStorage.setItem('currentUser', JSON.stringify(currentUser));
-        saveData();
-        alert("Registrierung erfolgreich!");
-        navigate('shop');
+      const pass = document.getElementById('reg-pass').value;
+
+      if (user.length < 3) return alert("Username muss mindestens 3 Zeichen lang sein!");
+      if (pass.length < 6) return alert("Passwort muss mindestens 6 Zeichen lang sein!");
+
+      if (users.find(u => u.username.toLowerCase() === user.toLowerCase())) {
+        return alert("Dieser Username ist bereits vergeben!");
       }
+
+      currentUser = { username: user };
+      users.push({ username: user, date: new Date().toLocaleDateString('de-DE') });
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      saveData();
+      alert("Registrierung erfolgreich!");
+      navigate('shop');
     }
 
     function logout() {
@@ -317,16 +332,53 @@
 
     function addProduct() {
       if (!isAdmin(currentUser)) return alert("Nur Admins dürfen Produkte einstellen!");
-      // ... (Produkt hinzufügen Logik)
-      alert("Produkt hochgeladen!");
-      navigate('shop');
+      const name = document.getElementById('new-name').value;
+      const price = parseFloat(document.getElementById('new-price').value);
+      const stock = parseInt(document.getElementById('new-stock').value) || 10;
+      const desc = document.getElementById('new-desc').value;
+      const img = document.getElementById('new-img').value || `https://picsum.photos/id/${Date.now() % 900 + 100}/300/300`;
+
+      if (name && price) {
+        products.push({ id: Date.now(), name, price, stock, desc: desc || "Anime Produkt", img });
+        saveData();
+        alert("Produkt erfolgreich hochgeladen!");
+        navigate('shop');
+      }
     }
 
-    function isAdmin(user) {
-      return admins.some(a => a.username === user.username);
+    function deleteProduct(id) {
+      if (confirm("Produkt wirklich löschen?")) {
+        products = products.filter(p => p.id !== id);
+        saveData();
+        renderProducts();
+        renderAdmin();
+      }
     }
 
-    // PayPal laden
+    function renderAdmin() {
+      document.getElementById('admin-content').innerHTML = `
+        <div class="mb-12">
+          <h3 class="text-2xl mb-6">Produkte verwalten</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            ${products.map(p => `
+              <div class="bg-gray-900 p-6 rounded-3xl border border-purple-500">
+                <img src="${p.img}" class="w-full h-48 object-cover rounded-2xl mb-4">
+                <h4 class="font-bold">${p.name}</h4>
+                <p>${p.price} € | Stock: ${p.stock}</p>
+                <button onclick="deleteProduct(${p.id})" class="mt-4 w-full bg-red-600 py-3 rounded-2xl">Löschen</button>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        <div>
+          <h3 class="text-2xl mb-6">Registrierte User (${users.length})</h3>
+          <div class="space-y-3">
+            ${users.map(u => `<div class="bg-gray-800 p-4 rounded-2xl">${u.username} <span class="text-gray-400">(${u.date})</span></div>`).join('')}
+          </div>
+        </div>
+      `;
+    }
+
     const script = document.createElement('script');
     script.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&currency=EUR`;
     document.head.appendChild(script);
