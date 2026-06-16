@@ -3,272 +3,105 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KianOSINT v4.1 - Dark Intelligence</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <title>deinname.lol</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap');
-    body { background:#000; color:#00ff41; font-family:'VT323', monospace; margin:0; overflow:hidden; }
-    canvas#matrix { position:fixed; top:0; left:0; z-index:-2; opacity:0.15; }
-    h1 { text-align:center; font-size:52px; text-shadow:0 0 30px #00ff41, 0 0 60px #ff00ff; animation:glitch 0.8s infinite; }
-    @keyframes glitch { 0%,100% { text-shadow:3px 3px #ff00ff, -3px -3px #00ff41; } 50% { text-shadow:-3px 3px #ff00ff, 3px -3px #00ff41; } }
-    .container { max-width:1480px; margin:auto; padding:15px; position:relative; z-index:10; }
-    .tabs { display:flex; flex-wrap:wrap; gap:5px; background:#111; padding:10px; }
-    .tab-btn { background:#1a1a1a; color:#00ff41; border:2px solid #00ff41; padding:12px 22px; cursor:pointer; font-size:19px; }
-    .tab-btn.active, .tab-btn:hover { background:#00ff41; color:#000; box-shadow:0 0 20px #00ff41; }
-    .tab-content { display:none; background:rgba(10,10,10,0.95); padding:20px; border:1px solid #00ff41; }
-    .tab-content.active { display:block; }
-    input, textarea { background:#111; border:2px solid #00ff41; color:#00ff41; padding:12px; font-size:17px; width:78%; margin:8px 0; }
-    button { background:#00ff41; color:#000; border:none; padding:12px 24px; font-size:18px; cursor:pointer; margin:5px; }
-    button:hover { background:#ff00ff; color:white; }
-    .result { background:#000; border:1px solid #00ff41; padding:18px; margin-top:15px; max-height:650px; overflow-y:auto; white-space:pre-wrap; font-size:16.5px; line-height:1.5; }
-    .success { color:#00ff41; } .danger { color:#ff4444; } .warning { color:#ffaa00; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #0a0a0a, #1a0033);
+      color: white;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 420px;
+      width: 100%;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .avatar {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 4px solid #ff00ff;
+      margin: 0 auto 20px;
+      object-fit: cover;
+      box-shadow: 0 0 30px rgba(255, 0, 255, 0.5);
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      margin: 10px 0;
+      background: linear-gradient(to right, #ff00ff, #00ffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .bio {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      margin: 15px 0 30px;
+    }
+
+    .links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .link {
+      background: rgba(255,255,255,0.08);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 16px 20px;
+      text-decoration: none;
+      color: white;
+      font-weight: 600;
+      transition: all 0.3s;
+      backdrop-filter: blur(10px);
+    }
+
+    .link:hover {
+      background: rgba(255, 0, 255, 0.2);
+      border-color: #ff00ff;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(255, 0, 255, 0.3);
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 0.9rem;
+      opacity: 0.6;
+    }
   </style>
 </head>
 <body>
-  <canvas id="matrix"></canvas>
   <div class="container">
-    <h1><i class="fas fa-skull-crossbones"></i> KIANOSINT v4.1 FULL</h1>
-    <p style="text-align:center;color:#00cc33;font-size:23px;">REAL APIS • EMAIL BREACH • PDF REPORT</p>
+    <!-- Dein Avatar (ändere die URL) -->
+    <img src="https://i.imgur.com/deinbild.jpg" alt="Avatar" class="avatar">
 
-    <div id="loginScreen" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.97);z-index:100;display:flex;align-items:center;justify-content:center;flex-direction:column;">
-      <h2>AGENT LOGIN REQUIRED</h2>
-      <input type="text" id="username" placeholder="Username" value="kianolegend"><br><br>
-      <button onclick="login()">ENTER THE MATRIX</button>
+    <h1>DeinName</h1>
+    <p class="bio">irgendein cooler Spruch hier • 19 • Chaos Creator</p>
+
+    <div class="links">
+      <a href="https://discord.com" class="link" target="_blank">Discord</a>
+      <a href="https://twitter.com" class="link" target="_blank">Twitter / X</a>
+      <a href="https://instagram.com" class="link" target="_blank">Instagram</a>
+      <a href="https://twitch.tv" class="link" target="_blank">Twitch</a>
+      <a href="https://youtube.com" class="link" target="_blank">YouTube</a>
+      <!-- Füge einfach mehr hinzu -->
     </div>
 
-    <div id="mainUI" style="display:none;">
-      <div class="tabs">
-        <button class="tab-btn active" onclick="openTab(0)">Email</button>
-        <button class="tab-btn" onclick="openTab(1)">Username</button>
-        <button class="tab-btn" onclick="openTab(2)">IP & Phone</button>
-        <button class="tab-btn" onclick="openTab(3)">Person</button>
-        <button class="tab-btn" onclick="openTab(4)">Domain</button>
-        <button class="tab-btn" onclick="openTab(5)">Image Search</button>
-        <button class="tab-btn" onclick="openTab(6)">Dark Leak</button>
-        <button class="tab-btn" onclick="openTab(7)">History</button>
-      </div>
-
-      <!-- Email Tab (Real Breach Check) -->
-      <div class="tab-content active" id="tab0">
-        <h2>Email Intelligence + Breach Check</h2>
-        <input type="text" id="emailInput" placeholder="target@email.com" value="example@protonmail.com">
-        <button onclick="scanEmail()">EMAIL BREACH SCAN</button>
-        <div id="emailResult" class="result"></div>
-      </div>
-
-      <!-- Username -->
-      <div class="tab-content" id="tab1">
-        <h2>Username OSINT</h2>
-        <input type="text" id="userInput" placeholder="kianolegend" value="kianolegend">
-        <button onclick="scanUsername()">SCAN PLATFORMS</button>
-        <div id="userResult" class="result"></div>
-      </div>
-
-      <!-- IP & Phone -->
-      <div class="tab-content" id="tab2">
-        <h2>IP & Phone Lookup</h2>
-        <input type="text" id="ipInput" placeholder="8.8.8.8" value="8.8.8.8">
-        <button onclick="scanIP()">IP + SHODAN STYLE</button><br><br>
-        <input type="text" id="phoneInput" placeholder="+49123456789">
-        <button onclick="scanPhone()">PHONE SCAN</button>
-        <div id="ipResult" class="result"></div>
-      </div>
-
-      <!-- Weitere Tabs -->
-      <div class="tab-content" id="tab3">
-        <h2>Personensuche</h2>
-        <input type="text" id="nameInput" placeholder="Max Mustermann">
-        <button onclick="scanPerson()">SEARCH</button>
-        <div id="personResult" class="result"></div>
-      </div>
-
-      <div class="tab-content" id="tab4">
-        <h2>Domain Intelligence</h2>
-        <input type="text" id="domainInput" placeholder="example.com">
-        <button onclick="scanDomain()">SCAN DOMAIN</button>
-        <div id="domainResult" class="result"></div>
-      </div>
-
-      <div class="tab-content" id="tab5">
-        <h2>Reverse Image Search</h2>
-        <input type="file" id="imageUpload" accept="image/*">
-        <button onclick="reverseImageSearch()">ANALYZE IMAGE</button>
-        <div id="imageResult" class="result"></div>
-      </div>
-
-      <div class="tab-content" id="tab6">
-        <h2>Dark Web Leak</h2>
-        <input type="text" id="leakInput" placeholder="Email oder Username">
-        <button onclick="darkLeakScan()">DEEP DARK WEB SCAN</button>
-        <div id="leakResult" class="result"></div>
-      </div>
-
-      <div class="tab-content" id="tab7">
-        <h2>Operation History</h2>
-        <div id="historyResult" class="result"></div>
-        <button onclick="exportPDF()">EXPORT AS PDF</button>
-        <button onclick="clearHistory()">CLEAR HISTORY</button>
-      </div>
+    <div class="footer">
+      made with ❤️ on guns.lol style
     </div>
   </div>
-
-  <script>
-    // Matrix Rain
-    const canvas = document.getElementById('matrix');
-    const ctx = canvas.getContext('2d');
-    canvas.height = window.innerHeight; canvas.width = window.innerWidth;
-    const chars = '01アイウエオカキクケコ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$@#%&*';
-    const fontSize = 14;
-    let drops = Array(Math.floor(canvas.width / fontSize)).fill(1);
-
-    function drawMatrix() {
-      ctx.fillStyle = 'rgba(0,0,0,0.05)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#00ff41';
-      ctx.font = `${fontSize}px VT323`;
-      for (let i = 0; i < drops.length; i++) {
-        ctx.fillText(chars[Math.floor(Math.random()*chars.length)], i*fontSize, drops[i]*fontSize);
-        if (drops[i]*fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-        drops[i]++;
-      }
-    }
-    setInterval(drawMatrix, 35);
-    window.addEventListener('resize', () => {
-      canvas.height = window.innerHeight; canvas.width = window.innerWidth;
-    });
-
-    let currentUser = "Agent";
-    let history = JSON.parse(localStorage.getItem('kianHistory')) || [];
-
-    function login() {
-      currentUser = document.getElementById("username").value || "Agent";
-      document.getElementById("loginScreen").style.display = "none";
-      document.getElementById("mainUI").style.display = "block";
-      loadHistory();
-    }
-
-    function saveToHistory(query, type, data) {
-      history.unshift({user: currentUser, query, type, time: new Date().toLocaleString('de-DE'), data});
-      if (history.length > 60) history.pop();
-      localStorage.setItem('kianHistory', JSON.stringify(history));
-      loadHistory();
-    }
-
-    function loadHistory() {
-      const el = document.getElementById("historyResult");
-      el.innerHTML = history.map(h => `<strong>${h.time}</strong> | ${h.type} → ${h.query}`).join('<br><br>');
-    }
-
-    function clearHistory() {
-      if (confirm("History wirklich löschen?")) {
-        history = [];
-        localStorage.removeItem('kianHistory');
-        loadHistory();
-      }
-    }
-
-    function exportPDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      doc.text("KianOSINT v4.1 - FULL REPORT", 20, 20);
-      doc.text(`Agent: ${currentUser} | ${new Date().toLocaleString()}`, 20, 35);
-      history.forEach((h, i) => {
-        doc.text(`${i+1}. ${h.type} - ${h.query}`, 20, 55 + i*8);
-      });
-      doc.save(`KianOSINT_Report_${currentUser}.pdf`);
-    }
-
-    // ================= REAL EMAIL BREACH =================
-    async function scanEmail() {
-      const email = document.getElementById("emailInput").value.trim();
-      if (!email) return;
-      const result = document.getElementById("emailResult");
-      result.innerHTML = `<span class="warning">[+] Checking HaveIBeenPwned + IntelX Simulation...</span>`;
-
-      let breaches = [];
-
-      // Try real HIBP (public endpoint - rate limited)
-      try {
-        const hash = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(email));
-        const hashHex = Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('').toUpperCase();
-        const prefix = hashHex.substring(0,5);
-        
-        const res = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`);
-        if (res.ok) {
-          const text = await res.text();
-          if (text.includes(hashHex.substring(5))) {
-            breaches.push("HaveIBeenPwned: Breaches gefunden");
-          }
-        }
-      } catch(e) {}
-
-      // Simulation für realistische Ausgabe
-      setTimeout(() => {
-        result.innerHTML = `
-<span class="success">[+] BREACH RESULTS FOR ${email}</span><br><br>
-${breaches.length ? breaches.join('<br>') : '<span class="success">No direct HIBP match (or rate limited)</span>'}<br><br>
-<span class="danger">LinkedIn 2021 (124M records)</span><br>
-<span class="danger">Discord 2024 Combo List</span><br>
-<span class="danger">2025-2026 Fresh Email:Password Dump</span><br><br>
-<span class="warning">Password Hash Example: $2b$12$...</span><br>
-<span class="warning">Tipp: Für echte Massenabfragen LeakCheck.io oder DeHashed nutzen.</span>`;
-        saveToHistory(email, "Email Breach", {breaches: 3});
-      }, 1600);
-    }
-
-    // IP Lookup (wie vorher verbessert)
-    async function scanIP() {
-      const ip = document.getElementById("ipInput").value.trim() || "8.8.8.8";
-      const result = document.getElementById("ipResult");
-      result.innerHTML = `<span class="warning">[+] Multi-API IP Scan (ipapi.co + ipwhois)...</span>`;
-
-      let data = null;
-      try {
-        let res = await fetch(`https://ipapi.co/${ip}/json/`);
-        if (res.ok) data = await res.json();
-      } catch(e) {}
-      
-      if (!data) {
-        try {
-          let res = await fetch(`https://ipwhois.app/json/${ip}`);
-          if (res.ok) data = await res.json();
-        } catch(e) {}
-      }
-
-      if (data) {
-        result.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-        saveToHistory(ip, "IP Lookup", data);
-      } else {
-        result.innerHTML = `<span class="danger">[-] APIs aktuell nicht erreichbar (Rate Limit / Blocker)</span>`;
-      }
-    }
-
-    // Restliche Funktionen (Username, Person, etc.)
-    function scanUsername() {
-      const user = document.getElementById("userInput").value;
-      const res = document.getElementById("userResult");
-      res.innerHTML = "[+] Searching GitHub, X, Roblox, Discord...";
-      setTimeout(() => {
-        res.innerHTML = `Found ${user} on 19 platforms.`;
-        saveToHistory(user, "Username", {});
-      }, 1200);
-    }
-
-    function scanPerson() { /* ähnlich wie oben */ }
-    function scanDomain() { /* ähnlich */ }
-    function reverseImageSearch() { /* ähnlich */ }
-    function darkLeakScan() { /* ähnlich */ }
-    function scanPhone() { /* ähnlich */ }
-
-    function openTab(n) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.getElementById(`tab${n}`).classList.add('active');
-      document.querySelectorAll('.tab-btn').forEach((el,i) => el.classList.toggle('active', i===n));
-    }
-
-    // Init
-    openTab(0);
-  </script>
 </body>
 </html>
