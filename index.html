@@ -28,7 +28,7 @@
       <h1 onclick="navigate('shop')" class="text-4xl font-bold neon-purple cursor-pointer">ANIME VAULT</h1>
       <div class="flex gap-8 items-center text-lg">
         <button onclick="navigate('shop')" class="hover:text-purple-400">Shop</button>
-        <button onclick="navigate('sell')" id="sellBtn" class="hover:text-purple-400 hidden">Verkaufen</button>
+        <button onclick="navigate('sell')" id="sellBtn" class="hover:text-purple-400">Verkaufen</button>
         <button onclick="navigate('profile')" class="hover:text-purple-400">Profil</button>
         <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-6 py-2.5 rounded-2xl">Logout</button>
       </div>
@@ -79,11 +79,6 @@
     <div id="profile-products" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
   </div>
 
-  <!-- Warenkorb Button -->
-  <button onclick="showCart()" class="fixed bottom-10 right-10 bg-gradient-to-r from-purple-600 to-pink-600 w-20 h-20 rounded-full flex items-center justify-center text-4xl shadow-2xl hover:scale-110">
-    🛒 <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-xs w-6 h-6 rounded-full flex items-center justify-center">0</span>
-  </button>
-
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyAbz1N77hZDksKP9-yZdiW4GR8JtIcHvbQ",
@@ -99,12 +94,6 @@
     const db = firebase.database();
 
     let currentUser = null;
-
-    const owners = ["kiollegend", "ZayTox"];
-
-    function isOwner(user) {
-      return owners.includes(user?.username);
-    }
 
     function navigate(page) {
       document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
@@ -125,7 +114,7 @@
               <div class="p-6">
                 <h3 class="font-bold text-xl">${p.name}</h3>
                 <p class="text-3xl font-bold text-purple-400">${p.price} €</p>
-                <p class="text-sm text-gray-400">Noch ${p.stock} verfügbar</p>
+                <p class="text-sm text-gray-400">Von: ${p.seller || 'Unbekannt'} | ${p.stock} verfügbar</p>
                 <button onclick="addToCart('${key}')" class="mt-6 w-full bg-purple-600 py-4 rounded-2xl">In den Warenkorb</button>
               </div>
             </div>`;
@@ -135,55 +124,45 @@
     }
 
     function addProduct() {
-      if (!isOwner(currentUser)) return alert("Nur Owner dürfen Produkte einstellen!");
+      if (!currentUser) return alert("Bitte erst einloggen!");
 
       const product = {
         name: document.getElementById('new-name').value.trim(),
         price: parseFloat(document.getElementById('new-price').value),
         stock: parseInt(document.getElementById('new-stock').value) || 10,
         img: document.getElementById('new-img').value,
-        desc: document.getElementById('new-desc').value || "Kein Beschreibung",
+        desc: document.getElementById('new-desc').value,
         seller: currentUser.username,
         timestamp: Date.now()
       };
 
-      if (!product.name || !product.price) return alert("Bitte Name und Preis ausfüllen!");
+      if (!product.name || !product.price) {
+        return alert("Bitte Produktname und Preis ausfüllen!");
+      }
 
       db.ref('products').push(product).then(() => {
-        alert("✅ Produkt erfolgreich hochgeladen!");
+        alert("✅ Produkt erfolgreich hochgeladen! Jeder kann es jetzt sehen.");
         navigate('shop');
-      }).catch(err => alert("Fehler: " + err.message));
+      }).catch(err => {
+        console.error(err);
+        alert("Fehler: " + err.message + "\n\nHast du die Regeln auf .write: true gestellt?");
+      });
+    }
+
+    function addToCart(id) {
+      alert("Produkt wurde zum Warenkorb hinzugefügt!");
     }
 
     function renderProfile() {
       document.getElementById('profile-name').textContent = currentUser.username;
-      // Hier könnten später eigene Produkte angezeigt werden
-      document.getElementById('profile-products').innerHTML = `<p class="text-gray-400">Willkommen zurück, ${currentUser.username}!</p>`;
-    }
-
-    function addToCart(id) {
-      alert("Produkt zum Warenkorb hinzugefügt!");
+      document.getElementById('profile-products').innerHTML = `<p class="text-lg">Willkommen zurück, <span class="text-purple-400">${currentUser.username}</span>!</p>`;
     }
 
     function login() {
       const username = document.getElementById('login-user').value.trim();
-      const pass = document.getElementById('login-pass').value;
-
-      if (username === "kiollegend" && pass === "kiollegend") {
-        currentUser = { username: "kiollegend" };
-      } else if (username === "ZayTox" && pass === "ZayTox!!!") {
-        currentUser = { username: "ZayTox" };
-      } else if (username) {
-        currentUser = { username };
-      } else {
-        return alert("Bitte Username eingeben");
-      }
-
+      if (!username) return alert("Bitte Username eingeben");
+      currentUser = { username };
       localStorage.setItem('currentUser', JSON.stringify(currentUser));
-
-      if (isOwner(currentUser)) {
-        document.getElementById('sellBtn').classList.remove('hidden');
-      }
       navigate('shop');
     }
 
@@ -212,9 +191,6 @@
       const saved = localStorage.getItem('currentUser');
       if (saved) {
         currentUser = JSON.parse(saved);
-        if (isOwner(currentUser)) {
-          document.getElementById('sellBtn').classList.remove('hidden');
-        }
         navigate('shop');
       } else {
         navigate('login');
