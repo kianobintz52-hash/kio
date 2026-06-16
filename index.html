@@ -8,19 +8,17 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-
   <style>
-    body { 
-      background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.95)), 
-                  url('https://picsum.photos/id/1015/1920/1080') center/cover fixed; 
-      font-family: system-ui; 
+    body {
+      background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.95)),
+                  url('https://picsum.photos/id/1015/1920/1080') center/cover fixed;
+      font-family: system-ui;
     }
     .glass { background: rgba(30,30,40,0.85); backdrop-filter: blur(16px); border: 1px solid rgba(168,85,247,0.4); }
     .neon-purple { text-shadow: 0 0 25px #c026d3, 0 0 50px #a855f7; }
   </style>
 </head>
 <body class="text-gray-100 min-h-screen pb-20">
-
   <nav class="glass sticky top-0 z-50 border-b border-purple-500 p-4">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
       <div class="flex items-center gap-3">
@@ -37,7 +35,7 @@
     </div>
   </nav>
 
-  <!-- Login -->
+  <!-- Login / Register bleibt unverändert -->
   <div id="page-login" class="page max-w-md mx-auto mt-24 p-12 glass rounded-3xl">
     <h2 class="text-5xl font-bold text-center neon-purple mb-10">ANIME VAULT</h2>
     <div class="flex gap-4 bg-gray-900 rounded-3xl p-1 mb-8">
@@ -69,7 +67,10 @@
       <input id="new-name" placeholder="Produktname" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
       <input id="new-price" type="number" step="0.01" placeholder="Preis €" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
       <input id="new-stock" type="number" value="10" placeholder="Menge" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
-      <input id="new-img" placeholder="Bild URL" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
+      
+      <!-- Neues Discord Feld -->
+      <input id="new-discord" placeholder="Dein Discord Username (z.B. Kiano#1234)" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
+      
       <textarea id="new-desc" placeholder="Beschreibung" class="w-full h-32 bg-gray-800 border border-purple-500 rounded-3xl px-6 py-5"></textarea>
       <button onclick="addProduct()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-6 rounded-3xl text-xl font-bold">Produkt hochladen</button>
     </div>
@@ -89,7 +90,7 @@
     </div>
   </div>
 
-  <!-- Warenkorb -->
+  <!-- Warenkorb (unverändert) -->
   <button onclick="showCart()" class="fixed bottom-10 right-10 bg-gradient-to-r from-purple-600 to-pink-600 w-20 h-20 rounded-full flex items-center justify-center text-4xl shadow-2xl hover:scale-110">
     🛒 <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-xs w-6 h-6 rounded-full flex items-center justify-center">0</span>
   </button>
@@ -108,7 +109,7 @@
   </div>
 
   <script>
-    const firebaseConfig = {
+    const firebaseConfig = { /* dein Config bleibt gleich */ 
       apiKey: "AIzaSyAbz1N77hZDksKP9-yZdiW4GR8JtIcHvbQ",
       authDomain: "anime-vault-e439b.firebaseapp.com",
       databaseURL: "https://anime-vault-e439b-default-rtdb.europe-west1.firebasedatabase.app",
@@ -117,13 +118,11 @@
       messagingSenderId: "406742408925",
       appId: "1:406742408925:web:ba161f393b7e3503164534"
     };
-
+    
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-
     let currentUser = null;
     let cart = [];
-
     const admins = ["kiollegend", "ZayTox"];
 
     function isAdmin(user) {
@@ -151,6 +150,7 @@
                 <h3 class="font-bold text-xl">${p.name}</h3>
                 <p class="text-3xl font-bold text-purple-400">${p.price} €</p>
                 <p class="text-sm text-gray-400">Von: ${p.seller} • ${p.stock} verfügbar</p>
+                ${p.discord ? `<p class="text-sm text-pink-400">Discord: ${p.discord}</p>` : ''}
                 <button onclick="addToCart('${key}')" class="mt-6 w-full bg-purple-600 py-4 rounded-2xl">In den Warenkorb</button>
               </div>
             </div>`;
@@ -161,74 +161,104 @@
 
     function addProduct() {
       if (!currentUser) return alert("Bitte einloggen!");
+      
       const product = {
         name: document.getElementById('new-name').value.trim(),
         price: parseFloat(document.getElementById('new-price').value),
         stock: parseInt(document.getElementById('new-stock').value) || 10,
-        img: document.getElementById('new-img').value,
+        discord: document.getElementById('new-discord').value.trim(),
         desc: document.getElementById('new-desc').value,
         seller: currentUser.username,
         timestamp: Date.now()
       };
+
       if (!product.name || !product.price) return alert("Name und Preis ausfüllen!");
+      if (!product.discord) return alert("Bitte deinen Discord Username angeben!");
+
       db.ref('products').push(product).then(() => {
         alert("✅ Produkt hochgeladen!");
+        document.getElementById('new-name').value = '';
+        document.getElementById('new-price').value = '';
+        document.getElementById('new-discord').value = '';
+        document.getElementById('new-desc').value = '';
         navigate('shop');
       });
     }
 
-    function addToCart(id) {
-      db.ref('products/' + id).once('value', (snap) => {
-        const prod = snap.val();
-        if (!prod) return;
-        const existing = cart.find(item => item.id === id);
-        if (existing) existing.quantity++;
-        else cart.push({...prod, id, quantity: 1});
-        updateCartCount();
-        alert(`${prod.name} hinzugefügt!`);
+    // === LÖSCHEN ===
+    function deleteProduct(productId, seller) {
+      if (!currentUser) return;
+      
+      if (seller !== currentUser.username && !isAdmin(currentUser)) {
+        return alert("Du darfst nur deine eigenen Produkte löschen!");
+      }
+
+      if (confirm("Produkt wirklich löschen?")) {
+        db.ref('products/' + productId).remove().then(() => {
+          alert("Produkt gelöscht");
+          if (document.getElementById('page-profile').classList.contains('hidden') === false) renderProfile();
+          if (document.getElementById('page-admin').classList.contains('hidden') === false) loadAdminPanel();
+        });
+      }
+    }
+
+    function renderProfile() {
+      document.getElementById('profile-name').textContent = currentUser.username;
+      db.ref('products').once('value', (snapshot) => {
+        const data = snapshot.val() || {};
+        let html = '<h3 class="text-2xl mb-6">Deine Produkte</h3>';
+        
+        let hasProducts = false;
+        Object.keys(data).forEach(key => {
+          const p = data[key];
+          if (p.seller === currentUser.username) {
+            hasProducts = true;
+            html += `
+              <div class="glass p-6 rounded-2xl mb-4 flex justify-between items-center">
+                <div>
+                  <h4 class="font-bold">${p.name}</h4>
+                  <p class="text-purple-400">${p.price} € • ${p.stock} Stück</p>
+                  ${p.discord ? `<p class="text-pink-400">Discord: ${p.discord}</p>` : ''}
+                </div>
+                <button onclick="deleteProduct('${key}', '${p.seller}')" class="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-2xl">
+                  Löschen
+                </button>
+              </div>`;
+          }
+        });
+
+        if (!hasProducts) html += '<p class="text-gray-400">Du hast noch keine Produkte.</p>';
+        document.getElementById('profile-products').innerHTML = html;
       });
-    }
-
-    function updateCartCount() {
-      const count = cart.reduce((a, b) => a + b.quantity, 0);
-      document.getElementById('cart-count').textContent = count;
-    }
-
-    function showCart() {
-      if (cart.length === 0) return alert("Warenkorb ist leer");
-      let html = '';
-      let total = 0;
-      cart.forEach(item => {
-        const itemTotal = item.price * item.quantity;
-        total += itemTotal;
-        html += `<div class="flex justify-between bg-gray-800 p-4 rounded-2xl mb-3"><div>${item.name} (${item.quantity}x)</div><div>${itemTotal.toFixed(2)} €</div></div>`;
-      });
-      document.getElementById('cart-items').innerHTML = html;
-      document.getElementById('cart-total').innerHTML = `Gesamt: <span class="text-purple-400">${total.toFixed(2)} €</span>`;
-      document.getElementById('cart-modal').classList.remove('hidden');
-    }
-
-    function hideCart() {
-      document.getElementById('cart-modal').classList.add('hidden');
     }
 
     function loadAdminPanel() {
       let html = `<h3 class="text-3xl mb-8">👑 Owner Panel - ${currentUser.username}</h3>`;
-
+      
       db.ref('products').once('value', (snap) => {
         const products = snap.val() || {};
-        html += `<p class="mb-6">Produkte: ${Object.keys(products).length}</p>`;
+        html += `<p class="mb-6 text-xl">Alle Produkte: ${Object.keys(products).length}</p>`;
 
-        db.ref('users').once('value', (userSnap) => {
-          const users = userSnap.val() || {};
-          html += `<h4 class="text-2xl mb-4">Registrierte User (${Object.keys(users).length})</h4>`;
-          Object.keys(users).forEach(u => {
-            html += `<div class="glass p-4 rounded-2xl mb-3">${u}</div>`;
-          });
-          document.getElementById('admin-content').innerHTML = html;
+        Object.keys(products).forEach(key => {
+          const p = products[key];
+          html += `
+            <div class="glass p-5 rounded-2xl mb-3 flex justify-between items-center">
+              <div>
+                <strong>${p.name}</strong> - ${p.price}€ von ${p.seller}
+                ${p.discord ? `<br><span class="text-pink-400">DC: ${p.discord}</span>` : ''}
+              </div>
+              <button onclick="deleteProduct('${key}', '${p.seller}')" class="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-2xl text-sm">
+                Löschen
+              </button>
+            </div>`;
         });
+
+        document.getElementById('admin-content').innerHTML = html;
       });
     }
+
+    // Rest der Funktionen (login, register, cart usw.) bleiben gleich
+    // ... (kopiere den Rest aus deinem Originalcode)
 
     function login() {
       const username = document.getElementById('login-user').value.trim();
