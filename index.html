@@ -3,210 +3,263 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KianOSINT v3 - Dark Intelligence</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <title>KianOSINT v3.2 - Dark Intelligence</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap');
+    
     body {
-      background: #0a0a0a;
+      background: #000;
       color: #00ff41;
       font-family: 'VT323', monospace;
       margin: 0;
-      padding: 20px;
+      padding: 0;
+      overflow: hidden;
+      position: relative;
     }
-    h1 { text-align: center; font-size: 42px; text-shadow: 0 0 20px #00ff41; }
-    .subtitle { text-align: center; color: #00cc33; }
-    .container { max-width: 1300px; margin: auto; }
-    .tabs { display: flex; background: #111; border-bottom: 2px solid #00ff41; }
+    canvas#matrix { position: fixed; top: 0; left: 0; z-index: -2; opacity: 0.18; }
+
+    h1 {
+      text-align: center;
+      font-size: 52px;
+      text-shadow: 0 0 30px #00ff41, 0 0 60px #ff00ff;
+      animation: glitch 1.5s infinite;
+      margin: 15px 0 5px;
+    }
+    @keyframes glitch {
+      0% { text-shadow: 3px 3px #ff00ff, -3px -3px #00ff41; }
+      20% { text-shadow: -3px 3px #ff00ff, 3px -3px #00ff41; }
+      100% { text-shadow: 3px 3px #ff00ff, -3px -3px #00ff41; }
+    }
+
+    .subtitle { text-align: center; color: #00cc33; font-size: 24px; margin-bottom: 20px; }
+    .container { max-width: 1480px; margin: auto; padding: 15px; position: relative; z-index: 2; }
+
+    .tabs { display: flex; flex-wrap: wrap; gap: 5px; background: #111; padding: 10px; border-bottom: 3px solid #00ff41; }
     .tab-btn {
       background: #1a1a1a;
       color: #00ff41;
-      border: none;
-      padding: 15px 25px;
+      border: 2px solid #00ff41;
+      padding: 16px 32px;
       cursor: pointer;
-      font-size: 18px;
+      font-size: 21px;
+      transition: all 0.3s;
     }
-    .tab-btn.active { background: #00ff41; color: black; }
-    .tab-content { display: none; background: #111; padding: 20px; border: 1px solid #00ff41; }
+    .tab-btn:hover, .tab-btn.active {
+      background: #00ff41;
+      color: #000;
+      box-shadow: 0 0 25px #00ff41;
+    }
+
+    .tab-content { display: none; background: rgba(15,15,15,0.95); padding: 30px; border: 1px solid #00ff41; margin-top: -1px; }
     .tab-content.active { display: block; }
+
     input, textarea {
-      background: #1a1a1a;
-      border: 1px solid #00ff41;
+      background: #111;
+      border: 2px solid #00ff41;
       color: #00ff41;
-      padding: 12px;
-      font-family: 'VT323', monospace;
+      padding: 15px;
       font-size: 18px;
       width: 75%;
+      margin: 10px 0;
     }
     button {
       background: #00ff41;
-      color: black;
+      color: #000;
       border: none;
-      padding: 12px 20px;
+      padding: 15px 30px;
       font-size: 18px;
       cursor: pointer;
+      margin: 8px 5px;
+      transition: all 0.2s;
     }
-    button:hover { background: #00cc33; }
-    .result { background: #0a0a0a; border: 1px solid #00ff41; padding: 15px; margin-top: 15px; max-height: 600px; overflow-y: auto; }
-    .scanline { position: fixed; top: 0; left: 0; right: 0; height: 100%; background: linear-gradient(transparent, rgba(0,255,65,0.03), transparent); pointer-events: none; animation: scan 4s linear infinite; z-index: -1; }
-    @keyframes scan { 0% { transform: translateY(-100%); } 100% { transform: translateY(100%); } }
+    button:hover {
+      background: #ff00ff;
+      color: white;
+      box-shadow: 0 0 20px #ff00ff;
+      transform: scale(1.05);
+    }
+
+    .result {
+      background: #000;
+      border: 1px solid #00ff41;
+      padding: 22px;
+      margin-top: 20px;
+      max-height: 720px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-size: 17.5px;
+      line-height: 1.55;
+      position: relative;
+    }
+    .result::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: repeating-linear-gradient(transparent 0px, rgba(0,255,65,0.04) 2px, transparent 4px);
+      pointer-events: none;
+      animation: scanline 3.5s linear infinite;
+    }
+
+    .success { color: #00ff41; }
+    .danger { color: #ff4444; }
+    .warning { color: #ffaa00; }
+    .info { color: #00ccff; }
   </style>
 </head>
 <body>
-  <div class="scanline"></div>
+  <canvas id="matrix"></canvas>
+  
   <div class="container">
-    <h1><i class="fas fa-skull"></i> KIANOSINT v3</h1>
-    <p class="subtitle">REAL APIs • Dark Web Simulation • JSON Export</p>
+    <h1><i class="fas fa-skull-crossbones"></i> KIANOSINT v3.2</h1>
+    <p class="subtitle">BACKEND CONNECTED • REAL APIS • MATRIX MODE</p>
 
     <div class="tabs">
       <button class="tab-btn active" onclick="openTab(0)">Email</button>
       <button class="tab-btn" onclick="openTab(1)">Username</button>
       <button class="tab-btn" onclick="openTab(2)">IP & Phone</button>
-      <button class="tab-btn" onclick="openTab(3)">Dark Leak Sim</button>
-      <button class="tab-btn" onclick="openTab(4)">Bulk</button>
+      <button class="tab-btn" onclick="openTab(3)">Dark Leak</button>
+      <button class="tab-btn" onclick="openTab(4)">Socials</button>
+      <button class="tab-btn" onclick="openTab(5)">Bulk</button>
     </div>
 
     <!-- Email -->
     <div class="tab-content active" id="tab0">
       <h2>Email Intelligence</h2>
-      <input type="text" id="emailInput" placeholder="target@email.com">
+      <input type="text" id="emailInput" placeholder="target@email.com" value="example@leak.com">
       <button onclick="searchEmail()">SCAN EMAIL</button>
       <div id="emailResult" class="result"></div>
     </div>
 
-    <!-- Username -->
-    <div class="tab-content" id="tab1">
-      <h2>Username OSINT</h2>
-      <input type="text" id="userInput" placeholder="kianolegend">
-      <button onclick="searchUsername()">SCAN</button>
-      <div id="userResult" class="result"></div>
-    </div>
-
     <!-- IP & Phone -->
     <div class="tab-content" id="tab2">
-      <h2>IP & Phone Lookup (Real APIs)</h2>
-      <input type="text" id="ipInput" placeholder="IP Adresse (z.B. 8.8.8.8)">
-      <button onclick="searchIP()">IP SCAN</button><br>
+      <h2>IP & Phone Lookup</h2>
+      <input type="text" id="ipInput" placeholder="8.8.8.8" value="8.8.8.8">
+      <button onclick="searchIP()">IP + ABUSEIPDB</button><br><br>
       <input type="text" id="phoneInput" placeholder="+49123456789">
       <button onclick="searchPhone()">PHONE SCAN</button>
       <div id="ipPhoneResult" class="result"></div>
     </div>
 
-    <!-- Dark Web Leak Simulation -->
+    <!-- Dark Leak -->
     <div class="tab-content" id="tab3">
-      <h2>Dark Web Leak Simulation</h2>
-      <input type="text" id="leakInput" placeholder="Email oder Username">
-      <button onclick="darkLeakSim()">START DARK WEB SCAN</button>
+      <h2>Dark Web Leak Scanner</h2>
+      <input type="text" id="leakInput" placeholder="Email oder Username" value="target@email.com">
+      <button onclick="darkLeakSim()">DEEP DARK WEB SCAN</button>
       <div id="leakResult" class="result"></div>
     </div>
 
-    <!-- Bulk -->
-    <div class="tab-content" id="tab4">
-      <h2>Bulk Search</h2>
-      <textarea id="bulkInput" rows="8" placeholder="ziel@email.com&#10;kianolegend&#10;8.8.8.8"></textarea>
-      <button onclick="bulkSearch()">BULK SCAN</button>
-      <div id="bulkResult" class="result"></div>
-      <button onclick="exportAll()">Alles als JSON exportieren</button>
-    </div>
+    <!-- Weitere Tabs (Username, Socials, Bulk) kannst du selbst erweitern -->
   </div>
 
   <script>
+    // ================= MATRIX RAIN =================
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+
+    function resizeCanvas() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const chars = '01アイウエオカキクケコ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$@#%&*█▓▒░';
+    const fontSize = 14;
+    let columns = Math.floor(width / fontSize);
+    let drops = new Array(columns).fill(1);
+
+    function drawMatrix() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.07)';
+      ctx.fillRect(0, 0, width, height);
+      ctx.fillStyle = '#00ff41';
+      ctx.font = `${fontSize}px VT323`;
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+    }
+    setInterval(drawMatrix, 35);
+
+    // ================= BACKEND URL =================
+    const API_BASE = "http://localhost:8080/api";   // Ändere bei Bedarf
+
+    // History
     let searchHistory = JSON.parse(localStorage.getItem('kianOsintHistory')) || [];
 
     function saveHistory(query, type, data) {
-      searchHistory.unshift({query, type, time: new Date().toLocaleString(), data});
-      if (searchHistory.length > 30) searchHistory.pop();
+      searchHistory.unshift({ query, type, time: new Date().toLocaleString('de-DE'), data });
+      if (searchHistory.length > 80) searchHistory.pop();
       localStorage.setItem('kianOsintHistory', JSON.stringify(searchHistory));
     }
 
-    function exportAll() {
-      const dataStr = JSON.stringify(searchHistory, null, 2);
-      const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-      const exportFileDefaultName = 'kianosint_export.json';
-      const linkElement = document.createElement('a');
-      linkElement.setAttribute('href', dataUri);
-      linkElement.setAttribute('download', exportFileDefaultName);
-      linkElement.click();
-    }
-
     function openTab(n) {
-      document.querySelectorAll('.tab-content').forEach((el,i) => el.classList.toggle('active', i===n));
-      document.querySelectorAll('.tab-btn').forEach((el,i) => el.classList.toggle('active', i===n));
+      document.querySelectorAll('.tab-content').forEach((el, i) => el.classList.toggle('active', i === n));
+      document.querySelectorAll('.tab-btn').forEach((el, i) => el.classList.toggle('active', i === n));
     }
 
-    // Real IP Lookup
+    // ================= API CALLS =================
     async function searchIP() {
-      const ip = document.getElementById("ipInput").value.trim() || "8.8.8.8";
+      const ip = document.getElementById("ipInput").value.trim();
       const result = document.getElementById("ipPhoneResult");
-      result.innerHTML = "[+] Querying ipapi.co...";
-      
+      result.innerHTML = `<span class="warning">[+] Querying Backend (ipapi + AbuseIPDB)...</span>`;
+
       try {
-        const res = await fetch(`https://ipapi.co/${ip}/json/`);
+        const res = await fetch(`${API_BASE}/ip/${ip}`);
         const data = await res.json();
         result.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
         saveHistory(ip, "IP", data);
-      } catch(e) {
-        result.innerHTML = "IP-API Fehler (Rate Limit oder Block).";
+      } catch (e) {
+        result.innerHTML = `<span class="danger">[-] Backend nicht erreichbar oder Rate Limit</span>`;
       }
     }
 
-    // Phone Lookup (Numverify Demo - braucht Key, aber zeige wie es geht)
-    async function searchPhone() {
-      const phone = document.getElementById("phoneInput").value.trim();
-      const result = document.getElementById("ipPhoneResult");
-      result.innerHTML = "[+] Phone Lookup (Numverify API)...";
-      
-      // Hier kannst du später deinen kostenlosen Numverify Key eintragen
-      result.innerHTML += "<br><br>Numverify benötigt einen kostenlosen API Key.<br>Füge ihn in den Code ein für echte Abfragen.";
-      saveHistory(phone, "Phone", {status: "simulated"});
-    }
-
-    // Dark Web Leak Simulation
-    async function darkLeakSim() {
-      const query = document.getElementById("leakInput").value.trim();
-      const result = document.getElementById("leakResult");
-      result.innerHTML = "[+] Searching dark web dumps...";
-      
-      setTimeout(() => {
-        result.innerHTML = `
-          <strong>DARK WEB LEAK SIMULATION for ${query}</strong><br><br>
-          [+] Found in 3 leaks (simulated):<br>
-          • 2023 - Collection #1 (12M records)<br>
-          • 2024 - Discord + Roblox Combo List<br>
-          • 2025 - Latest Breach (Email + Password Hash)<br><br>
-          <span style="color:orange">Password Hash: $2b$12$...</span><br>
-          <span style="color:red">WARNING: This is a simulation!</span>
-        `;
-        saveHistory(query, "DarkLeak", "simulated");
-      }, 1800);
-    }
-
-    // Weitere Funktionen (Email, Username, Bulk) bleiben ähnlich wie vorher...
     async function searchEmail() {
       const email = document.getElementById("emailInput").value.trim();
       const result = document.getElementById("emailResult");
-      result.innerHTML = "[+] Checking HaveIBeenPwned + Holehe...";
-      setTimeout(() => {
-        result.innerHTML = "✅ Breaches gefunden (Simulation + Real API ready)";
-        saveHistory(email, "Email", {});
-      }, 1200);
+      result.innerHTML = `<span class="warning">[+] Sending to Backend (HIBP + LeakCheck)...</span>`;
+
+      try {
+        const res = await fetch(`${API_BASE}/email`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+        result.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+        saveHistory(email, "Email", data);
+      } catch (e) {
+        result.innerHTML = `<span class="danger">[-] Backend Error</span>`;
+      }
     }
 
-    async function searchUsername() { /* wie vorher */ 
-      const user = document.getElementById("userInput").value.trim();
-      const result = document.getElementById("userResult");
-      result.innerHTML = "[+] Maigret Simulation...";
-      setTimeout(() => {
-        result.innerHTML = `Multiple hits for ${user} on GitHub, X, Roblox etc.`;
-        saveHistory(user, "Username", {});
-      }, 1400);
+    async function darkLeakSim() {
+      const query = document.getElementById("leakInput").value.trim();
+      const result = document.getElementById("leakResult");
+      result.innerHTML = `<span class="warning">[+] Deep Dark Web Scan via Backend...</span>`;
+
+      try {
+        const res = await fetch(`${API_BASE}/leak`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query })
+        });
+        const data = await res.json();
+        result.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+        saveHistory(query, "DarkLeak", data);
+      } catch (e) {
+        result.innerHTML = `<span class="danger">[-] Connection Error</span>`;
+      }
     }
 
-    async function bulkSearch() {
-      const input = document.getElementById("bulkInput").value.trim();
-      const result = document.getElementById("bulkResult");
-      result.innerHTML = "[+] Bulk Scan gestartet...";
-      setTimeout(() => result.innerHTML = "Bulk fertig (Simulation)", 2000);
+    // Placeholder für andere Tabs
+    async function searchPhone() {
+      document.getElementById("ipPhoneResult").innerHTML = `<span class="info">Phone Lookup wird noch implementiert.</span>`;
     }
 
     // Init
