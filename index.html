@@ -77,14 +77,17 @@
   <!-- Profile -->
   <div id="page-profile" class="page hidden max-w-7xl mx-auto p-8">
     <h2 class="text-5xl font-bold neon-purple mb-8">Profil von <span id="profile-name" class="text-purple-400"></span></h2>
-    <div id="profile-products" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+    <div id="profile-products" class="glass p-8 rounded-3xl"></div>
   </div>
 
-  <!-- Admin Panel (nur für dich und ZayTox) -->
+  <!-- Admin Panel -->
   <div id="page-admin" class="page hidden max-w-7xl mx-auto p-8">
-    <h2 class="text-5xl font-bold neon-purple mb-10">👑 Admin Panel</h2>
-    <div class="glass p-8 rounded-3xl">
-      <button onclick="deleteAllProducts()" class="bg-red-600 hover:bg-red-700 px-8 py-4 rounded-2xl mb-6">Alle Produkte löschen</button>
+    <h2 class="text-5xl font-bold neon-purple mb-10">👑 Admin Panel (nur für Owner)</h2>
+    <div class="glass p-8 rounded-3xl space-y-8">
+      <div class="flex gap-4">
+        <button onclick="deleteAllProducts()" class="bg-red-600 hover:bg-red-700 px-8 py-4 rounded-2xl flex-1">Alle Produkte löschen</button>
+        <button onclick="resetDatabase()" class="bg-red-700 hover:bg-red-800 px-8 py-4 rounded-2xl flex-1">Gesamte Datenbank zurücksetzen</button>
+      </div>
       <div id="admin-content"></div>
     </div>
   </div>
@@ -131,12 +134,12 @@
               <div class="p-6">
                 <h3 class="font-bold text-xl">${p.name}</h3>
                 <p class="text-3xl font-bold text-purple-400">${p.price} €</p>
-                <p class="text-sm text-gray-400">Von: ${p.seller} | ${p.stock} Stück</p>
+                <p class="text-sm text-gray-400">Von: ${p.seller} • ${p.stock} verfügbar</p>
                 <button onclick="addToCart('${key}')" class="mt-6 w-full bg-purple-600 py-4 rounded-2xl">In den Warenkorb</button>
               </div>
             </div>`;
         });
-        document.getElementById('products').innerHTML = html || "<p class='text-center'>Noch keine Produkte.</p>";
+        document.getElementById('products').innerHTML = html || "<p class='text-center text-gray-400'>Noch keine Produkte.</p>";
       });
     }
 
@@ -153,7 +156,7 @@
         timestamp: Date.now()
       };
 
-      if (!product.name || !product.price) return alert("Name und Preis erforderlich!");
+      if (!product.name || !product.price) return alert("Name und Preis ausfüllen!");
 
       db.ref('products').push(product).then(() => {
         alert("✅ Produkt hochgeladen!");
@@ -164,40 +167,49 @@
     function loadAdminPanel() {
       db.ref('products').once('value', (snapshot) => {
         const data = snapshot.val() || {};
-        let html = '<h3 class="text-2xl mb-6">Alle Produkte (' + Object.keys(data).length + ')</h3>';
+        let count = Object.keys(data).length;
+        let html = `<h3 class="text-2xl mb-4">Produkte gesamt: ${count}</h3>`;
+
         Object.keys(data).forEach(key => {
           const p = data[key];
           html += `
             <div class="glass p-6 rounded-3xl mb-4 flex justify-between items-center">
               <div>
-                <strong>${p.name}</strong> - ${p.price} € 
-                <small>(von ${p.seller})</small>
+                <strong>${p.name}</strong> — ${p.price}€ 
+                <small class="text-gray-400">(von ${p.seller})</small>
               </div>
-              <button onclick="deleteProduct('${key}')" class="bg-red-600 px-6 py-2 rounded-2xl">Löschen</button>
+              <button onclick="deleteProduct('${key}')" class="bg-red-600 px-6 py-2 rounded-2xl text-sm">Löschen</button>
             </div>`;
         });
+
         document.getElementById('admin-content').innerHTML = html;
       });
     }
 
     function deleteProduct(key) {
-      if (confirm("Produkt wirklich löschen?")) {
+      if (confirm("Dieses Produkt löschen?")) {
         db.ref('products/' + key).remove();
       }
     }
 
     function deleteAllProducts() {
-      if (confirm("ALLE Produkte löschen? Das kann nicht rückgängig gemacht werden!")) {
-        db.ref('products').remove().then(() => {
-          alert("Alle Produkte wurden gelöscht.");
-          loadAdminPanel();
+      if (confirm("Wirklich ALLE Produkte löschen?")) {
+        db.ref('products').remove().then(() => alert("Alle Produkte gelöscht!"));
+      }
+    }
+
+    function resetDatabase() {
+      if (confirm("GESAMTE Datenbank zurücksetzen? Das löscht wirklich alles!")) {
+        db.ref('/').remove().then(() => {
+          alert("Datenbank wurde zurückgesetzt.");
+          location.reload();
         });
       }
     }
 
     function renderProfile() {
       document.getElementById('profile-name').textContent = currentUser.username;
-      document.getElementById('profile-products').innerHTML = `<p class="text-xl">Willkommen zurück, ${currentUser.username}!</p>`;
+      document.getElementById('profile-products').innerHTML = `<p class="text-xl">Willkommen zurück, <span class="text-purple-400">${currentUser.username}</span>!</p>`;
     }
 
     function addToCart(id) {
@@ -210,9 +222,7 @@
       currentUser = { username };
       localStorage.setItem('currentUser', JSON.stringify(currentUser));
 
-      if (isAdmin(currentUser)) {
-        document.getElementById('adminBtn').classList.remove('hidden');
-      }
+      if (isAdmin(currentUser)) document.getElementById('adminBtn').classList.remove('hidden');
       navigate('shop');
     }
 
@@ -226,7 +236,10 @@
     }
 
     function logout() {
-      if (confirm("Ausloggen?")) location.reload();
+      if (confirm("Wirklich ausloggen?")) {
+        localStorage.removeItem('currentUser');
+        location.reload();
+      }
     }
 
     function switchAuthTab(n) {
