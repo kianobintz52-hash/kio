@@ -11,7 +11,11 @@
   <script src="https://www.paypal.com/sdk/js?client-id=AfePx5V-Tru6WXLs1fwvK3RjuYKC5No0UmUgB9jmEr0IjsZ3v6BwqeQ0ur3leNkU87nz-RTFDswULn5S&currency=EUR"></script>
 
   <style>
-    body { background: linear-gradient(rgba(0,0,0,0.88), rgba(0,0,0,0.95)), url('https://picsum.photos/id/1015/1920/1080') center/cover fixed; font-family: system-ui; }
+    body { 
+      background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.95)), 
+                  url('https://picsum.photos/id/1015/1920/1080') center/cover fixed; 
+      font-family: system-ui; 
+    }
     .glass { background: rgba(30,30,40,0.85); backdrop-filter: blur(16px); border: 1px solid rgba(168,85,247,0.4); }
     .neon-purple { text-shadow: 0 0 25px #c026d3, 0 0 50px #a855f7; }
     .anime-card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -76,35 +80,22 @@
     🛒 <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-xs w-6 h-6 rounded-full flex items-center justify-center">0</span>
   </button>
 
-  <!-- Cart Modal -->
-  <div id="cart-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
-    <div class="glass rounded-3xl p-8 max-w-lg w-full max-h-[90vh] overflow-auto">
-      <h3 class="text-3xl font-bold mb-6">Warenkorb</h3>
-      <div id="cart-items" class="space-y-4"></div>
-      <div id="cart-total" class="text-3xl font-bold mt-8 mb-8"></div>
-      <div id="paypal-button-container" class="my-6"></div>
-      <button onclick="hideCart()" class="w-full py-4 border border-gray-600 rounded-2xl">Schließen</button>
-    </div>
-  </div>
-
   <script>
-    // ==================== FIREBASE CONFIG ====================
+    // ==================== DEINE FIREBASE CONFIG ====================
     const firebaseConfig = {
-      apiKey: "DEINE_API_KEY_HIER_EINFÜGEN",
-      authDomain: "dein-projekt.firebaseapp.com",
-      databaseURL: "https://dein-projekt-default-rtdb.firebaseio.com",
-      projectId: "dein-projekt",
-      storageBucket: "dein-projekt.appspot.com",
-      messagingSenderId: "123456789",
-      appId: "1:123456789:web:abcdef123456"
+      apiKey: "AIzaSyAbz1N77hZDksKP9-yZdiW4GR8JtIcHvbQ",
+      authDomain: "anime-vault-e439b.firebaseapp.com",
+      databaseURL: "https://anime-vault-e439b-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "anime-vault-e439b",
+      storageBucket: "anime-vault-e439b.firebasestorage.app",
+      messagingSenderId: "406742408925",
+      appId: "1:406742408925:web:ba161f393b7e3503164534"
     };
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // ==================== VARIABLEN ====================
     let currentUser = null;
-    let cart = [];
 
     const admins = [
       { username: "kiollegend", password: "kiollegend" },
@@ -115,81 +106,68 @@
       return admins.some(a => a.username === user?.username);
     }
 
-    // ==================== NAVIGATION ====================
     function navigate(page) {
       document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
       document.getElementById(`page-${page}`).classList.remove('hidden');
       if (page === 'shop') loadProducts();
     }
 
-    // ==================== PRODUKTE LADEN (Echtzeit) ====================
     function loadProducts() {
       db.ref('products').on('value', (snapshot) => {
         const data = snapshot.val() || {};
-        const productsArray = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-        
-        document.getElementById('products').innerHTML = productsArray.map(p => `
-          <div class="anime-card glass rounded-3xl overflow-hidden">
-            <img src="${p.img || `https://picsum.photos/id/${Math.floor(Math.random()*900)+100}/300/300`}" class="w-full h-64 object-cover">
-            <div class="p-6">
-              <h3 class="font-bold text-xl">${p.name}</h3>
-              <p class="text-3xl font-bold text-purple-400">${p.price} €</p>
-              <p class="text-sm text-gray-400">Noch ${p.stock} verfügbar</p>
-              <button onclick="addToCart('${p.id}')" class="mt-6 w-full bg-purple-600 py-4 rounded-2xl">In den Warenkorb</button>
-            </div>
-          </div>
-        `).join('');
+        let html = '';
+        Object.keys(data).forEach(key => {
+          const p = data[key];
+          html += `
+            <div class="anime-card glass rounded-3xl overflow-hidden">
+              <img src="${p.img || 'https://picsum.photos/300/300'}" class="w-full h-64 object-cover">
+              <div class="p-6">
+                <h3 class="font-bold text-xl">${p.name}</h3>
+                <p class="text-3xl font-bold text-purple-400">${p.price} €</p>
+                <p class="text-sm text-gray-400">Noch ${p.stock} verfügbar</p>
+                <button onclick="addToCart('${key}')" class="mt-6 w-full bg-purple-600 py-4 rounded-2xl">In den Warenkorb</button>
+              </div>
+            </div>`;
+        });
+        document.getElementById('products').innerHTML = html || "<p class='text-center text-gray-400'>Noch keine Produkte vorhanden.</p>";
       });
     }
 
-    // ==================== PRODUKT HINZUFÜGEN ====================
     function addProduct() {
       if (!isAdmin(currentUser)) return alert("Nur Admins dürfen Produkte einstellen!");
 
       const product = {
-        name: document.getElementById('new-name').value,
+        name: document.getElementById('new-name').value.trim(),
         price: parseFloat(document.getElementById('new-price').value),
         stock: parseInt(document.getElementById('new-stock').value) || 10,
-        desc: document.getElementById('new-desc').value,
         img: document.getElementById('new-img').value,
+        desc: document.getElementById('new-desc').value,
         seller: currentUser.username,
         timestamp: Date.now()
       };
 
-      if (!product.name || !product.price) return alert("Name und Preis erforderlich!");
+      if (!product.name || !product.price) {
+        return alert("Bitte Produktname und Preis eingeben!");
+      }
 
       db.ref('products').push(product).then(() => {
-        alert("Produkt hochgeladen! Jeder sieht es jetzt.");
+        alert("✅ Produkt erfolgreich hochgeladen! Es ist jetzt für alle sichtbar.");
         navigate('shop');
       });
     }
 
-    function addToCart(productId) {
-      // Für Warenkorb (lokal pro User)
-      alert("Produkt zum Warenkorb hinzugefügt (Demo)");
-      // Hier könntest du später einen eigenen Warenkorb in Firebase speichern
+    function addToCart(id) {
+      alert("Produkt wurde zum Warenkorb hinzugefügt!");
     }
 
-    function showCart() {
-      alert("Warenkorb-Funktion wird gerade erweitert. PayPal Demo aktiv.");
-      // PayPal Logik wie vorher
-    }
-
-    function hideCart() { document.getElementById('cart-modal').classList.add('hidden'); }
-
-    // ==================== AUTH ====================
     function login() {
       const username = document.getElementById('login-user').value.trim();
-      const password = document.getElementById('login-pass').value;
+      const pass = document.getElementById('login-pass').value;
 
-      const admin = admins.find(a => a.username === username && a.password === password);
-      if (admin) {
-        currentUser = admin;
-      } else if (username) {
-        currentUser = { username };
-      } else {
-        return alert("Bitte Username eingeben");
-      }
+      const admin = admins.find(a => a.username === username && a.password === pass);
+      if (admin) currentUser = admin;
+      else if (username) currentUser = { username };
+      else return alert("Bitte Username eingeben");
 
       localStorage.setItem('currentUser', JSON.stringify(currentUser));
       if (isAdmin(currentUser)) {
@@ -209,10 +187,7 @@
     }
 
     function logout() {
-      if (confirm("Ausloggen?")) {
-        localStorage.removeItem('currentUser');
-        location.reload();
-      }
+      if (confirm("Wirklich ausloggen?")) location.reload();
     }
 
     function switchAuthTab(n) {
@@ -220,7 +195,6 @@
       document.getElementById('register-form').classList.toggle('hidden', n !== 1);
     }
 
-    // Init
     window.onload = () => {
       const saved = localStorage.getItem('currentUser');
       if (saved) {
