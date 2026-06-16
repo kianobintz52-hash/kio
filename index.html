@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>deinname.lol - Alles in einem Link</title>
+    <title>kioo.lol - Alles in einem Link</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
@@ -22,7 +22,7 @@
         }
 
         .hero-bg {
-            background: radial-gradient(at center bottom, rgba(168, 85, 247, 0.15), transparent 70%);
+            background: radial-gradient(at center bottom, rgba(168, 85, 247, 0.18), transparent 70%);
         }
 
         .gun-pattern {
@@ -37,34 +37,44 @@
         }
         
         .mockup:hover {
-            transform: translateY(-10px) rotate(2deg);
+            transform: translateY(-12px) rotate(3deg);
+        }
+
+        /* Light mode support */
+        [data-theme="light"] {
+            --tw-bg-opacity: 1;
         }
     </style>
 </head>
-<body class="bg-zinc-950 text-white overflow-x-hidden">
+<body class="bg-zinc-950 text-white overflow-x-hidden transition-colors duration-300">
+
     <!-- NAV -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-zinc-950/80 backdrop-blur-lg border-b border-zinc-800">
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-zinc-950/90 backdrop-blur-lg border-b border-zinc-800">
         <div class="max-w-screen-2xl mx-auto px-8 py-5 flex items-center justify-between">
             <div class="flex items-center gap-x-3">
-                <div class="w-9 h-9 bg-violet-600 rounded-2xl flex items-center justify-center text-2xl shadow-lg shadow-violet-500/50">
-                    🔫
+                <div id="logo" class="w-9 h-9 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-2xl flex items-center justify-center text-2xl shadow-lg shadow-violet-500/50 font-bold">
+                    K
                 </div>
-                <div class="logo-font text-3xl font-semibold tracking-tighter">deinname<span class="text-violet-500">.lol</span></div>
+                <div class="logo-font text-3xl font-semibold tracking-tighter">kioo<span class="text-violet-500">.lol</span></div>
             </div>
             
             <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
-                <a href="#" class="hover:text-violet-400 transition-colors">Hilfecenter</a>
-                <a href="#" class="hover:text-violet-400 transition-colors">Discord</a>
-                <a href="#" class="hover:text-violet-400 transition-colors">Bestenliste</a>
+                <a href="#features" class="hover:text-violet-400 transition-colors">Funktionen</a>
+                <a href="#how" class="hover:text-violet-400 transition-colors">So funktioniert's</a>
                 <a href="#" class="hover:text-violet-400 transition-colors">Preise</a>
+                <a href="#" class="hover:text-violet-400 transition-colors">Discord</a>
             </div>
 
             <div class="flex items-center gap-x-4">
+                <button onclick="toggleTheme()" 
+                        class="w-10 h-10 flex items-center justify-center rounded-2xl hover:bg-zinc-900 transition-colors">
+                    <i id="theme-icon" class="fas fa-moon text-lg"></i>
+                </button>
                 <button onclick="loginClick()" 
                         class="px-6 py-2.5 text-sm font-medium hover:bg-zinc-900 transition-colors rounded-2xl">
                     Login
                 </button>
-                <button onclick="registerClick()" 
+                <button onclick="showRegisterModal()" 
                         class="bg-violet-600 hover:bg-violet-700 px-8 py-2.5 rounded-3xl text-sm font-semibold transition-all active:scale-95">
                     Kostenlos registrieren
                 </button>
@@ -80,30 +90,19 @@
                     Alles, was du willst,<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">genau hier.</span>
                 </h1>
                 <p class="text-xl text-zinc-400 max-w-lg mx-auto">
-                    deinname.lol ist deine Anlaufstelle für moderne, funktionsreiche Link-in-Bio-Seiten und schnelles, sicheres Datei-Hosting.
+                    kioo.lol ist deine moderne Link-in-Bio Seite + schneller &amp; sicherer Datei-Host.
                 </p>
 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center mt-10">
-                    <button onclick="registerClick()" 
+                    <button onclick="showRegisterModal()" 
                             class="bg-violet-600 hover:bg-violet-700 text-lg font-semibold px-10 py-6 rounded-3xl flex items-center justify-center gap-x-3 transition-all active:scale-95 shadow-xl shadow-violet-500/30">
                         <span>Kostenlos starten</span>
                         <i class="fas fa-arrow-right"></i>
                     </button>
-                    <button onclick="showPrices()" 
+                    <button onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})" 
                             class="border border-zinc-700 hover:bg-zinc-900 text-lg font-medium px-10 py-6 rounded-3xl transition-all">
                         Preise ansehen
                     </button>
-                </div>
-
-                <div class="mt-8 text-sm text-zinc-500 flex items-center justify-center gap-x-8">
-                    <div class="flex items-center gap-x-2">
-                        <i class="fas fa-check text-emerald-400"></i>
-                        <span>Keine Kreditkarte nötig</span>
-                    </div>
-                    <div class="flex items-center gap-x-2">
-                        <i class="fas fa-check text-emerald-400"></i>
-                        <span>Über 1.9 Millionen Nutzer</span>
-                    </div>
                 </div>
             </div>
         </div>
@@ -120,85 +119,45 @@
                         <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
                         <div class="w-3 h-3 rounded-full bg-green-500"></div>
                     </div>
-                    <div class="text-xs text-zinc-500 mx-auto">deinname.lol/dashboard</div>
+                    <div class="text-xs text-zinc-500 mx-auto">kioo.lol/@kioo</div>
                 </div>
                 <div class="p-6">
                     <div class="flex gap-4 mb-8">
                         <div class="flex-1 bg-zinc-800 rounded-2xl p-4">
                             <div class="text-xs text-zinc-400 mb-1">Username</div>
-                            <div class="text-lg font-medium">@deinname</div>
+                            <div class="text-lg font-medium">@kioo</div>
                         </div>
                         <div class="flex-1 bg-zinc-800 rounded-2xl p-4">
                             <div class="text-xs text-zinc-400 mb-1">Profile Views</div>
-                            <div class="text-3xl font-bold text-violet-400">4.803</div>
+                            <div class="text-3xl font-bold text-violet-400">12.459</div>
                         </div>
                     </div>
                     
-                    <!-- Fake Chart -->
                     <div class="bg-zinc-950 rounded-2xl p-6 mb-6">
-                        <div class="text-sm mb-4 flex justify-between">
-                            <span>Profile Views (letzte 12 Stunden)</span>
-                        </div>
-                        <div class="h-52 relative flex items-end gap-1">
-                            <!-- Simple SVG chart -->
-                            <svg width="100%" height="100%" viewBox="0 0 800 200" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-violet-500">
-                                <path d="M0 180 Q100 140 200 160 Q300 80 400 130 Q500 60 600 110 Q700 40 800 90" 
-                                      stroke="currentColor" stroke-width="12" stroke-linecap="round"/>
-                                <path d="M0 180 Q100 140 200 160 Q300 80 400 130 Q500 60 600 110 Q700 40 800 90" 
-                                      stroke="#a855f7" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
-                            </svg>
-                        </div>
-                    </div>
-
-                    <div class="text-xs uppercase tracking-widest text-zinc-500 mb-2">Schnelllinks</div>
-                    <div class="grid grid-cols-3 gap-3">
-                        <div class="bg-zinc-800/70 hover:bg-violet-950/50 p-4 rounded-2xl text-center transition-colors cursor-pointer">
-                            <i class="fab fa-discord text-2xl mb-2 text-blue-400"></i>
-                            <div class="text-xs">Discord</div>
-                        </div>
-                        <div class="bg-zinc-800/70 hover:bg-violet-950/50 p-4 rounded-2xl text-center transition-colors cursor-pointer">
-                            <i class="fab fa-twitter text-2xl mb-2"></i>
-                            <div class="text-xs">Twitter</div>
-                        </div>
-                        <div class="bg-zinc-800/70 hover:bg-violet-950/50 p-4 rounded-2xl text-center transition-colors cursor-pointer">
-                            <i class="fas fa-image text-2xl mb-2 text-pink-400"></i>
-                            <div class="text-xs">Image Host</div>
-                        </div>
+                        <div class="text-sm mb-4">Profile Views (letzte 24h)</div>
+                        <svg width="100%" height="180" viewBox="0 0 800 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M0 180 Q80 150 160 160 Q240 90 320 130 Q400 60 480 110 Q560 40 640 90 Q720 70 800 95" stroke="#a855f7" stroke-width="14" stroke-linecap="round"/>
+                        </svg>
                     </div>
                 </div>
             </div>
 
             <!-- Mobile Mockups -->
-            <div class="space-y-8 md:space-y-12 pt-12 md:pt-0">
+            <div class="space-y-8 pt-12 md:pt-0">
                 <div class="mockup relative mx-auto max-w-[280px] bg-zinc-900 rounded-[3rem] p-3 shadow-2xl border border-zinc-700">
                     <div class="bg-black rounded-[2.3rem] overflow-hidden h-[520px]">
-                        <!-- Mobile content -->
-                        <div class="h-12 bg-zinc-900 flex items-center justify-center">
-                            <div class="w-28 h-4 bg-zinc-800 rounded-full"></div>
-                        </div>
-                        <div class="p-6 text-center">
-                            <div class="w-24 h-24 mx-auto rounded-2xl bg-gradient-to-br from-violet-400 to-fuchsia-500 mb-4 flex items-center justify-center text-4xl">
+                        <div class="p-6 text-center pt-12">
+                            <div class="w-28 h-28 mx-auto rounded-3xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-5xl mb-6 shadow-inner">
                                 👤
                             </div>
-                            <div class="font-semibold text-xl">@deinname</div>
-                            <div class="text-zinc-400 text-sm mt-1">Creator • Gamer • Designer</div>
+                            <div class="font-semibold text-2xl">@kioo</div>
+                            <div class="text-zinc-400">Creator &amp; Designer</div>
                             
-                            <div class="my-8 space-y-3">
-                                <a href="#" class="block bg-zinc-800 hover:bg-zinc-700 w-full py-4 rounded-2xl text-sm font-medium transition-colors">Mein Portfolio</a>
-                                <a href="#" class="block bg-zinc-800 hover:bg-zinc-700 w-full py-4 rounded-2xl text-sm font-medium transition-colors">Discord Server</a>
-                                <a href="#" class="block bg-zinc-800 hover:bg-zinc-700 w-full py-4 rounded-2xl text-sm font-medium transition-colors">Letztes Video</a>
+                            <div class="mt-10 space-y-3">
+                                <a href="#" class="block bg-zinc-800 hover:bg-zinc-700 w-full py-4 rounded-2xl font-medium">Portfolio</a>
+                                <a href="#" class="block bg-zinc-800 hover:bg-zinc-700 w-full py-4 rounded-2xl font-medium">Discord</a>
+                                <a href="#" class="block bg-zinc-800 hover:bg-zinc-700 w-full py-4 rounded-2xl font-medium">YouTube</a>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Second small mobile -->
-                <div class="mockup ml-auto max-w-[220px] bg-zinc-900 rounded-[2.5rem] p-2 shadow-2xl border border-zinc-700">
-                    <div class="bg-zinc-950 rounded-3xl overflow-hidden">
-                        <div class="h-8 bg-black"></div>
-                        <div class="p-4 text-center">
-                            <div class="text-emerald-400 text-xs mb-1">Online</div>
-                            <div class="font-mono text-sm">guns.lol/deinname</div>
                         </div>
                     </div>
                 </div>
@@ -207,60 +166,141 @@
     </section>
 
     <!-- FEATURES -->
-    <section class="max-w-screen-2xl mx-auto px-8 py-32">
+    <section id="features" class="max-w-screen-2xl mx-auto px-8 py-32">
+        <h2 class="text-4xl font-bold text-center mb-16">Alles was du brauchst</h2>
         <div class="grid md:grid-cols-3 gap-8">
-            <div class="bg-zinc-900/50 border border-zinc-800 rounded-3xl p-8 hover:border-violet-500/50 transition-colors group">
-                <div class="w-14 h-14 bg-violet-500/10 text-violet-400 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">
-                    🔗
-                </div>
-                <h3 class="text-2xl font-semibold mb-3">Perfekte Link-in-Bio</h3>
-                <p class="text-zinc-400">Unbegrenzt Links, schöne Designs, Social-Media-Integration und Analytics.</p>
+            <div class="bg-zinc-900/70 border border-zinc-800 rounded-3xl p-8 hover:border-violet-500/50 transition-all group">
+                <div class="text-4xl mb-6">🔗</div>
+                <h3 class="text-2xl font-semibold mb-3">Link-in-Bio</h3>
+                <p class="text-zinc-400">Unbegrenzt Links, schöne Themes, Social Icons und Analytics.</p>
             </div>
-            <div class="bg-zinc-900/50 border border-zinc-800 rounded-3xl p-8 hover:border-violet-500/50 transition-colors group">
-                <div class="w-14 h-14 bg-fuchsia-500/10 text-fuchsia-400 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">
-                    📸
-                </div>
-                <h3 class="text-2xl font-semibold mb-3">Image &amp; Video Host</h3>
-                <p class="text-zinc-400">Schnelles Hochladen und Teilen von Bildern und kurzen Videos.</p>
+            <div class="bg-zinc-900/70 border border-zinc-800 rounded-3xl p-8 hover:border-violet-500/50 transition-all group">
+                <div class="text-4xl mb-6">📸</div>
+                <h3 class="text-2xl font-semibold mb-3">Image &amp; File Host</h3>
+                <p class="text-zinc-400">Schnell Bilder und Dateien hochladen und teilen.</p>
             </div>
-            <div class="bg-zinc-900/50 border border-zinc-800 rounded-3xl p-8 hover:border-violet-500/50 transition-colors group">
-                <div class="w-14 h-14 bg-cyan-500/10 text-cyan-400 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">
-                    ⚡
-                </div>
-                <h3 class="text-2xl font-semibold mb-3">Blitzschnell &amp; Sicher</h3>
-                <p class="text-zinc-400">Keine Werbung. Kein Tracking. Einfach nur schnell und privat.</p>
+            <div class="bg-zinc-900/70 border border-zinc-800 rounded-3xl p-8 hover:border-violet-500/50 transition-all group">
+                <div class="text-4xl mb-6">📊</div>
+                <h3 class="text-2xl font-semibold mb-3">Echte Analytics</h3>
+                <p class="text-zinc-400">Sieh wer deine Seite besucht und woher sie kommen.</p>
             </div>
         </div>
     </section>
 
-    <!-- FOOTER / CTA -->
+    <!-- HOW IT WORKS -->
+    <section id="how" class="bg-zinc-900 py-24">
+        <div class="max-w-screen-2xl mx-auto px-8">
+            <h2 class="text-4xl font-bold text-center mb-16">In 3 Schritten loslegen</h2>
+            <div class="grid md:grid-cols-3 gap-10">
+                <div class="text-center">
+                    <div class="w-16 h-16 mx-auto bg-violet-600 rounded-2xl flex items-center justify-center text-3xl mb-6">1</div>
+                    <h3 class="font-semibold text-xl mb-2">Konto erstellen</h3>
+                    <p class="text-zinc-400">In unter 30 Sekunden</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 mx-auto bg-violet-600 rounded-2xl flex items-center justify-center text-3xl mb-6">2</div>
+                    <h3 class="font-semibold text-xl mb-2">Profil anpassen</h3>
+                    <p class="text-zinc-400">Links, Bilder, Design</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 mx-auto bg-violet-600 rounded-2xl flex items-center justify-center text-3xl mb-6">3</div>
+                    <h3 class="font-semibold text-xl mb-2">Teilen</h3>
+                    <p class="text-zinc-400">kioo.lol/@deinname</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- REGISTRATION MODAL -->
+    <div id="registerModal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center z-[100]">
+        <div class="bg-zinc-900 rounded-3xl p-10 max-w-md w-full mx-4">
+            <h2 class="text-3xl font-bold mb-8 text-center">Kostenlos bei kioo.lol registrieren</h2>
+            
+            <form onsubmit="handleRegister(event)" class="space-y-6">
+                <div>
+                    <label class="block text-sm mb-2">Benutzername</label>
+                    <input type="text" id="username" placeholder="@kioo" required
+                           class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 focus:outline-none focus:border-violet-500">
+                </div>
+                <div>
+                    <label class="block text-sm mb-2">E-Mail</label>
+                    <input type="email" id="email" placeholder="du@beispiel.de" required
+                           class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 focus:outline-none focus:border-violet-500">
+                </div>
+                <div>
+                    <label class="block text-sm mb-2">Passwort</label>
+                    <input type="password" id="password" placeholder="••••••••" required
+                           class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 focus:outline-none focus:border-violet-500">
+                </div>
+                <button type="submit"
+                        class="w-full bg-violet-600 hover:bg-violet-700 py-5 rounded-3xl font-semibold text-lg transition-all">
+                    Konto erstellen
+                </button>
+            </form>
+            
+            <button onclick="hideRegisterModal()" 
+                    class="mt-6 w-full text-zinc-400 hover:text-white transition-colors">
+                Abbrechen
+            </button>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
     <footer class="bg-black py-20 border-t border-zinc-800">
         <div class="max-w-screen-2xl mx-auto px-8 text-center">
-            <div class="text-4xl font-bold mb-4">Bereit loszulegen?</div>
-            <button onclick="registerClick()" 
-                    class="bg-white text-black hover:bg-zinc-200 font-semibold text-lg px-12 py-6 rounded-3xl inline-flex items-center gap-x-3 transition-all">
-                Kostenloses Konto erstellen
-                <i class="fas fa-rocket"></i>
+            <div class="text-4xl font-bold mb-6">Bereit für deinen Auftritt?</div>
+            <button onclick="showRegisterModal()" 
+                    class="bg-white text-black hover:bg-zinc-200 font-semibold text-lg px-14 py-6 rounded-3xl inline-flex items-center gap-x-3">
+                Jetzt kostenlos starten
             </button>
-            <p class="text-zinc-500 mt-8 text-sm">deinname.lol © 2026 – Made with ❤️ für Creator</p>
+            <p class="text-zinc-500 mt-10">kioo.lol © 2026 • Made with ❤️</p>
         </div>
     </footer>
 
     <script>
-        function registerClick() {
-            alert("🎉 Willkommen! In einer echten Version würdest du jetzt zur Registrierung weitergeleitet werden.");
-        }
-        
-        function loginClick() {
-            alert("🔑 Login-Bereich. Du kannst hier später deine eigenen Authentifizierungs-Logik einbauen.");
-        }
-        
-        function showPrices() {
-            alert("💰 Preise:\n\nFree: Alles Basis\nPremium: 4,99 €/Monat – Mehr Stats, Custom Domain, etc.");
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            
+            const icon = document.getElementById('theme-icon');
+            icon.classList.toggle('fa-moon', !isDark);
+            icon.classList.toggle('fa-sun', isDark);
         }
 
-        // Tailwind script already loaded via CDN
-        console.log('%c deinname.lol Clone bereit! 🚀', 'color: #a855f7; font-size: 14px; font-weight: bold');
+        // Modal
+        function showRegisterModal() {
+            document.getElementById('registerModal').classList.remove('hidden');
+            document.getElementById('registerModal').classList.add('flex');
+        }
+
+        function hideRegisterModal() {
+            const modal = document.getElementById('registerModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // Fake Registration
+        function handleRegister(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            hideRegisterModal();
+            setTimeout(() => {
+                alert(`🎉 Willkommen bei kioo.lol, @${username || 'kioo'}!\n\nDein Profil wurde erstellt. (Demo)`);
+            }, 400);
+        }
+
+        function loginClick() {
+            alert("🔑 Login-Fenster würde hier erscheinen (Demo)");
+        }
+
+        // Keyboard escape for modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape") hideRegisterModal();
+        });
+
+        console.log('%c kioo.lol Clone bereit! 🚀', 'color: #a855f7; font-size: 15px; font-weight: bold');
     </script>
 </body>
 </html>
