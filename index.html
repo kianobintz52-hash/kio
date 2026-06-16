@@ -35,7 +35,7 @@
     </div>
   </nav>
 
-  <!-- Login / Register -->
+  <!-- Login -->
   <div id="page-login" class="page max-w-md mx-auto mt-24 p-12 glass rounded-3xl">
     <h2 class="text-5xl font-bold text-center neon-purple mb-10">ANIME VAULT</h2>
     <div class="flex gap-4 bg-gray-900 rounded-3xl p-1 mb-8">
@@ -83,16 +83,18 @@
   <div id="page-admin" class="page hidden max-w-7xl mx-auto p-8">
     <h2 class="text-5xl font-bold neon-purple mb-10">👑 Owner Panel</h2>
     <div class="glass p-8 rounded-3xl">
+      <button onclick="loadAdminPanel()" class="mb-6 bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-2xl flex items-center gap-2">
+        🔄 Neu laden
+      </button>
       <div id="admin-content"></div>
     </div>
   </div>
 
-  <!-- Warenkorb Button -->
+  <!-- Warenkorb -->
   <button onclick="showCart()" class="fixed bottom-10 right-10 bg-gradient-to-r from-purple-600 to-pink-600 w-20 h-20 rounded-full flex items-center justify-center text-4xl shadow-2xl hover:scale-110 transition-transform">
     🛒 <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-xs w-6 h-6 rounded-full flex items-center justify-center">0</span>
   </button>
 
-  <!-- Warenkorb Modal -->
   <div id="cart-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
     <div class="glass rounded-3xl p-8 max-w-lg w-full max-h-[90vh] overflow-auto">
       <h3 class="text-3xl font-bold mb-6">Warenkorb</h3>
@@ -176,6 +178,7 @@
 
       db.ref('products').push(product).then(() => {
         alert("✅ Produkt erfolgreich hochgeladen!");
+        // Felder leeren
         document.getElementById('new-name').value = '';
         document.getElementById('new-price').value = '';
         document.getElementById('new-stock').value = '10';
@@ -191,11 +194,9 @@
         if (!prod || prod.stock <= 0) return alert("Produkt nicht verfügbar");
         
         const existing = cart.find(item => item.id === id);
-        if (existing) {
-          existing.quantity++;
-        } else {
-          cart.push({...prod, id, quantity: 1});
-        }
+        if (existing) existing.quantity++;
+        else cart.push({...prod, id, quantity: 1});
+        
         updateCartCount();
         alert(`${prod.name} wurde zum Warenkorb hinzugefügt!`);
       });
@@ -212,7 +213,7 @@
       let html = '';
       let total = 0;
 
-      cart.forEach((item, index) => {
+      cart.forEach(item => {
         const itemTotal = item.price * item.quantity;
         total += itemTotal;
         html += `
@@ -221,9 +222,7 @@
               <div class="font-semibold">${item.name}</div>
               <div class="text-sm text-gray-400">${item.quantity}x ${item.price} €</div>
             </div>
-            <div class="text-right">
-              <div class="font-bold text-purple-400">${itemTotal.toFixed(2)} €</div>
-            </div>
+            <div class="text-right font-bold text-purple-400">${itemTotal.toFixed(2)} €</div>
           </div>`;
       });
 
@@ -282,37 +281,52 @@
     function loadAdminPanel() {
       let html = `<h3 class="text-3xl mb-8">👑 Owner Panel - ${currentUser.username}</h3>`;
 
-      // Registrierte User
       db.ref('users').once('value', (userSnap) => {
         const users = userSnap.val() || {};
-        html += `<h4 class="text-2xl mb-4 mt-8">Registrierte User (${Object.keys(users).length})</h4>`;
+        const userCount = Object.keys(users).length;
         
-        Object.keys(users).forEach(username => {
-          const regDate = new Date(users[username].registered).toLocaleDateString('de-DE');
-          html += `
-            <div class="glass p-4 rounded-2xl mb-3 flex justify-between items-center">
-              <span class="font-medium">${username}</span>
-              <span class="text-sm text-gray-400">Registriert: ${regDate}</span>
-            </div>`;
-        });
+        html += `
+          <h4 class="text-2xl mb-4 mt-6">Registrierte User (${userCount})</h4>
+          <div class="grid gap-3">`;
 
-        // Produkte
+        if (userCount === 0) {
+          html += `<p class="text-gray-400 p-4">Noch keine User registriert.</p>`;
+        } else {
+          Object.keys(users).forEach(username => {
+            const userData = users[username] || {};
+            const regDate = userData.registered 
+              ? new Date(userData.registered).toLocaleDateString('de-DE') 
+              : "Unbekannt";
+            
+            html += `
+              <div class="glass p-5 rounded-2xl flex justify-between items-center">
+                <span class="font-bold text-lg">${username}</span>
+                <span class="text-sm text-gray-400">Registriert: ${regDate}</span>
+              </div>`;
+          });
+        }
+        html += `</div>`;
+
         db.ref('products').once('value', (prodSnap) => {
           const products = prodSnap.val() || {};
           html += `<h4 class="text-2xl mb-4 mt-10">Alle Produkte (${Object.keys(products).length})</h4>`;
 
-          Object.keys(products).forEach(key => {
-            const p = products[key];
-            html += `
-              <div class="glass p-5 rounded-2xl mb-3 flex justify-between items-center">
-                <div>
-                  <strong>${p.name}</strong> — ${p.price}€ 
-                  <span class="text-gray-400">von ${p.seller}</span>
-                  ${p.discord ? `<br><span class="text-pink-400">DC: ${p.discord}</span>` : ''}
-                </div>
-                <button onclick="deleteProduct('${key}', '${p.seller}')" class="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-2xl text-sm">Löschen</button>
-              </div>`;
-          });
+          if (Object.keys(products).length === 0) {
+            html += `<p class="text-gray-400 p-4">Noch keine Produkte vorhanden.</p>`;
+          } else {
+            Object.keys(products).forEach(key => {
+              const p = products[key];
+              html += `
+                <div class="glass p-5 rounded-2xl mb-3 flex justify-between items-center">
+                  <div class="flex-1">
+                    <strong>${p.name}</strong> — ${p.price}€ 
+                    <span class="text-gray-400">von ${p.seller}</span>
+                    ${p.discord ? `<br><span class="text-pink-400">💬 ${p.discord}</span>` : ''}
+                  </div>
+                  <button onclick="deleteProduct('${key}', '${p.seller}')" class="bg-red-600 hover:bg-red-700 px-6 py-2.5 rounded-2xl text-sm">Löschen</button>
+                </div>`;
+            });
+          }
 
           document.getElementById('admin-content').innerHTML = html;
         });
