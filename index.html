@@ -8,12 +8,11 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-
   <style>
-    body { 
-      background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.95)), 
-                  url('https://picsum.photos/id/1015/1920/1080') center/cover fixed; 
-      font-family: system-ui; 
+    body {
+      background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.95)),
+                  url('https://picsum.photos/id/1015/1920/1080') center/cover fixed;
+      font-family: system-ui;
     }
     .glass { background: rgba(30,30,40,0.85); backdrop-filter: blur(16px); border: 1px solid rgba(168,85,247,0.4); }
     .neon-purple { text-shadow: 0 0 25px #c026d3, 0 0 50px #a855f7; }
@@ -39,7 +38,51 @@
     </div>
   </nav>
 
-  <!-- Login, Shop, Sell, Profile bleiben gleich -->
+  <!-- Login Page -->
+  <div id="page-login" class="page max-w-md mx-auto mt-20 p-8">
+    <div class="glass rounded-3xl p-10">
+      <h2 class="text-4xl font-bold neon-purple text-center mb-8">Willkommen</h2>
+      <div class="flex mb-6 border-b border-purple-500">
+        <button onclick="switchAuthTab(0)" class="flex-1 py-3 font-medium border-b-4 border-purple-500" id="login-tab">Login</button>
+        <button onclick="switchAuthTab(1)" class="flex-1 py-3 font-medium" id="reg-tab">Registrieren</button>
+      </div>
+
+      <div id="login-form">
+        <input id="login-user" type="text" placeholder="Username" class="w-full mb-4 p-4 glass rounded-2xl">
+        <button onclick="login()" class="w-full bg-purple-600 hover:bg-purple-700 py-4 rounded-2xl text-xl">Einloggen</button>
+      </div>
+
+      <div id="register-form" class="hidden">
+        <input id="reg-user" type="text" placeholder="Username" class="w-full mb-4 p-4 glass rounded-2xl">
+        <button onclick="register()" class="w-full bg-purple-600 hover:bg-purple-700 py-4 rounded-2xl text-xl">Registrieren</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shop Page -->
+  <div id="page-shop" class="page hidden max-w-7xl mx-auto p-8">
+    <h2 class="text-5xl font-bold neon-purple mb-8">🛒 Shop</h2>
+    <div id="products" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+  </div>
+
+  <!-- Sell Page -->
+  <div id="page-sell" class="page hidden max-w-7xl mx-auto p-8">
+    <h2 class="text-5xl font-bold neon-purple mb-8">📦 Produkt einstellen</h2>
+    <div class="glass p-8 rounded-3xl max-w-2xl mx-auto">
+      <input id="new-name" type="text" placeholder="Produktname" class="w-full mb-4 p-4 glass rounded-2xl">
+      <input id="new-price" type="number" placeholder="Preis in €" class="w-full mb-4 p-4 glass rounded-2xl">
+      <input id="new-stock" type="number" placeholder="Stock" value="10" class="w-full mb-4 p-4 glass rounded-2xl">
+      <input id="new-img" type="text" placeholder="Bild URL (optional)" class="w-full mb-4 p-4 glass rounded-2xl">
+      <textarea id="new-desc" placeholder="Beschreibung" class="w-full h-32 p-4 glass rounded-2xl"></textarea>
+      <button onclick="addProduct()" class="mt-6 w-full bg-purple-600 hover:bg-purple-700 py-4 rounded-2xl text-xl">Produkt hochladen</button>
+    </div>
+  </div>
+
+  <!-- Profile Page -->
+  <div id="page-profile" class="page hidden max-w-7xl mx-auto p-8">
+    <h2 class="text-5xl font-bold neon-purple mb-8">👤 Mein Profil</h2>
+    <div class="glass p-8 rounded-3xl" id="profile-content"></div>
+  </div>
 
   <!-- Owner Panel -->
   <div id="page-admin" class="page hidden max-w-7xl mx-auto p-8">
@@ -99,8 +142,11 @@
 
     function navigate(page) {
       document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-      document.getElementById(`page-${page}`).classList.remove('hidden');
+      const pageEl = document.getElementById(`page-${page}`);
+      if (pageEl) pageEl.classList.remove('hidden');
+
       if (page === 'shop') loadProducts();
+      if (page === 'profile') loadProfile();
       if (page === 'admin' && isAdmin(currentUser)) loadAdminPanel();
     }
 
@@ -109,6 +155,63 @@
       document.getElementById(`admin-tab-${n}`).classList.remove('hidden');
     }
 
+    // ==================== SHOP ====================
+    function loadProducts() {
+      db.ref('products').on('value', (snap) => {
+        const prods = snap.val() || {};
+        let html = '';
+        Object.keys(prods).forEach(key => {
+          const p = prods[key];
+          html += `
+            <div class="anime-card glass p-6 rounded-3xl cursor-pointer" onclick="addToCart('${key}')">
+              ${p.img ? `<img src="${p.img}" class="w-full h-48 object-cover rounded-2xl mb-4">` : ''}
+              <h3 class="font-bold text-xl mb-2">${p.name}</h3>
+              <p class="text-purple-400 text-3xl">${p.price} €</p>
+              <p class="text-sm text-gray-400 mt-1">Stock: ${p.stock || 0} • ${p.seller}</p>
+            </div>`;
+        });
+        document.getElementById('products').innerHTML = html || '<p class="text-gray-400 text-xl col-span-full text-center py-20">Noch keine Produkte verfügbar.</p>';
+      });
+    }
+
+    // ==================== PROFILE ====================
+    function loadProfile() {
+      if (!currentUser) return;
+      document.getElementById('profile-content').innerHTML = `
+        <div class="text-center py-12">
+          <h3 class="text-5xl mb-6">Willkommen, <span class="neon-purple">${currentUser.username}</span>!</h3>
+          <button onclick="navigate('sell')" class="bg-purple-600 hover:bg-purple-700 px-12 py-5 rounded-2xl text-2xl font-medium">
+            Neues Produkt einstellen
+          </button>
+        </div>
+      `;
+    }
+
+    // ==================== SELL ====================
+    function addProduct() {
+      if (!currentUser) return alert("Bitte einloggen!");
+      const product = {
+        name: document.getElementById('new-name').value.trim(),
+        price: parseFloat(document.getElementById('new-price').value),
+        stock: parseInt(document.getElementById('new-stock').value) || 10,
+        img: document.getElementById('new-img').value.trim(),
+        desc: document.getElementById('new-desc').value.trim(),
+        seller: currentUser.username,
+        timestamp: Date.now()
+      };
+
+      if (!product.name || !product.price) return alert("Name und Preis müssen ausgefüllt werden!");
+
+      db.ref('products').push(product).then(() => {
+        alert("✅ Produkt erfolgreich hochgeladen!");
+        document.getElementById('new-name').value = '';
+        document.getElementById('new-price').value = '';
+        document.getElementById('new-desc').value = '';
+        navigate('shop');
+      });
+    }
+
+    // ==================== ADMIN ====================
     function loadAdminPanel() {
       switchAdminTab(0);
       loadStats();
@@ -151,7 +254,7 @@
                 <h3 class="font-bold">${p.name}</h3>
                 <p>${p.price} € • Stock: ${p.stock} • Von: ${p.seller}</p>
               </div>
-              <button onclick="editProduct('${key}')" class="bg-blue-600 px-6 py-2 rounded-2xl">Bearbeiten</button>
+              <button onclick="editProduct('${key}')" class="bg-blue-600 px-6 py-2 rounded-2xl">Preis ändern</button>
             </div>`;
         });
         document.getElementById('products-admin').innerHTML = html;
@@ -187,36 +290,17 @@
     function sendAnnouncement() {
       const text = document.getElementById('announcement-text').value.trim();
       if (!text) return alert("Bitte eine Mitteilung schreiben!");
-      
       db.ref('announcements').push({
         message: text,
         from: currentUser.username,
         time: Date.now()
       }).then(() => {
-        alert("Mitteilung erfolgreich an alle User gesendet!");
+        alert("Mitteilung erfolgreich gesendet!");
         document.getElementById('announcement-text').value = '';
       });
     }
 
-    // Rest der Funktionen (addProduct, Warenkorb, Login etc.)
-    function addProduct() {
-      if (!currentUser) return alert("Bitte einloggen!");
-      const product = {
-        name: document.getElementById('new-name').value.trim(),
-        price: parseFloat(document.getElementById('new-price').value),
-        stock: parseInt(document.getElementById('new-stock').value) || 10,
-        img: document.getElementById('new-img').value,
-        desc: document.getElementById('new-desc').value,
-        seller: currentUser.username,
-        timestamp: Date.now()
-      };
-      if (!product.name || !product.price) return alert("Name und Preis ausfüllen!");
-      db.ref('products').push(product).then(() => {
-        alert("✅ Produkt hochgeladen!");
-        navigate('shop');
-      });
-    }
-
+    // ==================== AUTH & CART ====================
     function addToCart(id) {
       db.ref('products/' + id).once('value', (snap) => {
         const prod = snap.val();
@@ -224,32 +308,8 @@
         const existing = cart.find(item => item.id === id);
         if (existing) existing.quantity++;
         else cart.push({...prod, id, quantity: 1});
-        updateCartCount();
-        alert(`${prod.name} hinzugefügt!`);
+        alert(`${prod.name} in den Warenkorb gelegt!`);
       });
-    }
-
-    function updateCartCount() {
-      const count = cart.reduce((a, b) => a + b.quantity, 0);
-      document.getElementById('cart-count').textContent = count;
-    }
-
-    function showCart() {
-      if (cart.length === 0) return alert("Warenkorb ist leer");
-      let html = '';
-      let total = 0;
-      cart.forEach(item => {
-        const itemTotal = item.price * item.quantity;
-        total += itemTotal;
-        html += `<div class="flex justify-between bg-gray-800 p-4 rounded-2xl mb-3"><div>${item.name} (${item.quantity}x)</div><div>${itemTotal.toFixed(2)} €</div></div>`;
-      });
-      document.getElementById('cart-items').innerHTML = html;
-      document.getElementById('cart-total').innerHTML = `Gesamt: <span class="text-purple-400">${total.toFixed(2)} €</span>`;
-      document.getElementById('cart-modal').classList.remove('hidden');
-    }
-
-    function hideCart() {
-      document.getElementById('cart-modal').classList.add('hidden');
     }
 
     function login() {
