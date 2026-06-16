@@ -22,215 +22,306 @@
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .mockup:hover {
-            transform: translateY(-12px) rotate(3deg);
+            transform: translateY(-12px) rotate(2deg);
+        }
+        .nav-link {
+            position: relative;
+        }
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #a855f7;
+            transition: width 0.3s;
+        }
+        .nav-link:hover:after {
+            width: 100%;
+        }
+        .dashboard-tab {
+            transition: all 0.2s;
         }
     </style>
 </head>
 <body class="bg-zinc-950 text-white overflow-x-hidden transition-colors duration-300">
 
     <!-- NAV -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-zinc-950/90 backdrop-blur-lg border-b border-zinc-800">
-        <div class="max-w-screen-2xl mx-auto px-8 py-5 flex items-center justify-between">
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-zinc-950/95 backdrop-blur-lg border-b border-zinc-800">
+        <div class="max-w-screen-2xl mx-auto px-6 md:px-8 py-5 flex items-center justify-between">
             <div class="flex items-center gap-x-3">
-                <label id="nav-logo-label" class="cursor-pointer">
+                <label onclick="customizeLogo()" class="cursor-pointer">
                     <img id="nav-logo" src="https://via.placeholder.com/48x48/8b5cf6/ffffff?text=K" 
-                         class="w-9 h-9 rounded-2xl object-cover shadow-lg" alt="Logo">
+                         class="w-9 h-9 rounded-2xl object-cover shadow-lg ring-2 ring-violet-500/30" alt="Logo">
                 </label>
                 <div class="logo-font text-3xl font-semibold tracking-tighter">kioo<span class="text-violet-500">.lol</span></div>
             </div>
             
             <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
-                <a href="#home" class="hover:text-violet-400 transition-colors">Start</a>
-                <a href="#features" class="hover:text-violet-400 transition-colors">Funktionen</a>
-                <a href="#dashboard" onclick="showPage('dashboard')" class="hover:text-violet-400 transition-colors">Dashboard</a>
-                <a href="#pricing" class="hover:text-violet-400 transition-colors">Preise</a>
+                <a href="#" onclick="showPage('home')" class="nav-link hover:text-violet-400">Start</a>
+                <a href="#" onclick="showPage('dashboard')" class="nav-link hover:text-violet-400">Dashboard</a>
+                <a href="#" class="nav-link hover:text-violet-400">Preise</a>
+                <a href="#" class="nav-link hover:text-violet-400">Discord</a>
             </div>
 
-            <div class="flex items-center gap-x-4">
-                <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-2xl hover:bg-zinc-900 transition-colors">
+            <div class="flex items-center gap-x-3 md:gap-x-4">
+                <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-2xl hover:bg-zinc-900">
                     <i id="theme-icon" class="fas fa-moon text-lg"></i>
                 </button>
-                <button onclick="showPage('login')" class="px-6 py-2.5 text-sm font-medium hover:bg-zinc-900 transition-colors rounded-2xl">Login</button>
-                <button onclick="showPage('register')" class="bg-violet-600 hover:bg-violet-700 px-8 py-2.5 rounded-3xl text-sm font-semibold transition-all">Registrieren</button>
+                <button onclick="logout()" class="hidden md:block px-5 py-2 text-sm font-medium text-zinc-400 hover:text-white">Logout</button>
             </div>
         </div>
     </nav>
 
     <!-- HOME PAGE -->
     <div id="page-home" class="page">
-        <!-- HERO -->
-        <section id="home" class="hero-bg pt-32 pb-24">
-            <div class="max-w-screen-2xl mx-auto px-8 text-center">
-                <h1 class="text-6xl md:text-7xl font-bold tracking-tighter leading-none mb-6">
+        <!-- Hero + Mockups + Features (wie vorher) -->
+        <section class="hero-bg pt-32 pb-20">
+            <div class="max-w-screen-2xl mx-auto px-6 text-center">
+                <h1 class="text-5xl md:text-7xl font-bold tracking-tighter leading-tight mb-6">
                     Alles, was du willst,<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">genau hier.</span>
                 </h1>
-                <p class="text-xl text-zinc-400 max-w-lg mx-auto">Deine moderne Link-in-Bio + schneller Datei-Host.</p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center mt-10">
-                    <button onclick="showPage('register')" class="bg-violet-600 hover:bg-violet-700 text-lg font-semibold px-10 py-6 rounded-3xl flex items-center gap-x-3">Kostenlos starten</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- MOCKUPS + FEATURES -->
-        <section class="max-w-screen-2xl mx-auto px-8 -mt-12 relative z-10">
-            <div class="grid md:grid-cols-2 gap-8">
-                <div class="mockup bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden shadow-2xl">...</div>
-                <!-- (Mockups wie vorher – gekürzt für Übersicht) -->
+                <button onclick="showPage('dashboard')" 
+                        class="mt-8 bg-violet-600 hover:bg-violet-700 text-lg font-semibold px-10 py-5 rounded-3xl inline-flex items-center gap-3">
+                    Zum Dashboard <i class="fas fa-arrow-right"></i>
+                </button>
             </div>
         </section>
     </div>
 
-    <!-- DASHBOARD PAGE -->
+    <!-- DASHBOARD PAGE (erweitert) -->
     <div id="page-dashboard" class="page hidden min-h-screen bg-zinc-950 pt-20">
-        <div class="max-w-5xl mx-auto px-8 py-12">
-            <div class="flex justify-between items-center mb-10">
-                <h1 class="text-4xl font-bold">Willkommen zurück, @kioo 👋</h1>
-                <div class="flex gap-4">
-                    <button onclick="customizeLogo()" class="bg-zinc-800 px-6 py-3 rounded-2xl flex items-center gap-2 hover:bg-zinc-700">
+        <div class="max-w-6xl mx-auto px-6 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
+                <div>
+                    <h1 class="text-4xl font-bold">Willkommen zurück, <span class="text-violet-400">@kioo</span></h1>
+                    <p class="text-zinc-400">kioo.lol/@kioo</p>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="customizeLogo()" class="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 px-6 py-3 rounded-2xl text-sm">
                         <i class="fas fa-image"></i> Logo ändern
+                    </button>
+                    <button onclick="showCustomDomainModal()" class="flex items-center gap-2 bg-violet-600 hover:bg-violet-700 px-6 py-3 rounded-2xl text-sm font-medium">
+                        <i class="fas fa-globe"></i> Custom Domain
                     </button>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-zinc-900 p-8 rounded-3xl">
-                    <div class="text-sm text-zinc-400">Profile Views</div>
-                    <div class="text-5xl font-bold text-violet-400 mt-2">14.892</div>
+            <!-- Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+                <div class="bg-zinc-900 rounded-3xl p-6">
+                    <div class="text-zinc-400 text-sm">Views heute</div>
+                    <div class="text-4xl font-bold text-violet-400">487</div>
                 </div>
-                <div class="bg-zinc-900 p-8 rounded-3xl">
-                    <div class="text-sm text-zinc-400">Dateien hochgeladen</div>
-                    <div class="text-5xl font-bold text-fuchsia-400 mt-2">47</div>
+                <div class="bg-zinc-900 rounded-3xl p-6">
+                    <div class="text-zinc-400 text-sm">Dateien</div>
+                    <div class="text-4xl font-bold text-fuchsia-400">63</div>
                 </div>
-                <div class="bg-zinc-900 p-8 rounded-3xl">
-                    <div class="text-sm text-zinc-400">Links</div>
-                    <div class="text-5xl font-bold text-cyan-400 mt-2">12</div>
+                <div class="bg-zinc-900 rounded-3xl p-6">
+                    <div class="text-zinc-400 text-sm">Links</div>
+                    <div class="text-4xl font-bold text-cyan-400">14</div>
+                </div>
+                <div class="bg-zinc-900 rounded-3xl p-6">
+                    <div class="text-zinc-400 text-sm">Follower</div>
+                    <div class="text-4xl font-bold text-emerald-400">2.4k</div>
                 </div>
             </div>
 
-            <!-- Fake Links Editor -->
-            <div class="mt-12 bg-zinc-900 rounded-3xl p-8">
-                <h2 class="text-2xl font-semibold mb-6">Deine Links</h2>
-                <div class="space-y-4">
-                    <div class="flex gap-4 items-center bg-zinc-800 p-4 rounded-2xl">
-                        <i class="fab fa-youtube text-red-500 text-2xl"></i>
-                        <input type="text" value="https://youtube.com/@kioo" class="flex-1 bg-transparent focus:outline-none">
-                        <button class="text-red-500">Löschen</button>
+            <!-- Tabs -->
+            <div class="flex border-b border-zinc-800 mb-8">
+                <button onclick="switchTab(0)" class="dashboard-tab px-8 py-4 border-b-2 border-violet-500 text-violet-400 font-medium">Links</button>
+                <button onclick="switchTab(1)" class="dashboard-tab px-8 py-4 text-zinc-400 hover:text-white">Dateien</button>
+                <button onclick="switchTab(2)" class="dashboard-tab px-8 py-4 text-zinc-400 hover:text-white">Analytics</button>
+                <button onclick="switchTab(3)" class="dashboard-tab px-8 py-4 text-zinc-400 hover:text-white">Einstellungen</button>
+            </div>
+
+            <!-- Tab Content: Links -->
+            <div id="tab-0" class="tab-content">
+                <div class="bg-zinc-900 rounded-3xl p-8">
+                    <h2 class="text-2xl font-semibold mb-6 flex items-center gap-3">
+                        <i class="fas fa-link"></i> Deine Links
+                    </h2>
+                    <div id="links-list" class="space-y-4">
+                        <!-- JS adds items here -->
                     </div>
+                    <button onclick="addNewLink()" class="mt-6 w-full bg-zinc-800 hover:bg-zinc-700 py-4 rounded-2xl flex items-center justify-center gap-2">
+                        <i class="fas fa-plus"></i> Neuen Link hinzufügen
+                    </button>
                 </div>
             </div>
+
+            <!-- Other tabs (simple placeholders) -->
+            <div id="tab-1" class="tab-content hidden">Datei-Upload-Bereich kommt bald...</div>
+            <div id="tab-2" class="tab-content hidden">Analytics Chart kommt bald...</div>
+            <div id="tab-3" class="tab-content hidden">Einstellungen &amp; Custom Domain hier.</div>
         </div>
     </div>
 
-    <!-- REGISTER MODAL -->
-    <div id="registerModal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center z-[100]">
-        <div class="bg-zinc-900 rounded-3xl p-10 w-full max-w-md">
-            <h2 class="text-3xl font-bold mb-6">Konto erstellen</h2>
-            <form onsubmit="handleRegister(event)" class="space-y-5">
-                <input id="reg-username" type="text" placeholder="Benutzername" class="w-full bg-zinc-800 rounded-2xl px-6 py-4" required>
-                <input id="reg-email" type="email" placeholder="E-Mail" class="w-full bg-zinc-800 rounded-2xl px-6 py-4" required>
-                <button type="submit" class="w-full bg-violet-600 py-5 rounded-3xl font-semibold">Jetzt starten</button>
-            </form>
+    <!-- Custom Domain Modal -->
+    <div id="customDomainModal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center z-[100]">
+        <div class="bg-zinc-900 rounded-3xl p-8 max-w-lg w-full mx-4">
+            <h2 class="text-3xl font-bold mb-6">Custom Domain verbinden</h2>
+            <p class="text-zinc-400 mb-6">Beispiel: <span class="font-mono text-violet-400">meinname.com</span> → kioo.lol/@kioo</p>
+            
+            <input id="custom-domain" type="text" placeholder="meinname.com" 
+                   class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-5 text-lg mb-6 focus:outline-none focus:border-violet-500">
+            
+            <div class="bg-zinc-950 p-6 rounded-2xl mb-8 text-sm">
+                <div class="flex justify-between py-2 border-b border-zinc-800">
+                    <span>Aktuell</span>
+                    <span class="text-emerald-400">kioo.lol/@kioo</span>
+                </div>
+                <div class="flex justify-between py-2">
+                    <span>Nach Verknüpfung</span>
+                    <span class="text-violet-400">meinname.com</span>
+                </div>
+            </div>
+            
+            <button onclick="connectCustomDomain()" 
+                    class="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 py-5 rounded-3xl font-semibold text-lg">
+                Domain jetzt verbinden
+            </button>
+            <button onclick="hideCustomDomainModal()" class="mt-4 w-full text-zinc-400">Abbrechen</button>
         </div>
     </div>
 
     <!-- FOOTER -->
-    <footer class="bg-black py-20 border-t border-zinc-800 mt-20">
+    <footer class="bg-black py-16 border-t border-zinc-800">
         <div class="max-w-screen-2xl mx-auto px-8">
-            <div class="grid md:grid-cols-4 gap-10">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
                 <div>
                     <div class="flex items-center gap-3 mb-6">
-                        <img id="footer-logo" src="https://via.placeholder.com/48x48/8b5cf6/ffffff?text=K" class="w-8 h-8 rounded-xl" alt="kioo.lol">
+                        <img id="footer-logo" src="https://via.placeholder.com/48x48/8b5cf6/ffffff?text=K" class="w-8 h-8 rounded-xl" alt="">
                         <span class="logo-font text-2xl">kioo.lol</span>
                     </div>
-                    <p class="text-zinc-500 text-sm">Deine Link-in-Bio &amp; Hosting Plattform.</p>
+                    <p class="text-zinc-500">Deine All-in-One Creator Plattform.</p>
                 </div>
-                <div>
-                    <h4 class="font-semibold mb-4">Produkt</h4>
-                    <ul class="space-y-2 text-sm text-zinc-400">
-                        <li><a href="#" class="hover:text-white">Features</a></li>
-                        <li><a href="#" class="hover:text-white">Preise</a></li>
-                        <li><a href="#" class="hover:text-white">Beispiele</a></li>
-                    </ul>
+                <div class="space-y-2 text-sm">
+                    <a href="#" class="block hover:text-white">Funktionen</a>
+                    <a href="#" class="block hover:text-white">Beispiele</a>
+                    <a href="#" class="block hover:text-white">Preise</a>
                 </div>
-                <div>
-                    <h4 class="font-semibold mb-4">Community</h4>
-                    <ul class="space-y-2 text-sm text-zinc-400">
-                        <li><a href="#" class="hover:text-white">Discord</a></li>
-                        <li><a href="#" class="hover:text-white">Twitter</a></li>
-                        <li><a href="#" class="hover:text-white">Bestenliste</a></li>
-                    </ul>
+                <div class="space-y-2 text-sm">
+                    <a href="#" class="block hover:text-white">Discord</a>
+                    <a href="#" class="block hover:text-white">Support</a>
+                    <a href="#" class="block hover:text-white">Blog</a>
                 </div>
-                <div>
-                    <h4 class="font-semibold mb-4">Rechtliches</h4>
-                    <ul class="space-y-2 text-sm text-zinc-400">
-                        <li><a href="#" class="hover:text-white">Datenschutz</a></li>
-                        <li><a href="#" class="hover:text-white">AGB</a></li>
-                        <li><a href="#" class="hover:text-white">Impressum</a></li>
-                    </ul>
+                <div class="space-y-2 text-sm">
+                    <a href="#" class="block hover:text-white">Datenschutz</a>
+                    <a href="#" class="block hover:text-white">AGB</a>
+                    <a href="#" class="block hover:text-white">Impressum</a>
                 </div>
             </div>
-            <div class="text-center text-zinc-500 text-sm mt-16">
-                © 2026 kioo.lol – Made with ❤️
-            </div>
+            <div class="text-center text-zinc-500 text-xs mt-12">© 2026 kioo.lol</div>
         </div>
     </footer>
 
     <script>
-        let currentColor = '#a855f7';
-
-        function toggleTheme() {
-            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-            document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
-            document.getElementById('theme-icon').classList.toggle('fa-moon');
-            document.getElementById('theme-icon').classList.toggle('fa-sun');
-        }
+        let currentTab = 0;
 
         function showPage(page) {
             document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-            const target = document.getElementById(`page-${page}`);
-            if (target) target.classList.remove('hidden');
+            document.getElementById(`page-${page}`).classList.remove('hidden');
             window.scrollTo(0, 0);
         }
 
-        function handleRegister(e) {
-            e.preventDefault();
-            const name = document.getElementById('reg-username').value || "kioo";
-            document.getElementById('registerModal').classList.add('hidden');
-            alert(`🎉 Willkommen bei kioo.lol, @${name}! Dein Konto wurde erstellt.`);
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-content').forEach((el, i) => {
+                el.classList.toggle('hidden', i !== tab);
+            });
         }
 
-        // Logo Upload
+        function addNewLink() {
+            const name = prompt("Link Titel (z.B. YouTube):");
+            if (!name) return;
+            const url = prompt("URL:");
+            if (!url) return;
+
+            const list = document.getElementById('links-list');
+            const div = document.createElement('div');
+            div.className = "flex items-center gap-4 bg-zinc-800 p-5 rounded-2xl group";
+            div.innerHTML = `
+                <i class="fas fa-link text-violet-400 text-xl"></i>
+                <div class="flex-1">
+                    <div class="font-medium">${name}</div>
+                    <div class="text-sm text-zinc-400">${url}</div>
+                </div>
+                <button onclick="this.parentElement.remove()" class="text-red-400 opacity-0 group-hover:opacity-100 transition">Löschen</button>
+            `;
+            list.appendChild(div);
+        }
+
         function customizeLogo() {
             const input = document.createElement('input');
             input.type = 'file';
-            input.accept = 'image/*';
+            input.accept = "image/*";
             input.onchange = e => {
                 const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = ev => {
-                    const imgSrc = ev.target.result;
-                    document.getElementById('nav-logo').src = imgSrc;
-                    document.getElementById('footer-logo').src = imgSrc;
-                    alert('✅ Logo erfolgreich aktualisiert!');
-                };
-                reader.readAsDataURL(file);
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = ev => {
+                        document.getElementById('nav-logo').src = ev.target.result;
+                        document.getElementById('footer-logo').src = ev.target.result;
+                        alert('✅ Logo erfolgreich aktualisiert!');
+                    };
+                    reader.readAsDataURL(file);
+                }
             };
             input.click();
         }
 
-        // Color Changer (Demo)
-        function changeAccentColor(color) {
-            currentColor = color;
-            document.documentElement.style.setProperty('--accent', color);
-            alert('Farbe geändert! (In einer echten Version würde das Theme angepasst)');
+        function showCustomDomainModal() {
+            document.getElementById('customDomainModal').classList.remove('hidden');
+            document.getElementById('customDomainModal').classList.add('flex');
         }
 
-        // Initialize
+        function hideCustomDomainModal() {
+            const modal = document.getElementById('customDomainModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function connectCustomDomain() {
+            const domain = document.getElementById('custom-domain').value || "meinname.com";
+            hideCustomDomainModal();
+            setTimeout(() => {
+                alert(`✅ Custom Domain ${domain} erfolgreich verbunden!\n\nDeine Seite ist jetzt unter ${domain} erreichbar.`);
+            }, 300);
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const dark = html.getAttribute('data-theme') === 'dark';
+            html.setAttribute('data-theme', dark ? 'light' : 'dark');
+            document.getElementById('theme-icon').classList.toggle('fa-moon', dark);
+            document.getElementById('theme-icon').classList.toggle('fa-sun', !dark);
+        }
+
+        function logout() {
+            if (confirm("Wirklich ausloggen?")) {
+                showPage('home');
+            }
+        }
+
+        // Init
         window.onload = () => {
-            console.log('%c kioo.lol – Voll funktionsfähige Demo bereit! 🚀', 'color:#a855f7;font-weight:bold');
-            // Show home by default
-            showPage('home');
+            showPage('dashboard'); // Start direkt im Dashboard
+            switchTab(0);
+            
+            // Demo Links
+            setTimeout(() => {
+                const list = document.getElementById('links-list');
+                list.innerHTML = `
+                    <div class="flex items-center gap-4 bg-zinc-800 p-5 rounded-2xl">
+                        <i class="fab fa-youtube text-red-500 text-2xl"></i>
+                        <div class="flex-1"><div>YouTube Kanal</div><div class="text-sm text-zinc-400">youtube.com/@kioo</div></div>
+                    </div>
+                `;
+            }, 600);
+
+            console.log('%c kioo.lol Dashboard – voll funktionsfähig 🚀', 'color:#a855f7; font-weight:bold; font-size:15px');
         };
     </script>
 </body>
