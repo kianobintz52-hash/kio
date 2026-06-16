@@ -30,6 +30,7 @@
         <button onclick="navigate('shop')" class="hover:text-purple-400">Shop</button>
         <button onclick="navigate('sell')" id="sellBtn" class="hover:text-purple-400">Verkaufen</button>
         <button onclick="navigate('profile')" class="hover:text-purple-400">Profil</button>
+        <button onclick="navigate('admin')" id="adminBtn" class="hover:text-purple-400 hidden">👑 Admin</button>
         <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-6 py-2.5 rounded-2xl">Logout</button>
       </div>
     </div>
@@ -79,6 +80,15 @@
     <div id="profile-products" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
   </div>
 
+  <!-- Admin Panel (nur für dich und ZayTox) -->
+  <div id="page-admin" class="page hidden max-w-7xl mx-auto p-8">
+    <h2 class="text-5xl font-bold neon-purple mb-10">👑 Admin Panel</h2>
+    <div class="glass p-8 rounded-3xl">
+      <button onclick="deleteAllProducts()" class="bg-red-600 hover:bg-red-700 px-8 py-4 rounded-2xl mb-6">Alle Produkte löschen</button>
+      <div id="admin-content"></div>
+    </div>
+  </div>
+
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyAbz1N77hZDksKP9-yZdiW4GR8JtIcHvbQ",
@@ -95,11 +105,18 @@
 
     let currentUser = null;
 
+    const admins = ["kiollegend", "ZayTox"];
+
+    function isAdmin(user) {
+      return admins.includes(user?.username);
+    }
+
     function navigate(page) {
       document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
       document.getElementById(`page-${page}`).classList.remove('hidden');
       if (page === 'shop') loadProducts();
       if (page === 'profile') renderProfile();
+      if (page === 'admin' && isAdmin(currentUser)) loadAdminPanel();
     }
 
     function loadProducts() {
@@ -114,17 +131,17 @@
               <div class="p-6">
                 <h3 class="font-bold text-xl">${p.name}</h3>
                 <p class="text-3xl font-bold text-purple-400">${p.price} €</p>
-                <p class="text-sm text-gray-400">Von: ${p.seller || 'Unbekannt'} | ${p.stock} verfügbar</p>
+                <p class="text-sm text-gray-400">Von: ${p.seller} | ${p.stock} Stück</p>
                 <button onclick="addToCart('${key}')" class="mt-6 w-full bg-purple-600 py-4 rounded-2xl">In den Warenkorb</button>
               </div>
             </div>`;
         });
-        document.getElementById('products').innerHTML = html || "<p class='text-center text-gray-400'>Noch keine Produkte vorhanden.</p>";
+        document.getElementById('products').innerHTML = html || "<p class='text-center'>Noch keine Produkte.</p>";
       });
     }
 
     function addProduct() {
-      if (!currentUser) return alert("Bitte erst einloggen!");
+      if (!currentUser) return alert("Bitte einloggen!");
 
       const product = {
         name: document.getElementById('new-name').value.trim(),
@@ -136,26 +153,55 @@
         timestamp: Date.now()
       };
 
-      if (!product.name || !product.price) {
-        return alert("Bitte Produktname und Preis ausfüllen!");
-      }
+      if (!product.name || !product.price) return alert("Name und Preis erforderlich!");
 
       db.ref('products').push(product).then(() => {
-        alert("✅ Produkt erfolgreich hochgeladen! Jeder kann es jetzt sehen.");
+        alert("✅ Produkt hochgeladen!");
         navigate('shop');
-      }).catch(err => {
-        console.error(err);
-        alert("Fehler: " + err.message + "\n\nHast du die Regeln auf .write: true gestellt?");
       });
     }
 
-    function addToCart(id) {
-      alert("Produkt wurde zum Warenkorb hinzugefügt!");
+    function loadAdminPanel() {
+      db.ref('products').once('value', (snapshot) => {
+        const data = snapshot.val() || {};
+        let html = '<h3 class="text-2xl mb-6">Alle Produkte (' + Object.keys(data).length + ')</h3>';
+        Object.keys(data).forEach(key => {
+          const p = data[key];
+          html += `
+            <div class="glass p-6 rounded-3xl mb-4 flex justify-between items-center">
+              <div>
+                <strong>${p.name}</strong> - ${p.price} € 
+                <small>(von ${p.seller})</small>
+              </div>
+              <button onclick="deleteProduct('${key}')" class="bg-red-600 px-6 py-2 rounded-2xl">Löschen</button>
+            </div>`;
+        });
+        document.getElementById('admin-content').innerHTML = html;
+      });
+    }
+
+    function deleteProduct(key) {
+      if (confirm("Produkt wirklich löschen?")) {
+        db.ref('products/' + key).remove();
+      }
+    }
+
+    function deleteAllProducts() {
+      if (confirm("ALLE Produkte löschen? Das kann nicht rückgängig gemacht werden!")) {
+        db.ref('products').remove().then(() => {
+          alert("Alle Produkte wurden gelöscht.");
+          loadAdminPanel();
+        });
+      }
     }
 
     function renderProfile() {
       document.getElementById('profile-name').textContent = currentUser.username;
-      document.getElementById('profile-products').innerHTML = `<p class="text-lg">Willkommen zurück, <span class="text-purple-400">${currentUser.username}</span>!</p>`;
+      document.getElementById('profile-products').innerHTML = `<p class="text-xl">Willkommen zurück, ${currentUser.username}!</p>`;
+    }
+
+    function addToCart(id) {
+      alert("Produkt zum Warenkorb hinzugefügt!");
     }
 
     function login() {
@@ -163,6 +209,10 @@
       if (!username) return alert("Bitte Username eingeben");
       currentUser = { username };
       localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+      if (isAdmin(currentUser)) {
+        document.getElementById('adminBtn').classList.remove('hidden');
+      }
       navigate('shop');
     }
 
@@ -176,10 +226,7 @@
     }
 
     function logout() {
-      if (confirm("Wirklich ausloggen?")) {
-        localStorage.removeItem('currentUser');
-        location.reload();
-      }
+      if (confirm("Ausloggen?")) location.reload();
     }
 
     function switchAuthTab(n) {
@@ -191,6 +238,7 @@
       const saved = localStorage.getItem('currentUser');
       if (saved) {
         currentUser = JSON.parse(saved);
+        if (isAdmin(currentUser)) document.getElementById('adminBtn').classList.remove('hidden');
         navigate('shop');
       } else {
         navigate('login');
