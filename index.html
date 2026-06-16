@@ -3,214 +3,146 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ANIME VAULT • Kawaii & Kult</title>
+  <title>ANIME VAULT</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
-    :root { --accent: 168 85 247; }
     body {
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
+      background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.95)), url('https://picsum.photos/id/1015/1920/1080') center/cover fixed;
       font-family: 'Segoe UI', system-ui, sans-serif;
-      transition: background-image 1.2s ease;
     }
-    .glass {
-      background: rgba(255,255,255,0.08);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(168, 85, 247, 0.3);
-    }
-    .neon-purple { 
-      text-shadow: 0 0 20px rgb(168 85 247), 0 0 40px rgb(236 72 153), 0 0 60px rgb(192 38 211); 
-    }
-    .sakura { 
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-      pointer-events: none; z-index: 1; opacity: 0.75; 
-    }
-    .anime-card {
-      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .anime-card:hover {
-      transform: translateY(-20px) scale(1.05) rotate(2deg);
-      box-shadow: 0 40px 80px rgba(168, 85, 247, 0.5);
-    }
+    .glass { background: rgba(255,255,255,0.08); backdrop-filter: blur(16px); border: 1px solid rgba(168, 85, 247, 0.3); }
+    .neon-purple { text-shadow: 0 0 25px #c026d3, 0 0 50px #a855f7; }
+    .anime-card { transition: all 0.4s ease; }
+    .anime-card:hover { transform: translateY(-12px); box-shadow: 0 25px 50px rgba(192, 38, 211, 0.5); }
+    .sakura { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; opacity: 0.6; }
   </style>
 </head>
 <body class="text-gray-100 min-h-screen pb-24 relative">
 
-  <!-- Sakura Canvas -->
+  <!-- Sakura -->
   <canvas id="sakura" class="sakura"></canvas>
 
   <!-- Music Player -->
-  <div class="fixed top-4 right-6 z-50 glass rounded-3xl px-6 py-4 flex items-center gap-4 shadow-2xl">
-    <button onclick="toggleMusic()" id="music-btn" class="text-3xl hover:scale-110 transition">🎵</button>
-    <div>
-      <div id="music-title" class="text-sm text-purple-300 font-medium">Sakura Lofi Dreams</div>
-      <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.35" 
-             class="w-40 accent-purple-500 cursor-pointer">
-    </div>
+  <div class="fixed top-4 right-6 z-50 glass rounded-3xl px-5 py-3 flex items-center gap-3">
+    <button onclick="toggleMusic()" id="music-btn" class="text-2xl">🎵</button>
+    <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.3" class="w-32 accent-purple-500">
   </div>
 
   <!-- Navbar -->
-  <nav class="glass sticky top-0 z-50 border-b border-purple-500/50">
+  <nav class="glass sticky top-0 z-50 border-b border-purple-500">
     <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
-      <h1 onclick="navigate('shop')" class="text-4xl font-bold neon-purple cursor-pointer flex items-center gap-3 hover:scale-105 transition">
-        🌸 ANIME VAULT
-      </h1>
-      <div class="flex items-center gap-8 text-lg">
-        <button onclick="navigate('shop')" class="hover:text-purple-400 transition">Shop</button>
-        <button onclick="navigate('wishlist')" class="hover:text-purple-400 transition">❤️ Wishlist</button>
-        <button onclick="navigate('orders')" class="hover:text-purple-400 transition">Bestellungen</button>
+      <h1 onclick="navigate('shop')" class="text-4xl font-bold neon-purple cursor-pointer">ANIME VAULT</h1>
+      <div class="flex gap-8 items-center text-lg">
+        <button onclick="navigate('shop')" class="hover:text-purple-400">Shop</button>
         <button onclick="navigate('sell')" id="sellBtn" class="hover:text-purple-400 hidden">Verkaufen</button>
-        <button onclick="navigate('profile')" class="hover:text-purple-400 transition">Profil</button>
+        <button onclick="navigate('profile')" class="hover:text-purple-400">Profil</button>
         <button onclick="navigate('admin')" id="adminBtn" class="hover:text-purple-400 hidden">Admin</button>
-        <button onclick="toggleTheme()" class="text-3xl transition hover:scale-110" id="theme-toggle"><i class="fas fa-moon"></i></button>
-        <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-2xl text-sm font-medium transition">Logout</button>
+        <button onclick="toggleTheme()" class="text-2xl"><i id="theme-icon" class="fas fa-moon"></i></button>
+        <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-6 py-2 rounded-2xl">Logout</button>
       </div>
     </div>
   </nav>
 
-  <!-- Audio Elements -->
+  <!-- Audio -->
   <audio id="bg-music" loop>
-    <!-- Guter Anime Lo-Fi Track (royalty-free) -->
     <source src="https://cdn.pixabay.com/audio/2023/03/24/audio_0f8d5e0b3f.mp3" type="audio/mpeg">
   </audio>
-  <audio id="click-sound" src="https://assets.mixkit.co/sfx/preview/2965/2965-preview.mp3"></audio>
   <audio id="heart-sound" src="https://assets.mixkit.co/sfx/preview/2962/2962-preview.mp3"></audio>
   <audio id="success-sound" src="https://assets.mixkit.co/sfx/preview/2970/2970-preview.mp3"></audio>
 
-  <!-- Login Page -->
-  <div id="page-login" class="page max-w-md mx-auto mt-20 px-6">
-    <div class="glass rounded-3xl p-10 shadow-2xl">
-      <h2 class="text-5xl font-bold text-center neon-purple mb-10">Willkommen zurück, Otaku!</h2>
-      <div class="flex bg-gray-900/70 rounded-3xl p-1 mb-8">
-        <button onclick="switchAuthTab(0)" id="tab-login" class="flex-1 py-4 rounded-3xl font-semibold bg-purple-600">Login</button>
-        <button onclick="switchAuthTab(1)" id="tab-register" class="flex-1 py-4 rounded-3xl font-semibold">Registrieren</button>
-      </div>
-      <div id="login-form">
-        <input id="login-user" placeholder="Username" class="w-full mb-5 glass border border-purple-400/50 rounded-2xl px-6 py-5">
-        <input id="login-pass" type="password" placeholder="Passwort" class="w-full mb-8 glass border border-purple-400/50 rounded-2xl px-6 py-5">
-        <button onclick="login()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-5 rounded-2xl text-xl font-bold">Einloggen</button>
-      </div>
-      <div id="register-form" class="hidden">
-        <input id="reg-user" placeholder="Username" class="w-full mb-5 glass border border-purple-400/50 rounded-2xl px-6 py-5">
-        <input id="reg-pass" type="password" placeholder="Passwort (mind. 6 Zeichen)" class="w-full mb-8 glass border border-purple-400/50 rounded-2xl px-6 py-5">
-        <button onclick="register()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-5 rounded-2xl text-xl font-bold">Konto erstellen</button>
-      </div>
+  <!-- Login -->
+  <div id="page-login" class="page max-w-md mx-auto mt-24 p-12 glass rounded-3xl">
+    <h2 class="text-5xl font-bold text-center neon-purple mb-10">ANIME VAULT</h2>
+    <div class="flex gap-4 justify-center mb-8 bg-gray-800 rounded-3xl p-1">
+      <button onclick="switchAuthTab(0)" id="tab-login" class="flex-1 py-4 rounded-3xl font-semibold">Login</button>
+      <button onclick="switchAuthTab(1)" id="tab-register" class="flex-1 py-4 rounded-3xl font-semibold">Registrieren</button>
+    </div>
+    <div id="login-form">
+      <input id="login-user" placeholder="Username" class="w-full mb-5 bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
+      <input id="login-pass" type="password" placeholder="Passwort" class="w-full mb-8 bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
+      <button onclick="login()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-5 rounded-2xl text-xl font-bold">Einloggen</button>
+    </div>
+    <div id="register-form" class="hidden">
+      <input id="reg-user" placeholder="Username" class="w-full mb-5 bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
+      <input id="reg-pass" type="password" placeholder="Passwort (mind. 6 Zeichen)" class="w-full mb-8 bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
+      <button onclick="register()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-5 rounded-2xl text-xl font-bold">Konto erstellen</button>
     </div>
   </div>
 
-  <!-- Shop Page -->
+  <!-- Shop -->
   <div id="page-shop" class="page hidden max-w-7xl mx-auto p-8">
-    <div class="flex flex-col md:flex-row gap-4 mb-10">
-      <input id="search-input" onkeyup="debounceSearch()" placeholder="🔍 Anime Figuren, Manga..." class="flex-1 glass border border-purple-400/50 rounded-2xl px-6 py-5">
-      <select id="category-filter" onchange="renderProducts()" class="glass border border-purple-400/50 rounded-2xl px-6 py-5">
-        <option value="">Alle Kategorien</option>
-        <option value="figure">Figuren</option>
-        <option value="manga">Manga</option>
-        <option value="poster">Poster</option>
-        <option value="merch">Merch</option>
-      </select>
-    </div>
-    <h2 class="text-5xl font-bold neon-purple mb-12 text-center">Unsere Anime Schätze</h2>
-    <div id="products" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
-  </div>
-
-  <!-- Weitere Seiten (Wishlist, Orders, Sell, Profile, Admin) -->
-  <!-- Wishlist -->
-  <div id="page-wishlist" class="page hidden max-w-7xl mx-auto p-8">
-    <h2 class="text-5xl font-bold neon-purple mb-10">❤️ Meine Wishlist</h2>
-    <div id="wishlist-items" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
-  </div>
-
-  <!-- Orders -->
-  <div id="page-orders" class="page hidden max-w-5xl mx-auto p-8">
-    <h2 class="text-5xl font-bold neon-purple mb-10">Meine Bestellungen</h2>
-    <div id="orders-list" class="space-y-8"></div>
+    <h2 class="text-5xl font-bold neon-purple mb-12 text-center">Unsere Produkte</h2>
+    <div id="products" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
   </div>
 
   <!-- Sell -->
   <div id="page-sell" class="page hidden max-w-2xl mx-auto p-8">
-    <h2 class="text-5xl font-bold neon-purple mb-10">Neues Produkt einstellen</h2>
-    <div class="glass rounded-3xl p-8 space-y-6">
-      <input id="new-name" placeholder="Produktname" class="w-full glass border border-purple-400/50 rounded-2xl px-6 py-5">
-      <div class="grid grid-cols-2 gap-4">
-        <input id="new-price" type="number" step="0.01" placeholder="Preis €" class="glass border border-purple-400/50 rounded-2xl px-6 py-5">
-        <input id="new-stock" type="number" value="10" placeholder="Stock" class="glass border border-purple-400/50 rounded-2xl px-6 py-5">
-      </div>
-      <select id="new-category" class="w-full glass border border-purple-400/50 rounded-2xl px-6 py-5">
-        <option value="figure">Figur</option><option value="manga">Manga</option><option value="poster">Poster</option><option value="merch">Merch</option>
-      </select>
-      <input id="new-img" placeholder="Bild URL (Anime Bild)" class="w-full glass border border-purple-400/50 rounded-2xl px-6 py-5">
-      <textarea id="new-desc" placeholder="Beschreibung" class="w-full h-32 glass border border-purple-400/50 rounded-3xl px-6 py-5"></textarea>
+    <h2 class="text-4xl font-bold mb-8">Neues Produkt einstellen</h2>
+    <div class="space-y-6 glass p-8 rounded-3xl">
+      <input id="new-name" placeholder="Produktname" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
+      <input id="new-price" type="number" step="0.01" placeholder="Preis €" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
+      <input id="new-stock" type="number" value="10" placeholder="Verfügbare Menge" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
+      <input id="new-img" placeholder="Bild URL" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
+      <textarea id="new-desc" placeholder="Beschreibung" class="w-full h-32 bg-gray-800 border border-purple-500 rounded-3xl px-6 py-5"></textarea>
       <button onclick="addProduct()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-6 rounded-3xl text-xl font-bold">Produkt hochladen</button>
     </div>
   </div>
 
-  <!-- Profile & Admin (kurz) -->
-  <div id="page-profile" class="page hidden max-w-4xl mx-auto p-8">
-    <h2 class="text-5xl font-bold neon-purple mb-8">Profil von <span id="profile-name"></span></h2>
-    <div id="profile-products" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+  <!-- Profile -->
+  <div id="page-profile" class="page hidden max-w-7xl mx-auto p-8">
+    <h2 class="text-5xl font-bold neon-purple mb-8">Profil von <span id="profile-name" class="text-purple-400"></span></h2>
+    <div id="profile-products" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
   </div>
 
-  <div id="page-admin" class="page hidden max-w-6xl mx-auto p-8">
-    <h2 class="text-5xl font-bold neon-purple mb-10">Admin Panel</h2>
-    <div id="admin-content" class="glass rounded-3xl p-8"></div>
-  </div>
-
-  <!-- Product Modal -->
-  <div id="product-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-    <div class="glass max-w-2xl w-full mx-4 rounded-3xl p-8">
-      <button onclick="hideProductModal()" class="float-right text-3xl">✕</button>
-      <div id="modal-content"></div>
-    </div>
+  <!-- Admin -->
+  <div id="page-admin" class="page hidden max-w-7xl mx-auto p-8">
+    <h2 class="text-4xl font-bold mb-8 neon-purple">Admin Panel</h2>
+    <div id="admin-content"></div>
   </div>
 
   <!-- Cart -->
-  <button onclick="showCart()" class="fixed bottom-8 right-8 w-20 h-20 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center text-4xl shadow-2xl hover:scale-110 transition-all z-50">🛒 <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-xs font-bold w-7 h-7 rounded-full">0</span></button>
+  <button onclick="showCart()" class="fixed bottom-10 right-10 bg-gradient-to-r from-purple-600 to-pink-600 w-20 h-20 rounded-full flex items-center justify-center text-4xl shadow-2xl hover:scale-110 transition-all">
+    🛒 <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-xs w-6 h-6 rounded-full flex items-center justify-center">0</span>
+  </button>
 
   <div id="cart-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
-    <div class="glass max-w-lg w-full mx-4 rounded-3xl p-8">
-      <h3 class="text-3xl font-bold mb-6 neon-purple">Warenkorb</h3>
-      <div id="cart-items"></div>
-      <div id="cart-total" class="text-3xl font-bold mt-8 mb-8 text-right"></div>
-      <button onclick="hideCart()" class="w-full py-4 border border-gray-500 rounded-2xl">Schließen</button>
+    <div class="glass rounded-3xl p-8 max-w-lg w-full">
+      <h3 class="text-3xl font-bold mb-6">Warenkorb</h3>
+      <div id="cart-items" class="space-y-4 max-h-96 overflow-auto"></div>
+      <div id="cart-total" class="text-3xl font-bold mt-8 mb-8"></div>
+      <button onclick="hideCart()" class="w-full py-4 border border-gray-600 rounded-2xl">Schließen</button>
     </div>
   </div>
 
   <script>
-    // ==================== DATA ====================
+    // === DATA ===
     let currentUser = null;
-    let products = JSON.parse(localStorage.getItem('products')) || [
-      {id:1, name:"Naruto Figurine", price:39.99, stock:12, desc:"Limited Edition", img:"https://picsum.photos/id/1015/300/300", category:"figure", rating:4.8},
-      {id:2, name:"One Piece Manga Vol.1", price:12.99, stock:45, desc:"Original Edition", img:"https://picsum.photos/id/201/300/300", category:"manga", rating:5},
-    ];
+    let products = JSON.parse(localStorage.getItem('products')) || [];
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
     let orders = JSON.parse(localStorage.getItem('orders')) || [];
     let users = JSON.parse(localStorage.getItem('users')) || [];
 
-    const admins = [{ username: "kiollegend", password: "kiollegend" }, { username: "ZayTox", password: "ZayTox!!!" }];
+    const admins = [
+      { username: "kiollegend", password: "kiollegend" },
+      { username: "ZayTox", password: "ZayTox!!!" }
+    ];
 
-    function isAdmin(u) { return admins.some(a => a.username === u?.username); }
+    function isAdmin(user) {
+      return admins.some(a => a.username === user?.username);
+    }
+
     function saveData() {
       localStorage.setItem('products', JSON.stringify(products));
       localStorage.setItem('cart', JSON.stringify(cart));
-      localStorage.setItem('wishlist', JSON.stringify(wishlist));
       localStorage.setItem('orders', JSON.stringify(orders));
       localStorage.setItem('users', JSON.stringify(users));
     }
 
-    // ==================== AUDIO ====================
+    // === AUDIO ===
     const bgMusic = document.getElementById('bg-music');
-    const clickSound = document.getElementById('click-sound');
     const heartSound = document.getElementById('heart-sound');
     const successSound = document.getElementById('success-sound');
-
-    function playSound(audio) {
-      audio.currentTime = 0;
-      audio.play().catch(() => {});
-    }
 
     function toggleMusic() {
       if (bgMusic.paused) {
@@ -226,121 +158,218 @@
       bgMusic.volume = parseFloat(e.target.value);
     });
 
-    // ==================== SAKURA ====================
+    // === SAKURA ===
     function createSakura() {
       const canvas = document.getElementById('sakura');
       const ctx = canvas.getContext('2d');
-      let w = canvas.width = window.innerWidth;
-      let h = canvas.height = window.innerHeight;
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
       let petals = [];
-
       class Petal {
-        constructor() { this.reset(); }
-        reset() {
-          this.x = Math.random() * w;
-          this.y = Math.random() * h - h;
-          this.size = Math.random() * 16 + 10;
-          this.speed = Math.random() * 3 + 1.5;
-          this.angle = Math.random() * Math.PI * 2;
-          this.swing = Math.random() * 4 + 2;
+        constructor() {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height - canvas.height;
+          this.size = Math.random() * 12 + 8;
+          this.speed = Math.random() * 2 + 1;
+          this.angle = Math.random() * 360;
         }
         update() {
           this.y += this.speed;
-          this.angle += 0.018;
-          this.x += Math.sin(this.angle) * this.swing;
-          if (this.y > h) this.reset();
+          this.angle += 0.02;
+          this.x += Math.sin(this.angle) * 2;
+          if (this.y > canvas.height) this.y = -20;
         }
         draw() {
-          ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255, 182, 193, 0.9)' : 'rgba(255, 240, 245, 0.85)';
+          ctx.fillStyle = 'rgba(255, 182, 193, 0.9)';
           ctx.beginPath();
           ctx.ellipse(this.x, this.y, this.size, this.size * 0.6, this.angle, 0, Math.PI * 2);
           ctx.fill();
         }
       }
-
-      for (let i = 0; i < 120; i++) petals.push(new Petal());
-
+      for (let i = 0; i < 70; i++) petals.push(new Petal());
       function animate() {
-        ctx.clearRect(0, 0, w, h);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         petals.forEach(p => { p.update(); p.draw(); });
         requestAnimationFrame(animate);
       }
       animate();
-
-      window.addEventListener('resize', () => {
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
-      });
     }
 
-    // ==================== THEME ====================
-    function toggleTheme() {
-      const isDark = document.documentElement.classList.toggle('dark');
-      if (isDark) {
-        document.body.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.88), rgba(0,0,0,0.95)), url('https://picsum.photos/id/1015/1920/1080')`;
-        document.getElementById('theme-toggle').innerHTML = '<i class="fas fa-sun"></i>';
-      } else {
-        document.body.style.backgroundImage = `linear-gradient(rgba(255,255,255,0.2), rgba(0,0,0,0.75)), url('https://picsum.photos/id/1016/1920/1080')`;
-        document.getElementById('theme-toggle').innerHTML = '<i class="fas fa-moon"></i>';
-      }
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    }
-
-    // ==================== NAV & RENDER (vereinfacht, aber komplett funktionsfähig) ====================
+    // === NAVIGATION ===
     function navigate(page) {
       document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
       document.getElementById(`page-${page}`).classList.remove('hidden');
       if (page === 'shop') renderProducts();
-      if (page === 'wishlist') renderWishlist();
-      if (page === 'orders') renderOrders();
+      if (page === 'profile') renderProfile();
+      if (page === 'admin') renderAdmin();
     }
 
+    // === RENDER PRODUCTS ===
     function renderProducts() {
       const container = document.getElementById('products');
-      const filtered = products; // Filter-Logik kann hier erweitert werden
-      container.innerHTML = filtered.map(p => `
-        <div class="anime-card glass rounded-3xl overflow-hidden cursor-pointer" onclick="showProductDetail(${p.id})">
-          <img src="${p.img}" class="w-full h-64 object-cover">
+      container.innerHTML = products.map(p => `
+        <div class="anime-card glass rounded-3xl overflow-hidden">
+          <img src="${p.img || 'https://picsum.photos/id/' + (p.id % 900 + 100) + '/300/300'}" class="w-full h-64 object-cover">
           <div class="p-6">
             <h3 class="font-bold text-xl">${p.name}</h3>
             <p class="text-3xl font-bold text-purple-400">${p.price} €</p>
-            <button onclick="addToCart(${p.id});event.stopImmediatePropagation()" class="mt-4 w-full bg-purple-600 py-3 rounded-2xl">In den Warenkorb</button>
+            <p class="text-sm text-gray-400">Noch ${p.stock} verfügbar</p>
+            <button onclick="addToCart(${p.id}); event.stopImmediatePropagation()" class="mt-6 w-full bg-purple-600 hover:bg-purple-700 py-4 rounded-2xl">In den Warenkorb</button>
           </div>
         </div>
       `).join('');
     }
 
-    function showProductDetail(id) {
-      const p = products.find(x => x.id === id);
-      document.getElementById('modal-content').innerHTML = `
-        <img src="${p.img}" class="w-full rounded-2xl mb-6">
-        <h2 class="text-3xl font-bold">${p.name}</h2>
-        <p class="text-4xl text-purple-400">${p.price} €</p>
-        <button onclick="addToCart(${p.id});hideProductModal()" class="mt-6 w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl">🛒 Kaufen</button>
-      `;
-      document.getElementById('product-modal').classList.remove('hidden');
+    function renderProfile() {
+      document.getElementById('profile-name').textContent = currentUser.username;
+      document.getElementById('profile-products').innerHTML = products.map(p => `
+        <div class="glass rounded-3xl p-6">
+          <h3 class="font-bold">${p.name}</h3>
+          <p class="text-purple-400">${p.price} €</p>
+        </div>
+      `).join('') || "<p class='text-gray-400'>Noch keine Produkte.</p>";
     }
 
-    function hideProductModal() { document.getElementById('product-modal').classList.add('hidden'); }
+    function renderAdmin() {
+      document.getElementById('admin-content').innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          ${products.map(p => `
+            <div class="glass p-6 rounded-3xl">
+              <h4>${p.name}</h4>
+              <button onclick="deleteProduct(${p.id})" class="bg-red-600 px-6 py-2 rounded-2xl mt-4">Löschen</button>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
 
-    function addToCart(id) { playSound(successSound); /* Logik */ alert("Im Warenkorb!"); }
+    // === FUNCTIONS ===
+    function addToCart(id) {
+      const product = products.find(p => p.id === id);
+      if (product && product.stock > 0) {
+        const existing = cart.find(item => item.id === id);
+        if (existing) existing.quantity++;
+        else cart.push({...product, quantity: 1});
+        saveData();
+        updateCartCount();
+        playSound(successSound);
+        alert(`${product.name} wurde hinzugefügt!`);
+      }
+    }
 
-    function toggleWishlist(id) { playSound(heartSound); /* Logik */ }
+    function updateCartCount() {
+      document.getElementById('cart-count').textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+    }
 
-    function renderWishlist() { /* ähnlich wie renderProducts */ }
-    function renderOrders() { /* ... */ }
+    function showCart() {
+      if (cart.length === 0) return alert("Warenkorb ist leer");
+      // ... (volle Warenkorb-Logik wie in deiner Originalversion)
+      let html = '';
+      let total = 0;
+      cart.forEach((item, i) => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+        html += `<div class="flex justify-between bg-gray-800 p-4 rounded-2xl"><div>${item.name} (${item.quantity}x)</div><div>${itemTotal.toFixed(2)} €</div></div>`;
+      });
+      document.getElementById('cart-items').innerHTML = html;
+      document.getElementById('cart-total').innerHTML = `Gesamt: <span class="text-purple-400">${total.toFixed(2)} €</span>`;
+      document.getElementById('cart-modal').classList.remove('hidden');
+    }
 
-    function login() { /* einfache Logik wie vorher */ navigate('shop'); }
-    function register() { /* ... */ navigate('shop'); }
-    function logout() { location.reload(); }
+    function hideCart() {
+      document.getElementById('cart-modal').classList.add('hidden');
+    }
+
+    function playSound(audio) {
+      audio.currentTime = 0;
+      audio.play().catch(() => {});
+    }
+
+    function addProduct() {
+      if (!isAdmin(currentUser)) return alert("Nur Admins dürfen Produkte einstellen!");
+      const name = document.getElementById('new-name').value;
+      const price = parseFloat(document.getElementById('new-price').value);
+      const stock = parseInt(document.getElementById('new-stock').value) || 10;
+      const desc = document.getElementById('new-desc').value;
+      const img = document.getElementById('new-img').value;
+
+      if (name && price) {
+        products.push({ id: Date.now(), name, price, stock, desc: desc || "Anime Produkt", img });
+        saveData();
+        alert("Produkt erfolgreich hochgeladen!");
+        navigate('shop');
+      }
+    }
+
+    function deleteProduct(id) {
+      if (confirm("Wirklich löschen?")) {
+        products = products.filter(p => p.id !== id);
+        saveData();
+        renderProducts();
+        renderAdmin();
+      }
+    }
+
+    function login() {
+      const user = document.getElementById('login-user').value.trim();
+      const pass = document.getElementById('login-pass').value;
+      const admin = admins.find(a => a.username === user && a.password === pass);
+      if (admin) {
+        currentUser = admin;
+        document.getElementById('sellBtn').classList.remove('hidden');
+        document.getElementById('adminBtn').classList.remove('hidden');
+      } else if (user && pass) {
+        currentUser = { username: user };
+        users.push({ username: user, date: new Date().toLocaleDateString() });
+        saveData();
+      } else return alert("Falsche Daten");
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      navigate('shop');
+    }
+
+    function register() {
+      const user = document.getElementById('reg-user').value.trim();
+      const pass = document.getElementById('reg-pass').value;
+      if (user.length < 3 || pass.length < 6) return alert("Username oder Passwort zu kurz!");
+      currentUser = { username: user };
+      users.push({ username: user, date: new Date().toLocaleDateString() });
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      saveData();
+      alert("Registrierung erfolgreich!");
+      navigate('shop');
+    }
+
+    function switchAuthTab(n) {
+      document.getElementById('login-form').classList.toggle('hidden', n !== 0);
+      document.getElementById('register-form').classList.toggle('hidden', n !== 1);
+    }
+
+    function toggleTheme() {
+      document.documentElement.classList.toggle('dark');
+      const icon = document.getElementById('theme-icon');
+      icon.classList.toggle('fa-moon');
+      icon.classList.toggle('fa-sun');
+    }
+
+    function logout() {
+      if (confirm("Ausloggen?")) location.reload();
+    }
 
     // Init
     window.onload = () => {
       createSakura();
-      bgMusic.volume = 0.35;
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme === 'light') toggleTheme();
-      navigate('login');
+      const savedUser = localStorage.getItem('currentUser');
+      if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        if (isAdmin(currentUser)) {
+          document.getElementById('sellBtn').classList.remove('hidden');
+          document.getElementById('adminBtn').classList.remove('hidden');
+        }
+        navigate('shop');
+      } else {
+        navigate('login');
+      }
+      updateCartCount();
     };
   </script>
 </body>
