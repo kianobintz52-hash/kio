@@ -27,7 +27,7 @@
       </div>
       <div class="flex gap-8 items-center text-lg">
         <button onclick="navigate('shop')" class="hover:text-purple-400">Shop</button>
-        <button onclick="navigate('sell')" id="sellBtn" class="hover:text-purple-400">Verkaufen</button>
+        <button onclick="navigate('sell')" class="hover:text-purple-400">Verkaufen</button>
         <button onclick="navigate('profile')" class="hover:text-purple-400">Profil</button>
         <button onclick="navigate('admin')" id="adminBtn" class="hover:text-purple-400 hidden">👑 Owner</button>
         <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-6 py-2.5 rounded-2xl">Logout</button>
@@ -35,7 +35,7 @@
     </div>
   </nav>
 
-  <!-- Login / Register bleibt unverändert -->
+  <!-- Login / Register -->
   <div id="page-login" class="page max-w-md mx-auto mt-24 p-12 glass rounded-3xl">
     <h2 class="text-5xl font-bold text-center neon-purple mb-10">ANIME VAULT</h2>
     <div class="flex gap-4 bg-gray-900 rounded-3xl p-1 mb-8">
@@ -67,10 +67,7 @@
       <input id="new-name" placeholder="Produktname" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
       <input id="new-price" type="number" step="0.01" placeholder="Preis €" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
       <input id="new-stock" type="number" value="10" placeholder="Menge" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
-      
-      <!-- Neues Discord Feld -->
       <input id="new-discord" placeholder="Dein Discord Username (z.B. Kiano#1234)" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
-      
       <textarea id="new-desc" placeholder="Beschreibung" class="w-full h-32 bg-gray-800 border border-purple-500 rounded-3xl px-6 py-5"></textarea>
       <button onclick="addProduct()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-6 rounded-3xl text-xl font-bold">Produkt hochladen</button>
     </div>
@@ -82,7 +79,7 @@
     <div id="profile-products" class="glass p-8 rounded-3xl"></div>
   </div>
 
-  <!-- Owner Panel -->
+  <!-- Admin Panel -->
   <div id="page-admin" class="page hidden max-w-7xl mx-auto p-8">
     <h2 class="text-5xl font-bold neon-purple mb-10">👑 Owner Panel</h2>
     <div class="glass p-8 rounded-3xl">
@@ -90,13 +87,14 @@
     </div>
   </div>
 
-  <!-- Warenkorb (unverändert) -->
-  <button onclick="showCart()" class="fixed bottom-10 right-10 bg-gradient-to-r from-purple-600 to-pink-600 w-20 h-20 rounded-full flex items-center justify-center text-4xl shadow-2xl hover:scale-110">
+  <!-- Warenkorb Button -->
+  <button onclick="showCart()" class="fixed bottom-10 right-10 bg-gradient-to-r from-purple-600 to-pink-600 w-20 h-20 rounded-full flex items-center justify-center text-4xl shadow-2xl hover:scale-110 transition-transform">
     🛒 <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-xs w-6 h-6 rounded-full flex items-center justify-center">0</span>
   </button>
 
+  <!-- Warenkorb Modal -->
   <div id="cart-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
-    <div class="glass rounded-3xl p-8 max-w-lg w-full">
+    <div class="glass rounded-3xl p-8 max-w-lg w-full max-h-[90vh] overflow-auto">
       <h3 class="text-3xl font-bold mb-6">Warenkorb</h3>
       <div id="cart-items" class="space-y-4"></div>
       <div id="cart-total" class="text-3xl font-bold mt-8 mb-8"></div>
@@ -109,7 +107,7 @@
   </div>
 
   <script>
-    const firebaseConfig = { /* dein Config bleibt gleich */ 
+    const firebaseConfig = {
       apiKey: "AIzaSyAbz1N77hZDksKP9-yZdiW4GR8JtIcHvbQ",
       authDomain: "anime-vault-e439b.firebaseapp.com",
       databaseURL: "https://anime-vault-e439b-default-rtdb.europe-west1.firebasedatabase.app",
@@ -118,7 +116,7 @@
       messagingSenderId: "406742408925",
       appId: "1:406742408925:web:ba161f393b7e3503164534"
     };
-    
+
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     let currentUser = null;
@@ -132,6 +130,7 @@
     function navigate(page) {
       document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
       document.getElementById(`page-${page}`).classList.remove('hidden');
+      
       if (page === 'shop') loadProducts();
       if (page === 'profile') renderProfile();
       if (page === 'admin' && isAdmin(currentUser)) loadAdminPanel();
@@ -144,60 +143,110 @@
         Object.keys(data).forEach(key => {
           const p = data[key];
           html += `
-            <div class="anime-card glass rounded-3xl overflow-hidden">
+            <div class="glass rounded-3xl overflow-hidden">
               <img src="${p.img || 'https://picsum.photos/300/300'}" class="w-full h-64 object-cover">
               <div class="p-6">
                 <h3 class="font-bold text-xl">${p.name}</h3>
                 <p class="text-3xl font-bold text-purple-400">${p.price} €</p>
                 <p class="text-sm text-gray-400">Von: ${p.seller} • ${p.stock} verfügbar</p>
-                ${p.discord ? `<p class="text-sm text-pink-400">Discord: ${p.discord}</p>` : ''}
-                <button onclick="addToCart('${key}')" class="mt-6 w-full bg-purple-600 py-4 rounded-2xl">In den Warenkorb</button>
+                ${p.discord ? `<p class="text-pink-400 mt-1">💬 ${p.discord}</p>` : ''}
+                <button onclick="addToCart('${key}')" class="mt-6 w-full bg-purple-600 hover:bg-purple-700 py-4 rounded-2xl transition">In den Warenkorb</button>
               </div>
             </div>`;
         });
-        document.getElementById('products').innerHTML = html || "<p class='text-center text-gray-400'>Noch keine Produkte vorhanden.</p>";
+        document.getElementById('products').innerHTML = html || "<p class='text-center text-gray-400 text-xl py-12'>Noch keine Produkte vorhanden.</p>";
       });
     }
 
     function addProduct() {
       if (!currentUser) return alert("Bitte einloggen!");
-      
       const product = {
         name: document.getElementById('new-name').value.trim(),
         price: parseFloat(document.getElementById('new-price').value),
         stock: parseInt(document.getElementById('new-stock').value) || 10,
         discord: document.getElementById('new-discord').value.trim(),
-        desc: document.getElementById('new-desc').value,
+        desc: document.getElementById('new-desc').value.trim(),
         seller: currentUser.username,
         timestamp: Date.now()
       };
 
-      if (!product.name || !product.price) return alert("Name und Preis ausfüllen!");
-      if (!product.discord) return alert("Bitte deinen Discord Username angeben!");
+      if (!product.name || !product.price || !product.discord) {
+        return alert("Name, Preis und Discord Username sind Pflichtfelder!");
+      }
 
       db.ref('products').push(product).then(() => {
-        alert("✅ Produkt hochgeladen!");
+        alert("✅ Produkt erfolgreich hochgeladen!");
         document.getElementById('new-name').value = '';
         document.getElementById('new-price').value = '';
+        document.getElementById('new-stock').value = '10';
         document.getElementById('new-discord').value = '';
         document.getElementById('new-desc').value = '';
         navigate('shop');
       });
     }
 
-    // === LÖSCHEN ===
+    function addToCart(id) {
+      db.ref('products/' + id).once('value', (snap) => {
+        const prod = snap.val();
+        if (!prod || prod.stock <= 0) return alert("Produkt nicht verfügbar");
+        
+        const existing = cart.find(item => item.id === id);
+        if (existing) {
+          existing.quantity++;
+        } else {
+          cart.push({...prod, id, quantity: 1});
+        }
+        updateCartCount();
+        alert(`${prod.name} wurde zum Warenkorb hinzugefügt!`);
+      });
+    }
+
+    function updateCartCount() {
+      const count = cart.reduce((a, b) => a + b.quantity, 0);
+      document.getElementById('cart-count').textContent = count;
+    }
+
+    function showCart() {
+      if (cart.length === 0) return alert("Dein Warenkorb ist leer!");
+      
+      let html = '';
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+        html += `
+          <div class="flex justify-between items-center bg-gray-800 p-4 rounded-2xl">
+            <div>
+              <div class="font-semibold">${item.name}</div>
+              <div class="text-sm text-gray-400">${item.quantity}x ${item.price} €</div>
+            </div>
+            <div class="text-right">
+              <div class="font-bold text-purple-400">${itemTotal.toFixed(2)} €</div>
+            </div>
+          </div>`;
+      });
+
+      document.getElementById('cart-items').innerHTML = html;
+      document.getElementById('cart-total').innerHTML = `Gesamt: <span class="text-purple-400">${total.toFixed(2)} €</span>`;
+      document.getElementById('cart-modal').classList.remove('hidden');
+    }
+
+    function hideCart() {
+      document.getElementById('cart-modal').classList.add('hidden');
+    }
+
     function deleteProduct(productId, seller) {
       if (!currentUser) return;
-      
       if (seller !== currentUser.username && !isAdmin(currentUser)) {
-        return alert("Du darfst nur deine eigenen Produkte löschen!");
+        return alert("Du kannst nur deine eigenen Produkte löschen!");
       }
-
       if (confirm("Produkt wirklich löschen?")) {
         db.ref('products/' + productId).remove().then(() => {
-          alert("Produkt gelöscht");
-          if (document.getElementById('page-profile').classList.contains('hidden') === false) renderProfile();
-          if (document.getElementById('page-admin').classList.contains('hidden') === false) loadAdminPanel();
+          alert("Produkt gelöscht!");
+          loadProducts();
+          if (!document.getElementById('page-profile').classList.contains('hidden')) renderProfile();
+          if (!document.getElementById('page-admin').classList.contains('hidden')) loadAdminPanel();
         });
       }
     }
@@ -207,8 +256,8 @@
       db.ref('products').once('value', (snapshot) => {
         const data = snapshot.val() || {};
         let html = '<h3 class="text-2xl mb-6">Deine Produkte</h3>';
-        
         let hasProducts = false;
+
         Object.keys(data).forEach(key => {
           const p = data[key];
           if (p.seller === currentUser.username) {
@@ -220,45 +269,55 @@
                   <p class="text-purple-400">${p.price} € • ${p.stock} Stück</p>
                   ${p.discord ? `<p class="text-pink-400">Discord: ${p.discord}</p>` : ''}
                 </div>
-                <button onclick="deleteProduct('${key}', '${p.seller}')" class="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-2xl">
-                  Löschen
-                </button>
+                <button onclick="deleteProduct('${key}', '${p.seller}')" class="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-2xl">Löschen</button>
               </div>`;
           }
         });
 
-        if (!hasProducts) html += '<p class="text-gray-400">Du hast noch keine Produkte.</p>';
+        if (!hasProducts) html += '<p class="text-gray-400">Du hast noch keine Produkte eingestellt.</p>';
         document.getElementById('profile-products').innerHTML = html;
       });
     }
 
     function loadAdminPanel() {
       let html = `<h3 class="text-3xl mb-8">👑 Owner Panel - ${currentUser.username}</h3>`;
-      
-      db.ref('products').once('value', (snap) => {
-        const products = snap.val() || {};
-        html += `<p class="mb-6 text-xl">Alle Produkte: ${Object.keys(products).length}</p>`;
 
-        Object.keys(products).forEach(key => {
-          const p = products[key];
+      // Registrierte User
+      db.ref('users').once('value', (userSnap) => {
+        const users = userSnap.val() || {};
+        html += `<h4 class="text-2xl mb-4 mt-8">Registrierte User (${Object.keys(users).length})</h4>`;
+        
+        Object.keys(users).forEach(username => {
+          const regDate = new Date(users[username].registered).toLocaleDateString('de-DE');
           html += `
-            <div class="glass p-5 rounded-2xl mb-3 flex justify-between items-center">
-              <div>
-                <strong>${p.name}</strong> - ${p.price}€ von ${p.seller}
-                ${p.discord ? `<br><span class="text-pink-400">DC: ${p.discord}</span>` : ''}
-              </div>
-              <button onclick="deleteProduct('${key}', '${p.seller}')" class="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-2xl text-sm">
-                Löschen
-              </button>
+            <div class="glass p-4 rounded-2xl mb-3 flex justify-between items-center">
+              <span class="font-medium">${username}</span>
+              <span class="text-sm text-gray-400">Registriert: ${regDate}</span>
             </div>`;
         });
 
-        document.getElementById('admin-content').innerHTML = html;
+        // Produkte
+        db.ref('products').once('value', (prodSnap) => {
+          const products = prodSnap.val() || {};
+          html += `<h4 class="text-2xl mb-4 mt-10">Alle Produkte (${Object.keys(products).length})</h4>`;
+
+          Object.keys(products).forEach(key => {
+            const p = products[key];
+            html += `
+              <div class="glass p-5 rounded-2xl mb-3 flex justify-between items-center">
+                <div>
+                  <strong>${p.name}</strong> — ${p.price}€ 
+                  <span class="text-gray-400">von ${p.seller}</span>
+                  ${p.discord ? `<br><span class="text-pink-400">DC: ${p.discord}</span>` : ''}
+                </div>
+                <button onclick="deleteProduct('${key}', '${p.seller}')" class="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-2xl text-sm">Löschen</button>
+              </div>`;
+          });
+
+          document.getElementById('admin-content').innerHTML = html;
+        });
       });
     }
-
-    // Rest der Funktionen (login, register, cart usw.) bleiben gleich
-    // ... (kopiere den Rest aus deinem Originalcode)
 
     function login() {
       const username = document.getElementById('login-user').value.trim();
