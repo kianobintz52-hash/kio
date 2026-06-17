@@ -12,85 +12,115 @@
     <style>
         body { background: #0a0a0a; color: #e5e5e5; font-family: system-ui, sans-serif; }
         .sidebar { background: #111113; }
-        .card { background: #1a1a1e; border: 1px solid #3b0764; }
-        .purple-accent { color: #c026d3; }
+        .card { background: #1a1a1e; border: 1px solid #22d3ee; }
+        .accent { color: #22d3ee; }
+        .accent-bg { background: #22d3ee; }
+        .accent-border { border-color: #22d3ee; }
     </style>
 </head>
 <body class="flex min-h-screen">
 
     <!-- SIDEBAR -->
-    <div class="w-72 sidebar h-screen fixed p-6">
+    <div class="w-72 sidebar h-screen fixed p-6 overflow-y-auto">
         <div class="flex items-center gap-3 mb-10">
             <span class="text-4xl">🔫</span>
-            <span class="text-3xl font-bold tracking-tighter">kiobio.lol</span>
+            <span class="text-3xl font-bold tracking-tighter text-white">kiobio.lol</span>
         </div>
 
-        <div class="space-y-8">
-            <div class="text-purple-400 font-semibold flex items-center gap-3">
-                <span>👤</span> Konto
+        <nav class="space-y-1">
+            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl bg-sky-900/30 text-sky-400 font-semibold">
+                👤 Übersicht
+            </a>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800 transition">📊 Statistiken</a>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800 transition">🏆 Badges</a>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800 transition">✏️ Anpassen</a>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800 transition">🔗 Links</a>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800 transition">🖼️ Image Host</a>
+        </nav>
+
+        <div class="mt-12">
+            <div onclick="goToProfile()" class="bg-sky-600 hover:bg-sky-500 text-center py-4 rounded-2xl font-semibold cursor-pointer transition">
+                Meine Seite ansehen
             </div>
-            
-            <nav class="space-y-2 text-zinc-400">
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl bg-purple-900/30 text-white">Übersicht</a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800">Statistiken</a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800">Badges</a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800">Anpassen</a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800">Links</a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800">Image Host</a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800">Premium</a>
-            </nav>
         </div>
     </div>
 
     <!-- MAIN CONTENT -->
     <div class="flex-1 ml-72 p-10">
-        <h1 class="text-4xl font-bold mb-8">Kontoübersicht</h1>
+        <div class="flex justify-between items-center mb-10">
+            <h1 class="text-4xl font-bold">Kontoübersicht</h1>
+            <div class="text-sm text-zinc-400">Willkommen zurück</div>
+        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div class="card rounded-3xl p-6">
                 <div class="text-sm text-zinc-400">Benutzername</div>
-                <div class="text-2xl font-bold mt-2" id="username">deinname</div>
+                <div id="username" class="text-2xl font-bold mt-3 accent">@deinname</div>
             </div>
             <div class="card rounded-3xl p-6">
                 <div class="text-sm text-zinc-400">Profilaufrufe</div>
-                <div class="text-2xl font-bold mt-2 purple-accent" id="views">0</div>
+                <div id="views" class="text-3xl font-bold mt-3 accent">1.337</div>
             </div>
             <div class="card rounded-3xl p-6">
-                <div class="text-sm text-zinc-400">UID</div>
-                <div class="text-2xl font-bold mt-2" id="uid">123456</div>
+                <div class="text-sm text-zinc-400">Badges</div>
+                <div id="badgesCount" class="text-3xl font-bold mt-3 accent">4</div>
             </div>
             <div class="card rounded-3xl p-6">
-                <div class="text-sm text-zinc-400">Erstellt</div>
-                <div class="text-2xl font-bold mt-2" id="joined">vor 2 Tagen</div>
+                <div class="text-sm text-zinc-400">Mitglied seit</div>
+                <div class="text-3xl font-bold mt-3">12 Tage</div>
             </div>
         </div>
 
-        <!-- Weitere Abschnitte wie bei guns.lol -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div class="card rounded-3xl p-8">
-                <h2 class="text-xl font-semibold mb-6">Profil-Vervollständigung</h2>
-                <div class="bg-yellow-900/30 border border-yellow-600 rounded-2xl p-6">
-                    <p class="text-yellow-400">Dein Profil ist noch nicht vollständig!</p>
+        <!-- Badges -->
+        <div class="mt-12">
+            <h2 class="text-xl font-semibold mb-6">Deine Badges</h2>
+            <div class="flex gap-4 flex-wrap">
+                <div class="bg-zinc-900 border border-sky-500 rounded-2xl px-6 py-3 flex items-center gap-3">
+                    👑 <span class="font-semibold">Owner</span>
+                </div>
+                <div class="bg-zinc-900 border border-amber-500 rounded-2xl px-6 py-3 flex items-center gap-3">
+                    ⭐ <span class="font-semibold">VIP</span>
+                </div>
+                <div class="bg-zinc-900 border border-purple-500 rounded-2xl px-6 py-3 flex items-center gap-3">
+                    🔥 <span class="font-semibold">Legend</span>
+                </div>
+                <div class="bg-zinc-900 border border-emerald-500 rounded-2xl px-6 py-3 flex items-center gap-3">
+                    ⚡ <span class="font-semibold">Premium</span>
                 </div>
             </div>
+        </div>
 
-            <div class="card rounded-3xl p-8">
-                <h2 class="text-xl font-semibold mb-6">Schnellaktionen</h2>
-                <button onclick="openProfileEditor()" class="w-full bg-purple-600 hover:bg-purple-700 py-4 rounded-2xl mb-4">Profil bearbeiten</button>
-                <button onclick="goToProfile()" class="w-full border border-purple-500 py-4 rounded-2xl">Meine Seite ansehen</button>
+        <!-- Quick Actions -->
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div onclick="openProfileEditor()" class="card rounded-3xl p-8 hover:border-sky-400 cursor-pointer transition">
+                <h3 class="text-2xl font-semibold mb-3">Profil anpassen</h3>
+                <p class="text-zinc-400">Banner, Musik, Bio & mehr ändern</p>
+            </div>
+            <div onclick="goToProfile()" class="card rounded-3xl p-8 hover:border-sky-400 cursor-pointer transition">
+                <h3 class="text-2xl font-semibold mb-3">Öffentliches Profil</h3>
+                <p class="text-zinc-400">Deine Seite anschauen</p>
             </div>
         </div>
     </div>
 
     <script>
-        // Firebase (kurz)
-        const firebaseConfig = { /* deine Config */ };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+        // Firebase (falls du Daten laden willst)
+        // const firebaseConfig = { ... };
+        // ...
 
-        // Dummy Daten für jetzt
-        document.getElementById('username').textContent = "deinname";
-        document.getElementById('views').textContent = "1337";
+        function goToProfile() {
+            window.open('profile.html', '_blank');
+        }
+
+        function openProfileEditor() {
+            window.open('editor.html', '_blank');
+        }
+
+        // Dummy Daten
+        window.onload = () => {
+            document.getElementById('username').textContent = "@deinname";
+        };
     </script>
 </body>
 </html>
