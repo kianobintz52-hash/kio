@@ -6,108 +6,74 @@
   <title>kiobio.lol</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      color: white;
-      overflow: hidden;
-    }
+    body { font-family: system-ui; color: white; overflow: hidden; }
     video#bgVideo {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       object-fit: cover;
       z-index: -1;
       opacity: 0.85;
-      filter: brightness(0.85) contrast(1.05);
     }
-    .glow-purple {
-      text-shadow: 0 0 35px #c026d3, 0 0 70px #7e22ce;
-    }
-    .nav {
-      background: rgba(15, 10, 35, 0.95);
-      backdrop-filter: blur(16px);
-    }
+    .glow-purple { text-shadow: 0 0 35px #c026d3, 0 0 70px #7e22ce; }
   </style>
 </head>
 <body>
 
-  <!-- DEIN VIDEO MIT SOUND -->
-  <video id="bgVideo" autoplay loop playsinline>
+  <!-- Video -->
+  <video id="bgVideo" loop playsinline>
     <source src="https://files.catbox.moe/41vjqo.mp4" type="video/mp4">
   </video>
 
-  <!-- Sound Control Button -->
-  <button onclick="toggleSound()" 
-          class="fixed bottom-6 right-6 z-50 bg-black/70 hover:bg-black text-white px-5 py-3 rounded-2xl flex items-center gap-2 text-sm">
-    <span id="soundIcon">🔊</span>
-    <span id="soundText">Sound an</span>
+  <!-- Sound Button (groß und deutlich) -->
+  <button onclick="toggleVideo()" 
+          class="fixed bottom-8 right-8 z-50 bg-purple-600 hover:bg-purple-700 px-6 py-4 rounded-2xl text-lg font-bold flex items-center gap-3 shadow-2xl">
+    <span id="soundBtn">▶️ Video + Sound starten</span>
   </button>
 
-  <!-- NAV BAR -->
-  <nav class="nav fixed top-0 w-full z-50 border-b border-purple-500/30">
-    <div class="max-w-screen-2xl mx-auto px-8 py-5 flex items-center justify-between">
+  <!-- Rest der Seite -->
+  <nav class="fixed top-0 w-full z-50 bg-[#0f0a23]/95 backdrop-blur-md border-b border-purple-500/30">
+    <div class="max-w-screen-2xl mx-auto px-8 py-5 flex justify-between">
       <div class="flex items-center gap-3">
         <span class="text-4xl">🔫</span>
-        <span class="text-3xl font-bold tracking-tighter">kiobio.lol</span>
+        <span class="text-3xl font-bold">kiobio.lol</span>
       </div>
-      
-      <div class="hidden md:flex items-center gap-10 text-lg">
-        <a href="#" class="hover:text-purple-400 transition">Hilfecenter</a>
-        <a href="#" class="hover:text-purple-400 transition">Discord</a>
-        <a href="#" class="hover:text-purple-400 transition">Bestenliste</a>
-        <a href="#" class="hover:text-purple-400 transition">Preise</a>
-      </div>
-
-      <button onclick="showAuthModal('login')" 
-              class="bg-purple-600 hover:bg-purple-700 px-8 py-3.5 rounded-2xl font-semibold transition">
-        Dashboard
-      </button>
+      <button onclick="showAuthModal()" class="bg-purple-600 px-8 py-3 rounded-2xl">Dashboard</button>
     </div>
   </nav>
 
-  <!-- HERO -->
-  <section class="min-h-screen flex items-center justify-center text-center pt-20 relative">
-    <div class="max-w-4xl px-6 z-10">
-      <h1 class="text-6xl md:text-7xl font-bold leading-tight glow-purple mb-8">
-        Alles, was du willst,<br>genau hier.
-      </h1>
-      <p class="text-xl md:text-2xl text-purple-200 mb-12 max-w-2xl mx-auto">
-        kiobio.lol ist deine Anlaufstelle für moderne, funktionsreiche Link-in-Bio-Seiten 
-        und schnelles, sicheres Datei-Hosting.
-      </p>
-
-      <div class="flex flex-col sm:flex-row gap-5 justify-center">
-        <button onclick="showAuthModal('register')" 
-                class="bg-purple-600 hover:bg-purple-700 px-12 py-6 rounded-3xl text-2xl font-semibold transition">
-          Kostenlos registrieren
-        </button>
-      </div>
+  <section class="min-h-screen flex items-center justify-center text-center pt-20">
+    <div class="max-w-4xl px-6">
+      <h1 class="text-6xl md:text-7xl font-bold glow-purple mb-8">Alles, was du willst,<br>genau hier.</h1>
+      <button onclick="showAuthModal()" class="bg-purple-600 hover:bg-purple-700 px-12 py-6 rounded-3xl text-2xl mt-8">
+        Kostenlos registrieren
+      </button>
     </div>
   </section>
 
   <script>
     const video = document.getElementById('bgVideo');
-    let isMuted = false;
 
-    function toggleSound() {
-      isMuted = !isMuted;
-      video.muted = isMuted;
-      
-      document.getElementById('soundIcon').textContent = isMuted ? '🔇' : '🔊';
-      document.getElementById('soundText').textContent = isMuted ? 'Sound aus' : 'Sound an';
-    }
-
-    function showAuthModal(type) {
-      const name = prompt("Gib deinen Username ein:", "demo");
-      if (name) {
-        alert(`✅ Profil "${name}.kiobio.lol" erfolgreich erstellt!\n\nSound-Video läuft weiter.`);
+    function toggleVideo() {
+      if (video.paused) {
+        video.muted = false;     // Sound aktivieren
+        video.play();
+        document.getElementById('soundBtn').innerHTML = '🔊 Sound läuft';
+      } else {
+        video.muted = true;
+        document.getElementById('soundBtn').innerHTML = '▶️ Sound wieder an';
       }
     }
 
-    // Video automatisch starten
-    video.play().catch(() => {});
+    function showAuthModal() {
+      const name = prompt("Username für dein Profil:", "demo");
+      if (name) alert(`✅ ${name}.kiobio.lol wurde erstellt!`);
+    }
+
+    // Versuch automatisch zu starten (ohne Sound)
+    video.play().catch(() => {
+      console.log("Autoplay blockiert - Button benutzen");
+    });
   </script>
 </body>
 </html>
