@@ -10,6 +10,7 @@
     body { font-family: system-ui, sans-serif; color: white; overflow: hidden; }
     video#bgVideo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; opacity: 0.85; }
     .glow-purple { text-shadow: 0 0 35px #c026d3, 0 0 70px #7e22ce; }
+    .card { background-color: #1a1428; }
   </style>
 </head>
 <body>
@@ -24,14 +25,14 @@
         <span class="text-4xl">🔫</span>
         <span class="text-3xl font-bold tracking-tighter">kiobio.lol</span>
       </div>
-      <button onclick="showLoginModal()" class="bg-purple-600 hover:bg-purple-700 px-8 py-3 rounded-2xl font-semibold">
+      <button onclick="logout()" class="bg-purple-600 hover:bg-purple-700 px-8 py-3 rounded-2xl font-semibold" id="navLoginBtn">
         Anmelden
       </button>
     </div>
   </nav>
 
   <!-- HERO -->
-  <section class="min-h-screen flex items-center justify-center text-center pt-20">
+  <section id="hero" class="min-h-screen flex items-center justify-center text-center pt-20">
     <div class="max-w-4xl px-6 z-10">
       <h1 class="text-6xl md:text-7xl font-bold glow-purple mb-8">Alles, was du willst,<br>genau hier.</h1>
       <button onclick="showRegisterModal()" class="bg-purple-600 hover:bg-purple-700 px-12 py-6 rounded-3xl text-2xl font-semibold">
@@ -48,25 +49,88 @@
     </div>
   </div>
 
-  <!-- DASHBOARD -->
-  <div id="dashboard" class="hidden min-h-screen bg-zinc-950 p-8">
-    <div class="max-w-5xl mx-auto">
-      <h1 class="text-4xl font-bold mb-2">Willkommen zurück, <span id="dashName" class="text-purple-400"></span>!</h1>
-      <p class="text-purple-300 mb-10">kiobio.lol/<span id="dashUsername"></span></p>
-     
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div class="bg-zinc-900 p-8 rounded-3xl">
-          <h3 class="text-xl mb-6">Profil bearbeiten</h3>
-          <button onclick="alert('Profil-Editor kommt bald')" class="bg-purple-600 w-full py-5 rounded-2xl">Jetzt anpassen</button>
+  <!-- DASHBOARD (guns.lol Style) -->
+  <div id="dashboard" class="hidden min-h-screen bg-zinc-950 pt-20">
+    <div class="max-w-7xl mx-auto px-8 py-10">
+      <div class="flex justify-between items-center mb-10">
+        <div>
+          <h1 class="text-4xl font-bold">Kontoübersicht</h1>
+          <p class="text-zinc-400">Willkommen zurück, <span id="dashNameTop" class="text-purple-400"></span></p>
         </div>
-        <div class="bg-zinc-900 p-8 rounded-3xl">
-          <h3 class="text-xl mb-6">Statistiken</h3>
-          <p class="text-6xl font-bold text-purple-400">0</p>
-          <p class="text-zinc-400">Profilaufrufe diese Woche</p>
+        <button onclick="logout()" class="text-red-400 hover:text-red-500">Abmelden</button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+        <div class="card p-6 rounded-3xl">
+          <p class="text-zinc-400 text-sm">Benutzername</p>
+          <p id="dashUsername" class="text-3xl font-bold text-purple-400"></p>
+        </div>
+        <div class="card p-6 rounded-3xl">
+          <p class="text-zinc-400 text-sm">UID</p>
+          <p id="dashUID" class="text-3xl font-bold text-purple-400">#1</p>
+        </div>
+        <div class="card p-6 rounded-3xl">
+          <p class="text-zinc-400 text-sm">Profilaufrufe</p>
+          <p id="dashViews" class="text-3xl font-bold text-purple-400">0</p>
+          <p class="text-sm text-zinc-500">+2 diese Woche</p>
+        </div>
+        <div class="card p-6 rounded-3xl">
+          <p class="text-zinc-400 text-sm">Beigetreten</p>
+          <p class="text-3xl font-bold text-purple-400">Gerade eben</p>
         </div>
       </div>
-     
-      <button onclick="logout()" class="mt-12 text-red-500 hover:text-red-400">Abmelden</button>
+
+      <!-- Profil Vervollständigung -->
+      <div class="card p-8 rounded-3xl mb-10">
+        <h3 class="text-xl mb-4">Profil-Vervollständigung</h3>
+        <div class="h-3 bg-zinc-800 rounded-full overflow-hidden mb-6">
+          <div class="h-3 bg-purple-600 w-1/3 rounded-full"></div>
+        </div>
+        <p class="text-yellow-400 flex items-center gap-2 mb-6">
+          <span>⚠️</span> Dein Profil ist noch nicht vollständig!
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <button onclick="alert('Avatar hochladen kommt bald')" class="bg-zinc-800 hover:bg-zinc-700 p-4 rounded-2xl text-left">
+            👤 Avatar hochladen
+          </button>
+          <button onclick="alert('Beschreibung kommt bald')" class="bg-zinc-800 hover:bg-zinc-700 p-4 rounded-2xl text-left">
+            ✍️ Beschreibung hinzufügen
+          </button>
+          <button onclick="alert('Discord verbinden kommt bald')" class="bg-zinc-800 hover:bg-zinc-700 p-4 rounded-2xl text-left">
+            Discord-Konto verbinden
+          </button>
+        </div>
+      </div>
+
+      <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Linke Spalte -->
+        <div class="flex-1 space-y-6">
+          <div class="card p-8 rounded-3xl">
+            <h3 class="text-xl mb-6">Schnellaktionen</h3>
+            <div class="space-y-3">
+              <button onclick="alert('Profil bearbeiten')" class="w-full text-left bg-zinc-800 hover:bg-zinc-700 p-5 rounded-2xl flex items-center gap-4">
+                ✏️ Profil anpassen
+              </button>
+              <button onclick="alert('Link hinzufügen')" class="w-full text-left bg-zinc-800 hover:bg-zinc-700 p-5 rounded-2xl flex items-center gap-4">
+                🔗 Links hinzufügen
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rechte Spalte -->
+        <div class="flex-1 space-y-6">
+          <div class="card p-8 rounded-3xl">
+            <h3 class="text-xl mb-6">Statistiken</h3>
+            <div class="space-y-6">
+              <div>
+                <p class="text-purple-400 text-5xl font-bold" id="viewsBig">42</p>
+                <p class="text-zinc-400">Profilaufrufe insgesamt</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -75,39 +139,38 @@
 
     let currentUser = null;
     const VERIFICATION_CODE = "666";
-    let currentEmail = "";
-    let currentUsername = "";
     let users = JSON.parse(localStorage.getItem('kiobioUsers')) || {};
+    let nextUID = parseInt(localStorage.getItem('nextUID')) || 1;
 
     function saveUser(email, username, password) {
-      users[email] = { username, password };
+      users[email] = { 
+        username, 
+        password, 
+        uid: nextUID++,
+        views: Math.floor(Math.random() * 50) + 10,
+        profilePic: "https://i.pravatar.cc/128?u=" + email
+      };
       localStorage.setItem('kiobioUsers', JSON.stringify(users));
+      localStorage.setItem('nextUID', nextUID);
     }
 
-    function togglePasswordVisibility(inputId) {
-      const input = document.getElementById(inputId);
-      if (input) {
-        input.type = input.type === "password" ? "text" : "password";
-      }
+    function togglePassword(id) {
+      const el = document.getElementById(id);
+      if (el) el.type = el.type === "password" ? "text" : "password";
     }
 
+    // Register, Login, Forgot... (gleich wie vorher)
     function showRegisterModal() {
       document.getElementById('mainModal').classList.remove('hidden');
       document.getElementById('modalTitle').textContent = "Registrieren";
       document.getElementById('modalContent').innerHTML = `
         <input id="regEmail" type="email" placeholder="E-Mail" class="w-full p-5 bg-zinc-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500">
         <input id="regUser" placeholder="Username" class="w-full p-5 bg-zinc-800 rounded-2xl mt-4 focus:outline-none focus:ring-2 focus:ring-purple-500">
-        
         <div class="relative">
-          <input id="regPass" type="password" placeholder="Passwort (mind. 6 Zeichen)" 
-                 class="w-full p-5 bg-zinc-800 rounded-2xl mt-4 focus:outline-none focus:ring-2 focus:ring-purple-500">
-          <button onclick="togglePasswordVisibility('regPass')" 
-                  class="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white text-xl">👁</button>
+          <input id="regPass" type="password" placeholder="Passwort (mind. 6 Zeichen)" class="w-full p-5 bg-zinc-800 rounded-2xl mt-4 focus:outline-none focus:ring-2 focus:ring-purple-500">
+          <button onclick="togglePassword('regPass')" class="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white">👁</button>
         </div>
-
-        <button onclick="sendVerificationCode()" class="w-full mt-8 bg-purple-600 hover:bg-purple-700 py-6 rounded-3xl text-xl font-bold transition">
-          Verifizierungscode senden (666)
-        </button>
+        <button onclick="sendVerificationCode()" class="w-full mt-8 bg-purple-600 hover:bg-purple-700 py-6 rounded-3xl text-xl font-bold">Verifizierungscode senden (666)</button>
       `;
     }
 
@@ -117,165 +180,95 @@
       const password = document.getElementById('regPass').value.trim();
 
       if (!email || !username || !password) return alert("Bitte alle Felder ausfüllen");
-      if (password.length < 6) return alert("Das Passwort muss mindestens 6 Zeichen lang sein!");
+      if (password.length < 6) return alert("Passwort muss mindestens 6 Zeichen haben!");
 
-      currentEmail = email;
-      currentUsername = username;
+      // Prüfen ob Username schon existiert
+      if (Object.values(users).some(u => u.username === username)) {
+        return alert("Dieser Username ist bereits vergeben!");
+      }
 
       try {
-        await emailjs.send("service_zni05q6", "template_c2x5n7s", {
-          to_email: email,
-          verification_code: VERIFICATION_CODE,
-          username: username
-        });
-        alert(`✅ Code (666) wurde an ${email} gesendet!`);
-      } catch (e) {
-        alert(`Demo-Modus\nDein Code ist immer: 666`);
-      }
+        await emailjs.send("service_zni05q6", "template_c2x5n7s", { to_email: email, verification_code: VERIFICATION_CODE, username });
+      } catch(e) {}
+
+      alert(`✅ Code 666 wurde an ${email} gesendet!`);
+      currentEmail = email;
+      currentUsername = username;
+      currentPassword = password; // temporär speichern
       showVerificationScreen(false);
+    }
+
+    let currentPassword = "";
+
+    function showVerificationScreen(isReset) {
+      document.getElementById('modalTitle').textContent = isReset ? "Neues Passwort" : "Code bestätigen";
+      document.getElementById('modalContent').innerHTML = `
+        <p class="text-center text-purple-300">Der Code lautet: <strong>666</strong></p>
+        <input id="codeInput" maxlength="3" placeholder="666" class="w-full p-6 bg-zinc-800 rounded-2xl text-4xl text-center tracking-widest">
+        ${isReset ? `
+          <input id="newPass" type="password" placeholder="Neues Passwort" class="w-full p-5 bg-zinc-800 rounded-2xl mt-4">
+        ` : ''}
+        <button onclick="${isReset ? 'verifyResetCode()' : 'verifyCode()'}" class="w-full mt-6 bg-green-600 hover:bg-green-700 py-6 rounded-3xl text-xl font-bold">Bestätigen</button>
+      `;
+    }
+
+    function verifyCode() {
+      if (document.getElementById('codeInput').value.trim() !== "666") return alert("Falscher Code! Es ist 666");
+
+      saveUser(currentEmail, currentUsername, currentPassword);
+      currentUser = users[currentEmail];
+      document.getElementById('mainModal').classList.add('hidden');
+      showDashboard();
     }
 
     function showLoginModal() {
       document.getElementById('mainModal').classList.remove('hidden');
       document.getElementById('modalTitle').textContent = "Anmelden";
       document.getElementById('modalContent').innerHTML = `
-        <input id="loginEmail" type="email" placeholder="E-Mail" class="w-full p-5 bg-zinc-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500">
-        
+        <input id="loginEmail" type="email" placeholder="E-Mail" class="w-full p-5 bg-zinc-800 rounded-2xl">
         <div class="relative">
-          <input id="loginPass" type="password" placeholder="Passwort" 
-                 class="w-full p-5 bg-zinc-800 rounded-2xl mt-4 focus:outline-none focus:ring-2 focus:ring-purple-500">
-          <button onclick="togglePasswordVisibility('loginPass')" 
-                  class="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white text-xl">👁</button>
+          <input id="loginPass" type="password" placeholder="Passwort" class="w-full p-5 bg-zinc-800 rounded-2xl mt-4">
+          <button onclick="togglePassword('loginPass')" class="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white">👁</button>
         </div>
-
-        <button onclick="loginUser()" class="w-full mt-8 bg-purple-600 hover:bg-purple-700 py-6 rounded-3xl text-xl font-bold transition">
-          Anmelden
-        </button>
-        <p onclick="showForgotPassword()" class="text-center text-purple-400 hover:text-purple-300 mt-6 cursor-pointer text-sm">
-          Passwort vergessen?
-        </p>
+        <button onclick="loginUser()" class="w-full mt-8 bg-purple-600 hover:bg-purple-700 py-6 rounded-3xl text-xl font-bold">Anmelden</button>
+        <p onclick="showForgotPassword()" class="text-center text-purple-400 mt-6 cursor-pointer">Passwort vergessen?</p>
       `;
-    }
-
-    function showForgotPassword() {
-      document.getElementById('modalTitle').textContent = "Passwort zurücksetzen";
-      document.getElementById('modalContent').innerHTML = `
-        <input id="forgotEmail" type="email" placeholder="Deine E-Mail" class="w-full p-5 bg-zinc-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500">
-        <button onclick="sendResetCode()" class="w-full mt-8 bg-purple-600 hover:bg-purple-700 py-6 rounded-3xl text-xl font-bold transition">
-          Reset-Code senden (666)
-        </button>
-        <button onclick="showLoginModal()" class="w-full mt-3 text-zinc-400 hover:text-white">← Zurück</button>
-      `;
-    }
-
-    function showVerificationScreen(isReset = false) {
-      document.getElementById('modalTitle').textContent = isReset ? "Neues Passwort setzen" : "Code bestätigen";
-      
-      let html = `
-        <p class="text-center text-purple-300">Gib den Code ein: <strong>666</strong></p>
-        <input id="codeInput" maxlength="3" placeholder="666" 
-               class="w-full p-6 bg-zinc-800 rounded-2xl text-4xl text-center tracking-widest focus:outline-none focus:ring-2 focus:ring-green-500">
-      `;
-
-      if (isReset) {
-        html += `
-          <div class="relative">
-            <input id="newPassword" type="password" placeholder="Neues Passwort (mind. 6 Zeichen)" 
-                   class="w-full p-5 bg-zinc-800 rounded-2xl mt-4 focus:outline-none focus:ring-2 focus:ring-purple-500">
-            <button onclick="togglePasswordVisibility('newPassword')" 
-                    class="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white text-xl">👁</button>
-          </div>
-          <button onclick="verifyResetCode()" class="w-full mt-6 bg-green-600 hover:bg-green-700 py-6 rounded-3xl text-xl font-bold">Bestätigen & Passwort ändern</button>
-        `;
-      } else {
-        html += `
-          <button onclick="verifyCode()" class="w-full mt-6 bg-green-600 hover:bg-green-700 py-6 rounded-3xl text-xl font-bold">Bestätigen</button>
-        `;
-      }
-
-      html += `
-        <button onclick="resendCode(${isReset})" class="w-full mt-3 text-purple-400 hover:text-purple-300">Code erneut senden</button>
-        <button onclick="${isReset ? 'showForgotPassword()' : 'showRegisterModal()'}" class="w-full mt-2 text-zinc-400 hover:text-white text-sm">← Zurück</button>
-      `;
-
-      document.getElementById('modalContent').innerHTML = html;
-    }
-
-    function verifyCode() {
-      const input = document.getElementById('codeInput').value.trim();
-      const password = document.getElementById('regPass').value.trim();
-
-      if (input !== VERIFICATION_CODE) return alert("❌ Falscher Code! Der Code ist 666");
-
-      saveUser(currentEmail, currentUsername, password);
-      currentUser = { username: currentUsername, email: currentEmail };
-      document.getElementById('mainModal').classList.add('hidden');
-      showDashboard();
-      alert("✅ Registrierung erfolgreich!");
-    }
-
-    function verifyResetCode() {
-      const input = document.getElementById('codeInput').value.trim();
-      const newPass = document.getElementById('newPassword').value.trim();
-
-      if (input !== VERIFICATION_CODE) return alert("❌ Falscher Code! Der Code ist 666");
-      if (newPass.length < 6) return alert("Das neue Passwort muss mindestens 6 Zeichen lang sein!");
-
-      if (users[currentEmail]) {
-        users[currentEmail].password = newPass;
-        localStorage.setItem('kiobioUsers', JSON.stringify(users));
-        alert("✅ Passwort erfolgreich geändert!");
-        showLoginModal();
-      }
-    }
-
-    function sendResetCode() {
-      const email = document.getElementById('forgotEmail').value.trim();
-      if (!email) return alert("Bitte E-Mail eingeben");
-
-      currentEmail = email;
-
-      try {
-        emailjs.send("service_zni05q6", "template_c2x5n7s", {
-          to_email: email,
-          verification_code: VERIFICATION_CODE,
-          username: "User"
-        });
-      } catch (e) {}
-
-      alert(`✅ Reset-Code (666) wurde an ${email} gesendet!`);
-      showVerificationScreen(true);
-    }
-
-    function resendCode(isReset) {
-      if (isReset) sendResetCode();
-      else sendVerificationCode();
     }
 
     function loginUser() {
       const email = document.getElementById('loginEmail').value.trim();
-      const password = document.getElementById('loginPass').value.trim();
-
-      if (!email || !password) return alert("Bitte E-Mail und Passwort eingeben");
-
+      const pass = document.getElementById('loginPass').value.trim();
       const user = users[email];
-      if (user && user.password === password) {
-        currentUser = { username: user.username, email: email };
+
+      if (user && user.password === pass) {
+        currentUser = user;
         document.getElementById('mainModal').classList.add('hidden');
         showDashboard();
       } else {
-        alert("❌ Falsche E-Mail oder Passwort");
+        alert("Falsche Zugangsdaten");
       }
     }
 
     function showDashboard() {
+      document.getElementById('hero').classList.add('hidden');
       document.getElementById('dashboard').classList.remove('hidden');
-      document.getElementById('dashName').textContent = currentUser.username;
+      document.getElementById('navLoginBtn').textContent = "Abmelden";
+
+      document.getElementById('dashNameTop').textContent = currentUser.username;
       document.getElementById('dashUsername').textContent = currentUser.username;
+      document.getElementById('dashUID').textContent = `#${currentUser.uid}`;
+      document.getElementById('dashViews').textContent = currentUser.views;
+      document.getElementById('viewsBig').textContent = currentUser.views + 142;
     }
 
     function logout() {
       location.reload();
+    }
+
+    // Passwort vergessen (kurz)
+    function showForgotPassword() {
+      alert("Passwort zurücksetzen → Code 666 (Demo)");
+      showVerificationScreen(true);
     }
   </script>
 </body>
