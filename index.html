@@ -28,9 +28,7 @@
       </div>
       <div class="flex items-center gap-4">
         <button onclick="toggleTheme()" class="text-2xl" id="themeBtn">🌙</button>
-        <button onclick="logout()" class="bg-purple-600 hover:bg-purple-700 px-8 py-3 rounded-2xl font-semibold" id="navBtn">
-          Anmelden
-        </button>
+        <button onclick="logout()" class="bg-purple-600 hover:bg-purple-700 px-8 py-3 rounded-2xl font-semibold" id="navBtn">Anmelden</button>
       </div>
     </div>
   </nav>
@@ -62,80 +60,76 @@
           <span class="text-3xl">🔫</span>
           <span class="text-2xl font-bold">kiobio.lol</span>
         </div>
-        
         <div class="space-y-1">
-          <a href="#" onclick="fakeNavClick(this)" class="sidebar-active flex items-center gap-3 px-4 py-3 rounded-2xl">👤 Konto</a>
-          <a href="#" onclick="fakeNavClick(this)" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10">📊 Statistiken</a>
-          <a href="#" onclick="fakeNavClick(this)" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10">🏅 Badges</a>
-          <a href="#" onclick="fakeNavClick(this)" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10">🔗 Links</a>
-          <a href="#" onclick="fakeNavClick(this)" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10">⚙️ Einstellungen</a>
+          <a href="#" onclick="switchTab(0)" class="sidebar-active flex items-center gap-3 px-4 py-3 rounded-2xl">👤 Konto</a>
+          <a href="#" onclick="switchTab(1)" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10">🔗 Links</a>
+          <a href="#" onclick="switchTab(2)" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10">🎵 Musik</a>
+          <a href="#" onclick="switchTab(3)" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10">🖼️ Galerie</a>
         </div>
       </div>
 
       <!-- MAIN CONTENT -->
       <div class="flex-1 p-10 overflow-y-auto">
-        <div class="max-w-6xl mx-auto">
-          <div class="flex items-center justify-between mb-8">
-            <div class="flex items-center gap-6">
-              <img id="profilePicBig" src="https://i.pravatar.cc/128" 
-                   class="w-28 h-28 rounded-3xl object-cover border-4 border-purple-500 cursor-pointer" 
-                   onclick="document.getElementById('picUpload').click()">
-              <input type="file" id="picUpload" accept="image/*" class="hidden" onchange="uploadProfilePic(event)">
-              <div>
-                <h1 id="dashNameTop" class="text-4xl font-bold"></h1>
-                <p id="dashUsername" class="text-purple-400"></p>
-              </div>
-            </div>
-            <button onclick="logout()" class="text-red-400 hover:text-red-500">Abmelden</button>
-          </div>
+        <div class="max-w-5xl mx-auto" id="mainContent">
 
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-            <div class="card p-6 rounded-3xl">
-              <p class="text-zinc-400">UID</p>
-              <p id="dashUID" class="text-3xl font-bold text-purple-400">#1</p>
-            </div>
-            <div class="card p-6 rounded-3xl">
-              <p class="text-zinc-400">Alias</p>
-              <p id="dashAlias" class="text-3xl font-bold text-purple-400">Keine</p>
-            </div>
-            <div class="card p-6 rounded-3xl">
-              <p class="text-zinc-400">Profilaufrufe</p>
-              <p id="dashViews" class="text-3xl font-bold text-purple-400">0</p>
-              <button onclick="incrementViews()" class="text-xs mt-2 text-purple-400 hover:text-purple-300">+1 simulieren</button>
-            </div>
-            <div class="card p-6 rounded-3xl">
-              <p class="text-zinc-400">Beigetreten</p>
-              <p class="text-3xl font-bold text-purple-400">Gerade eben</p>
-            </div>
-          </div>
-
-          <!-- Bio -->
-          <div class="card p-8 rounded-3xl mb-10">
-            <h3 class="text-xl mb-4">Bio</h3>
-            <textarea id="bioText" class="w-full h-32 bg-zinc-800 rounded-2xl p-5 resize-none" placeholder="Schreib etwas über dich..."></textarea>
-            <button onclick="saveBio()" class="mt-4 bg-purple-600 hover:bg-purple-700 px-8 py-3 rounded-2xl">Bio speichern</button>
-          </div>
-
-          <!-- Profil Vervollständigung + Badges -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="card p-8 rounded-3xl">
-              <h3 class="text-xl mb-6">Profil-Vervollständigung</h3>
-              <div class="h-2 bg-zinc-800 rounded-full mb-6">
-                <div class="h-2 bg-purple-600 w-2/3 rounded-full"></div>
+          <!-- TAB 0: Konto -->
+          <div id="tab0">
+            <div class="flex items-center justify-between mb-8">
+              <div class="flex items-center gap-6">
+                <img id="profilePicBig" src="https://i.pravatar.cc/128" class="w-28 h-28 rounded-3xl object-cover border-4 border-purple-500 cursor-pointer" onclick="document.getElementById('picUpload').click()">
+                <input type="file" id="picUpload" accept="image/*" class="hidden" onchange="uploadProfilePic(event)">
+                <div>
+                  <div class="flex items-center gap-3">
+                    <h1 id="dashNameTop" class="text-4xl font-bold"></h1>
+                    <span id="premiumBadge" class="hidden bg-yellow-500 text-black text-xs px-3 py-1 rounded-full font-bold">PREMIUM</span>
+                  </div>
+                  <p id="dashUsername" class="text-purple-400"></p>
+                </div>
               </div>
-              <div class="space-y-3">
-                <button onclick="alert('Avatar bereits hochgeladen!')" class="w-full text-left bg-zinc-800 hover:bg-zinc-700 p-4 rounded-2xl">👤 Avatar</button>
-                <button onclick="alert('Discord kommt bald')" class="w-full text-left bg-zinc-800 hover:bg-zinc-700 p-4 rounded-2xl">Discord verbinden</button>
-              </div>
+              <button onclick="logout()" class="text-red-400 hover:text-red-500">Abmelden</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+              <div class="card p-6 rounded-3xl"><p class="text-zinc-400">UID</p><p id="dashUID" class="text-3xl font-bold text-purple-400">#1</p></div>
+              <div class="card p-6 rounded-3xl"><p class="text-zinc-400">Profilaufrufe</p><p id="dashViews" class="text-3xl font-bold text-purple-400">0</p></div>
             </div>
 
             <div class="card p-8 rounded-3xl">
-              <h3 class="text-xl mb-6">Badges</h3>
-              <div class="flex gap-4 flex-wrap">
-                <div class="bg-zinc-800 px-6 py-3 rounded-2xl text-sm">🔥 Erster User</div>
-                <div class="bg-zinc-800 px-6 py-3 rounded-2xl text-sm">🌟 Beta</div>
-                <div class="bg-zinc-800 px-6 py-3 rounded-2xl text-sm">📈 Aktiv</div>
+              <h3 class="text-xl mb-4">Bio</h3>
+              <textarea id="bioText" class="w-full h-32 bg-zinc-800 rounded-2xl p-5" placeholder="Schreib etwas über dich..."></textarea>
+              <button onclick="saveBio()" class="mt-4 bg-purple-600 px-8 py-3 rounded-2xl">Bio speichern</button>
+            </div>
+          </div>
+
+          <!-- TAB 1: Links -->
+          <div id="tab1" class="hidden">
+            <h2 class="text-3xl font-bold mb-6">Link Manager</h2>
+            <div class="card p-8 rounded-3xl">
+              <input id="newLinkTitle" placeholder="Titel (z.B. Instagram)" class="w-full p-4 bg-zinc-800 rounded-2xl mb-3">
+              <input id="newLinkUrl" placeholder="https://" class="w-full p-4 bg-zinc-800 rounded-2xl mb-4">
+              <button onclick="addLink()" class="bg-purple-600 px-8 py-3 rounded-2xl">Link hinzufügen</button>
+              <div id="linksList" class="mt-8 space-y-3"></div>
+            </div>
+          </div>
+
+          <!-- TAB 2: Musik -->
+          <div id="tab2" class="hidden">
+            <h2 class="text-3xl font-bold mb-6">Musik Player</h2>
+            <div class="card p-8 rounded-3xl">
+              <audio id="musicPlayer" class="w-full mb-6" controls></audio>
+              <div class="grid grid-cols-1 gap-3">
+                <button onclick="playTrack(0)" class="bg-zinc-800 hover:bg-zinc-700 p-5 rounded-2xl text-left">🎵 Cyberpunk Nights</button>
+                <button onclick="playTrack(1)" class="bg-zinc-800 hover:bg-zinc-700 p-5 rounded-2xl text-left">🌃 Neon Drift</button>
+                <button onclick="playTrack(2)" class="bg-zinc-800 hover:bg-zinc-700 p-5 rounded-2xl text-left">🏎️ Midnight Run</button>
               </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: Galerie -->
+          <div id="tab3" class="hidden">
+            <h2 class="text-3xl font-bold mb-6">Galerie</h2>
+            <div class="card p-8 rounded-3xl text-center text-zinc-400">
+              <p>Hier kannst du später Bilder hochladen</p>
             </div>
           </div>
         </div>
@@ -145,7 +139,6 @@
 
   <script>
     emailjs.init("IuyLZ33ctDj1VxqXE");
-
     let currentUser = null;
     const VERIFICATION_CODE = "666";
     let users = JSON.parse(localStorage.getItem('kiobioUsers')) || {};
@@ -153,13 +146,10 @@
 
     function saveUser(email, username, password) {
       users[email] = { 
-        username, 
-        password, 
-        uid: nextUID++,
-        views: 0,
-        alias: "Keine",
-        bio: "",
-        profilePic: "https://i.pravatar.cc/128?u=" + Date.now()
+        username, password, uid: nextUID++, views: 0, bio: "", 
+        profilePic: "https://i.pravatar.cc/128?u=" + Date.now(),
+        links: [],
+        isPremium: false
       };
       localStorage.setItem('kiobioUsers', JSON.stringify(users));
       localStorage.setItem('nextUID', nextUID);
@@ -179,7 +169,6 @@
     function uploadProfilePic(e) {
       const file = e.target.files[0];
       if (!file || !currentUser) return;
-      
       const reader = new FileReader();
       reader.onload = function(ev) {
         currentUser.profilePic = ev.target.result;
@@ -192,27 +181,87 @@
 
     function saveBio() {
       if (!currentUser) return;
-      const bio = document.getElementById('bioText').value;
-      currentUser.bio = bio;
-      users[currentUser.email].bio = bio;
+      currentUser.bio = document.getElementById('bioText').value;
+      users[currentUser.email].bio = currentUser.bio;
       localStorage.setItem('kiobioUsers', JSON.stringify(users));
       alert("✅ Bio gespeichert!");
     }
 
-    function incrementViews() {
+    function addLink() {
       if (!currentUser) return;
-      currentUser.views++;
-      users[currentUser.email].views = currentUser.views;
+      const title = document.getElementById('newLinkTitle').value.trim();
+      const url = document.getElementById('newLinkUrl').value.trim();
+      if (!title || !url) return alert("Titel und URL ausfüllen!");
+
+      currentUser.links.push({title, url});
+      users[currentUser.email].links = currentUser.links;
       localStorage.setItem('kiobioUsers', JSON.stringify(users));
+      renderLinks();
+    }
+
+    function renderLinks() {
+      const container = document.getElementById('linksList');
+      container.innerHTML = currentUser.links.map((link, i) => `
+        <div class="flex justify-between items-center bg-zinc-800 p-5 rounded-2xl">
+          <div>
+            <strong>${link.title}</strong><br>
+            <a href="${link.url}" target="_blank" class="text-purple-400">${link.url}</a>
+          </div>
+          <button onclick="deleteLink(${i})" class="text-red-400 hover:text-red-500">Löschen</button>
+        </div>
+      `).join('');
+    }
+
+    function deleteLink(i) {
+      currentUser.links.splice(i, 1);
+      users[currentUser.email].links = currentUser.links;
+      localStorage.setItem('kiobioUsers', JSON.stringify(users));
+      renderLinks();
+    }
+
+    const tracks = [
+      "https://files.catbox.moe/1v2x3k.mp3",
+      "https://files.catbox.moe/4k9p2m.mp3",
+      "https://files.catbox.moe/8n7v1q.mp3"
+    ];
+
+    function playTrack(index) {
+      const player = document.getElementById('musicPlayer');
+      player.src = tracks[index];
+      player.play();
+    }
+
+    function switchTab(n) {
+      document.querySelectorAll('#mainContent > div').forEach((el, i) => {
+        el.classList.toggle('hidden', i !== n);
+      });
+    }
+
+    function showDashboard() {
+      document.getElementById('hero').classList.add('hidden');
+      document.getElementById('dashboard').classList.remove('hidden');
+      document.getElementById('navBtn').textContent = "Abmelden";
+
+      document.getElementById('dashNameTop').textContent = currentUser.username;
+      document.getElementById('dashUsername').textContent = currentUser.username;
+      document.getElementById('dashUID').textContent = `#${currentUser.uid}`;
       document.getElementById('dashViews').textContent = currentUser.views;
+      document.getElementById('profilePicBig').src = currentUser.profilePic;
+      document.getElementById('bioText').value = currentUser.bio || "";
+      document.getElementById('premiumBadge').classList.toggle('hidden', !currentUser.isPremium);
+
+      renderLinks();
+      switchTab(0);
     }
 
-    function fakeNavClick(el) {
-      document.querySelectorAll('.sidebar-active').forEach(e => e.classList.remove('sidebar-active'));
-      el.classList.add('sidebar-active');
+    function togglePremium() {
+      currentUser.isPremium = !currentUser.isPremium;
+      users[currentUser.email].isPremium = currentUser.isPremium;
+      localStorage.setItem('kiobioUsers', JSON.stringify(users));
+      document.getElementById('premiumBadge').classList.toggle('hidden', !currentUser.isPremium);
     }
 
-    // Register / Login / Verify Funktionen (wie vorher)
+    // Register, Login & Verifizierung (wie vorher)
     function showRegisterModal() {
       document.getElementById('mainModal').classList.remove('hidden');
       document.getElementById('modalTitle').textContent = "Registrieren";
@@ -223,7 +272,7 @@
           <input id="regPass" type="password" placeholder="Passwort (mind. 6 Zeichen)" class="w-full p-5 bg-zinc-800 rounded-2xl mt-4">
           <button onclick="togglePassword('regPass')" class="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white">👁</button>
         </div>
-        <button onclick="sendVerificationCode()" class="w-full mt-8 bg-purple-600 hover:bg-purple-700 py-6 rounded-3xl text-xl font-bold">Code senden (666)</button>
+        <button onclick="sendVerificationCode()" class="w-full mt-8 bg-purple-600 hover:bg-purple-700 py-6 rounded-3xl text-xl font-bold">Verifizierungscode senden (666)</button>
       `;
     }
 
@@ -232,16 +281,12 @@
       const username = document.getElementById('regUser').value.trim();
       const password = document.getElementById('regPass').value.trim();
 
-      if (!email || !username || !password) return alert("Alle Felder ausfüllen!");
-      if (password.length < 6) return alert("Passwort muss mindestens 6 Zeichen haben!");
+      if (!email || !username || !password) return alert("Bitte alle Felder ausfüllen");
+      if (password.length < 6) return alert("Passwort muss mindestens 6 Zeichen lang sein!");
       if (Object.values(users).some(u => u.username === username)) return alert("Username bereits vergeben!");
 
       try {
-        await emailjs.send("service_zni05q6", "template_c2x5n7s", {
-          to_email: email,
-          verification_code: VERIFICATION_CODE,
-          username: username
-        });
+        await emailjs.send("service_zni05q6", "template_c2x5n7s", { to_email: email, verification_code: VERIFICATION_CODE, username });
       } catch(e) {}
 
       alert(`✅ Code 666 wurde an ${email} gesendet!`);
@@ -253,14 +298,13 @@
       document.getElementById('modalTitle').textContent = "Code bestätigen";
       document.getElementById('modalContent').innerHTML = `
         <p class="text-center text-purple-300">Der Code ist: <strong>666</strong></p>
-        <input id="codeInput" maxlength="3" placeholder="666" class="w-full p-6 bg-zinc-800 rounded-2xl text-4xl text-center tracking-widest">
+        <input id="codeInput" maxlength="3" placeholder="666" class="w-full p-6 bg-zinc-800 rounded-2xl text-4xl text-center">
         <button onclick="verifyCode()" class="w-full mt-6 bg-green-600 hover:bg-green-700 py-6 rounded-3xl text-xl font-bold">Bestätigen</button>
       `;
     }
 
     function verifyCode() {
-      if (document.getElementById('codeInput').value !== "666") return alert("Falscher Code! Es ist 666.");
-
+      if (document.getElementById('codeInput').value !== "666") return alert("Falscher Code! Es ist 666");
       const {email, username, password} = window.tempUser;
       saveUser(email, username, password);
       currentUser = users[email];
@@ -290,21 +334,8 @@
         document.getElementById('mainModal').classList.add('hidden');
         showDashboard();
       } else {
-        alert("Falsche Zugangsdaten");
+        alert("Falsche E-Mail oder Passwort");
       }
-    }
-
-    function showDashboard() {
-      document.getElementById('hero').classList.add('hidden');
-      document.getElementById('dashboard').classList.remove('hidden');
-      document.getElementById('navBtn').textContent = "Abmelden";
-
-      document.getElementById('dashNameTop').textContent = currentUser.username;
-      document.getElementById('dashUsername').textContent = currentUser.username;
-      document.getElementById('dashUID').textContent = `#${currentUser.uid}`;
-      document.getElementById('dashViews').textContent = currentUser.views;
-      document.getElementById('profilePicBig').src = currentUser.profilePic || "https://i.pravatar.cc/128";
-      document.getElementById('bioText').value = currentUser.bio || "";
     }
 
     function logout() {
