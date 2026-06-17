@@ -13,7 +13,6 @@
   </style>
 </head>
 <body>
-
   <video id="bgVideo" autoplay loop muted playsinline>
     <source src="https://files.catbox.moe/41vjqo.mp4" type="video/mp4">
   </video>
@@ -54,11 +53,11 @@
     <div class="max-w-5xl mx-auto">
       <h1 class="text-4xl font-bold mb-2">Willkommen zurück, <span id="dashName" class="text-purple-400"></span>!</h1>
       <p class="text-purple-300 mb-10">kiobio.lol/<span id="dashUsername"></span></p>
-      
+     
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div class="bg-zinc-900 p-8 rounded-3xl">
           <h3 class="text-xl mb-6">Profil bearbeiten</h3>
-          <button onclick="alert('Profil-Editor wird bald hier erscheinen')" class="bg-purple-600 w-full py-5 rounded-2xl">Jetzt anpassen</button>
+          <button onclick="alert('Profil-Editor kommt bald')" class="bg-purple-600 w-full py-5 rounded-2xl">Jetzt anpassen</button>
         </div>
         <div class="bg-zinc-900 p-8 rounded-3xl">
           <h3 class="text-xl mb-6">Statistiken</h3>
@@ -66,67 +65,88 @@
           <p class="text-zinc-400">Profilaufrufe diese Woche</p>
         </div>
       </div>
-      
+     
       <button onclick="logout()" class="mt-12 text-red-500 hover:text-red-400">Abmelden</button>
     </div>
   </div>
 
   <script>
-    // Dein Public Key
+    // Deine echten EmailJS Daten
     emailjs.init("IuyLZ33ctDj1VxqXE");
 
     let currentUser = null;
     let verificationCode = "";
+    let currentEmail = "";
 
     function showRegisterModal() {
       document.getElementById('mainModal').classList.remove('hidden');
       document.getElementById('modalTitle').textContent = "Registrieren";
       document.getElementById('modalContent').innerHTML = `
-        <input id="regEmail" type="email" placeholder="Deine E-Mail" class="w-full p-5 bg-zinc-800 rounded-2xl">
-        <input id="regUser" placeholder="Username" class="w-full p-5 bg-zinc-800 rounded-2xl mt-4">
-        <button onclick="sendVerificationCode()" class="w-full mt-8 bg-purple-600 py-6 rounded-3xl text-xl font-bold">Verifizierungscode senden</button>
+        <input id="regEmail" type="email" placeholder="Deine E-Mail" 
+               class="w-full p-5 bg-zinc-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500">
+        <input id="regUser" placeholder="Username" 
+               class="w-full p-5 bg-zinc-800 rounded-2xl mt-4 focus:outline-none focus:ring-2 focus:ring-purple-500">
+        <button onclick="sendVerificationCode()" 
+                class="w-full mt-8 bg-purple-600 hover:bg-purple-700 py-6 rounded-3xl text-xl font-bold transition">
+          Verifizierungscode senden
+        </button>
       `;
     }
 
-    function sendVerificationCode() {
-      const email = document.getElementById('regEmail').value;
-      const username = document.getElementById('regUser').value || "user";
+    async function sendVerificationCode() {
+      const email = document.getElementById('regEmail').value.trim();
+      const username = document.getElementById('regUser').value.trim() || "user";
 
-      if (!email) return alert("Bitte E-Mail eingeben");
+      if (!email) return alert("Bitte gib eine gültige E-Mail-Adresse ein.");
 
-      verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+      // 3-stelliger Code
+      verificationCode = Math.floor(100 + Math.random() * 900).toString();
+      currentEmail = email;
 
-      // Echte Email senden mit EmailJS
-      emailjs.send("service_id", "template_id", {
-        to_email: email,
-        verification_code: verificationCode,
-        username: username
-      }).then(() => {
+      try {
+        await emailjs.send("service_zni05q6", "template_c2x5n7s", {
+          to_email: email,
+          verification_code: verificationCode,
+          username: username
+        });
         alert(`✅ Verifizierungscode wurde an ${email} gesendet!`);
-        showVerificationScreen(username, email);
-      }).catch(err => {
-        alert("Fehler beim Senden. Demo-Code: " + verificationCode);
-        showVerificationScreen(username, email);
-      });
+      } catch (err) {
+        console.error(err);
+        alert(`❌ Fehler beim Senden.\n\nDemo-Modus:\nDein Code ist: ${verificationCode}`);
+      }
+
+      showVerificationScreen(username, email);
     }
 
     function showVerificationScreen(username, email) {
       document.getElementById('modalTitle').textContent = "Code bestätigen";
       document.getElementById('modalContent').innerHTML = `
-        <p class="text-center text-purple-300">Code an ${email}</p>
-        <input id="codeInput" maxlength="6" placeholder="123456" class="w-full p-6 bg-zinc-800 rounded-2xl text-3xl text-center tracking-widest">
-        <button onclick="verifyCode('${username}', '${email}')" class="w-full mt-8 bg-green-600 py-6 rounded-3xl text-xl font-bold">Bestätigen</button>
+        <p class="text-center text-purple-300">Wir haben einen <strong>3-stelligen Code</strong> an <strong>${email}</strong> gesendet.</p>
+        
+        <input id="codeInput" maxlength="3" placeholder="123" 
+               class="w-full p-6 bg-zinc-800 rounded-2xl text-4xl text-center tracking-widest focus:outline-none focus:ring-2 focus:ring-green-500">
+        
+        <button onclick="verifyCode('${username}', '${email}')" 
+                class="w-full mt-8 bg-green-600 hover:bg-green-700 py-6 rounded-3xl text-xl font-bold transition">
+          Bestätigen
+        </button>
+        
+        <button onclick="showRegisterModal()" class="w-full mt-3 text-zinc-400 hover:text-white text-sm">
+          ← Zurück zur Registrierung
+        </button>
       `;
     }
 
     function verifyCode(username, email) {
-      const input = document.getElementById('codeInput').value;
+      const input = document.getElementById('codeInput').value.trim();
+      
       if (input === verificationCode) {
         currentUser = { username, email };
         document.getElementById('mainModal').classList.add('hidden');
         showDashboard();
+        alert("✅ Erfolgreich verifiziert! Willkommen bei kiobio.lol");
       } else {
-        alert("Falscher Code!");
+        alert("❌ Falscher Code! Bitte versuche es erneut.");
       }
     }
 
@@ -137,7 +157,7 @@
     }
 
     function showLoginModal() {
-      alert("Login-Funktion kommt bald (Magic Link)");
+      alert("🔑 Login-Funktion (Magic Link) kommt bald!");
     }
 
     function logout() {
