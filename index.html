@@ -1,379 +1,1047 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ANIME VAULT</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  <style>
-    body {
-      background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.95)),
-                  url('https://picsum.photos/id/1015/1920/1080') center/cover fixed;
-      font-family: system-ui;
-    }
-    .glass { background: rgba(30,30,40,0.85); backdrop-filter: blur(16px); border: 1px solid rgba(168,85,247,0.4); }
-    .neon-purple { text-shadow: 0 0 25px #c026d3, 0 0 50px #a855f7; }
-  </style>
-</head>
-<body class="text-gray-100 min-h-screen pb-20">
-  <nav class="glass sticky top-0 z-50 border-b border-purple-500 p-4">
-    <div class="max-w-7xl mx-auto flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <h1 onclick="navigate('shop')" class="text-4xl font-bold neon-purple cursor-pointer">ANIME VAULT</h1>
-        <span class="text-sm text-pink-400 font-medium">Owner & Kiano</span>
-      </div>
-      <div class="flex gap-8 items-center text-lg">
-        <button onclick="navigate('shop')" class="hover:text-purple-400">Shop</button>
-        <button onclick="navigate('sell')" class="hover:text-purple-400">Verkaufen</button>
-        <button onclick="navigate('profile')" class="hover:text-purple-400">Profil</button>
-        <button onclick="navigate('admin')" id="adminBtn" class="hover:text-purple-400 hidden">👑 Owner</button>
-        <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-6 py-2.5 rounded-2xl">Logout</button>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Login -->
-  <div id="page-login" class="page max-w-md mx-auto mt-24 p-12 glass rounded-3xl">
-    <h2 class="text-5xl font-bold text-center neon-purple mb-10">ANIME VAULT</h2>
-    <div class="flex gap-4 bg-gray-900 rounded-3xl p-1 mb-8">
-      <button onclick="switchAuthTab(0)" id="tab-login" class="flex-1 py-4 rounded-3xl font-semibold">Login</button>
-      <button onclick="switchAuthTab(1)" id="tab-register" class="flex-1 py-4 rounded-3xl font-semibold">Registrieren</button>
-    </div>
-    <div id="login-form">
-      <input id="login-user" placeholder="Username" class="w-full mb-5 bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
-      <input id="login-pass" type="password" placeholder="Passwort" class="w-full mb-8 bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
-      <button onclick="login()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-5 rounded-2xl text-xl font-bold">Einloggen</button>
-    </div>
-    <div id="register-form" class="hidden">
-      <input id="reg-user" placeholder="Username" class="w-full mb-5 bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
-      <input id="reg-pass" type="password" placeholder="Passwort (mind. 6 Zeichen)" class="w-full mb-8 bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
-      <button onclick="register()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-5 rounded-2xl text-xl font-bold">Konto erstellen</button>
-    </div>
-  </div>
-
-  <!-- Shop -->
-  <div id="page-shop" class="page hidden max-w-7xl mx-auto p-8">
-    <h2 class="text-5xl font-bold neon-purple mb-12 text-center">Unsere Produkte</h2>
-    <div id="products" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
-  </div>
-
-  <!-- Sell -->
-  <div id="page-sell" class="page hidden max-w-2xl mx-auto p-8">
-    <h2 class="text-4xl font-bold mb-8">Neues Produkt einstellen</h2>
-    <div class="glass p-8 rounded-3xl space-y-6">
-      <input id="new-name" placeholder="Produktname" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
-      <input id="new-price" type="number" step="0.01" placeholder="Preis €" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
-      <input id="new-stock" type="number" value="10" placeholder="Menge" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
-      <input id="new-discord" placeholder="Dein Discord Username (z.B. Kiano#1234)" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
-      <textarea id="new-desc" placeholder="Beschreibung" class="w-full h-32 bg-gray-800 border border-purple-500 rounded-3xl px-6 py-5"></textarea>
-      <button onclick="addProduct()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-6 rounded-3xl text-xl font-bold">Produkt hochladen</button>
-    </div>
-  </div>
-
-  <!-- Profile -->
-  <div id="page-profile" class="page hidden max-w-7xl mx-auto p-8">
-    <h2 class="text-5xl font-bold neon-purple mb-8">Profil von <span id="profile-name" class="text-purple-400"></span></h2>
-    <div id="profile-products" class="glass p-8 rounded-3xl"></div>
-  </div>
-
-  <!-- Admin Panel -->
-  <div id="page-admin" class="page hidden max-w-7xl mx-auto p-8">
-    <h2 class="text-5xl font-bold neon-purple mb-10">👑 Owner Panel</h2>
-    <div class="glass p-8 rounded-3xl">
-      <button onclick="loadAdminPanel()" class="mb-6 bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-2xl flex items-center gap-2">
-        🔄 Neu laden
-      </button>
-      <div id="admin-content"></div>
-    </div>
-  </div>
-
-  <!-- Warenkorb -->
-  <button onclick="showCart()" class="fixed bottom-10 right-10 bg-gradient-to-r from-purple-600 to-pink-600 w-20 h-20 rounded-full flex items-center justify-center text-4xl shadow-2xl hover:scale-110 transition-transform">
-    🛒 <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-xs w-6 h-6 rounded-full flex items-center justify-center">0</span>
-  </button>
-
-  <div id="cart-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
-    <div class="glass rounded-3xl p-8 max-w-lg w-full max-h-[90vh] overflow-auto">
-      <h3 class="text-3xl font-bold mb-6">Warenkorb</h3>
-      <div id="cart-items" class="space-y-4"></div>
-      <div id="cart-total" class="text-3xl font-bold mt-8 mb-8"></div>
-      <div class="bg-indigo-600 text-center py-6 rounded-2xl">
-        <p class="mb-4">Um zu bestellen, tritt dem Discord bei:</p>
-        <a href="https://discord.gg/v2kKvxrDv" target="_blank" class="inline-block bg-white text-indigo-700 font-bold px-10 py-4 rounded-2xl">Discord beitreten</a>
-      </div>
-      <button onclick="hideCart()" class="w-full py-4 border border-gray-600 rounded-2xl mt-6">Schließen</button>
-    </div>
-  </div>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAbz1N77hZDksKP9-yZdiW4GR8JtIcHvbQ",
-      authDomain: "anime-vault-e439b.firebaseapp.com",
-      databaseURL: "https://anime-vault-e439b-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "anime-vault-e439b",
-      storageBucket: "anime-vault-e439b.firebasestorage.app",
-      messagingSenderId: "406742408925",
-      appId: "1:406742408925:web:ba161f393b7e3503164534"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    let currentUser = null;
-    let cart = [];
-    const admins = ["kiollegend", "ZayTox"];
-
-    function isAdmin(user) {
-      return admins.includes(user?.username);
-    }
-
-    function navigate(page) {
-      document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-      document.getElementById(`page-${page}`).classList.remove('hidden');
-      
-      if (page === 'shop') loadProducts();
-      if (page === 'profile') renderProfile();
-      if (page === 'admin' && isAdmin(currentUser)) loadAdminPanel();
-    }
-
-    function loadProducts() {
-      db.ref('products').on('value', (snapshot) => {
-        const data = snapshot.val() || {};
-        let html = '';
-        Object.keys(data).forEach(key => {
-          const p = data[key];
-          html += `
-            <div class="glass rounded-3xl overflow-hidden">
-              <img src="${p.img || 'https://picsum.photos/300/300'}" class="w-full h-64 object-cover">
-              <div class="p-6">
-                <h3 class="font-bold text-xl">${p.name}</h3>
-                <p class="text-3xl font-bold text-purple-400">${p.price} €</p>
-                <p class="text-sm text-gray-400">Von: ${p.seller} • ${p.stock} verfügbar</p>
-                ${p.discord ? `<p class="text-pink-400 mt-1">💬 ${p.discord}</p>` : ''}
-                <button onclick="addToCart('${key}')" class="mt-6 w-full bg-purple-600 hover:bg-purple-700 py-4 rounded-2xl transition">In den Warenkorb</button>
-              </div>
-            </div>`;
-        });
-        document.getElementById('products').innerHTML = html || "<p class='text-center text-gray-400 text-xl py-12'>Noch keine Produkte vorhanden.</p>";
-      });
-    }
-
-    function addProduct() {
-      if (!currentUser) return alert("Bitte einloggen!");
-      const product = {
-        name: document.getElementById('new-name').value.trim(),
-        price: parseFloat(document.getElementById('new-price').value),
-        stock: parseInt(document.getElementById('new-stock').value) || 10,
-        discord: document.getElementById('new-discord').value.trim(),
-        desc: document.getElementById('new-desc').value.trim(),
-        seller: currentUser.username,
-        timestamp: Date.now()
-      };
-
-      if (!product.name || !product.price || !product.discord) {
-        return alert("Name, Preis und Discord Username sind Pflichtfelder!");
-      }
-
-      db.ref('products').push(product).then(() => {
-        alert("✅ Produkt erfolgreich hochgeladen!");
-        // Felder leeren
-        document.getElementById('new-name').value = '';
-        document.getElementById('new-price').value = '';
-        document.getElementById('new-stock').value = '10';
-        document.getElementById('new-discord').value = '';
-        document.getElementById('new-desc').value = '';
-        navigate('shop');
-      });
-    }
-
-    function addToCart(id) {
-      db.ref('products/' + id).once('value', (snap) => {
-        const prod = snap.val();
-        if (!prod || prod.stock <= 0) return alert("Produkt nicht verfügbar");
-        
-        const existing = cart.find(item => item.id === id);
-        if (existing) existing.quantity++;
-        else cart.push({...prod, id, quantity: 1});
-        
-        updateCartCount();
-        alert(`${prod.name} wurde zum Warenkorb hinzugefügt!`);
-      });
-    }
-
-    function updateCartCount() {
-      const count = cart.reduce((a, b) => a + b.quantity, 0);
-      document.getElementById('cart-count').textContent = count;
-    }
-
-    function showCart() {
-      if (cart.length === 0) return alert("Dein Warenkorb ist leer!");
-      
-      let html = '';
-      let total = 0;
-
-      cart.forEach(item => {
-        const itemTotal = item.price * item.quantity;
-        total += itemTotal;
-        html += `
-          <div class="flex justify-between items-center bg-gray-800 p-4 rounded-2xl">
-            <div>
-              <div class="font-semibold">${item.name}</div>
-              <div class="text-sm text-gray-400">${item.quantity}x ${item.price} €</div>
-            </div>
-            <div class="text-right font-bold text-purple-400">${itemTotal.toFixed(2)} €</div>
-          </div>`;
-      });
-
-      document.getElementById('cart-items').innerHTML = html;
-      document.getElementById('cart-total').innerHTML = `Gesamt: <span class="text-purple-400">${total.toFixed(2)} €</span>`;
-      document.getElementById('cart-modal').classList.remove('hidden');
-    }
-
-    function hideCart() {
-      document.getElementById('cart-modal').classList.add('hidden');
-    }
-
-    function deleteProduct(productId, seller) {
-      if (!currentUser) return;
-      if (seller !== currentUser.username && !isAdmin(currentUser)) {
-        return alert("Du kannst nur deine eigenen Produkte löschen!");
-      }
-      if (confirm("Produkt wirklich löschen?")) {
-        db.ref('products/' + productId).remove().then(() => {
-          alert("Produkt gelöscht!");
-          loadProducts();
-          if (!document.getElementById('page-profile').classList.contains('hidden')) renderProfile();
-          if (!document.getElementById('page-admin').classList.contains('hidden')) loadAdminPanel();
-        });
-      }
-    }
-
-    function renderProfile() {
-      document.getElementById('profile-name').textContent = currentUser.username;
-      db.ref('products').once('value', (snapshot) => {
-        const data = snapshot.val() || {};
-        let html = '<h3 class="text-2xl mb-6">Deine Produkte</h3>';
-        let hasProducts = false;
-
-        Object.keys(data).forEach(key => {
-          const p = data[key];
-          if (p.seller === currentUser.username) {
-            hasProducts = true;
-            html += `
-              <div class="glass p-6 rounded-2xl mb-4 flex justify-between items-center">
-                <div>
-                  <h4 class="font-bold">${p.name}</h4>
-                  <p class="text-purple-400">${p.price} € • ${p.stock} Stück</p>
-                  ${p.discord ? `<p class="text-pink-400">Discord: ${p.discord}</p>` : ''}
-                </div>
-                <button onclick="deleteProduct('${key}', '${p.seller}')" class="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-2xl">Löschen</button>
-              </div>`;
-          }
-        });
-
-        if (!hasProducts) html += '<p class="text-gray-400">Du hast noch keine Produkte eingestellt.</p>';
-        document.getElementById('profile-products').innerHTML = html;
-      });
-    }
-
-    function loadAdminPanel() {
-      let html = `<h3 class="text-3xl mb-8">👑 Owner Panel - ${currentUser.username}</h3>`;
-
-      db.ref('users').once('value', (userSnap) => {
-        const users = userSnap.val() || {};
-        const userCount = Object.keys(users).length;
-        
-        html += `
-          <h4 class="text-2xl mb-4 mt-6">Registrierte User (${userCount})</h4>
-          <div class="grid gap-3">`;
-
-        if (userCount === 0) {
-          html += `<p class="text-gray-400 p-4">Noch keine User registriert.</p>`;
-        } else {
-          Object.keys(users).forEach(username => {
-            const userData = users[username] || {};
-            const regDate = userData.registered 
-              ? new Date(userData.registered).toLocaleDateString('de-DE') 
-              : "Unbekannt";
-            
-            html += `
-              <div class="glass p-5 rounded-2xl flex justify-between items-center">
-                <span class="font-bold text-lg">${username}</span>
-                <span class="text-sm text-gray-400">Registriert: ${regDate}</span>
-              </div>`;
-          });
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JAQLIV Profile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
         }
-        html += `</div>`;
 
-        db.ref('products').once('value', (prodSnap) => {
-          const products = prodSnap.val() || {};
-          html += `<h4 class="text-2xl mb-4 mt-10">Alle Produkte (${Object.keys(products).length})</h4>`;
+        
+        .custom-cursor {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            background: url('assets/custom_cursor.png') no-repeat center center;
+            background-size: contain;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+        }
 
-          if (Object.keys(products).length === 0) {
-            html += `<p class="text-gray-400 p-4">Noch keine Produkte vorhanden.</p>`;
-          } else {
-            Object.keys(products).forEach(key => {
-              const p = products[key];
-              html += `
-                <div class="glass p-5 rounded-2xl mb-3 flex justify-between items-center">
-                  <div class="flex-1">
-                    <strong>${p.name}</strong> — ${p.price}€ 
-                    <span class="text-gray-400">von ${p.seller}</span>
-                    ${p.discord ? `<br><span class="text-pink-400">💬 ${p.discord}</span>` : ''}
-                  </div>
-                  <button onclick="deleteProduct('${key}', '${p.seller}')" class="bg-red-600 hover:bg-red-700 px-6 py-2.5 rounded-2xl text-sm">Löschen</button>
-                </div>`;
-            });
-          }
+        
+        body:not(.touch-device) {
+            cursor: none;
+        }
 
-          document.getElementById('admin-content').innerHTML = html;
-        });
-      });
-    }
+        body {
+            background-color: #000;
+            color: #fff;
+            overflow: hidden;
+        }
 
-    function login() {
-      const username = document.getElementById('login-user').value.trim();
-      if (!username) return alert("Bitte Username eingeben");
-      currentUser = { username };
-      localStorage.setItem('currentUser', JSON.stringify(currentUser));
-      if (isAdmin(currentUser)) document.getElementById('adminBtn').classList.remove('hidden');
-      navigate('shop');
-    }
+        .container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+        }
 
-    function register() {
-      const username = document.getElementById('reg-user').value.trim();
-      if (username.length < 3) return alert("Username zu kurz!");
-      currentUser = { username };
-      localStorage.setItem('currentUser', JSON.stringify(currentUser));
-      db.ref('users/' + username).set({ registered: Date.now() });
-      alert("Registrierung erfolgreich!");
-      navigate('shop');
-    }
+        #background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            pointer-events: none;
+        }
 
-    function logout() {
-      if (confirm("Wirklich ausloggen?")) {
-        localStorage.removeItem('currentUser');
-        location.reload();
-      }
-    }
+        .glitch-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
 
-    function switchAuthTab(n) {
-      document.getElementById('login-form').classList.toggle('hidden', n !== 0);
-      document.getElementById('register-form').classList.toggle('hidden', n !== 1);
-    }
+        #hacker-overlay, #snow-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 3;
+        }
 
-    window.onload = () => {
-      const saved = localStorage.getItem('currentUser');
-      if (saved) {
-        currentUser = JSON.parse(saved);
-        if (isAdmin(currentUser)) document.getElementById('adminBtn').classList.remove('hidden');
-        navigate('shop');
-      } else {
-        navigate('login');
-      }
-    };
-  </script>
+        .hidden {
+            display: none !important;
+        }
+
+        
+        .controls {
+            position: fixed;
+            bottom: calc(50% - 240px - 10px);
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 20;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px 10px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .theme-button {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background-color: rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .theme-button:hover {
+            transform: scale(1.1);
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+
+        
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .volume-icon {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            display: flex;
+            color: white;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 80px;
+            height: 5px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            outline: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+        }
+
+        
+        .transparency-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .transparency-icon {
+            width: 20px;
+            height: 20px;
+            color: white;
+        }
+
+        
+        .top-controls {
+            position: fixed;
+            bottom: calc(50% - 240px - 60px);
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 20;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px 12px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        
+        #profile-block {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 820px;
+            min-height: 332px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease-out;
+            pointer-events: auto;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .profile-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+        }
+
+        .profile-container::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 50%;
+            background: radial-gradient(
+                circle at 10px 10px,
+                var(--primary-color, #00CED1) 10%,
+                transparent 15%
+            );
+            animation: orbit 3s linear infinite;
+            z-index: -1;
+            filter: blur(1px);
+            box-shadow: none;
+        }
+
+        .profile-container.fast-orbit::after {
+            animation: fast-orbit 0.5s linear forwards;
+        }
+
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            pointer-events: auto;
+            opacity: 1 !important;
+        }
+
+        .profile-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .name-and-badges {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        
+        @font-face {
+            font-family: 'Angel Wish';
+            src: url('assets/Angel_wish.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        #profile-name {
+            font-family: 'Angel Wish', sans-serif;
+            font-size: 32px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            color: #fff;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.7));
+            opacity: 1 !important;
+        }
+
+        .badge-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .badge-container {
+            position: relative;
+            pointer-events: auto;
+            opacity: 1 !important;
+        }
+
+        .badge-container .tooltip {
+            visibility: hidden;
+            width: 120px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 100;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .badge-container:hover .tooltip {
+            visibility: visible;
+            opacity: 1 !important;
+        }
+
+        .badge-box {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 2px;
+            border-radius: 15px;
+            display: inline-block;
+        }
+
+        .badge-box-inner {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px;
+            border-radius: 12px;
+            display: flex;
+            gap: 8px;
+            box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .badge {
+            width: 22px;
+            height: 22px;
+            transition: transform 0.3s;
+            pointer-events: auto;
+            opacity: 1 !important;
+        }
+
+        .badge:hover {
+            transform: scale(1.2);
+        }
+
+        #profile-bio {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 18px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            opacity: 1 !important;
+        }
+
+        .bio-separator {
+            width: 100%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 20px 0;
+            opacity: 1 !important;
+        }
+
+        .profile-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            width: 100%;
+            margin-top: auto;
+        }
+
+        .visitor-counter {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            align-self: flex-start;
+            position: relative;
+            pointer-events: auto;
+            opacity: 1 !important;
+        }
+
+        .visitor-icon {
+            width: 18px;
+            height: 18px;
+            color: white;
+            opacity: 1 !important;
+        }
+
+        .visitor-counter .tooltip {
+            visibility: hidden;
+            width: 120px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 100;
+            top: -35px;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .visitor-counter:hover .tooltip {
+            visibility: visible;
+            opacity: 1 !important;
+        }
+
+        #visitor-count {
+            opacity: 1 !important;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 0;
+            pointer-events: auto;
+            opacity: 1 !important;
+        }
+
+        .social-icon {
+            width: 36px;
+            height: 36px;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.7));
+            pointer-events: auto;
+            opacity: 1 !important;
+        }
+
+        .social-icon:hover {
+            transform: scale(1.4) rotateY(15deg);
+        }
+
+        
+        #skills-block {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 820px;
+            min-height: 332px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            backdrop-filter: blur(10px);
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease-out;
+        }
+
+        .skills-title {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .skill {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .skill-name {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .skill-icon {
+            width: 22px;
+            height: 22px;
+            margin-right: 8px;
+        }
+
+        .skill-bar-container {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .skill-bar {
+            height: 100%;
+            border-radius: 5px;
+            width: 0%;
+            transition: width 2s;
+        }
+
+        #python-bar {
+            background: linear-gradient(90deg, #ff6b6b, #ff9f9f);
+        }
+
+        #cpp-bar {
+            background: linear-gradient(90deg, #4facfe, #00f2fe);
+        }
+
+        #csharp-bar {
+            background: linear-gradient(90deg, #43e97b, #38f9d7);
+        }
+
+        
+        #results-button-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+        }
+
+        #results-theme {
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s;
+        }
+
+        #results-theme:hover {
+            background: rgba(0, 0, 0, 0.9);
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+
+        #results-hint {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            width: 180px;
+            text-align: center;
+            pointer-events: none;
+            z-index: 25;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        #results-hint::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 0 10px 10px 10px;
+            border-style: solid;
+            border-color: transparent transparent rgba(0, 0, 0, 0.8) transparent;
+        }
+
+        
+        .home-theme #profile-block,
+        .home-theme #skills-block {
+            border-color: rgba(0, 195, 255, 0.5);
+        }
+
+        .hacker-theme #profile-block,
+        .hacker-theme #skills-block {
+            border-color: rgba(0, 255, 0, 0.5);
+        }
+
+        .rain-theme #profile-block,
+        .rain-theme #skills-block {
+            border-color: rgba(100, 149, 237, 0.5);
+        }
+
+        .anime-theme #profile-block,
+        .anime-theme #skills-block {
+            border-color: rgba(255, 0, 255, 0.5);
+        }
+
+        .car-theme #profile-block,
+        .car-theme #skills-block {
+            border-color: rgba(255, 165, 0, 0.5);
+        }
+
+        
+        .glitch {
+            animation: glitch 0.2s ease-in-out;
+        }
+
+        @keyframes glitch {
+            0% {
+                transform: translate(0);
+            }
+            20% {
+                transform: translate(-2px, 2px);
+            }
+            40% {
+                transform: translate(-2px, -2px);
+            }
+            60% {
+                transform: translate(2px, 2px);
+            }
+            80% {
+                transform: translate(2px, -2px);
+            }
+            100% {
+                transform: translate(0);
+            }
+        }
+
+        @keyframes orbit {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fast-orbit {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        
+        .cursor-trail {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .cursor-trail-dot {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s ease;
+        }
+
+        
+        #start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 30;
+            cursor: pointer;
+        }
+
+        #start-text {
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            color: #fff;
+            text-align: center;
+        }
+
+        
+        @media (max-width: 430px) {
+            
+            #profile-block, #skills-block {
+                width: 90vw;
+                max-width: 350px;
+                min-height: 280px;
+                padding: 15px;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            .profile-header {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .profile-container {
+                width: 120px;
+                height: 120px;
+            }
+
+            .profile-picture {
+                width: 120px;
+                height: 120px;
+            }
+
+            .profile-info {
+                align-items: center;
+                text-align: center;
+            }
+
+            .name-and-badges {
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+            }
+
+            #profile-name {
+                font-size: 24px;
+                letter-spacing: 2px;
+            }
+
+            .badge-group {
+                justify-content: center;
+                gap: 6px;
+            }
+
+            .badge {
+                width: 18px;
+                height: 18px;
+            }
+
+            .badge-container .tooltip {
+                width: 100px;
+                font-size: 12px;
+                margin-left: -50px;
+                bottom: 110%;
+            }
+
+            #profile-bio {
+                font-size: 14px;
+                line-height: 1.4;
+            }
+
+            .bio-separator {
+                margin: 15px 0;
+            }
+
+            .social-links {
+                gap: 10px;
+                justify-content: center;
+            }
+
+            .social-icon {
+                width: 32px;
+                height: 32px;
+            }
+
+            .visitor-counter {
+                font-size: 12px;
+                padding: 6px 12px;
+                align-self: center;
+            }
+
+            .visitor-icon {
+                width: 16px;
+                height: 16px;
+            }
+
+            .visitor-counter .tooltip {
+                width: 100px;
+                font-size: 12px;
+                margin-left: -50px;
+                top: -30px;
+            }
+
+            .skills-title {
+                font-size: 18px;
+                margin-bottom: 10px;
+            }
+
+            .skill-icon {
+                width: 18px;
+                height: 18px;
+            }
+
+            .skill-name span {
+                font-size: 14px;
+            }
+
+            
+            .controls {
+                bottom: 20px;
+                gap: 8px;
+                padding: 5px 8px;
+            }
+
+            .theme-button {
+                width: 28px;
+                height: 28px;
+                font-size: 12px;
+            }
+
+            
+            .top-controls {
+                bottom: 70px;
+                gap: 10px;
+                padding: 6px 10px;
+            }
+
+            .volume-control, .transparency-control {
+                gap: 6px;
+            }
+
+            .volume-icon, .transparency-icon {
+                width: 18px;
+                height: 18px;
+            }
+
+            .slider {
+                width: 60px;
+                height: 4px;
+            }
+
+            .slider::-webkit-slider-thumb {
+                width: 10px;
+                height: 10px;
+            }
+
+            
+            #results-button-container {
+                top: 10px;
+            }
+
+            #results-theme {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+
+            #results-hint {
+                width: 150px;
+                font-size: 10px;
+                padding: 6px 10px;
+            }
+
+            
+            #start-text {
+                font-size: 18px;
+                padding: 0 20px;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Retro+Gaming&display=swap" rel="stylesheet">
+</head>
+<body class="home-theme" onload="initMedia()">
+    
+    <div class="custom-cursor"></div>
+
+    
+    <div id="start-screen">
+        <div id="start-text"></div>
+    </div>
+
+    <div class="container">
+        
+        <video id="background" autoplay loop muted playsinline webkit-playsinline>
+            <source src="assets/background.mp4" type="video/mp4">
+        </video>
+
+        
+        <div class="glitch-overlay"></div>
+        <div id="hacker-overlay" class="hidden">
+            
+        </div>
+        <div id="snow-overlay" class="hidden">
+            
+        </div>
+
+
+        <div id="profile-block">
+            <div class="profile-header">
+                <div class="profile-container">
+                    <img src="assets/profile.gif" alt="Profile" class="profile-picture">
+                </div>
+                <div class="profile-info">
+                    <div class="name-and-badges">
+                        <div id="profile-name">JAQLIV</div>
+                        <div class="badge-box">
+                            <div class="badge-box-inner">
+                                <div class="badge-group">
+                                    <div class="badge-container">
+                                        <img src="assets/staff.gif" alt="Staff" class="badge">
+                                        <span class="tooltip">Staff Member</span>
+                                    </div>
+                                    <div class="badge-container">
+                                        <img src="assets/owner.gif" alt="Owner" class="badge">
+                                        <span class="tooltip">Owner</span>
+                                    </div>
+                                    <div class="badge-container">
+                                        <img src="assets/partner.gif" alt="Partner" class="badge">
+                                        <span class="tooltip">Partner</span>
+                                    </div>
+                                    <div class="badge-container">
+                                        <img src="assets/developer.png" alt="Developer" class="badge">
+                                        <span class="tooltip">Developer</span>
+                                    </div>
+                                    <div class="badge-container">
+                                        <img src="assets/bug_bounty.gif" alt="Bug Bounty" class="badge">
+                                        <span class="tooltip">Bug Bounty</span>
+                                    </div>
+                                    <div class="badge-container">
+                                        <img src="assets/hated_guns.gif" alt="Hated by Guns.lol" class="badge">
+                                        <span class="tooltip">Hated by Guns.lol</span>
+                                    </div>
+                                    <div class="badge-container">
+                                        <img src="assets/hated_fakecrime.gif" alt="Hated by Fakecrime.bio" class="badge">
+                                        <span class="tooltip">Hated by Fakecrime.bio</span>
+                                    </div>
+                                    <div class="badge-container">
+                                        <img src="assets/verified.gif" alt="Verified" class="badge">
+                                        <span class="tooltip">Verified</span>
+                                    </div>
+                                    <div class="badge-container">
+                                        <img src="assets/rule_maker.gif" alt="Rule Maker" class="badge">
+                                        <span class="tooltip">Rule Maker</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="profile-bio"></div>
+                </div>
+            </div>
+
+            <div class="bio-separator"></div>
+
+            <div class="profile-footer">
+
+                <div class="social-links">
+                    <a href="https://discord.gg/motiongoats" target="_blank">
+                        <img src="assets/discord.png" alt="Discord" class="social-icon">
+                    </a>
+                    <a href="https://github.com/JAQLIV" target="_blank">
+                        <img src="assets/github.png" alt="GitHub" class="social-icon">
+                    </a>
+                    <a href="https://www.youtube.com/@jaqliv" target="_blank">
+                        <img src="assets/youtube.png" alt="YouTube" class="social-icon">
+                    </a>
+                    <a href="https://www.tiktok.com/@jaqliv" target="_blank">
+                        <img src="assets/tiktok.png" alt="TikTok" class="social-icon">
+                    </a>
+                </div>
+
+
+                <div class="visitor-counter">
+                    <svg class="visitor-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                    <span id="visitor-count">21234</span>
+                    <span class="tooltip">Profile Views</span>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="skills-block" class="hidden">
+            <h2 class="skills-title">Programming Skills</h2>
+            <div class="skill">
+                <div class="skill-name">
+                    <img src="assets/python.png" alt="Python" class="skill-icon">
+                    <span>Python</span>
+                    <span>87%</span>
+                </div>
+                <div class="skill-bar-container">
+                    <div id="python-bar" class="skill-bar"></div>
+                </div>
+            </div>
+            <div class="skill">
+                <div class="skill-name">
+                    <img src="assets/cpp.png" alt="C++" class="skill-icon">
+                    <span>C++</span>
+                    <span>75%</span>
+                </div>
+                <div class="skill-bar-container">
+                    <div id="cpp-bar" class="skill-bar"></div>
+                </div>
+            </div>
+            <div class="skill">
+                <div class="skill-name">
+                    <img src="assets/csharp.png" alt="C#" class="skill-icon">
+                    <span>C#</span>
+                    <span>80%</span>
+                </div>
+                <div class="skill-bar-container">
+                    <div id="csharp-bar" class="skill-bar"></div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="results-button-container" class="hidden">
+            <button id="results-theme">View Results</button>
+            <div id="results-hint" class="hidden">Click again to return to profile</div>
+        </div>
+
+
+        <div class="controls">
+            <div id="home-theme" class="theme-button">1</div>
+            <div id="hacker-theme" class="theme-button">2</div>
+            <div id="rain-theme" class="theme-button">3</div>
+            <div id="anime-theme" class="theme-button">4</div>
+            <div id="car-theme" class="theme-button">5</div>
+        </div>
+
+
+        <div class="top-controls">
+            <div class="volume-control">
+                <svg id="volume-icon" class="volume-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+                </svg>
+                <input id="volume-slider" class="slider" type="range" min="0" max="1" step="0.01" value="0.3">
+            </div>
+            <div class="transparency-control">
+                <svg class="transparency-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+                <input id="transparency-slider" class="slider" type="range" min="0" max="1" step="0.01" value="0.7">
+            </div>
+        </div>
+    </div>
+
+
+    <audio id="background-music" loop>
+        <source src="assets/background_music.mp3" type="audio/mp3">
+    </audio>
+    <audio id="hacker-music" loop muted>
+        <source src="assets/hacker_music.mp3" type="audio/mp3">
+    </audio>
+    <audio id="rain-music" loop muted>
+        <source src="assets/rain_music.mp3" type="audio/mp3">
+    </audio>
+    <audio id="anime-music" loop muted>
+        <source src="assets/anime_music.mp3" type="audio/mp3">
+    </audio>
+    <audio id="car-music" loop muted>
+        <source src="assets/car_music.mp3" type="audio/mp3">
+    </audio>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+
+    <script src="script.js"></script>
 </body>
 </html>
