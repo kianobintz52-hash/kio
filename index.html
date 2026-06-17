@@ -11,6 +11,7 @@
     video#bgVideo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; opacity: 0.85; }
     .glow-purple { text-shadow: 0 0 40px #c026d3, 0 0 80px #7e22ce; }
     .card { background-color: #1a1428; border: 1px solid #4c1d95; }
+    .sidebar-active { background-color: #6b21a8; color: white; }
   </style>
 </head>
 <body class="dark">
@@ -54,6 +55,7 @@
   <!-- DASHBOARD -->
   <div id="dashboard" class="hidden min-h-screen bg-zinc-950">
     <div class="flex flex-col md:flex-row h-screen pt-16">
+      <!-- SIDEBAR -->
       <div class="w-full md:w-72 bg-[#0f0a23] border-b md:border-r border-purple-500/20 p-6 overflow-y-auto">
         <div class="flex items-center gap-3 mb-10">
           <span class="text-3xl">🔫</span>
@@ -63,14 +65,73 @@
           <a href="#" onclick="switchTab(0)" class="sidebar-active flex items-center gap-3 px-4 py-3 rounded-2xl">👤 Konto</a>
           <a href="#" onclick="switchTab(1)" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10">🔗 Links</a>
           <a href="#" onclick="switchTab(2)" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10">🎵 Musik</a>
-          <a href="#" onclick="openMyProfile()" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10">🌐 Mein Profil (separate Seite)</a>
+          <a href="#" onclick="switchTab(3)" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10">👀 Mein Profil</a>
         </div>
       </div>
 
+      <!-- MAIN CONTENT -->
       <div class="flex-1 p-4 md:p-10 overflow-y-auto">
-        <!-- Konto Inhalt -->
-        <div id="tab0">
-          <!-- ... dein Konto-Inhalt ... -->
+        <div class="max-w-5xl mx-auto" id="mainContent">
+
+          <!-- TAB 0: Konto -->
+          <div id="tab0">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-6">
+              <div class="flex items-center gap-6">
+                <img id="profilePicBig" src="https://i.pravatar.cc/128" class="w-24 h-24 md:w-28 md:h-28 rounded-3xl object-cover border-4 border-purple-500 cursor-pointer" onclick="document.getElementById('picUpload').click()">
+                <input type="file" id="picUpload" accept="image/*" class="hidden" onchange="uploadProfilePic(event)">
+                <div>
+                  <h1 id="dashNameTop" class="text-3xl md:text-4xl font-bold"></h1>
+                  <p id="dashUsername" class="text-purple-400"></p>
+                </div>
+              </div>
+              <button onclick="logout()" class="text-red-400 hover:text-red-500">Abmelden</button>
+            </div>
+          </div>
+
+          <!-- TAB 3: Eigene Profil-Website -->
+          <div id="tab3" class="hidden">
+            <div class="max-w-4xl mx-auto bg-zinc-900 rounded-3xl overflow-hidden border border-purple-500/30 shadow-2xl">
+              <!-- Video / Banner -->
+              <div class="relative h-64 bg-black">
+                <video id="bannerVideo" autoplay loop muted class="w-full h-full object-cover"></video>
+                <button onclick="document.getElementById('bannerUpload').click()" 
+                        class="absolute bottom-4 right-4 bg-black/70 hover:bg-black px-5 py-2 rounded-2xl text-sm">Video/Banner ändern</button>
+                <input type="file" id="bannerUpload" accept="video/*,image/*" class="hidden" onchange="uploadBanner(event)">
+              </div>
+
+              <!-- Profilbild -->
+              <div class="flex justify-center -mt-16 relative z-10">
+                <img id="publicProfilePic" src="https://i.pravatar.cc/128" 
+                     class="w-36 h-36 rounded-3xl object-cover border-4 border-zinc-900 cursor-pointer" 
+                     onclick="document.getElementById('picUploadProfile').click()">
+                <input type="file" id="picUploadProfile" accept="image/*" class="hidden" onchange="uploadProfilePic(event)">
+              </div>
+
+              <div class="text-center px-8 pt-4 pb-12">
+                <h1 id="publicName" class="text-5xl font-bold"></h1>
+                <p id="publicUsername" class="text-purple-400 text-2xl"></p>
+
+                <!-- Badges -->
+                <div class="my-10">
+                  <h3 class="text-2xl mb-6">Badges</h3>
+                  <div id="badgesContainer" class="flex flex-wrap justify-center gap-4"></div>
+                  <button onclick="addCustomBadge()" class="mt-6 text-purple-400 hover:text-purple-300">+ Badge verteilen (Owner)</button>
+                </div>
+
+                <!-- Bio -->
+                <div class="max-w-2xl mx-auto mb-12 text-left">
+                  <h3 class="text-2xl mb-4">Über mich</h3>
+                  <p id="publicBio" class="text-zinc-300 text-lg leading-relaxed"></p>
+                </div>
+
+                <!-- Links -->
+                <div class="max-w-2xl mx-auto text-left">
+                  <h3 class="text-2xl mb-6">Links</h3>
+                  <div id="publicLinks" class="space-y-4"></div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -85,14 +146,10 @@
 
     function saveUser(email, username, password) {
       users[email] = { 
-        email,
-        username, 
-        password, 
-        uid: nextUID++, 
-        views: 0, 
-        bio: "", 
+        username, password, uid: nextUID++, views: 0, bio: "", 
         profilePic: "https://i.pravatar.cc/128?u=" + Date.now(),
         banner: "https://picsum.photos/id/1015/1200/400",
+        bannerType: "image",
         links: [],
         badges: ["🔥 Founder", "🌟 Beta Tester"]
       };
@@ -100,28 +157,104 @@
       localStorage.setItem('nextUID', nextUID);
     }
 
-    // Öffnet Profil als separate Seite
-    function openMyProfile() {
-      if (!currentUser) return alert("Bitte zuerst einloggen");
-      const profileUrl = `https://kiobio.lol/@${currentUser.username}`;
-      window.open(profileUrl, '_blank');
+    function isTaken(email, username) {
+      return Object.values(users).some(u => u.email === email || u.username === username);
     }
 
-    // Custom Profil-Link speichern
-    function setCustomSlug() {
-      const newSlug = prompt("Dein neuer Profil-Name (z.B. coolguy, shadow, etc.):", currentUser.username);
-      if (newSlug && newSlug.trim()) {
-        currentUser.username = newSlug.trim();
-        users[currentUser.email].username = newSlug.trim();
+    function uploadProfilePic(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        currentUser.profilePic = ev.target.result;
+        users[currentUser.email].profilePic = ev.target.result;
         localStorage.setItem('kiobioUsers', JSON.stringify(users));
-        alert("✅ Profil-Name geändert! Neuer Link: kiobio.lol/@" + newSlug);
+        document.getElementById('publicProfilePic').src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function uploadBanner(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const isVideo = file.type.startsWith('video/');
+        currentUser.banner = ev.target.result;
+        currentUser.bannerType = isVideo ? "video" : "image";
+        users[currentUser.email].banner = currentUser.banner;
+        users[currentUser.email].bannerType = currentUser.bannerType;
+        localStorage.setItem('kiobioUsers', JSON.stringify(users));
+
+        const bannerVideo = document.getElementById('bannerVideo');
+        const bannerImg = document.getElementById('bannerImage');
+        if (isVideo) {
+          bannerVideo.src = ev.target.result;
+          bannerVideo.style.display = 'block';
+          bannerImg.style.display = 'none';
+          bannerVideo.play();
+        } else {
+          bannerImg.src = ev.target.result;
+          bannerVideo.style.display = 'none';
+          bannerImg.style.display = 'block';
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function addCustomBadge() {
+      const name = prompt("Badge Name (z.B. Admin, VIP, God, Legend):");
+      if (name && name.trim()) {
+        currentUser.badges.push(name.trim());
+        users[currentUser.email].badges = currentUser.badges;
+        localStorage.setItem('kiobioUsers', JSON.stringify(users));
+        renderBadges();
+        alert("✅ Badge verteilt!");
       }
     }
 
-    function showPublicProfile() {
-      // Dieser Teil wird auf der separaten Seite angezeigt (Simulation)
-      alert("Dies würde auf einer separaten Seite angezeigt werden: https://kiobio.lol/@" + currentUser.username);
+    function renderBadges() {
+      const container = document.getElementById('badgesContainer');
+      container.innerHTML = currentUser.badges.map(b => `
+        <div class="bg-gradient-to-r from-amber-400 to-yellow-500 text-black px-6 py-3 rounded-2xl font-bold shadow-lg">
+          ${b}
+        </div>
+      `).join('');
     }
+
+    function showPublicProfile() {
+      document.getElementById('publicProfilePic').src = currentUser.profilePic;
+      document.getElementById('publicName').textContent = currentUser.username;
+      document.getElementById('publicUsername').textContent = currentUser.username;
+      document.getElementById('publicBio').textContent = currentUser.bio || "Noch keine Bio...";
+      document.getElementById('profileLinkInput').value = `https://kiobio.lol/@${currentUser.username}`;
+
+      renderBadges();
+
+      const linksDiv = document.getElementById('publicLinks');
+      linksDiv.innerHTML = currentUser.links.map(l => `
+        <a href="${l.url}" target="_blank" class="block bg-zinc-800 hover:bg-zinc-700 p-6 rounded-3xl text-lg">🔗 ${l.title}</a>
+      `).join('');
+    }
+
+    function switchTab(n) {
+      document.querySelectorAll('#mainContent > div').forEach((el, i) => el.classList.toggle('hidden', i !== n));
+      if (n === 3) showPublicProfile();
+    }
+
+    function showDashboard() {
+      document.getElementById('hero').classList.add('hidden');
+      document.getElementById('dashboard').classList.remove('hidden');
+      document.getElementById('navBtn').textContent = "Abmelden";
+
+      document.getElementById('dashNameTop').textContent = currentUser.username;
+      document.getElementById('dashUsername').textContent = currentUser.username;
+      document.getElementById('profilePicBig').src = currentUser.profilePic;
+
+      switchTab(0);
+    }
+
+    function logout() { location.reload(); }
 
     // Register & Login (wie vorher)
     function showRegisterModal() { /* ... */ }
@@ -129,7 +262,6 @@
     function verifyCode() { /* ... */ }
     function showLoginModal() { /* ... */ }
     function loginUser() { /* ... */ }
-    function logout() { location.reload(); }
   </script>
 </body>
 </html>
