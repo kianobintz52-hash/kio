@@ -1,180 +1,222 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>kiobio.lol</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kiobio.lol</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
 
-  <style>
-    body { font-family: system-ui, sans-serif; }
-    .glow { text-shadow: 0 0 40px #c026d3; }
-    video#bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; opacity: 0.7; }
-  </style>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', monospace; }
+        body { background: #000; color: #fff; overflow: hidden; cursor: none; }
+        
+        .custom-cursor {
+            position: fixed; width: 40px; height: 40px;
+            background: url('https://i.imgur.com/2fZ3XzK.png') no-repeat center;
+            background-size: contain; pointer-events: none; z-index: 9999;
+            transform: translate(-50%, -50%); display: none;
+        }
+        .cursor-trail { position: fixed; pointer-events: none; z-index: 9998; }
+        .trail-dot { position: absolute; width: 6px; height: 6px; background: rgba(255,255,255,0.8); border-radius: 50%; transform: translate(-50%,-50%); }
+
+        #background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
+
+        #profile-block {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 820px; min-height: 380px; background: rgba(0,0,0,0.75);
+            border: 1px solid rgba(192, 38, 211, 0.5); padding: 25px; border-radius: 15px;
+            z-index: 20; backdrop-filter: blur(10px);
+        }
+        .profile-picture { width: 150px; height: 150px; border-radius: 50%; border: 3px solid #c026d3; }
+        #profile-name { font-size: 36px; font-weight: bold; letter-spacing: 3px; text-shadow: 0 0 10px #c026d3; }
+        .badge { width: 28px; height: 28px; }
+
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; align-items: center; justify-content: center; }
+    </style>
 </head>
-<body class="bg-black text-white min-h-screen">
+<body class="home-theme">
 
-  <video id="bg" autoplay loop muted playsinline>
-    <source src="https://files.catbox.moe/41vjqo.mp4" type="video/mp4">
-  </video>
+    <div class="custom-cursor" id="customCursor"></div>
+    <div id="cursorTrail" class="cursor-trail"></div>
 
-  <!-- NAV -->
-  <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-purple-500/30">
-    <div class="max-w-screen-2xl mx-auto px-8 py-5 flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <span class="text-4xl">🔫</span>
-        <span class="text-3xl font-bold tracking-tighter">kiobio.lol</span>
-      </div>
-      <div class="flex items-center gap-4">
-        <button onclick="showLoginModal()" class="px-6 py-2.5 rounded-2xl border border-purple-500 hover:bg-purple-500/10" id="navLoginBtn">Anmelden</button>
-        <button onclick="showRegisterModal()" class="bg-purple-600 hover:bg-purple-700 px-6 py-2.5 rounded-2xl font-semibold">Registrieren</button>
-      </div>
+    <video id="background" autoplay loop muted playsinline>
+        <source src="https://files.catbox.moe/41vjqo.mp4" type="video/mp4">
+    </video>
+
+    <!-- LANDING / HERO -->
+    <div id="hero" class="min-h-screen flex items-center justify-center text-center z-10 relative">
+        <div>
+            <h1 class="text-6xl font-bold mb-4" style="text-shadow: 0 0 30px #c026d3;">kiobio.lol</h1>
+            <p class="text-2xl mb-10">Dein Profil. Deine Regeln.</p>
+            <button onclick="showLoginModal()" class="bg-purple-600 hover:bg-purple-700 px-10 py-4 rounded-2xl text-xl mx-2">Anmelden</button>
+            <button onclick="showRegisterModal()" class="border border-purple-500 hover:bg-purple-500/20 px-10 py-4 rounded-2xl text-xl mx-2">Registrieren</button>
+        </div>
     </div>
-  </nav>
 
-  <!-- HERO -->
-  <section class="min-h-screen flex items-center justify-center text-center pt-20">
-    <div class="max-w-4xl">
-      <h1 class="text-6xl md:text-7xl font-bold glow mb-6">Dein Profil.<br>Deine Regeln.</h1>
-      <p class="text-xl text-gray-300 mb-10">Guns.lol Style — aber besser.</p>
-      <button onclick="showRegisterModal()" class="bg-purple-600 hover:bg-purple-700 text-2xl px-12 py-6 rounded-3xl font-semibold">Kostenlos starten</button>
+    <!-- PROFILE VIEW -->
+    <div id="profileView" class="hidden">
+        <div id="profile-block">
+            <div class="flex gap-6">
+                <div class="profile-container">
+                    <img id="profilePic" src="https://i.pravatar.cc/300" class="profile-picture">
+                </div>
+                <div class="flex-1">
+                    <div id="profile-name">Loading...</div>
+                    <p id="profile-bio" class="text-gray-300 mt-3"></p>
+                </div>
+            </div>
+
+            <div id="badges" class="flex gap-4 mt-6"></div>
+
+            <div id="socialLinks" class="flex gap-6 mt-8 justify-center"></div>
+
+            <div class="mt-8 flex justify-center gap-8 text-sm">
+                <div class="visitor-counter">👁️ <span id="visitor-count">0</span> Views</div>
+            </div>
+        </div>
     </div>
-  </section>
 
-  <!-- LOGIN MODAL -->
-  <div id="loginModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
-    <div class="bg-zinc-900 p-10 rounded-3xl w-full max-w-md border border-purple-500/30">
-      <h2 class="text-3xl font-bold text-center mb-8">Anmelden</h2>
-      <input id="loginEmail" type="email" value="u3271805041@gmail.com" placeholder="E-Mail" class="w-full bg-zinc-800 p-4 rounded-2xl mb-4">
-      <input id="loginPassword" type="password" value="666666" placeholder="Passwort" class="w-full bg-zinc-800 p-4 rounded-2xl mb-6">
-      <button onclick="doLogin()" class="w-full bg-purple-600 py-4 rounded-2xl font-semibold">Anmelden</button>
-      <p class="text-center text-sm mt-6 text-gray-400">Noch kein Account? <span onclick="switchToRegister()" class="text-purple-400 cursor-pointer">Registrieren</span></p>
+    <!-- LOGIN MODAL -->
+    <div id="loginModal" class="modal">
+        <div class="bg-zinc-900 p-10 rounded-3xl w-full max-w-md">
+            <h2 class="text-3xl mb-6 text-center">Anmelden</h2>
+            <input id="loginEmail" type="email" value="u3271805041@gmail.com" class="w-full bg-zinc-800 p-4 rounded-2xl mb-4">
+            <input id="loginPassword" type="password" value="666666" class="w-full bg-zinc-800 p-4 rounded-2xl mb-6">
+            <button onclick="doLogin()" class="w-full bg-purple-600 py-4 rounded-2xl">Anmelden</button>
+            <p onclick="showRegisterModal()" class="text-center text-purple-400 mt-6 cursor-pointer">Noch kein Account? Registrieren</p>
+        </div>
     </div>
-  </div>
 
-  <!-- REGISTER MODAL -->
-  <div id="registerModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
-    <div class="bg-zinc-900 p-10 rounded-3xl w-full max-w-md border border-purple-500/30">
-      <h2 class="text-3xl font-bold text-center mb-8">Registrieren</h2>
-      <input id="regEmail" type="email" placeholder="E-Mail" class="w-full bg-zinc-800 p-4 rounded-2xl mb-4">
-      <input id="regUsername" type="text" placeholder="Benutzername" class="w-full bg-zinc-800 p-4 rounded-2xl mb-4">
-      <input id="regPassword" type="password" placeholder="Passwort (min. 6 Zeichen)" class="w-full bg-zinc-800 p-4 rounded-2xl mb-6">
-      <button onclick="registerUser()" class="w-full bg-purple-600 py-4 rounded-2xl font-semibold">Jetzt registrieren</button>
+    <!-- REGISTER MODAL -->
+    <div id="registerModal" class="modal">
+        <div class="bg-zinc-900 p-10 rounded-3xl w-full max-w-md">
+            <h2 class="text-3xl mb-6 text-center">Registrieren</h2>
+            <input id="regEmail" type="email" placeholder="E-Mail" class="w-full bg-zinc-800 p-4 rounded-2xl mb-4">
+            <input id="regUsername" type="text" placeholder="Benutzername" class="w-full bg-zinc-800 p-4 rounded-2xl mb-4">
+            <input id="regPassword" type="password" placeholder="Passwort" class="w-full bg-zinc-800 p-4 rounded-2xl mb-6">
+            <button onclick="registerUser()" class="w-full bg-purple-600 py-4 rounded-2xl">Registrieren</button>
+        </div>
     </div>
-  </div>
 
-  <!-- DASHBOARD -->
-  <div id="dashboard" class="hidden min-h-screen bg-zinc-950 pt-24">
-    <div class="max-w-4xl mx-auto px-6">
-      <h1 class="text-5xl font-bold mb-4">Willkommen zurück, <span id="welcomeName" class="text-purple-400"></span>!</h1>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
-        <button onclick="goToProfile()" class="bg-gradient-to-br from-purple-600 to-violet-600 p-8 rounded-3xl text-left hover:scale-105 transition">
-          <span class="text-2xl">👤</span>
-          <h3 class="text-3xl font-bold mt-6">Mein Profil ansehen</h3>
-        </button>
-        <button onclick="openProfileEditor()" class="bg-zinc-900 border border-purple-500/50 p-8 rounded-3xl text-left hover:scale-105 transition">
-          <span class="text-2xl">✏️</span>
-          <h3 class="text-3xl font-bold mt-6">Profil bearbeiten</h3>
-        </button>
-      </div>
+    <script>
+        // ==================== FIREBASE ====================
+        const firebaseConfig = {
+          apiKey: "AIzaSyD6NPF9FIJsDipQg3dvxSohtAJCGVF4NUc",
+          authDomain: "kiobiool.firebaseapp.com",
+          databaseURL: "https://kiobiool-default-rtdb.europe-west1.firebasedatabase.app",
+          projectId: "kiobiool",
+          storageBucket: "kiobiool.firebasestorage.app",
+          appId: "1:1003434485509:web:872f257b0758051c80b96c"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
 
-      <button onclick="logout()" class="mt-8 text-red-500 hover:text-red-600">Abmelden</button>
-    </div>
-  </div>
+        let currentUser = null;
 
-  <script>
-    // === Firebase Config ===
-    const firebaseConfig = { /* Deine Config hier */ };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.database();
-    let currentUser = null;
+        // ==================== CURSOR ====================
+        function initCursor() {
+            const cursor = document.getElementById('customCursor');
+            const trail = document.getElementById('cursorTrail');
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+                cursor.style.display = 'block';
 
-    // Login
-    async function doLogin() {
-      const email = document.getElementById('loginEmail').value;
-      const password = document.getElementById('loginPassword').value;
-      try {
-        const cred = await auth.signInWithEmailAndPassword(email, password);
-        currentUser = cred.user;
-        closeAllModals();
-        showDashboard();
-      } catch (e) { alert("Login fehlgeschlagen: " + e.message); }
-    }
+                const dot = document.createElement('div');
+                dot.className = 'trail-dot';
+                dot.style.left = e.clientX + 'px';
+                dot.style.top = e.clientY + 'px';
+                trail.appendChild(dot);
+                setTimeout(() => dot.remove(), 700);
+            });
+        }
 
-    // Register
-    async function registerUser() {
-      const email = document.getElementById('regEmail').value.trim();
-      const username = document.getElementById('regUsername').value.trim().toLowerCase();
-      const password = document.getElementById('regPassword').value.trim();
+        // ==================== AUTH ====================
+        async function doLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPassword').value;
+            try {
+                const res = await auth.signInWithEmailAndPassword(email, pass);
+                currentUser = res.user;
+                hideModals();
+                loadProfile();
+            } catch (err) {
+                alert("Login Fehler: " + err.message);
+            }
+        }
 
-      if (password.length < 6 || !username) return alert("Bitte alle Felder ausfüllen");
+        async function registerUser() {
+            const email = document.getElementById('regEmail').value.trim();
+            const username = document.getElementById('regUsername').value.trim().toLowerCase();
+            const pass = document.getElementById('regPassword').value.trim();
 
-      try {
-        const cred = await auth.createUserWithEmailAndPassword(email, password);
-        await db.ref('users/' + cred.user.uid).set({
-          uid: cred.user.uid,
-          email,
-          username,
-          displayName: username,
-          bio: "Neuer bei kiobio.lol 🔥",
-          profilePic: "https://i.pravatar.cc/300?u=" + Date.now(),
-          badges: ["verified"],
-          socials: {}
-        });
-        alert("✅ Registrierung erfolgreich!");
-        closeAllModals();
-        currentUser = cred.user;
-        showDashboard();
-      } catch (e) { alert(e.message); }
-    }
+            if (!email || !username || pass.length < 6) return alert("Bitte alle Felder richtig ausfüllen");
 
-    function showLoginModal() {
-      closeAllModals();
-      document.getElementById('loginModal').classList.remove('hidden');
-    }
+            try {
+                const res = await auth.createUserWithEmailAndPassword(email, pass);
+                await db.ref('users/' + res.user.uid).set({
+                    username: username,
+                    displayName: username,
+                    bio: "Neu auf kiobio.lol",
+                    profilePic: "https://i.pravatar.cc/300?u=" + Date.now(),
+                    badges: ["verified", "owner"]
+                });
+                currentUser = res.user;
+                hideModals();
+                loadProfile();
+            } catch (err) {
+                alert(err.message);
+            }
+        }
 
-    function showRegisterModal() {
-      closeAllModals();
-      document.getElementById('registerModal').classList.remove('hidden');
-    }
+        function hideModals() {
+            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('registerModal').style.display = 'none';
+        }
 
-    function closeAllModals() {
-      document.getElementById('loginModal').classList.add('hidden');
-      document.getElementById('registerModal').classList.add('hidden');
-    }
+        function showLoginModal() {
+            hideModals();
+            document.getElementById('loginModal').style.display = 'flex';
+        }
 
-    function showDashboard() {
-      document.getElementById('dashboard').classList.remove('hidden');
-      document.getElementById('welcomeName').textContent = currentUser.displayName || "User";
-      document.getElementById('navLoginBtn').textContent = "Dashboard";
-    }
+        function showRegisterModal() {
+            hideModals();
+            document.getElementById('registerModal').style.display = 'flex';
+        }
 
-    function logout() {
-      auth.signOut();
-      location.reload();
-    }
+        // ==================== PROFILE ====================
+        async function loadProfile() {
+            document.getElementById('hero').classList.add('hidden');
+            document.getElementById('profileView').classList.remove('hidden');
 
-    function goToProfile() {
-      if (currentUser) {
-        window.location.href = `/@${currentUser.username || 'deinusername'}`;
-      }
-    }
+            const username = currentUser ? (await db.ref('users/' + currentUser.uid).once('value')).val()?.username : "deinuser";
 
-    // Auth State
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        currentUser = user;
-        showDashboard();
-      }
-    });
+            const snap = await db.ref('users').orderByChild('username').equalTo(username).limitToFirst(1).once('value');
+            const userData = Object.values(snap.val() || {})[0];
 
-    // Editor + Profile Code (aus vorheriger Nachricht) hier einfügen...
-  </script>
+            if (userData) {
+                document.getElementById('profile-name').textContent = userData.displayName || username;
+                document.getElementById('profile-bio').textContent = userData.bio || "";
+                document.getElementById('profilePic').src = userData.profilePic || "https://i.pravatar.cc/300";
+                document.getElementById('visitor-count').textContent = "1337";
+            }
+        }
+
+        // Init
+        window.onload = () => {
+            initCursor();
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    currentUser = user;
+                    loadProfile();
+                }
+            });
+        };
+    </script>
 </body>
 </html>
