@@ -13,11 +13,11 @@
         body { background: #0a0a0a; color: #e5e5e5; font-family: system-ui, sans-serif; }
         .glass { background: rgba(26, 26, 30, 0.95); backdrop-filter: blur(12px); }
         .accent { color: #22d3ee; }
-        .card { background: #1a1a1e; border: 1px solid #22d3ee; }
     </style>
 </head>
 <body class="min-h-screen">
 
+<!-- NAV -->
 <nav class="fixed top-0 w-full bg-black/80 backdrop-blur-md border-b border-zinc-800 z-50">
     <div class="max-w-6xl mx-auto px-6 py-5 flex justify-between items-center">
         <div class="flex items-center gap-3">
@@ -30,7 +30,7 @@
 
 <!-- HERO -->
 <section id="hero" class="min-h-screen flex items-center justify-center text-center">
-    <div class="max-w-xl px-6">
+    <div class="max-w-xl">
         <h1 class="text-6xl font-bold mb-6">kiobio.lol</h1>
         <p class="text-xl text-zinc-400 mb-10">Dein Profil. Deine Regeln.</p>
         <button onclick="showLoginModal()" class="bg-white text-black px-10 py-4 rounded-2xl text-lg font-semibold">Anmelden</button>
@@ -41,24 +41,10 @@
 <!-- DASHBOARD -->
 <div id="dashboard" class="hidden min-h-screen pt-24 px-6">
     <div class="max-w-6xl mx-auto">
-        <div class="flex justify-between items-center mb-10">
-            <h1 class="text-4xl font-bold">Kontoübersicht</h1>
-            <div id="ownerBadge" class="hidden px-5 py-2 bg-amber-600 rounded-full text-sm font-bold">👑 OWNER</div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div class="card rounded-3xl p-6">
-                <div class="text-sm text-zinc-400">Benutzername</div>
-                <div id="usernameDisplay" class="text-2xl font-bold accent mt-2">@k</div>
-            </div>
-            <div class="card rounded-3xl p-6">
-                <div class="text-sm text-zinc-400">Profilaufrufe</div>
-                <div class="text-3xl font-bold accent mt-2">1337</div>
-            </div>
-        </div>
+        <h1 class="text-4xl font-bold">Willkommen zurück, <span id="welcomeName" class="accent"></span>!</h1>
 
         <!-- Owner Panel -->
-        <div id="ownerPanel" class="hidden mt-12 card rounded-3xl p-8">
+        <div id="ownerPanel" class="hidden mt-12 bg-zinc-900 border border-sky-500 rounded-3xl p-8">
             <h2 class="text-2xl font-bold mb-6">👑 Owner Badge Manager</h2>
             <input id="targetUsername" placeholder="Benutzername" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-4 mb-4">
             <select id="badgeSelect" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-4 mb-4">
@@ -117,12 +103,12 @@
 
         try {
             const usernameSnap = await db.ref('usernames/' + username).once('value');
-            if (usernameSnap.exists()) return alert("Benutzername bereits vergeben!");
+            if (usernameSnap.exists()) return alert("Dieser Benutzername ist schon vergeben!");
 
             const res = await auth.createUserWithEmailAndPassword(email, password);
 
             await db.ref('users/' + res.user.uid).set({
-                email, username, displayName: username, bio: "Neu hier 🔥", badges: []
+                email, username, displayName: username, bio: "Neu hier 🔥"
             });
             await db.ref('usernames/' + username).set(res.user.uid);
 
@@ -141,7 +127,7 @@
             currentUser = res.user;
             hideModals();
             showDashboard();
-        } catch (e) { alert("Fehler: " + e.message); }
+        } catch (e) { alert("Login fehlgeschlagen: " + e.message); }
     }
 
     function hideModals() {
@@ -156,29 +142,10 @@
         document.getElementById('hero').classList.add('hidden');
         document.getElementById('dashboard').classList.remove('hidden');
         document.getElementById('navBtn').classList.remove('hidden');
-        document.getElementById('welcomeText').textContent = `Willkommen zurück, ${currentUser.email.split('@')[0]}`;
+        document.getElementById('welcomeName').textContent = currentUser.email.split('@')[0];
 
         if (currentUser.email === "u3271805041@gmail.com") {
             document.getElementById('ownerPanel').classList.remove('hidden');
-            document.getElementById('ownerBadge').classList.remove('hidden');
-        }
-    }
-
-    async function giveBadge() {
-        const target = document.getElementById('targetUsername').value.trim().toLowerCase();
-        const badge = document.getElementById('badgeSelect').value;
-        if (!target) return alert("Username eingeben!");
-
-        const snap = await db.ref('usernames/' + target).once('value');
-        if (!snap.exists()) return alert("User nicht gefunden!");
-
-        const uid = snap.val();
-        const ref = db.ref('users/' + uid + '/badges');
-        const badges = (await ref.once('value')).val() || [];
-        if (!badges.includes(badge)) {
-            badges.push(badge);
-            await ref.set(badges);
-            alert(`✅ Badge vergeben!`);
         }
     }
 
