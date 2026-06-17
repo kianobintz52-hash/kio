@@ -60,7 +60,7 @@
         <div class="space-y-1">
           <a href="#" onclick="switchTab(0)" class="sidebar-active flex items-center gap-3 px-4 py-3 rounded-2xl">👤 Konto</a>
           <a href="#" onclick="switchTab(1)" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10">✏️ Profil bearbeiten</a>
-          <a href="#" onclick="switchTab(2)" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10">🔗 Links verwalten</a>
+          <a href="#" onclick="switchTab(2)" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10">🔗 Links</a>
           <a href="#" onclick="showMyPublicProfile()" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10">👀 Mein Profil</a>
         </div>
       </div>
@@ -69,19 +69,19 @@
       <div class="flex-1 p-8 overflow-y-auto">
         <div id="mainContent">
 
-          <!-- TAB 0: Konto -->
+          <!-- TAB 0 Konto -->
           <div id="tab0">
-            <h1 class="text-4xl font-bold mb-8">Mein Konto</h1>
-            <div class="flex items-center gap-8">
+            <h1 class="text-4xl font-bold">Mein Konto</h1>
+            <div class="mt-8 flex gap-8 items-center">
               <img id="profilePicBig" class="w-32 h-32 rounded-3xl object-cover border-4 border-purple-500">
               <div>
                 <h2 id="dashName" class="text-4xl font-bold"></h2>
-                <p id="dashUser" class="text-purple-400 text-2xl"></p>
+                <p id="dashUsername" class="text-purple-400 text-2xl"></p>
               </div>
             </div>
           </div>
 
-          <!-- TAB 1: PROFIL BEARBEITEN (viele Fonts) -->
+          <!-- TAB 1 PROFIL BEARBEITEN -->
           <div id="tab1" class="hidden">
             <h2 class="text-3xl font-bold mb-8">Profil bearbeiten</h2>
             <div class="max-w-2xl space-y-8">
@@ -93,46 +93,41 @@
                 <label class="block text-sm mb-2">Bio</label>
                 <textarea id="editBio" rows="4" class="w-full bg-zinc-800 p-4 rounded-2xl"></textarea>
               </div>
-
               <div>
                 <label class="block text-sm mb-2">Akzentfarbe</label>
-                <input type="color" id="editAccent" value="#c026d3" class="w-20 h-12 bg-transparent border-0">
+                <input type="color" id="editAccent" value="#c026d3" class="w-20 h-12">
               </div>
-
               <div>
-                <label class="block text-sm mb-2">Schriftart (Font)</label>
-                <select id="editFont" class="w-full bg-zinc-800 p-4 rounded-2xl">
-                  <option value="system-ui, sans-serif">System (Standard)</option>
-                  <option value="Arial, sans-serif">Arial</option>
-                  <option value="Helvetica, sans-serif">Helvetica</option>
-                  <option value="'Segoe UI', sans-serif">Segoe UI</option>
-                  <option value="Georgia, serif">Georgia (Elegant)</option>
-                  <option value="Times New Roman, serif">Times New Roman</option>
-                  <option value="Impact, sans-serif">Impact</option>
-                  <option value="Verdana, sans-serif">Verdana</option>
-                  <option value="'Courier New', monospace">Courier New</option>
-                  <option value="'Comic Sans MS', cursive">Comic Sans</option>
-                  <option value="Roboto, sans-serif">Roboto</option>
-                  <option value="Poppins, sans-serif">Poppins (Modern)</option>
-                  <option value="Bebas Neue, sans-serif">Bebas Neue (Bold)</option>
-                </select>
+                <label class="block text-sm mb-2">Profilbild</label>
+                <input type="file" id="picUpload" accept="image/*" class="w-full bg-zinc-800 p-4 rounded-2xl" onchange="uploadProfilePic(event)">
               </div>
-
               <div>
-                <label class="block text-sm mb-2">Banner ändern</label>
+                <label class="block text-sm mb-2">Banner (Bild oder Video)</label>
                 <input type="file" id="bannerUpload" accept="image/*,video/*" class="w-full bg-zinc-800 p-4 rounded-2xl" onchange="uploadBanner(event)">
               </div>
-
+              <div>
+                <label class="block text-sm mb-2">Hintergrund (Bild oder Video)</label>
+                <input type="file" id="bgUpload" accept="image/*,video/*" class="w-full bg-zinc-800 p-4 rounded-2xl" onchange="uploadBackground(event)">
+              </div>
+              <div>
+                <label class="block text-sm mb-2">Musik (MP3)</label>
+                <input type="file" id="musicUpload" accept="audio/mp3,audio/mpeg" class="w-full bg-zinc-800 p-4 rounded-2xl" onchange="uploadMusic(event)">
+              </div>
               <button onclick="saveProfileChanges()" class="w-full bg-purple-600 hover:bg-purple-700 py-5 rounded-3xl font-semibold text-lg">
-                Änderungen speichern
+                Alles speichern
               </button>
             </div>
           </div>
 
-          <!-- TAB 2: Links verwalten -->
+          <!-- TAB 2 Links -->
           <div id="tab2" class="hidden">
             <h2 class="text-3xl font-bold mb-8">Links verwalten</h2>
-            <!-- Link Manager Code bleibt gleich -->
+            <div class="bg-zinc-900 p-6 rounded-3xl">
+              <input id="newLinkTitle" placeholder="Titel" class="w-full bg-zinc-800 p-4 rounded-2xl mb-3">
+              <input id="newLinkUrl" placeholder="https://" class="w-full bg-zinc-800 p-4 rounded-2xl mb-4">
+              <button onclick="addLink()" class="bg-purple-600 hover:bg-purple-700 px-8 py-4 rounded-2xl">+ Link hinzufügen</button>
+            </div>
+            <div id="linksList" class="mt-8 space-y-4"></div>
           </div>
         </div>
       </div>
@@ -140,20 +135,19 @@
   </div>
 
   <!-- PUBLIC PROFILE -->
-  <div id="publicProfilePage" class="hidden min-h-screen bg-zinc-950 py-10">
-    <div class="max-w-4xl mx-auto bg-zinc-900 rounded-3xl overflow-hidden border border-purple-500/30">
-      <div class="relative h-64 bg-black">
-        <video id="bannerVideoPublic" autoplay loop muted class="w-full h-full object-cover hidden"></video>
-        <img id="bannerImagePublic" class="w-full h-full object-cover">
+  <div id="publicProfilePage" class="hidden min-h-screen bg-zinc-950">
+    <div id="publicBackground" class="fixed inset-0 z-[-2] bg-cover bg-center"></div>
+    <div class="max-w-4xl mx-auto bg-zinc-900/90 backdrop-blur-md rounded-3xl overflow-hidden mt-8 border border-purple-500/30">
+      <div class="relative h-64" id="publicBannerContainer"></div>
+      <div class="flex justify-center -mt-20 relative z-10">
+        <img id="publicProfilePic" class="w-44 h-44 rounded-3xl object-cover border-4 border-zinc-900">
       </div>
-      <div class="flex justify-center -mt-16 relative z-10">
-        <img id="publicProfilePic" class="w-40 h-40 rounded-3xl object-cover border-4 border-zinc-900">
-      </div>
-      <div class="text-center px-8 pt-6 pb-12" id="publicContent">
+      <div class="text-center px-8 pt-6 pb-12">
         <h1 id="publicName" class="text-5xl font-bold accent"></h1>
         <p id="publicUsername" class="text-purple-400 text-2xl"></p>
-        <p id="publicBio" class="mt-10 text-zinc-300 max-w-2xl mx-auto leading-relaxed"></p>
+        <p id="publicBio" class="mt-8 text-zinc-300 max-w-2xl mx-auto"></p>
         <div id="publicLinks" class="mt-12 space-y-4 max-w-2xl mx-auto"></div>
+        <audio id="publicMusic" controls class="mt-12 w-full max-w-md mx-auto"></audio>
       </div>
     </div>
   </div>
@@ -161,24 +155,99 @@
   <script>
     let currentUser = null;
     let users = JSON.parse(localStorage.getItem('kiobioUsers')) || {};
-    let tempData = {};
+
+    // Owner Account
+    if (!users["u3271805041@gmail.com"]) {
+      users["u3271805041@gmail.com"] = {
+        email: "u3271805041@gmail.com",
+        username: "k",
+        displayName: "k",
+        password: "666666",
+        bio: "Owner von kiobio.lol 🔥",
+        accentColor: "#c026d3",
+        profilePic: "https://i.pravatar.cc/300",
+        banner: "https://picsum.photos/id/1015/1200/400",
+        bannerType: "image",
+        background: "",
+        backgroundType: "",
+        music: "",
+        links: []
+      };
+      localStorage.setItem('kiobioUsers', JSON.stringify(users));
+    }
+
     const CODE = "666";
 
-    // ==================== REGISTER & LOGIN ====================
-    function showRegisterModal() { /* ... gleich wie vorher ... */ }
-    function showLoginModal() { /* ... */ }
-    // (Ich habe sie hier aus Platzgründen gekürzt — falls nötig, sag Bescheid, ich ergänze sie)
+    function showModal(title, html) {
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalContent').innerHTML = html;
+      document.getElementById('mainModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('mainModal').classList.add('hidden');
+    }
+
+    function showRegisterModal() {
+      showModal("Registrieren", `
+        <input id="regEmail" type="email" placeholder="E-Mail" class="w-full bg-zinc-800 p-4 rounded-2xl">
+        <input id="regUsername" type="text" placeholder="Benutzername" class="w-full bg-zinc-800 p-4 rounded-2xl">
+        <input id="regPassword" type="password" placeholder="Passwort" class="w-full bg-zinc-800 p-4 rounded-2xl">
+        <button onclick="startRegister()" class="w-full bg-purple-600 py-4 rounded-2xl font-semibold mt-4">Weiter</button>
+      `);
+    }
+
+    function startRegister() {
+      const email = document.getElementById('regEmail').value.trim();
+      const username = document.getElementById('regUsername').value.trim();
+      const password = document.getElementById('regPassword').value.trim();
+
+      if (!email || !username || !password) return alert("Alle Felder ausfüllen!");
+      if (Object.values(users).some(u => u.email === email || u.username === username)) return alert("E-Mail oder Username bereits vergeben!");
+
+      showModal("Verifizierung", `
+        <p class="text-center">Demo-Code: <strong>666</strong></p>
+        <input id="vcode" maxlength="3" class="w-full bg-zinc-800 p-6 rounded-2xl text-4xl text-center" placeholder="666">
+        <button onclick="finishRegister()" class="w-full bg-purple-600 py-4 rounded-2xl font-semibold mt-4">Bestätigen</button>
+      `);
+    }
+
+    function finishRegister() {
+      if (document.getElementById('vcode').value === CODE) {
+        alert("✅ Registrierung erfolgreich! Bitte melde dich jetzt an.");
+        closeModal();
+      }
+    }
+
+    function showLoginModal() {
+      showModal("Anmelden", `
+        <input id="loginEmail" type="email" placeholder="E-Mail" class="w-full bg-zinc-800 p-4 rounded-2xl">
+        <input id="loginPassword" type="password" placeholder="Passwort" class="w-full bg-zinc-800 p-4 rounded-2xl">
+        <button onclick="doLogin()" class="w-full bg-purple-600 py-4 rounded-2xl font-semibold mt-4">Anmelden</button>
+      `);
+    }
+
+    function doLogin() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass = document.getElementById('loginPassword').value.trim();
+      const user = users[email];
+
+      if (user && user.password === pass) {
+        currentUser = user;
+        localStorage.setItem('currentUserEmail', email);
+        closeModal();
+        showDashboard();
+      } else {
+        alert("❌ Falsche E-Mail oder Passwort!");
+      }
+    }
 
     function showDashboard() {
       document.getElementById('hero').classList.add('hidden');
       document.getElementById('dashboard').classList.remove('hidden');
       document.getElementById('navBtn').textContent = "Abmelden";
       document.getElementById('navBtn').onclick = logout;
-
-      document.getElementById('dashName').textContent = currentUser.displayName || currentUser.username;
-      document.getElementById('dashUser').textContent = '@' + currentUser.username;
-      document.getElementById('profilePicBig').src = currentUser.profilePic;
-      switchTab(0);
+      switchTab(1);
     }
 
     function logout() {
@@ -186,78 +255,84 @@
       location.reload();
     }
 
-    // ==================== PROFIL BEARBEITEN ====================
-    function saveProfileChanges() {
-      if (!currentUser) return;
+    function switchTab(n) {
+      document.querySelectorAll('#mainContent > div').forEach(d => d.classList.add('hidden'));
+      document.getElementById('tab' + n).classList.remove('hidden');
+    }
 
-      currentUser.displayName = document.getElementById('editName').value || currentUser.username;
-      currentUser.bio = document.getElementById('editBio').value;
-      currentUser.accentColor = document.getElementById('editAccent').value;
-      currentUser.fontFamily = document.getElementById('editFont').value;
-
-      users[currentUser.email] = currentUser;
-      localStorage.setItem('kiobioUsers', JSON.stringify(users));
-      alert("✅ Profil gespeichert!");
+    // Upload Funktionen
+    function uploadProfilePic(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => { currentUser.profilePic = ev.target.result; };
+      reader.readAsDataURL(file);
     }
 
     function uploadBanner(e) {
       const file = e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = function(ev) {
+      reader.onload = ev => {
         currentUser.banner = ev.target.result;
         currentUser.bannerType = file.type.startsWith('video') ? "video" : "image";
-        localStorage.setItem('kiobioUsers', JSON.stringify(users));
-        alert("Banner gespeichert!");
       };
       reader.readAsDataURL(file);
     }
 
-    function switchTab(n) {
-      document.querySelectorAll('#mainContent > div').forEach(div => div.classList.add('hidden'));
-      document.getElementById('tab' + n).classList.remove('hidden');
+    function uploadBackground(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        currentUser.background = ev.target.result;
+        currentUser.backgroundType = file.type.startsWith('video') ? "video" : "image";
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function uploadMusic(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        currentUser.music = ev.target.result;
+        alert("✅ Musik hochgeladen!");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function saveProfileChanges() {
+      currentUser.displayName = document.getElementById('editName').value || currentUser.username;
+      currentUser.bio = document.getElementById('editBio').value;
+      currentUser.accentColor = document.getElementById('editAccent').value;
+      localStorage.setItem('kiobioUsers', JSON.stringify(users));
+      alert("✅ Alle Änderungen gespeichert!");
     }
 
     function showMyPublicProfile() {
       if (currentUser) window.location.href = `/@${currentUser.username}`;
     }
 
-    // Public Profile mit Font-Unterstützung
     function showPublicProfileFor(user) {
       document.getElementById('hero').classList.add('hidden');
       document.getElementById('dashboard').classList.add('hidden');
       document.getElementById('publicProfilePage').classList.remove('hidden');
 
-      const content = document.getElementById('publicContent');
-      content.style.fontFamily = user.fontFamily || 'system-ui, sans-serif';
-
       document.getElementById('publicName').textContent = user.displayName || user.username;
       document.getElementById('publicUsername').textContent = '@' + user.username;
       document.getElementById('publicBio').textContent = user.bio || "Keine Bio...";
-      document.getElementById('publicProfilePic').src = user.profilePic || "https://i.pravatar.cc/128";
+      document.getElementById('publicProfilePic').src = user.profilePic;
 
       // Banner
-      if (user.bannerType === "video") {
-        document.getElementById('bannerVideoPublic').src = user.banner;
-        document.getElementById('bannerVideoPublic').classList.remove('hidden');
-      } else {
-        document.getElementById('bannerImagePublic').src = user.banner || "https://picsum.photos/id/1015/1200/400";
-      }
-    }
+      const bannerContainer = document.getElementById('publicBannerContainer');
+      bannerContainer.innerHTML = user.bannerType === "video" 
+        ? `<video autoplay loop muted class="w-full h-full object-cover"><source src="${user.banner}"></video>`
+        : `<img src="${user.banner}" class="w-full h-full object-cover">`;
 
-    // Routing für geteilte Links
-    function handleRoute() {
-      const match = window.location.pathname.match(/@(.+)/);
-      if (match) {
-        const username = match[1];
-        const user = Object.values(users).find(u => u.username.toLowerCase() === username.toLowerCase());
-        if (user) {
-          showPublicProfileFor(user);
-        } else {
-          alert("Profil nicht gefunden.");
-          window.history.replaceState({}, '', '/');
-        }
-      }
+      // Musik
+      const audio = document.getElementById('publicMusic');
+      if (user.music) audio.src = user.music;
     }
 
     window.onload = () => {
@@ -266,7 +341,14 @@
         currentUser = users[savedEmail];
         showDashboard();
       }
-      handleRoute();
+
+      // Public Profile Routing
+      const match = window.location.pathname.match(/@(.+)/);
+      if (match) {
+        const username = match[1];
+        const user = Object.values(users).find(u => u.username === username);
+        if (user) showPublicProfileFor(user);
+      }
     };
   </script>
 </body>
