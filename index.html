@@ -3,183 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>kiobio.lol</title>
+    <title>kiobio.lol - Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
 
     <style>
-        body { font-family: system-ui, sans-serif; background: #09090b; color: #f4f4f5; }
-        .glass { background: rgba(24, 24, 27, 0.85); backdrop-filter: blur(16px); }
+        body { background: #0a0a0a; color: #e5e5e5; font-family: system-ui, sans-serif; }
+        .sidebar { background: #111113; }
+        .card { background: #1a1a1e; border: 1px solid #3b0764; }
+        .purple-accent { color: #c026d3; }
     </style>
 </head>
-<body class="min-h-screen">
+<body class="flex min-h-screen">
 
-    <!-- NAV -->
-    <nav class="fixed top-0 w-full bg-zinc-900/90 backdrop-blur-md border-b border-zinc-800 z-50">
-        <div class="max-w-6xl mx-auto px-6 py-5 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <span class="text-3xl">🔫</span>
-                <span class="text-2xl font-bold">kiobio.lol</span>
-            </div>
-            <button onclick="logout()" id="navBtn" class="hidden px-6 py-2.5 bg-red-600 rounded-2xl">Abmelden</button>
+    <!-- SIDEBAR -->
+    <div class="w-72 sidebar h-screen fixed p-6">
+        <div class="flex items-center gap-3 mb-10">
+            <span class="text-4xl">🔫</span>
+            <span class="text-3xl font-bold tracking-tighter">kiobio.lol</span>
         </div>
-    </nav>
 
-    <!-- HERO -->
-    <section id="hero" class="min-h-screen flex items-center justify-center text-center">
-        <div class="max-w-2xl px-6">
-            <h1 class="text-6xl font-bold mb-6">Dein Profil.<br>Dein Style.</h1>
-            <p class="text-xl text-zinc-400 mb-10">Modern • Clean • Voll anpassbar</p>
-            <button onclick="showLoginModal()" class="bg-white text-black px-10 py-4 rounded-2xl font-semibold text-lg">Anmelden</button>
-            <button onclick="showRegisterModal()" class="ml-4 border border-zinc-700 px-10 py-4 rounded-2xl text-lg">Registrieren</button>
-        </div>
-    </section>
-
-    <!-- DASHBOARD -->
-    <div id="dashboard" class="hidden min-h-screen pt-24">
-        <div class="max-w-5xl mx-auto px-6">
-            <h1 class="text-5xl font-bold">Willkommen zurück, <span id="welcomeName" class="text-violet-400"></span>!</h1>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
-                <div onclick="goToProfile()" class="glass border border-zinc-700 rounded-3xl p-10 hover:border-violet-500 cursor-pointer transition">
-                    <div class="text-6xl mb-6">👤</div>
-                    <h3 class="text-3xl font-semibold">Mein Profil ansehen</h3>
-                </div>
-                <div onclick="openProfileEditor()" class="glass border border-zinc-700 rounded-3xl p-10 hover:border-violet-500 cursor-pointer transition">
-                    <div class="text-6xl mb-6">✏️</div>
-                    <h3 class="text-3xl font-semibold">Profil bearbeiten</h3>
-                </div>
+        <div class="space-y-8">
+            <div class="text-purple-400 font-semibold flex items-center gap-3">
+                <span>👤</span> Konto
             </div>
+            
+            <nav class="space-y-2 text-zinc-400">
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl bg-purple-900/30 text-white">Übersicht</a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800">Statistiken</a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800">Badges</a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800">Anpassen</a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800">Links</a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800">Image Host</a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800">Premium</a>
+            </nav>
         </div>
     </div>
 
-    <!-- EDITOR MODAL -->
-    <div id="editorModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-        <div class="bg-zinc-900 rounded-3xl w-full max-w-2xl mx-4 p-10">
-            <h2 class="text-3xl font-bold mb-8">Profil bearbeiten</h2>
-            
-            <div class="space-y-6">
-                <input id="editDisplayName" placeholder="Display Name" class="w-full bg-zinc-800 rounded-2xl px-5 py-4">
-                <textarea id="editBio" rows="4" placeholder="Deine Bio..." class="w-full bg-zinc-800 rounded-2xl px-5 py-4"></textarea>
+    <!-- MAIN CONTENT -->
+    <div class="flex-1 ml-72 p-10">
+        <h1 class="text-4xl font-bold mb-8">Kontoübersicht</h1>
 
-                <div class="grid grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm mb-2">Profilbild</label>
-                        <input type="file" id="picInput" accept="image/*" class="block w-full">
-                    </div>
-                    <div>
-                        <label class="block text-sm mb-2">Banner</label>
-                        <input type="file" id="bannerInput" accept="image/*" class="block w-full">
-                    </div>
-                </div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10">
+            <div class="card rounded-3xl p-6">
+                <div class="text-sm text-zinc-400">Benutzername</div>
+                <div class="text-2xl font-bold mt-2" id="username">deinname</div>
+            </div>
+            <div class="card rounded-3xl p-6">
+                <div class="text-sm text-zinc-400">Profilaufrufe</div>
+                <div class="text-2xl font-bold mt-2 purple-accent" id="views">0</div>
+            </div>
+            <div class="card rounded-3xl p-6">
+                <div class="text-sm text-zinc-400">UID</div>
+                <div class="text-2xl font-bold mt-2" id="uid">123456</div>
+            </div>
+            <div class="card rounded-3xl p-6">
+                <div class="text-sm text-zinc-400">Erstellt</div>
+                <div class="text-2xl font-bold mt-2" id="joined">vor 2 Tagen</div>
+            </div>
+        </div>
 
-                <div>
-                    <label class="block text-sm mb-2">Musik (.mp3)</label>
-                    <input type="file" id="musicInput" accept="audio/mp3" class="block w-full">
-                    <input id="musicTitle" placeholder="Song Titel (optional)" class="mt-3 w-full bg-zinc-800 rounded-2xl px-5 py-3">
+        <!-- Weitere Abschnitte wie bei guns.lol -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="card rounded-3xl p-8">
+                <h2 class="text-xl font-semibold mb-6">Profil-Vervollständigung</h2>
+                <div class="bg-yellow-900/30 border border-yellow-600 rounded-2xl p-6">
+                    <p class="text-yellow-400">Dein Profil ist noch nicht vollständig!</p>
                 </div>
             </div>
 
-            <div class="flex gap-4 mt-10">
-                <button onclick="saveProfileChanges()" class="flex-1 bg-violet-600 py-4 rounded-2xl font-semibold">Speichern</button>
-                <button onclick="closeEditor()" class="flex-1 bg-zinc-800 py-4 rounded-2xl">Abbrechen</button>
+            <div class="card rounded-3xl p-8">
+                <h2 class="text-xl font-semibold mb-6">Schnellaktionen</h2>
+                <button onclick="openProfileEditor()" class="w-full bg-purple-600 hover:bg-purple-700 py-4 rounded-2xl mb-4">Profil bearbeiten</button>
+                <button onclick="goToProfile()" class="w-full border border-purple-500 py-4 rounded-2xl">Meine Seite ansehen</button>
             </div>
         </div>
     </div>
 
     <script>
-        const firebaseConfig = {
-          apiKey: "AIzaSyD6NPF9FIJsDipQg3dvxSohtAJCGVF4NUc",
-          authDomain: "kiobiool.firebaseapp.com",
-          databaseURL: "https://kiobiool-default-rtdb.europe-west1.firebasedatabase.app",
-          projectId: "kiobiool",
-          storageBucket: "kiobiool.firebasestorage.app",
-          appId: "1:1003434485509:web:872f257b0758051c80b96c"
-        };
+        // Firebase (kurz)
+        const firebaseConfig = { /* deine Config */ };
         firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
         const db = firebase.database();
-        const storage = firebase.storage();
 
-        let currentUser = null;
-
-        async function doLogin() { /* gleiche Funktion wie vorher */ }
-        async function registerUser() { /* gleiche Funktion wie vorher */ }
-
-        function showDashboard() {
-            document.getElementById('hero').classList.add('hidden');
-            document.getElementById('dashboard').classList.remove('hidden');
-            document.getElementById('welcomeName').textContent = currentUser.email.split('@')[0];
-            document.getElementById('navBtn').classList.remove('hidden');
-        }
-
-        function goToProfile() {
-            window.open('profile.html', '_blank');
-        }
-
-        function openProfileEditor() {
-            document.getElementById('editorModal').classList.remove('hidden');
-        }
-
-        function closeEditor() {
-            document.getElementById('editorModal').classList.add('hidden');
-        }
-
-        async function saveProfileChanges() {
-            if (!currentUser) return;
-
-            const updates = {
-                displayName: document.getElementById('editDisplayName').value || currentUser.email.split('@')[0],
-                bio: document.getElementById('editBio').value
-            };
-
-            // Uploads
-            const picFile = document.getElementById('picInput').files[0];
-            if (picFile) {
-                const url = await uploadFile(picFile, `profilePics/${currentUser.uid}`);
-                updates.profilePic = url;
-            }
-
-            const bannerFile = document.getElementById('bannerInput').files[0];
-            if (bannerFile) {
-                const url = await uploadFile(bannerFile, `banners/${currentUser.uid}`);
-                updates.banner = url;
-            }
-
-            const musicFile = document.getElementById('musicInput').files[0];
-            if (musicFile) {
-                const url = await uploadFile(musicFile, `music/${currentUser.uid}`);
-                updates.musicUrl = url;
-                updates.musicTitle = document.getElementById('musicTitle').value || "Custom Track";
-            }
-
-            await db.ref('users/' + currentUser.uid).update(updates);
-            alert("✅ Profil erfolgreich aktualisiert!");
-            closeEditor();
-        }
-
-        async function uploadFile(file, path) {
-            const ref = storage.ref(path);
-            await ref.put(file);
-            return await ref.getDownloadURL();
-        }
-
-        function logout() {
-            auth.signOut();
-            location.reload();
-        }
-
-        window.onload = () => {
-            auth.onAuthStateChanged(user => {
-                if (user) {
-                    currentUser = user;
-                    showDashboard();
-                }
-            });
-        };
+        // Dummy Daten für jetzt
+        document.getElementById('username').textContent = "deinname";
+        document.getElementById('views').textContent = "1337";
     </script>
 </body>
 </html>
