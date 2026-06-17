@@ -74,16 +74,21 @@
     emailjs.init("IuyLZ33ctDj1VxqXE");
 
     let currentUser = null;
-    const VERIFICATION_CODE = "666"; // Fest vorgegebener Code
+    const VERIFICATION_CODE = "666";
     let currentEmail = "";
     let currentUsername = "";
-
-    // Lade gespeicherte User
     let users = JSON.parse(localStorage.getItem('kiobioUsers')) || {};
 
     function saveUser(email, username, password) {
       users[email] = { username, password };
       localStorage.setItem('kiobioUsers', JSON.stringify(users));
+    }
+
+    function togglePasswordVisibility(inputId) {
+      const input = document.getElementById(inputId);
+      if (input) {
+        input.type = input.type === "password" ? "text" : "password";
+      }
     }
 
     function showRegisterModal() {
@@ -92,7 +97,14 @@
       document.getElementById('modalContent').innerHTML = `
         <input id="regEmail" type="email" placeholder="E-Mail" class="w-full p-5 bg-zinc-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500">
         <input id="regUser" placeholder="Username" class="w-full p-5 bg-zinc-800 rounded-2xl mt-4 focus:outline-none focus:ring-2 focus:ring-purple-500">
-        <input id="regPass" type="password" placeholder="Passwort" class="w-full p-5 bg-zinc-800 rounded-2xl mt-4 focus:outline-none focus:ring-2 focus:ring-purple-500">
+        
+        <div class="relative">
+          <input id="regPass" type="password" placeholder="Passwort (mind. 6 Zeichen)" 
+                 class="w-full p-5 bg-zinc-800 rounded-2xl mt-4 focus:outline-none focus:ring-2 focus:ring-purple-500">
+          <button onclick="togglePasswordVisibility('regPass')" 
+                  class="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white text-xl">👁</button>
+        </div>
+
         <button onclick="sendVerificationCode()" class="w-full mt-8 bg-purple-600 hover:bg-purple-700 py-6 rounded-3xl text-xl font-bold transition">
           Verifizierungscode senden (666)
         </button>
@@ -105,10 +117,10 @@
       const password = document.getElementById('regPass').value.trim();
 
       if (!email || !username || !password) return alert("Bitte alle Felder ausfüllen");
+      if (password.length < 6) return alert("Das Passwort muss mindestens 6 Zeichen lang sein!");
 
       currentEmail = email;
       currentUsername = username;
-      // Passwort wird erst nach Verifizierung gespeichert
 
       try {
         await emailjs.send("service_zni05q6", "template_c2x5n7s", {
@@ -128,7 +140,14 @@
       document.getElementById('modalTitle').textContent = "Anmelden";
       document.getElementById('modalContent').innerHTML = `
         <input id="loginEmail" type="email" placeholder="E-Mail" class="w-full p-5 bg-zinc-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500">
-        <input id="loginPass" type="password" placeholder="Passwort" class="w-full p-5 bg-zinc-800 rounded-2xl mt-4 focus:outline-none focus:ring-2 focus:ring-purple-500">
+        
+        <div class="relative">
+          <input id="loginPass" type="password" placeholder="Passwort" 
+                 class="w-full p-5 bg-zinc-800 rounded-2xl mt-4 focus:outline-none focus:ring-2 focus:ring-purple-500">
+          <button onclick="togglePasswordVisibility('loginPass')" 
+                  class="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white text-xl">👁</button>
+        </div>
+
         <button onclick="loginUser()" class="w-full mt-8 bg-purple-600 hover:bg-purple-700 py-6 rounded-3xl text-xl font-bold transition">
           Anmelden
         </button>
@@ -160,7 +179,12 @@
 
       if (isReset) {
         html += `
-          <input id="newPassword" type="password" placeholder="Neues Passwort" class="w-full p-5 bg-zinc-800 rounded-2xl mt-4">
+          <div class="relative">
+            <input id="newPassword" type="password" placeholder="Neues Passwort (mind. 6 Zeichen)" 
+                   class="w-full p-5 bg-zinc-800 rounded-2xl mt-4 focus:outline-none focus:ring-2 focus:ring-purple-500">
+            <button onclick="togglePasswordVisibility('newPassword')" 
+                    class="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white text-xl">👁</button>
+          </div>
           <button onclick="verifyResetCode()" class="w-full mt-6 bg-green-600 hover:bg-green-700 py-6 rounded-3xl text-xl font-bold">Bestätigen & Passwort ändern</button>
         `;
       } else {
@@ -179,25 +203,23 @@
 
     function verifyCode() {
       const input = document.getElementById('codeInput').value.trim();
-      const password = document.getElementById('regPass') ? document.getElementById('regPass').value.trim() : null;
+      const password = document.getElementById('regPass').value.trim();
 
-      if (input !== VERIFICATION_CODE) return alert("❌ Falscher Code! (Der Code ist 666)");
+      if (input !== VERIFICATION_CODE) return alert("❌ Falscher Code! Der Code ist 666");
 
-      if (password) {
-        saveUser(currentEmail, currentUsername, password);
-        currentUser = { username: currentUsername, email: currentEmail };
-        document.getElementById('mainModal').classList.add('hidden');
-        showDashboard();
-        alert("✅ Registrierung erfolgreich!");
-      }
+      saveUser(currentEmail, currentUsername, password);
+      currentUser = { username: currentUsername, email: currentEmail };
+      document.getElementById('mainModal').classList.add('hidden');
+      showDashboard();
+      alert("✅ Registrierung erfolgreich!");
     }
 
     function verifyResetCode() {
       const input = document.getElementById('codeInput').value.trim();
       const newPass = document.getElementById('newPassword').value.trim();
 
-      if (input !== VERIFICATION_CODE) return alert("❌ Falscher Code! (Der Code ist 666)");
-      if (!newPass) return alert("Bitte neues Passwort eingeben");
+      if (input !== VERIFICATION_CODE) return alert("❌ Falscher Code! Der Code ist 666");
+      if (newPass.length < 6) return alert("Das neue Passwort muss mindestens 6 Zeichen lang sein!");
 
       if (users[currentEmail]) {
         users[currentEmail].password = newPass;
@@ -226,11 +248,8 @@
     }
 
     function resendCode(isReset) {
-      if (isReset) {
-        sendResetCode();
-      } else {
-        sendVerificationCode();
-      }
+      if (isReset) sendResetCode();
+      else sendVerificationCode();
     }
 
     function loginUser() {
