@@ -3,149 +3,318 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>kiobio.lol</title>
+  <title>kiobio.lol - guns.lol Clone</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
-    body { background: #000; color: white; font-family: system-ui; }
-    .glow { text-shadow: 0 0 30px #ff00ff, 0 0 60px #00ffff; }
-    .cursor-glow { cursor: url('data:image/svg+xml;utf8,<svg xmlns=%27http://www.w3.org/2000/svg%27 width=%2720%27 height=%2720%27><circle cx=%2710%27 cy=%2710%27 r=%278%27 fill=%27%23ff00ff%27/></svg>') 10 10, auto; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+    body {
+      font-family: 'Inter', system-ui;
+      background: #000;
+      color: white;
+      overflow-x: hidden;
+    }
+    .glow { text-shadow: 0 0 25px #ff00ff, 0 0 50px #00ffff; }
+    .neon-pink { box-shadow: 0 0 15px #ff00ff; }
+    .cursor-glow {
+      cursor: url('data:image/svg+xml;utf8,<svg xmlns=%27http://www.w3.org/2000/svg%27 width=%2724%27 height=%2724%27><circle cx=%2712%27 cy=%2712%27 r=%2710%27 fill=%27none%27 stroke=%27%23ff00ff%27 stroke-width=%272%27/></svg>') 12 12, auto;
+    }
+    .modal {
+      animation: popIn 0.3s ease;
+    }
+    @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   </style>
 </head>
-<body class="min-h-screen cursor-glow">
+<body class="cursor-glow">
 
   <!-- LANDING PAGE -->
-  <div id="landing" class="min-h-screen flex flex-col items-center justify-center text-center px-6">
-    <h1 class="text-8xl font-black glow mb-6"># kiobio . lol</h1>
-    <p class="text-4xl mb-12">Everything you want, right here.</p>
-    <div class="text-2xl mb-12 text-pink-400">Über 1.9 Millionen Profile</div>
+  <div id="landing" class="min-h-screen flex flex-col items-center justify-center text-center px-6 relative">
+    <div class="absolute inset-0 bg-[radial-gradient(at_center,#ff00ff_1px,transparent_1px)] [background-size:60px_60px] opacity-10"></div>
     
-    <div class="space-x-6">
-      <button onclick="showAuthModal('register')" class="bg-white text-black px-12 py-6 rounded-3xl text-3xl font-bold hover:scale-105 transition-all">Profil claimen — Kostenlos</button>
-      <button onclick="showAuthModal('login')" class="border-2 border-white px-12 py-6 rounded-3xl text-3xl font-bold hover:bg-white hover:text-black transition-all">Anmelden</button>
+    <h1 class="text-8xl md:text-9xl font-black glow mb-6 tracking-tighter"># kiobio . lol</h1>
+    <p class="text-4xl md:text-5xl mb-8 text-pink-400">Everything you want, right here.</p>
+    <p class="text-2xl mb-12">Über <span class="text-white font-bold">2.000.000</span> Profile erstellt</p>
+    
+    <div class="flex flex-col sm:flex-row gap-6">
+      <button onclick="showAuthModal('register')" 
+              class="bg-white text-black px-14 py-7 rounded-3xl text-3xl font-bold hover:scale-105 transition-all neon-pink">
+        Profil claimen — Kostenlos
+      </button>
+      <button onclick="showAuthModal('login')" 
+              class="border-4 border-white px-14 py-7 rounded-3xl text-3xl font-bold hover:bg-white hover:text-black transition-all">
+        Anmelden
+      </button>
     </div>
+    
+    <p class="mt-16 text-gray-500">kiobio.lol / deinname</p>
   </div>
 
   <!-- AUTH MODAL -->
   <div id="authModal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-50">
-    <div class="bg-zinc-900 p-10 rounded-3xl w-full max-w-md">
-      <h2 id="modalTitle" class="text-3xl font-bold mb-8 text-center">Willkommen</h2>
-      <div id="authForm"></div>
+    <div class="bg-zinc-900 p-10 rounded-3xl w-full max-w-lg modal">
+      <h2 id="modalTitle" class="text-4xl font-bold mb-8 text-center">kiobio.lol</h2>
+      <div id="authContent" class="space-y-6"></div>
+      <button onclick="closeModal()" class="mt-6 w-full text-gray-400 hover:text-white">Schließen</button>
     </div>
   </div>
 
-  <!-- DASHBOARD / PROFIL EDITOR -->
-  <div id="dashboard" class="hidden min-h-screen p-8">
-    <div class="max-w-4xl mx-auto">
-      <h1 class="text-4xl font-bold mb-8">Profil bearbeiten — <span id="currentUser" class="text-pink-500"></span>.kiobio.lol</h1>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <!-- Uploads -->
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="hidden min-h-screen p-8 bg-zinc-950">
+    <div class="max-w-5xl mx-auto">
+      <div class="flex justify-between items-center mb-10">
+        <h1 class="text-4xl font-bold">Willkommen zurück, <span id="dashUsername" class="text-pink-500"></span></h1>
         <div>
-          <h2 class="text-xl mb-4">Hintergrund Video / Bild</h2>
-          <input type="file" id="bgUpload" accept="video/*,image/*" class="block w-full mb-4">
-          <button onclick="uploadBackground()" class="bg-pink-600 px-6 py-3 rounded-xl">Hochladen</button>
+          <button onclick="viewMyProfile()" class="bg-zinc-800 hover:bg-zinc-700 px-6 py-3 rounded-2xl mr-4">Mein Profil ansehen</button>
+          <button onclick="logout()" class="bg-red-600 px-6 py-3 rounded-2xl">Abmelden</button>
         </div>
+      </div>
+
+      <!-- Profil Editor -->
+      <div class="bg-zinc-900 rounded-3xl p-8 mb-8">
+        <h2 class="text-2xl font-semibold mb-6 flex items-center gap-3"><i class="fas fa-edit"></i> Profil bearbeiten</h2>
         
-        <div>
-          <h2 class="text-xl mb-4">Profilbild</h2>
-          <input type="file" id="avatarUpload" accept="image/*" class="block w-full mb-4">
-          <button onclick="uploadAvatar()" class="bg-pink-600 px-6 py-3 rounded-xl">Hochladen</button>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- Avatar -->
+          <div>
+            <label class="block text-sm mb-3">Profilbild</label>
+            <input type="file" id="avatarInput" accept="image/*" class="block w-full text-sm text-gray-400 file:mr-4 file:py-3 file:px-6 file:rounded-2xl file:border-0 file:bg-pink-600 file:text-white">
+            <button onclick="uploadAvatar()" class="mt-4 bg-pink-600 px-8 py-3 rounded-2xl">Hochladen</button>
+          </div>
+          
+          <!-- Background -->
+          <div>
+            <label class="block text-sm mb-3">Hintergrund (Video oder Bild)</label>
+            <input type="file" id="bgInput" accept="video/*,image/*" class="block w-full text-sm text-gray-400 file:mr-4 file:py-3 file:px-6 file:rounded-2xl file:border-0 file:bg-pink-600 file:text-white">
+            <button onclick="uploadBackground()" class="mt-4 bg-pink-600 px-8 py-3 rounded-2xl">Hochladen</button>
+          </div>
         </div>
+
+        <div class="mt-8">
+          <label class="block text-sm mb-3">Bio</label>
+          <textarea id="bioInput" class="w-full h-32 bg-zinc-800 rounded-2xl p-5 text-lg" placeholder="Schreib etwas über dich..."></textarea>
+        </div>
+
+        <!-- Link Editor -->
+        <div class="mt-10">
+          <h3 class="text-xl mb-4 flex items-center gap-2"><i class="fas fa-link"></i> Links</h3>
+          <div id="linksContainer" class="space-y-4"></div>
+          <button onclick="addLinkField()" class="mt-4 text-pink-400 hover:text-pink-300 flex items-center gap-2">
+            <i class="fas fa-plus"></i> Neuen Link hinzufügen
+          </button>
+        </div>
+
+        <button onclick="saveProfile()" class="mt-12 w-full bg-green-600 hover:bg-green-500 py-6 text-2xl font-bold rounded-3xl transition">
+          Änderungen speichern
+        </button>
       </div>
 
-      <div class="mt-8">
-        <label>Bio</label>
-        <textarea id="bio" class="w-full bg-zinc-800 p-4 rounded-2xl h-32"></textarea>
-      </div>
-
-      <div class="mt-8">
-        <label>Musik URL (z.B. YouTube, SoundCloud)</label>
-        <input id="musicUrl" type="text" class="w-full bg-zinc-800 p-4 rounded-2xl">
-      </div>
-
-      <button onclick="saveProfile()" class="mt-10 w-full bg-green-600 py-6 text-2xl rounded-3xl">Profil speichern</button>
-      <button onclick="logout()" class="mt-4 w-full bg-red-600 py-4 rounded-3xl">Abmelden</button>
+      <!-- Admin Button -->
+      <button onclick="showAdminPanel()" class="fixed bottom-8 right-8 bg-zinc-800 hover:bg-zinc-700 px-6 py-4 rounded-2xl flex items-center gap-3 text-lg">
+        <i class="fas fa-shield-alt"></i> Admin Panel
+      </button>
     </div>
   </div>
 
-  <!-- PROFIL ANZEIGE (Beispiel für andere User) -->
-  <div id="profileView" class="hidden min-h-screen bg-black relative">
-    <!-- Dynamisch gefüllt -->
+  <!-- PROFILE VIEW -->
+  <div id="profileView" class="hidden min-h-screen relative" style="background-size: cover; background-position: center;">
+    <div id="profileContent" class="min-h-screen flex flex-col items-center justify-center text-center p-6"></div>
+  </div>
+
+  <!-- ADMIN PANEL -->
+  <div id="adminPanel" class="hidden fixed inset-0 bg-black/95 z-50 overflow-auto">
+    <div class="max-w-4xl mx-auto p-8">
+      <div class="flex justify-between mb-8">
+        <h2 class="text-4xl font-bold">Admin Panel - Alle User</h2>
+        <button onclick="closeAdmin()" class="text-3xl">✕</button>
+      </div>
+      <div id="adminUsersList" class="space-y-4"></div>
+    </div>
   </div>
 
   <script>
     let currentUser = null;
+    let users = JSON.parse(localStorage.getItem('kiobioUsers') || '[]');
 
-    // Dummy Datenbank (localStorage)
-    function getUsers() {
-      return JSON.parse(localStorage.getItem('kiobioUsers') || '[]');
-    }
-    function saveUsers(users) {
+    function saveUsers() {
       localStorage.setItem('kiobioUsers', JSON.stringify(users));
     }
 
     function showAuthModal(type) {
       document.getElementById('authModal').classList.remove('hidden');
-      const form = document.getElementById('authForm');
+      const content = document.getElementById('authContent');
+      document.getElementById('modalTitle').textContent = type === 'register' ? 'Profil claimen' : 'Anmelden';
+      
       if (type === 'register') {
-        form.innerHTML = `
-          <input id="regUsername" placeholder="Username" class="w-full p-4 bg-zinc-800 rounded-2xl mb-4">
-          <input id="regEmail" type="email" placeholder="E-Mail" class="w-full p-4 bg-zinc-800 rounded-2xl mb-4">
-          <input id="regPass" type="password" placeholder="Passwort" class="w-full p-4 bg-zinc-800 rounded-2xl mb-6">
-          <button onclick="register()" class="w-full bg-pink-600 py-5 rounded-2xl text-xl">Account erstellen</button>
+        content.innerHTML = `
+          <input id="regUsername" placeholder="Username (z.B. kio)" class="w-full p-5 bg-zinc-800 rounded-2xl text-lg">
+          <input id="regEmail" type="email" placeholder="E-Mail" class="w-full p-5 bg-zinc-800 rounded-2xl text-lg mt-4">
+          <input id="regPass" type="password" placeholder="Passwort" class="w-full p-5 bg-zinc-800 rounded-2xl text-lg mt-4">
+          <button onclick="registerUser()" class="w-full mt-6 bg-pink-600 py-6 rounded-3xl text-xl font-bold">Jetzt kostenlos starten</button>
         `;
       } else {
-        form.innerHTML = `
-          <input id="loginUser" placeholder="Username oder Email" class="w-full p-4 bg-zinc-800 rounded-2xl mb-4">
-          <input id="loginPass" type="password" placeholder="Passwort" class="w-full p-4 bg-zinc-800 rounded-2xl mb-6">
-          <button onclick="login()" class="w-full bg-pink-600 py-5 rounded-2xl text-xl">Anmelden</button>
+        content.innerHTML = `
+          <input id="loginInput" placeholder="Username oder E-Mail" class="w-full p-5 bg-zinc-800 rounded-2xl text-lg">
+          <input id="loginPass" type="password" placeholder="Passwort" class="w-full p-5 bg-zinc-800 rounded-2xl text-lg mt-4">
+          <button onclick="loginUser()" class="w-full mt-6 bg-pink-600 py-6 rounded-3xl text-xl font-bold">Anmelden</button>
         `;
       }
     }
 
-    function register() {
-      const username = document.getElementById('regUsername').value.toLowerCase();
-      const users = getUsers();
-      if (users.find(u => u.username === username)) return alert("Username bereits vergeben!");
+    function closeModal() {
+      document.getElementById('authModal').classList.add('hidden');
+    }
+
+    function registerUser() {
+      const username = document.getElementById('regUsername').value.trim().toLowerCase();
+      if (!username) return alert("Username fehlt!");
+      if (users.find(u => u.username === username)) return alert("Username schon vergeben!");
       
       const newUser = {
-        username,
+        id: Date.now(),
+        username: username,
         email: document.getElementById('regEmail').value,
-        password: "demo123", // in echt gehasht
-        bio: "Hey, ich bin neu auf kiobio.lol 🔥",
+        bio: "Hey ich bin neu auf kiobio.lol 🔥",
         avatar: "",
-        background: "",
-        music: ""
+        background: "https://picsum.photos/id/1015/1920/1080",
+        music: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+        links: [
+          {title: "Instagram", url: "https://instagram.com"},
+          {title: "Discord", url: "https://discord.gg"}
+        ]
       };
       users.push(newUser);
-      saveUsers(users);
-      alert(`✅ Profil ${username}.kiobio.lol erstellt!`);
+      saveUsers();
+      alert(`✅ ${username}.kiobio.lol wurde erstellt!`);
       loginAs(newUser);
     }
 
-    function login() {
-      const input = document.getElementById('loginUser').value.toLowerCase();
-      const users = getUsers();
+    function loginUser() {
+      const input = document.getElementById('loginInput').value.trim().toLowerCase();
       const user = users.find(u => u.username === input || u.email === input);
       if (user) {
         loginAs(user);
-      } else alert("User nicht gefunden (Demo)");
+      } else {
+        alert("User nicht gefunden. Bitte registriere dich zuerst.");
+      }
     }
 
     function loginAs(user) {
       currentUser = user;
-      document.getElementById('authModal').classList.add('hidden');
+      closeModal();
       document.getElementById('landing').classList.add('hidden');
       document.getElementById('dashboard').classList.remove('hidden');
-      document.getElementById('currentUser').textContent = user.username;
+      loadDashboard();
+    }
+
+    function loadDashboard() {
+      document.getElementById('dashUsername').textContent = currentUser.username;
+      document.getElementById('bioInput').value = currentUser.bio || "";
+      renderLinks();
+    }
+
+    function renderLinks() {
+      const container = document.getElementById('linksContainer');
+      container.innerHTML = '';
+      (currentUser.links || []).forEach((link, index) => {
+        const div = document.createElement('div');
+        div.className = "flex gap-4 bg-zinc-800 p-4 rounded-2xl";
+        div.innerHTML = `
+          <input value="${link.title}" class="flex-1 bg-zinc-700 p-4 rounded-xl" onchange="updateLink(${index}, 'title', this.value)">
+          <input value="${link.url}" class="flex-1 bg-zinc-700 p-4 rounded-xl" onchange="updateLink(${index}, 'url', this.value)">
+          <button onclick="removeLink(${index})" class="text-red-500 px-4">✕</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function addLinkField() {
+      if (!currentUser.links) currentUser.links = [];
+      currentUser.links.push({title: "Neuer Link", url: "https://"});
+      renderLinks();
+    }
+
+    function updateLink(index, field, value) {
+      currentUser.links[index][field] = value;
+    }
+
+    function removeLink(index) {
+      currentUser.links.splice(index, 1);
+      renderLinks();
+    }
+
+    function uploadAvatar() {
+      const file = document.getElementById('avatarInput').files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          currentUser.avatar = e.target.result;
+          alert("✅ Profilbild hochgeladen!");
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function uploadBackground() {
+      const file = document.getElementById('bgInput').files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          currentUser.background = e.target.result;
+          alert("✅ Hintergrund hochgeladen!");
+        };
+        reader.readAsDataURL(file);
+      }
     }
 
     function saveProfile() {
       if (!currentUser) return;
-      currentUser.bio = document.getElementById('bio').value;
-      currentUser.music = document.getElementById('musicUrl').value;
-      alert("✅ Profil gespeichert!");
+      currentUser.bio = document.getElementById('bioInput').value;
+      saveUsers();
+      alert("✅ Profil erfolgreich gespeichert!");
+    }
+
+    function viewMyProfile() {
+      showProfile(currentUser.username);
+    }
+
+    function showProfile(username) {
+      const user = users.find(u => u.username === username.toLowerCase());
+      if (!user) return alert("Profil nicht gefunden");
+      
+      document.getElementById('dashboard').classList.add('hidden');
+      const view = document.getElementById('profileView');
+      view.classList.remove('hidden');
+      
+      let html = `
+        <div class="absolute inset-0 bg-black/60"></div>
+        <div class="relative z-10 text-center max-w-2xl mx-auto">
+          ${user.avatar ? `<img src="${user.avatar}" class="w-32 h-32 rounded-full mx-auto border-4 border-pink-500 mb-6">` : '<div class="w-32 h-32 bg-zinc-700 rounded-full mx-auto mb-6"></div>'}
+          
+          <h1 class="text-6xl font-bold mb-2">${user.username}</h1>
+          <p class="text-xl mb-10">${user.bio || 'Keine Bio'}</p>
+          
+          ${user.music ? `
+            <div class="mb-12">
+              <audio controls class="w-full max-w-md mx-auto">
+                <source src="${user.music}" type="audio/mpeg">
+              </audio>
+            </div>` : ''}
+          
+          <div class="space-y-4">
+            ${(user.links || []).map(link => `
+              <a href="${link.url}" target="_blank" class="block bg-zinc-900 hover:bg-zinc-800 transition p-6 rounded-3xl text-xl font-medium">
+                ${link.title}
+              </a>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      
+      if (user.background) {
+        view.style.backgroundImage = `url('${user.background}')`;
+      }
+      
+      document.getElementById('profileContent').innerHTML = html;
     }
 
     function logout() {
@@ -153,21 +322,39 @@
       location.reload();
     }
 
-    // Upload Simulation
-    function uploadBackground() {
-      alert("✅ Hintergrund hochgeladen (Demo - wird lokal gespeichert)");
-    }
-    function uploadAvatar() {
-      alert("✅ Profilbild hochgeladen (Demo)");
+    function showAdminPanel() {
+      const list = document.getElementById('adminUsersList');
+      let html = '';
+      users.forEach(user => {
+        html += `
+          <div class="bg-zinc-900 p-6 rounded-3xl flex justify-between items-center">
+            <div>
+              <strong>${user.username}</strong><br>
+              <span class="text-sm text-gray-400">${user.email || ''}</span>
+            </div>
+            <button onclick="deleteUser(${user.id})" class="bg-red-600 px-6 py-3 rounded-2xl">Löschen</button>
+          </div>
+        `;
+      });
+      list.innerHTML = html || "<p class='text-center text-gray-400'>Noch keine User</p>";
+      document.getElementById('adminPanel').classList.remove('hidden');
     }
 
-    // Admin Panel (nur für Demo)
-    function showAdmin() {
-      alert("Admin Panel:\n- Alle User ansehen\n- User löschen\n- (in echter Version mit Passwort geschützt)");
+    function deleteUser(id) {
+      if (confirm("User wirklich löschen?")) {
+        users = users.filter(u => u.id !== id);
+        saveUsers();
+        showAdminPanel();
+      }
     }
 
-    // Demo: Direkt zum Dashboard (für Test)
-    // loginAs({username: "demo", bio: "Testuser"});
+    function closeAdmin() {
+      document.getElementById('adminPanel').classList.add('hidden');
+    }
+
+    // Demo Login für schnellen Test
+    // window.onload = () => { if(users.length === 0) registerUserDemo(); };
+    console.log("%c kiobio.lol Demo bereit! Registriere dich oder melde dich an.", "color: #ff00ff; font-size: 16px");
   </script>
 </body>
 </html>
