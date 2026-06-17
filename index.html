@@ -14,113 +14,123 @@
         .sidebar { background: #111113; }
         .card { background: #1a1a1e; border: 1px solid #22d3ee; }
         .accent { color: #22d3ee; }
-        .accent-bg { background: #22d3ee; }
-        .accent-border { border-color: #22d3ee; }
     </style>
 </head>
 <body class="flex min-h-screen">
 
     <!-- SIDEBAR -->
-    <div class="w-72 sidebar h-screen fixed p-6 overflow-y-auto">
+    <div class="w-72 sidebar h-screen fixed p-6">
         <div class="flex items-center gap-3 mb-10">
             <span class="text-4xl">🔫</span>
-            <span class="text-3xl font-bold tracking-tighter text-white">kiobio.lol</span>
+            <span class="text-3xl font-bold">kiobio.lol</span>
         </div>
-
-        <nav class="space-y-1">
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl bg-sky-900/30 text-sky-400 font-semibold">
-                👤 Übersicht
-            </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800 transition">📊 Statistiken</a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800 transition">🏆 Badges</a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800 transition">✏️ Anpassen</a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800 transition">🔗 Links</a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800 transition">🖼️ Image Host</a>
+        
+        <nav class="space-y-2">
+            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl bg-sky-900/40 text-sky-400">👤 Übersicht</a>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800">📊 Statistiken</a>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-zinc-800">🏆 Badges</a>
         </nav>
-
-        <div class="mt-12">
-            <div onclick="goToProfile()" class="bg-sky-600 hover:bg-sky-500 text-center py-4 rounded-2xl font-semibold cursor-pointer transition">
-                Meine Seite ansehen
-            </div>
-        </div>
     </div>
 
-    <!-- MAIN CONTENT -->
+    <!-- MAIN -->
     <div class="flex-1 ml-72 p-10">
-        <div class="flex justify-between items-center mb-10">
-            <h1 class="text-4xl font-bold">Kontoübersicht</h1>
-            <div class="text-sm text-zinc-400">Willkommen zurück</div>
-        </div>
+        <h1 class="text-4xl font-bold mb-2">Kontoübersicht</h1>
+        <p id="welcome" class="text-zinc-400"></p>
 
-        <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-10">
             <div class="card rounded-3xl p-6">
                 <div class="text-sm text-zinc-400">Benutzername</div>
-                <div id="username" class="text-2xl font-bold mt-3 accent">@deinname</div>
+                <div id="username" class="text-2xl font-bold accent">@k</div>
             </div>
             <div class="card rounded-3xl p-6">
                 <div class="text-sm text-zinc-400">Profilaufrufe</div>
-                <div id="views" class="text-3xl font-bold mt-3 accent">1.337</div>
-            </div>
-            <div class="card rounded-3xl p-6">
-                <div class="text-sm text-zinc-400">Badges</div>
-                <div id="badgesCount" class="text-3xl font-bold mt-3 accent">4</div>
-            </div>
-            <div class="card rounded-3xl p-6">
-                <div class="text-sm text-zinc-400">Mitglied seit</div>
-                <div class="text-3xl font-bold mt-3">12 Tage</div>
+                <div id="views" class="text-3xl font-bold accent">1337</div>
             </div>
         </div>
 
-        <!-- Badges -->
-        <div class="mt-12">
-            <h2 class="text-xl font-semibold mb-6">Deine Badges</h2>
-            <div class="flex gap-4 flex-wrap">
-                <div class="bg-zinc-900 border border-sky-500 rounded-2xl px-6 py-3 flex items-center gap-3">
-                    👑 <span class="font-semibold">Owner</span>
-                </div>
-                <div class="bg-zinc-900 border border-amber-500 rounded-2xl px-6 py-3 flex items-center gap-3">
-                    ⭐ <span class="font-semibold">VIP</span>
-                </div>
-                <div class="bg-zinc-900 border border-purple-500 rounded-2xl px-6 py-3 flex items-center gap-3">
-                    🔥 <span class="font-semibold">Legend</span>
-                </div>
-                <div class="bg-zinc-900 border border-emerald-500 rounded-2xl px-6 py-3 flex items-center gap-3">
-                    ⚡ <span class="font-semibold">Premium</span>
-                </div>
-            </div>
-        </div>
+        <!-- Owner Only Badge Manager -->
+        <div id="ownerPanel" class="hidden mt-12 card rounded-3xl p-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                👑 Owner Badge Manager
+            </h2>
+            <input id="targetUser" placeholder="Username des Nutzers" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-4 mb-4">
+            
+            <select id="badgeType" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-4 mb-4">
+                <option value="owner">👑 Owner</option>
+                <option value="premium">⭐ Premium</option>
+                <option value="vip">💎 VIP</option>
+                <option value="legend">🔥 Legend</option>
+                <option value="verified">✅ Verified</option>
+            </select>
 
-        <!-- Quick Actions -->
-        <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div onclick="openProfileEditor()" class="card rounded-3xl p-8 hover:border-sky-400 cursor-pointer transition">
-                <h3 class="text-2xl font-semibold mb-3">Profil anpassen</h3>
-                <p class="text-zinc-400">Banner, Musik, Bio & mehr ändern</p>
-            </div>
-            <div onclick="goToProfile()" class="card rounded-3xl p-8 hover:border-sky-400 cursor-pointer transition">
-                <h3 class="text-2xl font-semibold mb-3">Öffentliches Profil</h3>
-                <p class="text-zinc-400">Deine Seite anschauen</p>
-            </div>
+            <button onclick="giveBadge()" 
+                    class="w-full bg-sky-600 hover:bg-sky-500 py-5 rounded-2xl font-bold">
+                Badge vergeben
+            </button>
         </div>
     </div>
 
     <script>
-        // Firebase (falls du Daten laden willst)
-        // const firebaseConfig = { ... };
-        // ...
+        const firebaseConfig = {
+          apiKey: "AIzaSyD6NPF9FIJsDipQg3dvxSohtAJCGVF4NUc",
+          authDomain: "kiobiool.firebaseapp.com",
+          databaseURL: "https://kiobiool-default-rtdb.europe-west1.firebasedatabase.app",
+          projectId: "kiobiool",
+          storageBucket: "kiobiool.firebasestorage.app",
+          appId: "1:1003434485509:web:872f257b0758051c80b96c"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+
+        let currentUser = null;
+
+        // Owner Check (nur dein Account)
+        const ownerEmails = ["u3271805041@gmail.com"];
+        const ownerUsernames = ["k"];
+
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('welcome').textContent = `Willkommen zurück, ${user.email}`;
+
+                // Prüfen ob Owner
+                const userSnap = await db.ref('users/' + user.uid).once('value');
+                const userData = userSnap.val() || {};
+                
+                if (ownerEmails.includes(user.email) || ownerUsernames.includes(userData.username)) {
+                    document.getElementById('ownerPanel').classList.remove('hidden');
+                }
+            }
+        });
+
+        async function giveBadge() {
+            const targetUsername = document.getElementById('targetUser').value.trim().toLowerCase();
+            const badgeId = document.getElementById('badgeType').value;
+
+            if (!targetUsername) return alert("Bitte einen Benutzernamen eingeben");
+
+            const snap = await db.ref('users').orderByChild('username').equalTo(targetUsername).limitToFirst(1).once('value');
+            const users = snap.val();
+
+            if (!users) return alert("User nicht gefunden");
+
+            const uid = Object.keys(users)[0];
+            const userRef = db.ref('users/' + uid + '/badges');
+
+            const currentBadges = (await userRef.once('value')).val() || [];
+            if (!currentBadges.includes(badgeId)) {
+                currentBadges.push(badgeId);
+                await userRef.set(currentBadges);
+                alert(`✅ Badge "${badgeId}" an @${targetUsername} vergeben!`);
+            } else {
+                alert("Der User hat diesen Badge bereits.");
+            }
+        }
 
         function goToProfile() {
             window.open('profile.html', '_blank');
         }
-
-        function openProfileEditor() {
-            window.open('editor.html', '_blank');
-        }
-
-        // Dummy Daten
-        window.onload = () => {
-            document.getElementById('username').textContent = "@deinname";
-        };
     </script>
 </body>
 </html>
