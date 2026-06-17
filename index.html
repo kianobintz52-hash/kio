@@ -7,190 +7,138 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
-    body { font-family: 'Inter', system-ui; background: #000; color: white; overflow-x: hidden; }
-    .glow { text-shadow: 0 0 30px #ff00ff, 0 0 60px #00ffff; animation: pulse 3s infinite; }
-    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.8; } }
-    .neon { box-shadow: 0 0 20px #ff00ff, 0 0 40px #00ffff; }
-    video#bgVideo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; opacity: 0.6; }
-    .modal { animation: popIn 0.3s ease; }
-    @keyframes popIn { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    body { font-family: 'Inter', system-ui; background: #0f0a1f; color: white; }
+    .purple-glow { text-shadow: 0 0 25px #a855f7, 0 0 50px #c026d3; }
+    .nav { background: rgba(15, 10, 31, 0.95); backdrop-filter: blur(12px); }
   </style>
 </head>
-<body>
+<body class="min-h-screen">
 
-  <!-- Background Video -->
-  <video id="bgVideo" autoplay loop muted playsinline>
-    <source src="https://assets.mixkit.co/videos/preview/754/754-small.mp4" type="video/mp4">
-  </video>
-
-  <!-- LANDING -->
-  <div id="landing" class="min-h-screen flex flex-col items-center justify-center text-center px-6 relative">
-    <h1 onclick="toggleTheme()" class="text-8xl md:text-9xl font-black glow cursor-pointer mb-6"># kiobio . lol</h1>
-    <p class="text-4xl mb-8">Everything you want, right here.</p>
-    <div class="flex flex-col sm:flex-row gap-6">
-      <button onclick="showAuthModal('register')" class="bg-white text-black px-12 py-7 rounded-3xl text-3xl font-bold hover:scale-110 neon">Profil claimen</button>
-      <button onclick="showAuthModal('login')" class="border-4 border-white px-12 py-7 rounded-3xl text-3xl font-bold hover:bg-white hover:text-black">Anmelden</button>
+  <!-- TOP NAV -->
+  <nav class="nav fixed top-0 w-full z-50 border-b border-purple-500/20">
+    <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="text-3xl">🔫</span>
+        <h1 class="text-3xl font-bold tracking-tighter">kiobio.lol</h1>
+      </div>
+      <div class="hidden md:flex items-center gap-8 text-lg">
+        <a href="#" class="hover:text-purple-400 transition">Hilfecenter</a>
+        <a href="#" class="hover:text-purple-400 transition">Discord</a>
+        <a href="#" class="hover:text-purple-400 transition">Bestenliste</a>
+        <a href="#" class="hover:text-purple-400 transition">Preise</a>
+      </div>
+      <button onclick="showAuthModal('login')" class="bg-purple-600 hover:bg-purple-700 px-8 py-3 rounded-2xl font-semibold transition">
+        Dashboard
+      </button>
     </div>
-  </div>
+  </nav>
 
-  <!-- AUTH MODAL -->
-  <div id="authModal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-50">
-    <div class="bg-zinc-900 p-10 rounded-3xl w-full max-w-md modal">
-      <h2 id="modalTitle" class="text-3xl font-bold mb-8 text-center"></h2>
-      <div id="authContent" class="space-y-6"></div>
-    </div>
-  </div>
-
-  <!-- DASHBOARD -->
-  <div id="dashboard" class="hidden min-h-screen p-8 bg-zinc-950">
-    <div class="max-w-5xl mx-auto">
-      <h1 class="text-4xl font-bold mb-8">Dashboard — <span id="dashUsername" class="text-pink-500"></span>.kiobio.lol</h1>
+  <!-- HERO SECTION -->
+  <div class="min-h-screen flex items-center justify-center pt-20">
+    <div class="max-w-4xl text-center px-6">
+      <h1 class="text-6xl md:text-7xl font-bold purple-glow leading-tight mb-6">
+        Alles, was du willst,<br>genau hier.
+      </h1>
+      <p class="text-xl md:text-2xl text-purple-200 mb-12">
+        kiobio.lol ist deine Anlaufstelle für moderne, funktionsreiche Link-in-Bio-Seiten und schnelles, sicheres Datei-Hosting.
+      </p>
       
-      <div class="bg-zinc-900 rounded-3xl p-8">
-        <!-- Uploads -->
-        <div class="grid grid-cols-2 gap-8 mb-8">
-          <div>
-            <label>Profilbild</label>
-            <input type="file" id="avatarInput" accept="image/*" class="block w-full mt-2">
-            <button onclick="uploadAvatar()" class="mt-4 bg-pink-600 px-8 py-3 rounded-2xl">Hochladen</button>
-          </div>
-          <div>
-            <label>Hintergrund (Bild/Video)</label>
-            <input type="file" id="bgInput" accept="image/*,video/*" class="block w-full mt-2">
-            <button onclick="uploadBackground()" class="mt-4 bg-pink-600 px-8 py-3 rounded-2xl">Hochladen</button>
-          </div>
-        </div>
-
-        <!-- Bio -->
-        <textarea id="bioInput" class="w-full h-32 bg-zinc-800 rounded-2xl p-5" placeholder="Deine Bio..."></textarea>
-
-        <!-- Links -->
-        <div class="mt-8">
-          <h3 class="mb-4 text-xl">Links</h3>
-          <div id="linksContainer" class="space-y-4"></div>
-          <button onclick="addLinkField()" class="mt-4 text-pink-400">+ Link hinzufügen</button>
-        </div>
-
-        <button onclick="saveProfile()" class="mt-10 w-full bg-green-600 py-6 rounded-3xl text-xl font-bold">Speichern</button>
-        <button onclick="viewMyProfile()" class="mt-4 w-full bg-zinc-700 py-4 rounded-3xl">Profil ansehen</button>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <button onclick="showAuthModal('register')" class="bg-purple-600 hover:bg-purple-700 px-10 py-6 rounded-3xl text-2xl font-bold transition">
+          Kostenlos registrieren
+        </button>
+        <button onclick="alert('Preise kommen bald!')" class="border border-purple-400 px-10 py-6 rounded-3xl text-2xl font-bold hover:bg-white/10 transition">
+          Preise ansehen
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- PROFILE VIEW -->
-  <div id="profileView" class="hidden min-h-screen relative bg-cover bg-center"></div>
+  <!-- MOCKUPS -->
+  <div class="max-w-7xl mx-auto px-6 pb-20">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Dashboard Mock -->
+      <div class="bg-zinc-900/80 border border-purple-500/30 rounded-3xl overflow-hidden">
+        <div class="bg-black p-6 text-center">
+          <p class="text-purple-400 text-sm">Dashboard</p>
+        </div>
+        <div class="p-8 text-center">
+          <p class="text-2xl font-semibold mb-4">Willkommen zurück!</p>
+          <div class="h-64 bg-gradient-to-br from-purple-900 to-black rounded-2xl flex items-center justify-center">
+            <span class="text-5xl">📊</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profil Mock -->
+      <div class="bg-zinc-900/80 border border-purple-500/30 rounded-3xl overflow-hidden">
+        <div class="h-80 bg-cover bg-center relative" style="background-image: url('https://picsum.photos/id/1015/800/600')">
+          <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent h-40"></div>
+          <div class="absolute bottom-6 left-6 flex items-center gap-4">
+            <div class="w-20 h-20 bg-white rounded-full"></div>
+            <div>
+              <h3 class="text-2xl font-bold">deinname</h3>
+              <p class="text-purple-300">kiobio.lol/deinname</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Mock -->
+      <div class="bg-zinc-900/80 border border-purple-500/30 rounded-3xl overflow-hidden md:col-span-1">
+        <div class="p-6">
+          <div class="bg-black rounded-3xl p-6 mx-auto max-w-[280px]">
+            <div class="text-center mb-6">
+              <div class="w-16 h-16 bg-purple-500 rounded-2xl mx-auto mb-4"></div>
+              <h4 class="font-bold">hris</h4>
+              <p class="text-sm text-purple-300">guns.lol auf top!</p>
+            </div>
+            <div class="space-y-3 text-sm">
+              <div class="bg-zinc-800 p-4 rounded-2xl">Spotify</div>
+              <div class="bg-zinc-800 p-4 rounded-2xl">Discord</div>
+              <div class="bg-zinc-800 p-4 rounded-2xl">Instagram</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Auth Modal -->
+  <div id="authModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
+    <div class="bg-zinc-900 p-10 rounded-3xl w-full max-w-md">
+      <h2 id="modalTitle" class="text-3xl font-bold mb-8 text-center">Willkommen bei kiobio.lol</h2>
+      <div id="authContent" class="space-y-6"></div>
+    </div>
+  </div>
 
   <script>
-    let currentUser = null;
-    let users = JSON.parse(localStorage.getItem('kiobioUsers') || '[]');
-
-    function saveUsers() { localStorage.setItem('kiobioUsers', JSON.stringify(users)); }
-
     function showAuthModal(type) {
       document.getElementById('authModal').classList.remove('hidden');
       const title = document.getElementById('modalTitle');
       const content = document.getElementById('authContent');
-      title.textContent = type === 'register' ? 'Profil claimen' : 'Anmelden';
-
+      
+      title.textContent = type === 'register' ? 'Kostenlos registrieren' : 'Anmelden';
       content.innerHTML = type === 'register' ? `
-        <input id="regUser" placeholder="Username" class="w-full p-5 bg-zinc-800 rounded-2xl">
-        <input id="regEmail" type="email" placeholder="E-Mail" class="w-full p-5 bg-zinc-800 rounded-2xl mt-4">
-        <input id="regPass" type="password" placeholder="Passwort" class="w-full p-5 bg-zinc-800 rounded-2xl mt-4">
-        <button onclick="registerUser()" class="w-full mt-6 bg-pink-600 py-6 rounded-3xl">Erstellen</button>
+        <input id="regUser" placeholder="Username (deinname)" class="w-full p-5 bg-zinc-800 rounded-2xl text-lg">
+        <input id="regEmail" type="email" placeholder="E-Mail" class="w-full p-5 bg-zinc-800 rounded-2xl text-lg mt-4">
+        <button onclick="registerDemo()" class="w-full mt-6 bg-purple-600 py-6 rounded-3xl text-xl font-bold">Jetzt starten</button>
       ` : `
-        <input id="loginInput" placeholder="Username oder Email" class="w-full p-5 bg-zinc-800 rounded-2xl">
-        <input id="loginPass" type="password" placeholder="Passwort" class="w-full p-5 bg-zinc-800 rounded-2xl mt-4">
-        <button onclick="loginUser()" class="w-full mt-6 bg-pink-600 py-6 rounded-3xl">Anmelden</button>
+        <input id="loginInput" placeholder="Username oder Email" class="w-full p-5 bg-zinc-800 rounded-2xl text-lg">
+        <button onclick="loginDemo()" class="w-full mt-6 bg-purple-600 py-6 rounded-3xl text-xl font-bold">Anmelden</button>
       `;
     }
 
-    function registerUser() {
-      const username = document.getElementById('regUser').value.toLowerCase().trim();
-      if (users.find(u => u.username === username)) return alert("Username vergeben!");
-      const newUser = { username, bio: "", avatar: "", background: "", links: [], id: Date.now() };
-      users.push(newUser);
-      saveUsers();
-      loginAs(newUser);
-    }
-
-    function loginUser() {
-      const input = document.getElementById('loginInput').value.toLowerCase().trim();
-      const user = users.find(u => u.username === input);
-      if (user) loginAs(user); else alert("Nicht gefunden");
-    }
-
-    function loginAs(user) {
-      currentUser = user;
+    function registerDemo() {
+      const name = document.getElementById('regUser').value || "demo";
+      alert(`✅ Profil "${name}.kiobio.lol" wurde erstellt!\n\nDu kannst jetzt dein Profil anpassen.`);
       document.getElementById('authModal').classList.add('hidden');
-      document.getElementById('landing').classList.add('hidden');
-      document.getElementById('dashboard').classList.remove('hidden');
-      document.getElementById('dashUsername').textContent = user.username;
     }
 
-    function addLinkField() {
-      if (!currentUser.links) currentUser.links = [];
-      currentUser.links.push({title: "Neuer Link", url: "https://"});
-      renderLinks();
+    function loginDemo() {
+      alert("✅ Erfolgreich eingeloggt (Demo)");
+      document.getElementById('authModal').classList.add('hidden');
     }
-
-    function renderLinks() {
-      const container = document.getElementById('linksContainer');
-      container.innerHTML = currentUser.links.map((link, i) => `
-        <div class="flex gap-3">
-          <input value="${link.title}" onchange="currentUser.links[${i}].title=this.value" class="flex-1 bg-zinc-800 p-4 rounded-2xl">
-          <input value="${link.url}" onchange="currentUser.links[${i}].url=this.value" class="flex-1 bg-zinc-800 p-4 rounded-2xl">
-          <button onclick="currentUser.links.splice(${i},1);renderLinks()" class="text-red-500">✕</button>
-        </div>
-      `).join('');
-    }
-
-    function uploadAvatar() {
-      const file = document.getElementById('avatarInput').files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = e => { currentUser.avatar = e.target.result; alert("Profilbild gespeichert!"); };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    function uploadBackground() {
-      const file = document.getElementById('bgInput').files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = e => { currentUser.background = e.target.result; alert("Hintergrund gespeichert!"); };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    function saveProfile() {
-      currentUser.bio = document.getElementById('bioInput').value;
-      saveUsers();
-      alert("✅ Gespeichert!");
-    }
-
-    function viewMyProfile() {
-      const view = document.getElementById('profileView');
-      view.classList.remove('hidden');
-      view.innerHTML = `
-        <div class="min-h-screen flex items-center justify-center text-center p-6" style="background-image: url('${currentUser.background || ''}'); background-size: cover;">
-          <div class="bg-black/70 p-10 rounded-3xl max-w-lg">
-            ${currentUser.avatar ? `<img src="${currentUser.avatar}" class="w-32 h-32 rounded-full mx-auto mb-6 border-4 border-pink-500">` : ''}
-            <h1 class="text-5xl font-bold">${currentUser.username}</h1>
-            <p class="mt-6">${currentUser.bio || 'Keine Bio'}</p>
-            <div class="mt-10 space-y-4">
-              ${(currentUser.links || []).map(l => `<a href="${l.url}" target="_blank" class="block bg-zinc-900 p-5 rounded-2xl">${l.title}</a>`).join('')}
-            </div>
-          </div>
-        </div>`;
-    }
-
-    function toggleTheme() {
-      document.body.classList.toggle('!bg-zinc-100');
-      document.body.classList.toggle('!text-black');
-    }
-
-    console.log("%c kiobio.lol — Vollständiger Clone bereit!", "color:#ff00ff;font-size:18px");
   </script>
 </body>
 </html>
