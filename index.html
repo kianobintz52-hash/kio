@@ -8,24 +8,37 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
     body {
-      background: #0a0718;
-      color: white;
       font-family: system-ui, -apple-system, sans-serif;
-    }
-    .hero-bg {
-      background: linear-gradient(rgba(10,7,24,0.85), rgba(10,7,24,0.95)), 
-                  url('https://picsum.photos/id/1015/2000/1200') center/cover no-repeat;
+      color: white;
     }
     .nav {
       background: rgba(15, 10, 35, 0.95);
       backdrop-filter: blur(16px);
+    }
+    video#bgVideo {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+      opacity: 0.75;
+      filter: brightness(0.85);
     }
     .glow-purple {
       text-shadow: 0 0 30px #c026d3, 0 0 60px #7e22ce;
     }
   </style>
 </head>
-<body>
+<body class="min-h-screen overflow-hidden">
+
+  <!-- Hintergrund Video -->
+  <video id="bgVideo" autoplay loop muted playsinline>
+    <source src="https://assets.mixkit.co/videos/preview/754/754-small.mp4" type="video/mp4">
+    <!-- Alternativer Cyberpunk Video (falls der erste nicht lädt) -->
+    <!-- <source src="https://assets.mixkit.co/videos/preview/343/343-small.mp4" type="video/mp4"> -->
+  </video>
 
   <!-- NAV BAR -->
   <nav class="nav fixed top-0 w-full z-50 border-b border-purple-500/30">
@@ -42,7 +55,7 @@
         <a href="#" class="hover:text-purple-400 transition">Preise</a>
       </div>
 
-      <button onclick="showDashboard()" 
+      <button onclick="showAuthModal('login')" 
               class="bg-purple-600 hover:bg-purple-700 px-8 py-3.5 rounded-2xl font-semibold transition">
         Dashboard
       </button>
@@ -50,8 +63,8 @@
   </nav>
 
   <!-- HERO -->
-  <section class="hero-bg min-h-screen flex items-center justify-center text-center pt-20">
-    <div class="max-w-4xl px-6">
+  <section class="min-h-screen flex items-center justify-center text-center pt-20 relative">
+    <div class="max-w-4xl px-6 z-10">
       <h1 class="text-6xl md:text-7xl font-bold leading-tight glow-purple mb-8">
         Alles, was du willst,<br>genau hier.
       </h1>
@@ -62,48 +75,13 @@
 
       <div class="flex flex-col sm:flex-row gap-5 justify-center">
         <button onclick="showAuthModal('register')" 
-                class="bg-purple-600 hover:bg-purple-700 text-white px-10 py-6 rounded-3xl text-2xl font-semibold transition">
+                class="bg-purple-600 hover:bg-purple-700 text-white px-12 py-6 rounded-3xl text-2xl font-semibold transition">
           Kostenlos registrieren
         </button>
         <button onclick="alert('Preise folgen bald...')" 
-                class="border border-purple-400 hover:bg-white/10 px-10 py-6 rounded-3xl text-2xl font-semibold transition">
+                class="border border-purple-400 hover:bg-white/10 px-12 py-6 rounded-3xl text-2xl font-semibold transition">
           Preise ansehen
         </button>
-      </div>
-    </div>
-  </section>
-
-  <!-- MOCKUPS -->
-  <section class="max-w-screen-2xl mx-auto px-8 py-20">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-      <!-- Big Dashboard Mock -->
-      <div class="lg:col-span-7 bg-zinc-900 rounded-3xl overflow-hidden border border-purple-500/20">
-        <div class="bg-black p-6 flex items-center gap-4 border-b border-zinc-800">
-          <div class="flex-1 h-3 bg-zinc-700 rounded"></div>
-        </div>
-        <div class="p-10">
-          <p class="text-purple-400 mb-2">Willkommen zurück, demo</p>
-          <h2 class="text-4xl font-bold mb-10">Account Overview</h2>
-          <!-- Platzhalter für Stats -->
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div class="bg-zinc-800 p-6 rounded-2xl">Username<br><span class="text-2xl font-bold">demo</span></div>
-            <div class="bg-zinc-800 p-6 rounded-2xl">Profile Views<br><span class="text-2xl font-bold">4.807</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Mobile Previews -->
-      <div class="lg:col-span-5 space-y-8">
-        <div class="bg-zinc-900 rounded-3xl overflow-hidden border border-purple-500/20">
-          <img src="https://picsum.photos/id/1015/600/800" alt="Profil" class="w-full h-auto">
-        </div>
-        <div class="bg-zinc-900 rounded-3xl overflow-hidden border border-purple-500/20 p-8">
-          <div class="text-center">
-            <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl mx-auto mb-4"></div>
-            <h3 class="text-2xl font-bold">deinname</h3>
-            <p class="text-purple-400">kiobio.lol/deinname</p>
-          </div>
-        </div>
       </div>
     </div>
   </section>
@@ -111,7 +89,7 @@
   <!-- Auth Modal -->
   <div id="authModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[100]">
     <div class="bg-zinc-900 p-12 rounded-3xl w-full max-w-md">
-      <h2 id="modalTitle" class="text-3xl font-bold text-center mb-10">Willkommen</h2>
+      <h2 id="modalTitle" class="text-3xl font-bold text-center mb-10"></h2>
       <div id="modalContent" class="space-y-6"></div>
     </div>
   </div>
@@ -123,23 +101,30 @@
       const content = document.getElementById('modalContent');
       
       if (type === 'register') {
-        title.textContent = 'Kostenlos registrieren';
+        title.textContent = 'Profil claimen';
         content.innerHTML = `
-          <input id="username" placeholder="Username" class="w-full px-6 py-5 bg-zinc-800 rounded-2xl text-lg">
+          <input id="username" placeholder="Username (z.B. deinname)" class="w-full px-6 py-5 bg-zinc-800 rounded-2xl text-lg">
           <input id="email" type="email" placeholder="E-Mail" class="w-full px-6 py-5 bg-zinc-800 rounded-2xl text-lg mt-4">
-          <button onclick="register()" class="w-full mt-8 bg-purple-600 py-6 rounded-3xl text-xl font-bold">Jetzt Profil claimen</button>
+          <button onclick="registerDemo()" class="w-full mt-8 bg-purple-600 py-6 rounded-3xl text-xl font-bold">Jetzt starten</button>
+        `;
+      } else {
+        title.textContent = 'Anmelden';
+        content.innerHTML = `
+          <input id="loginInput" placeholder="Username oder Email" class="w-full px-6 py-5 bg-zinc-800 rounded-2xl text-lg">
+          <button onclick="loginDemo()" class="w-full mt-8 bg-purple-600 py-6 rounded-3xl text-xl font-bold">Anmelden</button>
         `;
       }
     }
 
-    function register() {
+    function registerDemo() {
       const name = document.getElementById('username').value || "demo";
-      alert(`✅ Super! Dein Profil "${name}.kiobio.lol" ist bereit.\n\n(Demo - in der echten Version geht es weiter zum Dashboard)`);
+      alert(`✅ Profil "${name}.kiobio.lol" erfolgreich erstellt!`);
       document.getElementById('authModal').classList.add('hidden');
     }
 
-    function showDashboard() {
-      alert("Dashboard wird geöffnet (Demo)\n\nIn der echten Version siehst du hier dein Profil-Editor.");
+    function loginDemo() {
+      alert("✅ Erfolgreich eingeloggt (Demo)");
+      document.getElementById('authModal').classList.add('hidden');
     }
   </script>
 </body>
