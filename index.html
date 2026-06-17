@@ -7,108 +7,112 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
-    body { font-family: 'Inter', system-ui; background: #0f0a1f; color: white; }
-    .purple-glow { text-shadow: 0 0 25px #a855f7, 0 0 50px #c026d3; }
-    .nav { background: rgba(15, 10, 31, 0.95); backdrop-filter: blur(12px); }
+    body {
+      background: #0a0718;
+      color: white;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    .hero-bg {
+      background: linear-gradient(rgba(10,7,24,0.85), rgba(10,7,24,0.95)), 
+                  url('https://picsum.photos/id/1015/2000/1200') center/cover no-repeat;
+    }
+    .nav {
+      background: rgba(15, 10, 35, 0.95);
+      backdrop-filter: blur(16px);
+    }
+    .glow-purple {
+      text-shadow: 0 0 30px #c026d3, 0 0 60px #7e22ce;
+    }
   </style>
 </head>
-<body class="min-h-screen">
+<body>
 
-  <!-- TOP NAV -->
-  <nav class="nav fixed top-0 w-full z-50 border-b border-purple-500/20">
-    <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+  <!-- NAV BAR -->
+  <nav class="nav fixed top-0 w-full z-50 border-b border-purple-500/30">
+    <div class="max-w-screen-2xl mx-auto px-8 py-5 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <span class="text-3xl">🔫</span>
-        <h1 class="text-3xl font-bold tracking-tighter">kiobio.lol</h1>
+        <span class="text-4xl">🔫</span>
+        <span class="text-3xl font-bold tracking-tighter">kiobio.lol</span>
       </div>
-      <div class="hidden md:flex items-center gap-8 text-lg">
+      
+      <div class="hidden md:flex items-center gap-10 text-lg">
         <a href="#" class="hover:text-purple-400 transition">Hilfecenter</a>
         <a href="#" class="hover:text-purple-400 transition">Discord</a>
         <a href="#" class="hover:text-purple-400 transition">Bestenliste</a>
         <a href="#" class="hover:text-purple-400 transition">Preise</a>
       </div>
-      <button onclick="showAuthModal('login')" class="bg-purple-600 hover:bg-purple-700 px-8 py-3 rounded-2xl font-semibold transition">
+
+      <button onclick="showDashboard()" 
+              class="bg-purple-600 hover:bg-purple-700 px-8 py-3.5 rounded-2xl font-semibold transition">
         Dashboard
       </button>
     </div>
   </nav>
 
-  <!-- HERO SECTION -->
-  <div class="min-h-screen flex items-center justify-center pt-20">
-    <div class="max-w-4xl text-center px-6">
-      <h1 class="text-6xl md:text-7xl font-bold purple-glow leading-tight mb-6">
+  <!-- HERO -->
+  <section class="hero-bg min-h-screen flex items-center justify-center text-center pt-20">
+    <div class="max-w-4xl px-6">
+      <h1 class="text-6xl md:text-7xl font-bold leading-tight glow-purple mb-8">
         Alles, was du willst,<br>genau hier.
       </h1>
-      <p class="text-xl md:text-2xl text-purple-200 mb-12">
-        kiobio.lol ist deine Anlaufstelle für moderne, funktionsreiche Link-in-Bio-Seiten und schnelles, sicheres Datei-Hosting.
+      <p class="text-xl md:text-2xl text-purple-200 mb-12 max-w-2xl mx-auto">
+        kiobio.lol ist deine Anlaufstelle für moderne, funktionsreiche Link-in-Bio-Seiten 
+        und schnelles, sicheres Datei-Hosting.
       </p>
-      
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <button onclick="showAuthModal('register')" class="bg-purple-600 hover:bg-purple-700 px-10 py-6 rounded-3xl text-2xl font-bold transition">
+
+      <div class="flex flex-col sm:flex-row gap-5 justify-center">
+        <button onclick="showAuthModal('register')" 
+                class="bg-purple-600 hover:bg-purple-700 text-white px-10 py-6 rounded-3xl text-2xl font-semibold transition">
           Kostenlos registrieren
         </button>
-        <button onclick="alert('Preise kommen bald!')" class="border border-purple-400 px-10 py-6 rounded-3xl text-2xl font-bold hover:bg-white/10 transition">
+        <button onclick="alert('Preise folgen bald...')" 
+                class="border border-purple-400 hover:bg-white/10 px-10 py-6 rounded-3xl text-2xl font-semibold transition">
           Preise ansehen
         </button>
       </div>
     </div>
-  </div>
+  </section>
 
   <!-- MOCKUPS -->
-  <div class="max-w-7xl mx-auto px-6 pb-20">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <!-- Dashboard Mock -->
-      <div class="bg-zinc-900/80 border border-purple-500/30 rounded-3xl overflow-hidden">
-        <div class="bg-black p-6 text-center">
-          <p class="text-purple-400 text-sm">Dashboard</p>
+  <section class="max-w-screen-2xl mx-auto px-8 py-20">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <!-- Big Dashboard Mock -->
+      <div class="lg:col-span-7 bg-zinc-900 rounded-3xl overflow-hidden border border-purple-500/20">
+        <div class="bg-black p-6 flex items-center gap-4 border-b border-zinc-800">
+          <div class="flex-1 h-3 bg-zinc-700 rounded"></div>
         </div>
-        <div class="p-8 text-center">
-          <p class="text-2xl font-semibold mb-4">Willkommen zurück!</p>
-          <div class="h-64 bg-gradient-to-br from-purple-900 to-black rounded-2xl flex items-center justify-center">
-            <span class="text-5xl">📊</span>
+        <div class="p-10">
+          <p class="text-purple-400 mb-2">Willkommen zurück, demo</p>
+          <h2 class="text-4xl font-bold mb-10">Account Overview</h2>
+          <!-- Platzhalter für Stats -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="bg-zinc-800 p-6 rounded-2xl">Username<br><span class="text-2xl font-bold">demo</span></div>
+            <div class="bg-zinc-800 p-6 rounded-2xl">Profile Views<br><span class="text-2xl font-bold">4.807</span></div>
           </div>
         </div>
       </div>
 
-      <!-- Profil Mock -->
-      <div class="bg-zinc-900/80 border border-purple-500/30 rounded-3xl overflow-hidden">
-        <div class="h-80 bg-cover bg-center relative" style="background-image: url('https://picsum.photos/id/1015/800/600')">
-          <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent h-40"></div>
-          <div class="absolute bottom-6 left-6 flex items-center gap-4">
-            <div class="w-20 h-20 bg-white rounded-full"></div>
-            <div>
-              <h3 class="text-2xl font-bold">deinname</h3>
-              <p class="text-purple-300">kiobio.lol/deinname</p>
-            </div>
-          </div>
+      <!-- Mobile Previews -->
+      <div class="lg:col-span-5 space-y-8">
+        <div class="bg-zinc-900 rounded-3xl overflow-hidden border border-purple-500/20">
+          <img src="https://picsum.photos/id/1015/600/800" alt="Profil" class="w-full h-auto">
         </div>
-      </div>
-
-      <!-- Mobile Mock -->
-      <div class="bg-zinc-900/80 border border-purple-500/30 rounded-3xl overflow-hidden md:col-span-1">
-        <div class="p-6">
-          <div class="bg-black rounded-3xl p-6 mx-auto max-w-[280px]">
-            <div class="text-center mb-6">
-              <div class="w-16 h-16 bg-purple-500 rounded-2xl mx-auto mb-4"></div>
-              <h4 class="font-bold">hris</h4>
-              <p class="text-sm text-purple-300">guns.lol auf top!</p>
-            </div>
-            <div class="space-y-3 text-sm">
-              <div class="bg-zinc-800 p-4 rounded-2xl">Spotify</div>
-              <div class="bg-zinc-800 p-4 rounded-2xl">Discord</div>
-              <div class="bg-zinc-800 p-4 rounded-2xl">Instagram</div>
-            </div>
+        <div class="bg-zinc-900 rounded-3xl overflow-hidden border border-purple-500/20 p-8">
+          <div class="text-center">
+            <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl mx-auto mb-4"></div>
+            <h3 class="text-2xl font-bold">deinname</h3>
+            <p class="text-purple-400">kiobio.lol/deinname</p>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
   <!-- Auth Modal -->
-  <div id="authModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
-    <div class="bg-zinc-900 p-10 rounded-3xl w-full max-w-md">
-      <h2 id="modalTitle" class="text-3xl font-bold mb-8 text-center">Willkommen bei kiobio.lol</h2>
-      <div id="authContent" class="space-y-6"></div>
+  <div id="authModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[100]">
+    <div class="bg-zinc-900 p-12 rounded-3xl w-full max-w-md">
+      <h2 id="modalTitle" class="text-3xl font-bold text-center mb-10">Willkommen</h2>
+      <div id="modalContent" class="space-y-6"></div>
     </div>
   </div>
 
@@ -116,28 +120,26 @@
     function showAuthModal(type) {
       document.getElementById('authModal').classList.remove('hidden');
       const title = document.getElementById('modalTitle');
-      const content = document.getElementById('authContent');
+      const content = document.getElementById('modalContent');
       
-      title.textContent = type === 'register' ? 'Kostenlos registrieren' : 'Anmelden';
-      content.innerHTML = type === 'register' ? `
-        <input id="regUser" placeholder="Username (deinname)" class="w-full p-5 bg-zinc-800 rounded-2xl text-lg">
-        <input id="regEmail" type="email" placeholder="E-Mail" class="w-full p-5 bg-zinc-800 rounded-2xl text-lg mt-4">
-        <button onclick="registerDemo()" class="w-full mt-6 bg-purple-600 py-6 rounded-3xl text-xl font-bold">Jetzt starten</button>
-      ` : `
-        <input id="loginInput" placeholder="Username oder Email" class="w-full p-5 bg-zinc-800 rounded-2xl text-lg">
-        <button onclick="loginDemo()" class="w-full mt-6 bg-purple-600 py-6 rounded-3xl text-xl font-bold">Anmelden</button>
-      `;
+      if (type === 'register') {
+        title.textContent = 'Kostenlos registrieren';
+        content.innerHTML = `
+          <input id="username" placeholder="Username" class="w-full px-6 py-5 bg-zinc-800 rounded-2xl text-lg">
+          <input id="email" type="email" placeholder="E-Mail" class="w-full px-6 py-5 bg-zinc-800 rounded-2xl text-lg mt-4">
+          <button onclick="register()" class="w-full mt-8 bg-purple-600 py-6 rounded-3xl text-xl font-bold">Jetzt Profil claimen</button>
+        `;
+      }
     }
 
-    function registerDemo() {
-      const name = document.getElementById('regUser').value || "demo";
-      alert(`✅ Profil "${name}.kiobio.lol" wurde erstellt!\n\nDu kannst jetzt dein Profil anpassen.`);
+    function register() {
+      const name = document.getElementById('username').value || "demo";
+      alert(`✅ Super! Dein Profil "${name}.kiobio.lol" ist bereit.\n\n(Demo - in der echten Version geht es weiter zum Dashboard)`);
       document.getElementById('authModal').classList.add('hidden');
     }
 
-    function loginDemo() {
-      alert("✅ Erfolgreich eingeloggt (Demo)");
-      document.getElementById('authModal').classList.add('hidden');
+    function showDashboard() {
+      alert("Dashboard wird geöffnet (Demo)\n\nIn der echten Version siehst du hier dein Profil-Editor.");
     }
   </script>
 </body>
