@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>kiobio.lol</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
     body {
       font-family: system-ui, -apple-system, sans-serif;
@@ -34,10 +33,17 @@
 </head>
 <body>
 
-  <!-- DEIN VIDEO ALS HINTERGRUND -->
-  <video id="bgVideo" autoplay loop muted playsinline>
+  <!-- DEIN VIDEO MIT SOUND -->
+  <video id="bgVideo" autoplay loop playsinline>
     <source src="https://files.catbox.moe/41vjqo.mp4" type="video/mp4">
   </video>
+
+  <!-- Sound Control Button -->
+  <button onclick="toggleSound()" 
+          class="fixed bottom-6 right-6 z-50 bg-black/70 hover:bg-black text-white px-5 py-3 rounded-2xl flex items-center gap-2 text-sm">
+    <span id="soundIcon">🔊</span>
+    <span id="soundText">Sound an</span>
+  </button>
 
   <!-- NAV BAR -->
   <nav class="nav fixed top-0 w-full z-50 border-b border-purple-500/30">
@@ -77,54 +83,31 @@
                 class="bg-purple-600 hover:bg-purple-700 px-12 py-6 rounded-3xl text-2xl font-semibold transition">
           Kostenlos registrieren
         </button>
-        <button onclick="alert('Preise kommen bald!')" 
-                class="border border-purple-400 hover:bg-white/10 px-12 py-6 rounded-3xl text-2xl font-semibold transition">
-          Preise ansehen
-        </button>
       </div>
     </div>
   </section>
 
-  <!-- Auth Modal -->
-  <div id="authModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[100]">
-    <div class="bg-zinc-900 p-12 rounded-3xl w-full max-w-md">
-      <h2 id="modalTitle" class="text-3xl font-bold text-center mb-10"></h2>
-      <div id="modalContent" class="space-y-6"></div>
-    </div>
-  </div>
-
   <script>
-    function showAuthModal(type) {
-      document.getElementById('authModal').classList.remove('hidden');
-      const title = document.getElementById('modalTitle');
-      const content = document.getElementById('modalContent');
+    const video = document.getElementById('bgVideo');
+    let isMuted = false;
+
+    function toggleSound() {
+      isMuted = !isMuted;
+      video.muted = isMuted;
       
-      if (type === 'register') {
-        title.textContent = 'Profil claimen';
-        content.innerHTML = `
-          <input id="username" placeholder="Username" class="w-full px-6 py-5 bg-zinc-800 rounded-2xl text-lg">
-          <input id="email" type="email" placeholder="E-Mail" class="w-full px-6 py-5 bg-zinc-800 rounded-2xl text-lg mt-4">
-          <button onclick="registerDemo()" class="w-full mt-8 bg-purple-600 py-6 rounded-3xl text-xl font-bold">Jetzt starten</button>
-        `;
-      } else {
-        title.textContent = 'Anmelden';
-        content.innerHTML = `
-          <input id="loginInput" placeholder="Username oder Email" class="w-full px-6 py-5 bg-zinc-800 rounded-2xl text-lg">
-          <button onclick="loginDemo()" class="w-full mt-8 bg-purple-600 py-6 rounded-3xl text-xl font-bold">Anmelden</button>
-        `;
+      document.getElementById('soundIcon').textContent = isMuted ? '🔇' : '🔊';
+      document.getElementById('soundText').textContent = isMuted ? 'Sound aus' : 'Sound an';
+    }
+
+    function showAuthModal(type) {
+      const name = prompt("Gib deinen Username ein:", "demo");
+      if (name) {
+        alert(`✅ Profil "${name}.kiobio.lol" erfolgreich erstellt!\n\nSound-Video läuft weiter.`);
       }
     }
 
-    function registerDemo() {
-      const name = document.getElementById('username').value || "demo";
-      alert(`✅ Profil "${name}.kiobio.lol" erfolgreich erstellt!`);
-      document.getElementById('authModal').classList.add('hidden');
-    }
-
-    function loginDemo() {
-      alert("✅ Erfolgreich eingeloggt (Demo)");
-      document.getElementById('authModal').classList.add('hidden');
-    }
+    // Video automatisch starten
+    video.play().catch(() => {});
   </script>
 </body>
 </html>
