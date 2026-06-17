@@ -8,12 +8,14 @@
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', monospace; }
-        body { background: #000; color: #fff; overflow: hidden; cursor: none; }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: #000; color: #fff; overflow: hidden; 
+            font-family: 'Courier New', monospace; 
+            cursor: none;
+        }
         .custom-cursor {
             position: fixed; width: 40px; height: 40px;
             background: url('https://i.imgur.com/2fZ3XzK.png') no-repeat center;
@@ -21,89 +23,78 @@
             transform: translate(-50%, -50%); display: none;
         }
         .cursor-trail { position: fixed; pointer-events: none; z-index: 9998; }
-        .trail-dot { position: absolute; width: 6px; height: 6px; background: rgba(255,255,255,0.8); border-radius: 50%; transform: translate(-50%,-50%); }
+        .trail-dot { position: absolute; width: 6px; height: 6px; background: rgba(192,38,211,0.9); border-radius: 50%; transform: translate(-50%,-50%); }
 
-        #background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
-
-        #profile-block {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 820px; min-height: 380px; background: rgba(0,0,0,0.75);
-            border: 1px solid rgba(192, 38, 211, 0.5); padding: 25px; border-radius: 15px;
-            z-index: 20; backdrop-filter: blur(10px);
-        }
-        .profile-picture { width: 150px; height: 150px; border-radius: 50%; border: 3px solid #c026d3; }
-        #profile-name { font-size: 36px; font-weight: bold; letter-spacing: 3px; text-shadow: 0 0 10px #c026d3; }
-        .badge { width: 28px; height: 28px; }
-
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; align-items: center; justify-content: center; }
+        video#bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; opacity: 0.75; }
+        
+        .glow { text-shadow: 0 0 30px #c026d3; }
     </style>
 </head>
-<body class="home-theme">
+<body>
 
     <div class="custom-cursor" id="customCursor"></div>
     <div id="cursorTrail" class="cursor-trail"></div>
 
-    <video id="background" autoplay loop muted playsinline>
+    <video id="bg" autoplay loop muted playsinline>
         <source src="https://files.catbox.moe/41vjqo.mp4" type="video/mp4">
     </video>
 
-    <!-- LANDING / HERO -->
-    <div id="hero" class="min-h-screen flex items-center justify-center text-center z-10 relative">
-        <div>
-            <h1 class="text-6xl font-bold mb-4" style="text-shadow: 0 0 30px #c026d3;">kiobio.lol</h1>
-            <p class="text-2xl mb-10">Dein Profil. Deine Regeln.</p>
-            <button onclick="showLoginModal()" class="bg-purple-600 hover:bg-purple-700 px-10 py-4 rounded-2xl text-xl mx-2">Anmelden</button>
-            <button onclick="showRegisterModal()" class="border border-purple-500 hover:bg-purple-500/20 px-10 py-4 rounded-2xl text-xl mx-2">Registrieren</button>
+    <!-- HERO / LANDING -->
+    <div id="hero" class="min-h-screen flex items-center justify-center text-center relative z-10">
+        <div class="max-w-2xl">
+            <h1 class="text-7xl font-bold glow mb-4">kiobio.lol</h1>
+            <p class="text-2xl mb-12 text-gray-300">Alles, was du willst. Genau hier.</p>
+            <button onclick="showLoginModal()" class="bg-purple-600 hover:bg-purple-700 px-10 py-5 rounded-3xl text-xl mr-4">Anmelden</button>
+            <button onclick="showRegisterModal()" class="border-2 border-purple-500 hover:bg-purple-500/10 px-10 py-5 rounded-3xl text-xl">Kostenlos registrieren</button>
         </div>
     </div>
 
-    <!-- PROFILE VIEW -->
-    <div id="profileView" class="hidden">
-        <div id="profile-block">
-            <div class="flex gap-6">
-                <div class="profile-container">
-                    <img id="profilePic" src="https://i.pravatar.cc/300" class="profile-picture">
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="hidden min-h-screen pt-20 relative z-10">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h1 class="text-5xl font-bold mb-4">Willkommen zurück, <span id="welcomeName" class="text-purple-400"></span>!</h1>
+            <p class="text-gray-400 mb-12">Was möchtest du machen?</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
+                <div onclick="goToProfile()" class="bg-zinc-900 border border-purple-500/50 hover:border-purple-500 p-10 rounded-3xl cursor-pointer transition hover:scale-105">
+                    <div class="text-6xl mb-6">👤</div>
+                    <h3 class="text-3xl font-bold">Mein Profil ansehen</h3>
+                    <p class="text-gray-400 mt-3">@deinusername</p>
                 </div>
-                <div class="flex-1">
-                    <div id="profile-name">Loading...</div>
-                    <p id="profile-bio" class="text-gray-300 mt-3"></p>
+
+                <div onclick="editProfile()" class="bg-zinc-900 border border-purple-500/50 hover:border-purple-500 p-10 rounded-3xl cursor-pointer transition hover:scale-105">
+                    <div class="text-6xl mb-6">✏️</div>
+                    <h3 class="text-3xl font-bold">Profil bearbeiten</h3>
+                    <p class="text-gray-400 mt-3">Bio, Bild, Hintergrund...</p>
                 </div>
             </div>
 
-            <div id="badges" class="flex gap-4 mt-6"></div>
-
-            <div id="socialLinks" class="flex gap-6 mt-8 justify-center"></div>
-
-            <div class="mt-8 flex justify-center gap-8 text-sm">
-                <div class="visitor-counter">👁️ <span id="visitor-count">0</span> Views</div>
-            </div>
+            <button onclick="logout()" class="mt-16 text-red-500 hover:text-red-600 text-lg">Abmelden</button>
         </div>
     </div>
 
     <!-- LOGIN MODAL -->
-    <div id="loginModal" class="modal">
-        <div class="bg-zinc-900 p-10 rounded-3xl w-full max-w-md">
-            <h2 class="text-3xl mb-6 text-center">Anmelden</h2>
+    <div id="loginModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
+        <div class="bg-zinc-900 p-10 rounded-3xl w-full max-w-md border border-purple-500/30">
+            <h2 class="text-3xl font-bold text-center mb-8">Anmelden</h2>
             <input id="loginEmail" type="email" value="u3271805041@gmail.com" class="w-full bg-zinc-800 p-4 rounded-2xl mb-4">
             <input id="loginPassword" type="password" value="666666" class="w-full bg-zinc-800 p-4 rounded-2xl mb-6">
-            <button onclick="doLogin()" class="w-full bg-purple-600 py-4 rounded-2xl">Anmelden</button>
-            <p onclick="showRegisterModal()" class="text-center text-purple-400 mt-6 cursor-pointer">Noch kein Account? Registrieren</p>
+            <button onclick="doLogin()" class="w-full bg-purple-600 py-4 rounded-2xl font-semibold text-lg">Anmelden</button>
         </div>
     </div>
 
     <!-- REGISTER MODAL -->
-    <div id="registerModal" class="modal">
-        <div class="bg-zinc-900 p-10 rounded-3xl w-full max-w-md">
-            <h2 class="text-3xl mb-6 text-center">Registrieren</h2>
+    <div id="registerModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
+        <div class="bg-zinc-900 p-10 rounded-3xl w-full max-w-md border border-purple-500/30">
+            <h2 class="text-3xl font-bold text-center mb-8">Registrieren</h2>
             <input id="regEmail" type="email" placeholder="E-Mail" class="w-full bg-zinc-800 p-4 rounded-2xl mb-4">
             <input id="regUsername" type="text" placeholder="Benutzername" class="w-full bg-zinc-800 p-4 rounded-2xl mb-4">
-            <input id="regPassword" type="password" placeholder="Passwort" class="w-full bg-zinc-800 p-4 rounded-2xl mb-6">
-            <button onclick="registerUser()" class="w-full bg-purple-600 py-4 rounded-2xl">Registrieren</button>
+            <input id="regPassword" type="password" placeholder="Passwort (min. 6)" class="w-full bg-zinc-800 p-4 rounded-2xl mb-6">
+            <button onclick="registerUser()" class="w-full bg-purple-600 py-4 rounded-2xl font-semibold text-lg">Registrieren</button>
         </div>
     </div>
 
     <script>
-        // ==================== FIREBASE ====================
         const firebaseConfig = {
           apiKey: "AIzaSyD6NPF9FIJsDipQg3dvxSohtAJCGVF4NUc",
           authDomain: "kiobiool.firebaseapp.com",
@@ -118,11 +109,11 @@
 
         let currentUser = null;
 
-        // ==================== CURSOR ====================
+        // Cursor
         function initCursor() {
             const cursor = document.getElementById('customCursor');
             const trail = document.getElementById('cursorTrail');
-            document.addEventListener('mousemove', (e) => {
+            document.addEventListener('mousemove', e => {
                 cursor.style.left = e.clientX + 'px';
                 cursor.style.top = e.clientY + 'px';
                 cursor.style.display = 'block';
@@ -132,79 +123,79 @@
                 dot.style.left = e.clientX + 'px';
                 dot.style.top = e.clientY + 'px';
                 trail.appendChild(dot);
-                setTimeout(() => dot.remove(), 700);
+                setTimeout(() => dot.remove(), 600);
             });
         }
 
-        // ==================== AUTH ====================
+        // Auth Functions
         async function doLogin() {
             const email = document.getElementById('loginEmail').value;
-            const pass = document.getElementById('loginPassword').value;
+            const password = document.getElementById('loginPassword').value;
             try {
-                const res = await auth.signInWithEmailAndPassword(email, pass);
+                const res = await auth.signInWithEmailAndPassword(email, password);
                 currentUser = res.user;
                 hideModals();
-                loadProfile();
-            } catch (err) {
-                alert("Login Fehler: " + err.message);
-            }
+                showDashboard();
+            } catch (e) { alert("Login fehlgeschlagen: " + e.message); }
         }
 
         async function registerUser() {
             const email = document.getElementById('regEmail').value.trim();
             const username = document.getElementById('regUsername').value.trim().toLowerCase();
-            const pass = document.getElementById('regPassword').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
 
-            if (!email || !username || pass.length < 6) return alert("Bitte alle Felder richtig ausfüllen");
+            if (!username || password.length < 6) return alert("Benutzername + Passwort (min. 6 Zeichen) erforderlich");
 
             try {
-                const res = await auth.createUserWithEmailAndPassword(email, pass);
+                const res = await auth.createUserWithEmailAndPassword(email, password);
                 await db.ref('users/' + res.user.uid).set({
                     username: username,
                     displayName: username,
-                    bio: "Neu auf kiobio.lol",
+                    bio: "Neu auf kiobio.lol 🔥",
                     profilePic: "https://i.pravatar.cc/300?u=" + Date.now(),
-                    badges: ["verified", "owner"]
+                    badges: ["verified"]
                 });
                 currentUser = res.user;
                 hideModals();
-                loadProfile();
-            } catch (err) {
-                alert(err.message);
-            }
+                showDashboard();
+            } catch (e) { alert(e.message); }
         }
 
         function hideModals() {
-            document.getElementById('loginModal').style.display = 'none';
-            document.getElementById('registerModal').style.display = 'none';
+            document.getElementById('loginModal').classList.add('hidden');
+            document.getElementById('registerModal').classList.add('hidden');
         }
 
         function showLoginModal() {
             hideModals();
-            document.getElementById('loginModal').style.display = 'flex';
+            document.getElementById('loginModal').classList.remove('hidden');
         }
 
         function showRegisterModal() {
             hideModals();
-            document.getElementById('registerModal').style.display = 'flex';
+            document.getElementById('registerModal').classList.remove('hidden');
         }
 
-        // ==================== PROFILE ====================
-        async function loadProfile() {
+        function showDashboard() {
             document.getElementById('hero').classList.add('hidden');
-            document.getElementById('profileView').classList.remove('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            document.getElementById('welcomeName').textContent = currentUser.email.split('@')[0];
+        }
 
-            const username = currentUser ? (await db.ref('users/' + currentUser.uid).once('value')).val()?.username : "deinuser";
-
-            const snap = await db.ref('users').orderByChild('username').equalTo(username).limitToFirst(1).once('value');
-            const userData = Object.values(snap.val() || {})[0];
-
-            if (userData) {
-                document.getElementById('profile-name').textContent = userData.displayName || username;
-                document.getElementById('profile-bio').textContent = userData.bio || "";
-                document.getElementById('profilePic').src = userData.profilePic || "https://i.pravatar.cc/300";
-                document.getElementById('visitor-count').textContent = "1337";
+        function goToProfile() {
+            if (currentUser) {
+                // Hier später die Profil-Seite öffnen (kannst du als separate Datei machen)
+                window.location.href = `/@${currentUser.username || 'deinusername'}`;
             }
+        }
+
+        function editProfile() {
+            alert("Profil-Editor kommt bald! (kann ich dir als Nächstes bauen)");
+        }
+
+        function logout() {
+            auth.signOut();
+            location.reload();
         }
 
         // Init
@@ -213,7 +204,7 @@
             auth.onAuthStateChanged(user => {
                 if (user) {
                     currentUser = user;
-                    loadProfile();
+                    showDashboard();
                 }
             });
         };
