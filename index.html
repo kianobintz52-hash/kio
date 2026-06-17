@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>@username - kiobio.lol</title>
+  <title>@<span id="pageUsername">username</span> - kiobio.lol</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
@@ -11,152 +11,320 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap');
     
-    body {
+    body { 
+      margin:0; padding:0; overflow:hidden; color:white; 
       font-family: 'VT323', monospace;
       background: #000;
-      color: #fff;
-      overflow: hidden;
-      cursor: none;
     }
-    #bgVideo, #bgImage {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      z-index: -2;
-      opacity: 0.85;
-    }
+    #bgVideo, #bgImage { position:fixed; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-2; opacity:0.9; }
+    
     .profile-card {
-      background: rgba(0, 0, 0, 0.75);
+      background: rgba(0,0,0,0.8);
       backdrop-filter: blur(12px);
-      border: 2px solid rgba(255,255,255,0.15);
-      box-shadow: 0 0 60px rgba(139, 92, 246, 0.4);
+      border: 2px solid rgba(168, 85, 247, 0.6);
+      box-shadow: 0 0 80px rgba(168, 85, 247, 0.5);
     }
-    .glitch {
-      animation: glitch 0.4s linear infinite alternate;
-    }
+    .glitch { animation: glitch 0.4s linear infinite alternate; }
     @keyframes glitch {
       0% { transform: translate(0); }
       20% { transform: translate(-3px, 3px); }
       40% { transform: translate(3px, -3px); }
-      60% { transform: translate(-2px, 2px); }
-      80% { transform: translate(2px, -2px); }
       100% { transform: translate(0); }
     }
+    .custom-cursor {
+      position: fixed; width: 36px; height: 36px; pointer-events: none; z-index: 9999;
+      background: url('https://i.imgur.com/2fZ3XzK.png') no-repeat center; /* Ersatz-Cursor */
+      background-size: contain; transform: translate(-50%, -50%); display: none;
+    }
+    .cursor-trail { position:fixed; pointer-events:none; z-index:9998; }
+    .trail-dot {
+      position:absolute; width:7px; height:7px; background:rgba(168,85,247,0.9);
+      border-radius:50%; transform:translate(-50%,-50%); opacity:0;
+    }
+    .badge-img { transition: all 0.3s; }
+    .badge-img:hover { transform: scale(1.3) rotate(8deg); }
   </style>
 </head>
-<body class="home-theme">
+<body id="body" class="home-theme">
 
-  <!-- Background -->
+  <div class="custom-cursor" id="customCursor"></div>
+  <div id="cursorTrail" class="cursor-trail"></div>
+
   <video id="bgVideo" autoplay loop muted playsinline></video>
-  <img id="bgImage" class="hidden" alt="background">
+  <img id="bgImage" class="hidden" alt="bg">
 
+  <!-- Profil -->
   <div class="min-h-screen flex items-center justify-center p-6 relative z-10">
-    <div class="profile-card max-w-2xl w-full rounded-3xl p-10 text-center">
-      
-      <!-- Profile Picture -->
-      <div class="relative mx-auto w-48 h-48 mb-6">
-        <img id="profilePic" 
-             class="w-48 h-48 rounded-full border-4 border-purple-500 object-cover glitch"
-             src="https://i.pravatar.cc/300">
-        <div class="absolute -inset-2 border border-purple-400 rounded-full animate-spin-slow"></div>
+    <div id="profile-card" class="profile-card max-w-2xl w-full rounded-3xl p-10 text-center">
+      <div class="relative mx-auto w-52 h-52 mb-6">
+        <img id="profilePic" class="w-52 h-52 rounded-full border-4 border-purple-500 object-cover glitch" src="https://i.pravatar.cc/300">
       </div>
-
-      <h1 id="displayName" class="text-6xl font-bold mb-2 glitch">Username</h1>
-      <p id="username" class="text-purple-400 text-xl mb-6">@username</p>
       
-      <p id="bio" class="text-xl text-gray-300 mb-10 leading-relaxed">
-        Loading bio...
-      </p>
+      <h1 id="displayName" class="text-6xl font-bold mb-1 glitch"></h1>
+      <p id="usernameTag" class="text-purple-400 text-2xl mb-6"></p>
+      
+      <p id="bio" class="text-xl mb-10 leading-relaxed text-gray-200"></p>
 
       <!-- Badges -->
-      <div id="badges" class="flex justify-center gap-3 flex-wrap mb-10"></div>
+      <div id="badges" class="flex justify-center flex-wrap gap-6 mb-10"></div>
 
       <!-- Social Links -->
-      <div id="socialLinks" class="flex justify-center gap-6 mb-12"></div>
+      <div id="socialLinks" class="flex justify-center gap-8 mb-12"></div>
 
-      <!-- Visitor Counter -->
-      <div class="inline-flex items-center gap-3 bg-black/50 px-8 py-3 rounded-2xl border border-white/10">
-        <span class="text-2xl">👁️</span>
-        <span id="visitorCount" class="text-3xl font-bold">1337</span>
-        <span class="text-gray-400">Views</span>
+      <div class="inline-flex items-center gap-4 bg-black/60 px-8 py-4 rounded-2xl">
+        <span class="text-3xl">👁️</span>
+        <span id="visitorCount" class="text-4xl font-bold">0</span>
+        <span class="text-gray-400 text-lg">Views</span>
       </div>
+
+      <button onclick="openProfileEditor()" class="mt-8 bg-purple-600 hover:bg-purple-700 px-8 py-3 rounded-2xl">
+        Profil bearbeiten
+      </button>
     </div>
   </div>
 
   <!-- Theme Controls -->
-  <div class="fixed bottom-8 left-1/2 -translate-x-1/2 flex gap-4 bg-black/70 backdrop-blur-md p-4 rounded-3xl border border-white/10 z-50">
-    <button onclick="switchTheme(0)" class="px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-2xl">Home</button>
-    <button onclick="switchTheme(1)" class="px-6 py-3 hover:bg-white/10 rounded-2xl">Hacker</button>
-    <button onclick="switchTheme(2)" class="px-6 py-3 hover:bg-white/10 rounded-2xl">Rain</button>
-    <button onclick="switchTheme(3)" class="px-6 py-3 hover:bg-white/10 rounded-2xl">Anime</button>
+  <div class="fixed bottom-8 left-1/2 -translate-x-1/2 flex gap-3 bg-black/80 backdrop-blur-lg p-4 rounded-3xl border border-purple-500/30 z-50">
+    <button onclick="switchTheme(0)" class="px-6 py-3 rounded-2xl hover:bg-purple-600">🏠</button>
+    <button onclick="switchTheme(1)" class="px-6 py-3 rounded-2xl hover:bg-green-600">💻</button>
+    <button onclick="switchTheme(2)" class="px-6 py-3 rounded-2xl hover:bg-blue-600">🌧️</button>
+    <button onclick="switchTheme(3)" class="px-6 py-3 rounded-2xl hover:bg-pink-600">🌸</button>
   </div>
 
+  <!-- PROFIL EDITOR MODAL -->
+  <div id="editorModal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[200]">
+    <div class="bg-zinc-900 w-full max-w-2xl mx-4 rounded-3xl p-8 border border-purple-500/30 max-h-[92vh] overflow-auto">
+      <h2 class="text-3xl font-bold mb-8 text-center">Profil bearbeiten</h2>
+      
+      <div class="space-y-8">
+        <div>
+          <label class="block text-sm mb-2">Display Name</label>
+          <input id="editDisplayName" class="w-full bg-zinc-800 p-4 rounded-2xl">
+        </div>
+        
+        <div>
+          <label class="block text-sm mb-2">Bio</label>
+          <textarea id="editBio" rows="4" class="w-full bg-zinc-800 p-4 rounded-2xl"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm mb-2">Profilbild</label>
+            <input type="file" id="profilePicInput" accept="image/*" class="w-full bg-zinc-800 p-4 rounded-2xl">
+            <img id="previewProfilePic" class="mt-4 w-24 h-24 rounded-full object-cover hidden">
+          </div>
+          <div>
+            <label class="block text-sm mb-2">Hintergrund (Bild oder Video)</label>
+            <input type="file" id="bgInput" accept="image/*,video/*" class="w-full bg-zinc-800 p-4 rounded-2xl">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm mb-3">Social Links</label>
+          <div class="grid grid-cols-2 gap-4">
+            <input id="socialDiscord" placeholder="Discord" class="bg-zinc-800 p-4 rounded-2xl">
+            <input id="socialTwitter" placeholder="Twitter / X" class="bg-zinc-800 p-4 rounded-2xl">
+            <input id="socialInstagram" placeholder="Instagram" class="bg-zinc-800 p-4 rounded-2xl">
+            <input id="socialYoutube" placeholder="YouTube" class="bg-zinc-800 p-4 rounded-2xl">
+            <input id="socialGithub" placeholder="GitHub" class="bg-zinc-800 p-4 rounded-2xl">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm mb-3">Deine Badges</label>
+          <div id="editorBadges" class="flex flex-wrap gap-4 min-h-[60px]"></div>
+        </div>
+      </div>
+
+      <div class="flex gap-4 mt-10">
+        <button onclick="saveProfile()" class="flex-1 bg-purple-600 hover:bg-purple-700 py-4 rounded-2xl font-semibold">Speichern</button>
+        <button onclick="closeEditor()" class="flex-1 bg-zinc-700 hover:bg-zinc-600 py-4 rounded-2xl">Abbrechen</button>
+      </div>
+    </div>
+  </div>
+
+  <audio id="themeAudio" loop></audio>
+
   <script>
-    // Firebase Config (deine aktuelle)
-    const firebaseConfig = { /* ... deine Config hier ... */ };
+    // ==================== FIREBASE CONFIG ====================
+    const firebaseConfig = {
+      apiKey: "AIzaSyD6NPF9FIJsDipQg3dvxSohtAJCGVF4NUc",
+      authDomain: "kiobiool.firebaseapp.com",
+      databaseURL: "https://kiobiool-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "kiobiool",
+      storageBucket: "kiobiool.firebasestorage.app",
+      messagingSenderId: "1003434485509",
+      appId: "1:1003434485509:web:872f257b0758051c80b96c"
+    };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
+    const storage = firebase.storage();
 
-    let currentUserData = {};
+    let currentUser = null;
+    let badgeDefinitions = {};
 
-    async function loadProfile(username) {
-      try {
-        // Beispiel: Suche User nach Username
-        const snapshot = await db.ref('users').orderByChild('username').equalTo(username).once('value');
-        const users = snapshot.val();
+    // ==================== CURSOR ====================
+    function initCursor() {
+      const cursor = document.getElementById('customCursor');
+      const trailContainer = document.getElementById('cursorTrail');
+      
+      document.addEventListener('mousemove', (e) => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+        cursor.style.display = 'block';
+
+        const dot = document.createElement('div');
+        dot.className = 'trail-dot';
+        dot.style.left = e.clientX + 'px';
+        dot.style.top = e.clientY + 'px';
+        trailContainer.appendChild(dot);
         
-        if (!users) {
-          document.body.innerHTML = "<h1 class='text-center text-4xl mt-40'>User not found :(</h1>";
-          return;
-        }
+        setTimeout(() => dot.remove(), 800);
+      });
+    }
 
-        const user = Object.values(users)[0];
-        currentUserData = user;
+    // ==================== LOAD PROFILE ====================
+    async function loadProfile() {
+      const username = window.location.pathname.replace('/@', '').toLowerCase();
+      document.getElementById('pageUsername').textContent = username;
 
-        document.getElementById('displayName').textContent = user.displayName || username;
-        document.getElementById('username').textContent = `@${user.username}`;
-        document.getElementById('bio').textContent = user.bio || "No bio yet...";
-        document.getElementById('profilePic').src = user.profilePic || "https://i.pravatar.cc/300";
+      const snap = await db.ref('users').orderByChild('username').equalTo(username).limitToFirst(1).once('value');
+      const data = snap.val();
+      if (!data) return document.body.innerHTML = `<h1 class="text-center text-5xl mt-40">User nicht gefunden</h1>`;
 
-        // Background
-        if (user.backgroundVideo) {
-          document.getElementById('bgVideo').src = user.backgroundVideo;
-        } else if (user.backgroundImage) {
-          document.getElementById('bgImage').src = user.backgroundImage;
-          document.getElementById('bgImage').classList.remove('hidden');
-          document.getElementById('bgVideo').classList.add('hidden');
-        }
+      const user = Object.values(data)[0];
+      currentUser = user; // für Editor
 
-        // Visitor Count erhöhen
-        incrementVisitorCount(username);
-      } catch (e) {
-        console.error(e);
+      document.getElementById('displayName').textContent = user.displayName || username;
+      document.getElementById('usernameTag').textContent = `@${username}`;
+      document.getElementById('bio').textContent = user.bio || "Keine Bio...";
+      document.getElementById('profilePic').src = user.profilePic || "https://i.pravatar.cc/300";
+
+      // Background
+      if (user.backgroundVideo) {
+        document.getElementById('bgVideo').src = user.backgroundVideo;
+      } else if (user.backgroundImage) {
+        document.getElementById('bgImage').src = user.backgroundImage;
+        document.getElementById('bgImage').classList.remove('hidden');
       }
+
+      await loadBadgeDefinitions();
+      renderBadges(user.badges || []);
+      renderSocialLinks(user.socials || {});
+      incrementVisitor(username);
     }
 
-    function incrementVisitorCount(username) {
-      const ref = db.ref(`profileViews/${username}`);
-      ref.transaction(count => (count || 0) + 1);
-      // Dann aktuellen Wert anzeigen...
+    async function loadBadgeDefinitions() {
+      const snap = await db.ref('badges').once('value');
+      badgeDefinitions = snap.val() || {};
     }
 
-    function switchTheme(theme) {
-      document.body.className = '';
-      if (theme === 1) document.body.classList.add('hacker-theme');
-      // Hier mehr Themes + Hintergrund-/Musikwechsel möglich
-      console.log("Theme switched to", theme);
+    function renderBadges(badgeIds) {
+      const container = document.getElementById('badges');
+      container.innerHTML = badgeIds.map(id => {
+        const b = badgeDefinitions[id];
+        if (!b) return '';
+        return `<img src="${b.image}" class="badge-img w-12 h-12" title="${b.name}">`;
+      }).join('');
     }
 
-    // Beispiel: Profil von URL laden
+    function renderSocialLinks(socials) {
+      const container = document.getElementById('socialLinks');
+      let html = '';
+      if (socials.discord) html += `<a href="${socials.discord}" target="_blank"><img src="https://i.imgur.com/2Q7z2.png" class="w-12 h-12 hover:scale-125"></a>`;
+      if (socials.twitter) html += `<a href="${socials.twitter}" target="_blank"><img src="https://i.imgur.com/8Z7Z2.png" class="w-12 h-12 hover:scale-125"></a>`;
+      // Weitere Socials hinzufügen...
+      container.innerHTML = html;
+    }
+
+    function incrementVisitor(username) {
+      db.ref(`profileViews/${username}`).transaction(count => (count || 0) + 1);
+    }
+
+    // ==================== EDITOR ====================
+    function openProfileEditor() {
+      if (!currentUser) return alert("Nicht eingeloggt");
+      
+      document.getElementById('editDisplayName').value = currentUser.displayName || '';
+      document.getElementById('editBio').value = currentUser.bio || '';
+      
+      document.getElementById('socialDiscord').value = currentUser.socials?.discord || '';
+      document.getElementById('socialTwitter').value = currentUser.socials?.twitter || '';
+      document.getElementById('socialInstagram').value = currentUser.socials?.instagram || '';
+      document.getElementById('socialYoutube').value = currentUser.socials?.youtube || '';
+      document.getElementById('socialGithub').value = currentUser.socials?.github || '';
+
+      renderEditorBadges(currentUser.badges || []);
+      document.getElementById('editorModal').classList.remove('hidden');
+    }
+
+    function renderEditorBadges(badgeIds) {
+      const container = document.getElementById('editorBadges');
+      container.innerHTML = badgeIds.map(id => {
+        const b = badgeDefinitions[id];
+        return b ? `<div class="bg-zinc-800 px-4 py-2 rounded-2xl flex items-center gap-3"><img src="${b.image}" class="w-8 h-8"><span>${b.name}</span></div>` : '';
+      }).join('');
+    }
+
+    async function saveProfile() {
+      const uid = currentUser.uid; // oder aus auth
+      const updates = {
+        displayName: document.getElementById('editDisplayName').value.trim(),
+        bio: document.getElementById('editBio').value.trim(),
+        socials: {
+          discord: document.getElementById('socialDiscord').value.trim(),
+          twitter: document.getElementById('socialTwitter').value.trim(),
+          instagram: document.getElementById('socialInstagram').value.trim(),
+          youtube: document.getElementById('socialYoutube').value.trim(),
+          github: document.getElementById('socialGithub').value.trim()
+        }
+      };
+
+      // Upload Profile Pic
+      const picFile = document.getElementById('profilePicInput').files[0];
+      if (picFile) {
+        const url = await uploadFile(picFile, `profilePics/${uid}`);
+        updates.profilePic = url;
+      }
+
+      // Upload Background
+      const bgFile = document.getElementById('bgInput').files[0];
+      if (bgFile) {
+        const url = await uploadFile(bgFile, `backgrounds/${uid}`);
+        if (bgFile.type.startsWith('video/')) {
+          updates.backgroundVideo = url;
+        } else {
+          updates.backgroundImage = url;
+        }
+      }
+
+      await db.ref('users/' + uid).update(updates);
+      alert("✅ Profil aktualisiert!");
+      closeEditor();
+      location.reload();
+    }
+
+    async function uploadFile(file, path) {
+      const ref = storage.ref(path);
+      await ref.put(file);
+      return await ref.getDownloadURL();
+    }
+
+    function closeEditor() {
+      document.getElementById('editorModal').classList.add('hidden');
+    }
+
+    function switchTheme(n) {
+      const themes = ['home', 'hacker', 'rain', 'anime'];
+      document.getElementById('body').className = themes[n] + '-theme';
+    }
+
+    // Init
     window.onload = () => {
-      const path = window.location.pathname;
-      if (path.startsWith('/@')) {
-        const username = path.substring(2);
-        loadProfile(username);
-      }
+      initCursor();
+      loadProfile();
     };
   </script>
 </body>
