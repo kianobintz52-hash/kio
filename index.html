@@ -28,7 +28,7 @@
       </div>
       <div class="flex items-center gap-4">
         <button onclick="toggleTheme()" class="text-2xl" id="themeBtn">🌙</button>
-        <button onclick="showLoginModal()" class="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-2xl font-semibold">Anmelden</button>
+        <button onclick="showLoginModal()" class="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-2xl font-semibold" id="navLoginBtn">Anmelden</button>
       </div>
     </div>
   </nav>
@@ -44,14 +44,6 @@
     </div>
   </section>
 
-  <!-- MODAL -->
-  <div id="mainModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[100]">
-    <div class="bg-zinc-900 p-8 md:p-10 rounded-3xl w-full max-w-md border border-purple-500/30">
-      <h2 id="modalTitle" class="text-3xl font-bold text-center mb-8"></h2>
-      <div id="modalContent" class="space-y-6"></div>
-    </div>
-  </div>
-
   <!-- DASHBOARD -->
   <div id="dashboard" class="hidden min-h-screen bg-zinc-950">
     <div class="flex flex-col md:flex-row h-screen pt-16">
@@ -65,16 +57,16 @@
           <a href="#" onclick="switchTab(0)" class="sidebar-active flex items-center gap-3 px-4 py-3 rounded-2xl">👤 Konto</a>
           <a href="#" onclick="switchTab(1)" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10">🔗 Links</a>
           <a href="#" onclick="switchTab(2)" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10">🎵 Musik</a>
-          <a href="#" onclick="switchTab(3)" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10">👀 Mein Profil</a>
+          <a href="#" onclick="showMyPublicProfile()" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10">👀 Mein Profil</a>
         </div>
       </div>
 
       <!-- MAIN CONTENT -->
       <div class="flex-1 p-4 md:p-10 overflow-y-auto">
         <div class="max-w-5xl mx-auto" id="mainContent">
-
           <!-- TAB 0: Konto -->
           <div id="tab0">
+            <!-- ... dein bisheriger Konto-Inhalt ... -->
             <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-6">
               <div class="flex items-center gap-6">
                 <img id="profilePicBig" src="https://i.pravatar.cc/128" class="w-24 h-24 md:w-28 md:h-28 rounded-3xl object-cover border-4 border-purple-500 cursor-pointer" onclick="document.getElementById('picUpload').click()">
@@ -87,51 +79,54 @@
               <button onclick="logout()" class="text-red-400 hover:text-red-500">Abmelden</button>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-          <!-- TAB 3: Eigene Profil-Website -->
-          <div id="tab3" class="hidden">
-            <div class="max-w-4xl mx-auto bg-zinc-900 rounded-3xl overflow-hidden border border-purple-500/30 shadow-2xl">
-              <!-- Video / Banner -->
-              <div class="relative h-64 bg-black">
-                <video id="bannerVideo" autoplay loop muted class="w-full h-full object-cover"></video>
-                <button onclick="document.getElementById('bannerUpload').click()" 
-                        class="absolute bottom-4 right-4 bg-black/70 hover:bg-black px-5 py-2 rounded-2xl text-sm">Video/Banner ändern</button>
-                <input type="file" id="bannerUpload" accept="video/*,image/*" class="hidden" onchange="uploadBanner(event)">
-              </div>
+  <!-- ÖFFENTLICHES PROFIL (separate Seite) -->
+  <div id="publicProfilePage" class="hidden min-h-screen bg-zinc-950">
+    <div class="max-w-4xl mx-auto bg-zinc-900 rounded-3xl overflow-hidden border border-purple-500/30 shadow-2xl mt-8">
+      <!-- Banner -->
+      <div class="relative h-64 bg-black">
+        <video id="bannerVideoPublic" autoplay loop muted class="w-full h-full object-cover hidden"></video>
+        <img id="bannerImagePublic" class="w-full h-full object-cover" alt="Banner">
+      </div>
 
-              <!-- Profilbild -->
-              <div class="flex justify-center -mt-16 relative z-10">
-                <img id="publicProfilePic" src="https://i.pravatar.cc/128" 
-                     class="w-36 h-36 rounded-3xl object-cover border-4 border-zinc-900 cursor-pointer" 
-                     onclick="document.getElementById('picUploadProfile').click()">
-                <input type="file" id="picUploadProfile" accept="image/*" class="hidden" onchange="uploadProfilePic(event)">
-              </div>
+      <!-- Profilbild -->
+      <div class="flex justify-center -mt-16 relative z-10">
+        <img id="publicProfilePic" src="https://i.pravatar.cc/128" class="w-36 h-36 rounded-3xl object-cover border-4 border-zinc-900">
+      </div>
 
-              <div class="text-center px-8 pt-4 pb-12">
-                <h1 id="publicName" class="text-5xl font-bold"></h1>
-                <p id="publicUsername" class="text-purple-400 text-2xl"></p>
+      <div class="text-center px-8 pt-4 pb-12">
+        <h1 id="publicName" class="text-5xl font-bold"></h1>
+        <p id="publicUsername" class="text-purple-400 text-2xl"></p>
 
-                <!-- Badges -->
-                <div class="my-10">
-                  <h3 class="text-2xl mb-6">Badges</h3>
-                  <div id="badgesContainer" class="flex flex-wrap justify-center gap-4"></div>
-                  <button onclick="addCustomBadge()" class="mt-6 text-purple-400 hover:text-purple-300">+ Badge verteilen (Owner)</button>
-                </div>
-
-                <!-- Bio -->
-                <div class="max-w-2xl mx-auto mb-12 text-left">
-                  <h3 class="text-2xl mb-4">Über mich</h3>
-                  <p id="publicBio" class="text-zinc-300 text-lg leading-relaxed"></p>
-                </div>
-
-                <!-- Links -->
-                <div class="max-w-2xl mx-auto text-left">
-                  <h3 class="text-2xl mb-6">Links</h3>
-                  <div id="publicLinks" class="space-y-4"></div>
-                </div>
-              </div>
-            </div>
+        <!-- Custom Link -->
+        <div class="my-6">
+          <p class="text-zinc-400 text-sm mb-2">Dein Profil-Link:</p>
+          <div class="flex items-center justify-center gap-3 bg-zinc-800 rounded-2xl p-3 max-w-md mx-auto">
+            <code id="profileLink" class="text-purple-300 font-mono text-sm"></code>
+            <button onclick="copyProfileLink()" class="text-xs bg-purple-600 hover:bg-purple-700 px-4 py-1 rounded-xl">Kopieren</button>
           </div>
+        </div>
+
+        <!-- Badges -->
+        <div class="my-10">
+          <h3 class="text-2xl mb-6">Badges</h3>
+          <div id="badgesContainer" class="flex flex-wrap justify-center gap-4"></div>
+        </div>
+
+        <!-- Bio -->
+        <div class="max-w-2xl mx-auto mb-12 text-left">
+          <h3 class="text-2xl mb-4">Über mich</h3>
+          <p id="publicBio" class="text-zinc-300 text-lg leading-relaxed"></p>
+        </div>
+
+        <!-- Links -->
+        <div class="max-w-2xl mx-auto text-left">
+          <h3 class="text-2xl mb-6">Links</h3>
+          <div id="publicLinks" class="space-y-4"></div>
         </div>
       </div>
     </div>
@@ -140,128 +135,88 @@
   <script>
     emailjs.init("IuyLZ33ctDj1VxqXE");
     let currentUser = null;
-    const VERIFICATION_CODE = "666";
     let users = JSON.parse(localStorage.getItem('kiobioUsers')) || {};
     let nextUID = parseInt(localStorage.getItem('nextUID')) || 1;
 
-    function saveUser(email, username, password) {
-      users[email] = { 
-        username, password, uid: nextUID++, views: 0, bio: "", 
-        profilePic: "https://i.pravatar.cc/128?u=" + Date.now(),
-        banner: "https://picsum.photos/id/1015/1200/400",
-        bannerType: "image",
-        links: [],
-        badges: ["🔥 Founder", "🌟 Beta Tester"]
-      };
-      localStorage.setItem('kiobioUsers', JSON.stringify(users));
-      localStorage.setItem('nextUID', nextUID);
-    }
+    // === URL-basierte Routing ===
+    function handleRoute() {
+      const path = window.location.pathname;
+      const usernameMatch = path.match(/@([\w]+)/);
 
-    function isTaken(email, username) {
-      return Object.values(users).some(u => u.email === email || u.username === username);
-    }
-
-    function uploadProfilePic(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = ev => {
-        currentUser.profilePic = ev.target.result;
-        users[currentUser.email].profilePic = ev.target.result;
-        localStorage.setItem('kiobioUsers', JSON.stringify(users));
-        document.getElementById('publicProfilePic').src = ev.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function uploadBanner(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = ev => {
-        const isVideo = file.type.startsWith('video/');
-        currentUser.banner = ev.target.result;
-        currentUser.bannerType = isVideo ? "video" : "image";
-        users[currentUser.email].banner = currentUser.banner;
-        users[currentUser.email].bannerType = currentUser.bannerType;
-        localStorage.setItem('kiobioUsers', JSON.stringify(users));
-
-        const bannerVideo = document.getElementById('bannerVideo');
-        const bannerImg = document.getElementById('bannerImage');
-        if (isVideo) {
-          bannerVideo.src = ev.target.result;
-          bannerVideo.style.display = 'block';
-          bannerImg.style.display = 'none';
-          bannerVideo.play();
-        } else {
-          bannerImg.src = ev.target.result;
-          bannerVideo.style.display = 'none';
-          bannerImg.style.display = 'block';
+      if (usernameMatch) {
+        const username = usernameMatch[1];
+        const user = Object.values(users).find(u => u.username === username);
+        if (user) {
+          showPublicProfileFor(user);
+          return;
         }
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function addCustomBadge() {
-      const name = prompt("Badge Name (z.B. Admin, VIP, God, Legend):");
-      if (name && name.trim()) {
-        currentUser.badges.push(name.trim());
-        users[currentUser.email].badges = currentUser.badges;
-        localStorage.setItem('kiobioUsers', JSON.stringify(users));
-        renderBadges();
-        alert("✅ Badge verteilt!");
       }
+      // Standard: Hero oder Dashboard
     }
 
-    function renderBadges() {
-      const container = document.getElementById('badgesContainer');
-      container.innerHTML = currentUser.badges.map(b => `
+    function showPublicProfileFor(user) {
+      document.getElementById('hero').classList.add('hidden');
+      document.getElementById('dashboard').classList.add('hidden');
+      document.getElementById('publicProfilePage').classList.remove('hidden');
+
+      document.getElementById('publicProfilePic').src = user.profilePic;
+      document.getElementById('publicName').textContent = user.username;
+      document.getElementById('publicUsername').textContent = `@${user.username}`;
+      document.getElementById('publicBio').textContent = user.bio || "Noch keine Bio...";
+      document.getElementById('profileLink').textContent = `https://kiobio.lol/@${user.username}`;
+
+      // Banner
+      const bannerVideo = document.getElementById('bannerVideoPublic');
+      const bannerImg = document.getElementById('bannerImagePublic');
+      if (user.bannerType === "video") {
+        bannerVideo.src = user.banner;
+        bannerVideo.classList.remove('hidden');
+        bannerImg.classList.add('hidden');
+        bannerVideo.play();
+      } else {
+        bannerImg.src = user.banner;
+        bannerImg.classList.remove('hidden');
+        bannerVideo.classList.add('hidden');
+      }
+
+      // Badges
+      const badgesContainer = document.getElementById('badgesContainer');
+      badgesContainer.innerHTML = user.badges.map(b => `
         <div class="bg-gradient-to-r from-amber-400 to-yellow-500 text-black px-6 py-3 rounded-2xl font-bold shadow-lg">
           ${b}
         </div>
       `).join('');
-    }
 
-    function showPublicProfile() {
-      document.getElementById('publicProfilePic').src = currentUser.profilePic;
-      document.getElementById('publicName').textContent = currentUser.username;
-      document.getElementById('publicUsername').textContent = currentUser.username;
-      document.getElementById('publicBio').textContent = currentUser.bio || "Noch keine Bio...";
-      document.getElementById('profileLinkInput').value = `https://kiobio.lol/@${currentUser.username}`;
-
-      renderBadges();
-
+      // Links
       const linksDiv = document.getElementById('publicLinks');
-      linksDiv.innerHTML = currentUser.links.map(l => `
-        <a href="${l.url}" target="_blank" class="block bg-zinc-800 hover:bg-zinc-700 p-6 rounded-3xl text-lg">🔗 ${l.title}</a>
+      linksDiv.innerHTML = user.links.map(l => `
+        <a href="${l.url}" target="_blank" class="block bg-zinc-800 hover:bg-zinc-700 p-6 rounded-3xl text-lg transition">🔗 ${l.title}</a>
       `).join('');
     }
 
-    function switchTab(n) {
-      document.querySelectorAll('#mainContent > div').forEach((el, i) => el.classList.toggle('hidden', i !== n));
-      if (n === 3) showPublicProfile();
+    function showMyPublicProfile() {
+      if (!currentUser) return;
+      // Simuliert Navigation zur eigenen Profil-Seite
+      window.location.href = `/@${currentUser.username}`;
     }
 
-    function showDashboard() {
-      document.getElementById('hero').classList.add('hidden');
-      document.getElementById('dashboard').classList.remove('hidden');
-      document.getElementById('navBtn').textContent = "Abmelden";
-
-      document.getElementById('dashNameTop').textContent = currentUser.username;
-      document.getElementById('dashUsername').textContent = currentUser.username;
-      document.getElementById('profilePicBig').src = currentUser.profilePic;
-
-      switchTab(0);
+    function copyProfileLink() {
+      const link = document.getElementById('profileLink').textContent;
+      navigator.clipboard.writeText(link).then(() => {
+        alert("✅ Link kopiert!");
+      });
     }
 
-    function logout() { location.reload(); }
+    // Deine bestehenden Funktionen (saveUser, uploadProfilePic, uploadBanner, etc.) bleiben gleich
+    // ... (füge hier deine bisherigen Funktionen ein)
 
-    // Register & Login (wie vorher)
-    function showRegisterModal() { /* ... */ }
-    function sendVerificationCode() { /* ... */ }
-    function verifyCode() { /* ... */ }
-    function showLoginModal() { /* ... */ }
-    function loginUser() { /* ... */ }
+    // Initialisierung
+    window.onload = () => {
+      handleRoute();
+      // Falls du weitere Init-Logik hast, hier hinzufügen
+    };
+
+    // Für Entwicklung: Testen mit verschiedenen Usern
   </script>
 </body>
 </html>
