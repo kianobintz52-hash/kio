@@ -6,7 +6,11 @@
   <title>kiobio.lol</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body { font-family: system-ui; color: white; overflow: hidden; }
+    body { 
+      font-family: system-ui, sans-serif; 
+      color: white; 
+      overflow: hidden; 
+    }
     video#bgVideo {
       position: fixed;
       top: 0; left: 0;
@@ -15,37 +19,49 @@
       z-index: -1;
       opacity: 0.85;
     }
-    .glow-purple { text-shadow: 0 0 35px #c026d3, 0 0 70px #7e22ce; }
+    .glow-purple { 
+      text-shadow: 0 0 35px #c026d3, 0 0 70px #7e22ce; 
+    }
   </style>
 </head>
 <body>
 
-  <!-- Video -->
-  <video id="bgVideo" loop playsinline>
+  <!-- Video automatisch starten (muted) -->
+  <video id="bgVideo" autoplay loop muted playsinline>
     <source src="https://files.catbox.moe/41vjqo.mp4" type="video/mp4">
   </video>
 
-  <!-- Sound Button (groß und deutlich) -->
-  <button onclick="toggleVideo()" 
-          class="fixed bottom-8 right-8 z-50 bg-purple-600 hover:bg-purple-700 px-6 py-4 rounded-2xl text-lg font-bold flex items-center gap-3 shadow-2xl">
-    <span id="soundBtn">▶️ Video + Sound starten</span>
+  <!-- Kleiner Sound Button (unten rechts) -->
+  <button onclick="unmuteVideo()" 
+          class="fixed bottom-6 right-6 z-50 bg-black/70 hover:bg-purple-600 px-5 py-3 rounded-2xl flex items-center gap-2 text-sm font-medium transition">
+    <span id="soundIcon">🔇</span>
+    <span id="soundText">Sound aktivieren</span>
   </button>
 
-  <!-- Rest der Seite -->
+  <!-- NAV -->
   <nav class="fixed top-0 w-full z-50 bg-[#0f0a23]/95 backdrop-blur-md border-b border-purple-500/30">
-    <div class="max-w-screen-2xl mx-auto px-8 py-5 flex justify-between">
+    <div class="max-w-screen-2xl mx-auto px-8 py-5 flex justify-between items-center">
       <div class="flex items-center gap-3">
         <span class="text-4xl">🔫</span>
-        <span class="text-3xl font-bold">kiobio.lol</span>
+        <span class="text-3xl font-bold tracking-tighter">kiobio.lol</span>
       </div>
-      <button onclick="showAuthModal()" class="bg-purple-600 px-8 py-3 rounded-2xl">Dashboard</button>
+      <button onclick="showAuthModal()" class="bg-purple-600 hover:bg-purple-700 px-8 py-3 rounded-2xl font-semibold">
+        Dashboard
+      </button>
     </div>
   </nav>
 
+  <!-- HERO -->
   <section class="min-h-screen flex items-center justify-center text-center pt-20">
-    <div class="max-w-4xl px-6">
-      <h1 class="text-6xl md:text-7xl font-bold glow-purple mb-8">Alles, was du willst,<br>genau hier.</h1>
-      <button onclick="showAuthModal()" class="bg-purple-600 hover:bg-purple-700 px-12 py-6 rounded-3xl text-2xl mt-8">
+    <div class="max-w-4xl px-6 z-10">
+      <h1 class="text-6xl md:text-7xl font-bold glow-purple mb-8 leading-tight">
+        Alles, was du willst,<br>genau hier.
+      </h1>
+      <p class="text-xl text-purple-200 mb-12">
+        kiobio.lol – Moderne Link-in-Bio Seiten
+      </p>
+      <button onclick="showAuthModal()" 
+              class="bg-purple-600 hover:bg-purple-700 px-12 py-6 rounded-3xl text-2xl font-semibold">
         Kostenlos registrieren
       </button>
     </div>
@@ -54,26 +70,24 @@
   <script>
     const video = document.getElementById('bgVideo');
 
-    function toggleVideo() {
-      if (video.paused) {
-        video.muted = false;     // Sound aktivieren
-        video.play();
-        document.getElementById('soundBtn').innerHTML = '🔊 Sound läuft';
-      } else {
-        video.muted = true;
-        document.getElementById('soundBtn').innerHTML = '▶️ Sound wieder an';
-      }
+    // Automatischer Start (muted)
+    video.play().catch(e => {
+      console.log("Autoplay blockiert vom Browser");
+    });
+
+    function unmuteVideo() {
+      video.muted = false;
+      video.play();
+      document.getElementById('soundIcon').textContent = '🔊';
+      document.getElementById('soundText').textContent = 'Sound an';
     }
 
     function showAuthModal() {
-      const name = prompt("Username für dein Profil:", "demo");
-      if (name) alert(`✅ ${name}.kiobio.lol wurde erstellt!`);
+      const name = prompt("Dein Username:", "demo");
+      if (name) {
+        alert(`✅ Profil "${name}.kiobio.lol" erstellt!`);
+      }
     }
-
-    // Versuch automatisch zu starten (ohne Sound)
-    video.play().catch(() => {
-      console.log("Autoplay blockiert - Button benutzen");
-    });
   </script>
 </body>
 </html>
