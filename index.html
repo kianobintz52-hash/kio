@@ -71,82 +71,181 @@
   </div>
 
   <script>
-    // Deine echten EmailJS Daten
     emailjs.init("IuyLZ33ctDj1VxqXE");
 
     let currentUser = null;
-    let verificationCode = "";
+    const VERIFICATION_CODE = "666"; // Fest vorgegebener Code
     let currentEmail = "";
+    let currentUsername = "";
+
+    // Lade gespeicherte User
+    let users = JSON.parse(localStorage.getItem('kiobioUsers')) || {};
+
+    function saveUser(email, username, password) {
+      users[email] = { username, password };
+      localStorage.setItem('kiobioUsers', JSON.stringify(users));
+    }
 
     function showRegisterModal() {
       document.getElementById('mainModal').classList.remove('hidden');
       document.getElementById('modalTitle').textContent = "Registrieren";
       document.getElementById('modalContent').innerHTML = `
-        <input id="regEmail" type="email" placeholder="Deine E-Mail" 
-               class="w-full p-5 bg-zinc-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500">
-        <input id="regUser" placeholder="Username" 
-               class="w-full p-5 bg-zinc-800 rounded-2xl mt-4 focus:outline-none focus:ring-2 focus:ring-purple-500">
-        <button onclick="sendVerificationCode()" 
-                class="w-full mt-8 bg-purple-600 hover:bg-purple-700 py-6 rounded-3xl text-xl font-bold transition">
-          Verifizierungscode senden
+        <input id="regEmail" type="email" placeholder="E-Mail" class="w-full p-5 bg-zinc-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500">
+        <input id="regUser" placeholder="Username" class="w-full p-5 bg-zinc-800 rounded-2xl mt-4 focus:outline-none focus:ring-2 focus:ring-purple-500">
+        <input id="regPass" type="password" placeholder="Passwort" class="w-full p-5 bg-zinc-800 rounded-2xl mt-4 focus:outline-none focus:ring-2 focus:ring-purple-500">
+        <button onclick="sendVerificationCode()" class="w-full mt-8 bg-purple-600 hover:bg-purple-700 py-6 rounded-3xl text-xl font-bold transition">
+          Verifizierungscode senden (666)
         </button>
       `;
     }
 
     async function sendVerificationCode() {
       const email = document.getElementById('regEmail').value.trim();
-      const username = document.getElementById('regUser').value.trim() || "user";
+      const username = document.getElementById('regUser').value.trim();
+      const password = document.getElementById('regPass').value.trim();
 
-      if (!email) return alert("Bitte gib eine gültige E-Mail-Adresse ein.");
+      if (!email || !username || !password) return alert("Bitte alle Felder ausfüllen");
 
-      // 3-stelliger Code
-      verificationCode = Math.floor(100 + Math.random() * 900).toString();
       currentEmail = email;
+      currentUsername = username;
+      // Passwort wird erst nach Verifizierung gespeichert
 
       try {
         await emailjs.send("service_zni05q6", "template_c2x5n7s", {
           to_email: email,
-          verification_code: verificationCode,
+          verification_code: VERIFICATION_CODE,
           username: username
         });
-        alert(`✅ Verifizierungscode wurde an ${email} gesendet!`);
-      } catch (err) {
-        console.error(err);
-        alert(`❌ Fehler beim Senden.\n\nDemo-Modus:\nDein Code ist: ${verificationCode}`);
+        alert(`✅ Code (666) wurde an ${email} gesendet!`);
+      } catch (e) {
+        alert(`Demo-Modus\nDein Code ist immer: 666`);
       }
-
-      showVerificationScreen(username, email);
+      showVerificationScreen(false);
     }
 
-    function showVerificationScreen(username, email) {
-      document.getElementById('modalTitle').textContent = "Code bestätigen";
+    function showLoginModal() {
+      document.getElementById('mainModal').classList.remove('hidden');
+      document.getElementById('modalTitle').textContent = "Anmelden";
       document.getElementById('modalContent').innerHTML = `
-        <p class="text-center text-purple-300">Wir haben einen <strong>3-stelligen Code</strong> an <strong>${email}</strong> gesendet.</p>
-        
-        <input id="codeInput" maxlength="3" placeholder="123" 
-               class="w-full p-6 bg-zinc-800 rounded-2xl text-4xl text-center tracking-widest focus:outline-none focus:ring-2 focus:ring-green-500">
-        
-        <button onclick="verifyCode('${username}', '${email}')" 
-                class="w-full mt-8 bg-green-600 hover:bg-green-700 py-6 rounded-3xl text-xl font-bold transition">
-          Bestätigen
+        <input id="loginEmail" type="email" placeholder="E-Mail" class="w-full p-5 bg-zinc-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500">
+        <input id="loginPass" type="password" placeholder="Passwort" class="w-full p-5 bg-zinc-800 rounded-2xl mt-4 focus:outline-none focus:ring-2 focus:ring-purple-500">
+        <button onclick="loginUser()" class="w-full mt-8 bg-purple-600 hover:bg-purple-700 py-6 rounded-3xl text-xl font-bold transition">
+          Anmelden
         </button>
-        
-        <button onclick="showRegisterModal()" class="w-full mt-3 text-zinc-400 hover:text-white text-sm">
-          ← Zurück zur Registrierung
-        </button>
+        <p onclick="showForgotPassword()" class="text-center text-purple-400 hover:text-purple-300 mt-6 cursor-pointer text-sm">
+          Passwort vergessen?
+        </p>
       `;
     }
 
-    function verifyCode(username, email) {
-      const input = document.getElementById('codeInput').value.trim();
+    function showForgotPassword() {
+      document.getElementById('modalTitle').textContent = "Passwort zurücksetzen";
+      document.getElementById('modalContent').innerHTML = `
+        <input id="forgotEmail" type="email" placeholder="Deine E-Mail" class="w-full p-5 bg-zinc-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500">
+        <button onclick="sendResetCode()" class="w-full mt-8 bg-purple-600 hover:bg-purple-700 py-6 rounded-3xl text-xl font-bold transition">
+          Reset-Code senden (666)
+        </button>
+        <button onclick="showLoginModal()" class="w-full mt-3 text-zinc-400 hover:text-white">← Zurück</button>
+      `;
+    }
+
+    function showVerificationScreen(isReset = false) {
+      document.getElementById('modalTitle').textContent = isReset ? "Neues Passwort setzen" : "Code bestätigen";
       
-      if (input === verificationCode) {
-        currentUser = { username, email };
+      let html = `
+        <p class="text-center text-purple-300">Gib den Code ein: <strong>666</strong></p>
+        <input id="codeInput" maxlength="3" placeholder="666" 
+               class="w-full p-6 bg-zinc-800 rounded-2xl text-4xl text-center tracking-widest focus:outline-none focus:ring-2 focus:ring-green-500">
+      `;
+
+      if (isReset) {
+        html += `
+          <input id="newPassword" type="password" placeholder="Neues Passwort" class="w-full p-5 bg-zinc-800 rounded-2xl mt-4">
+          <button onclick="verifyResetCode()" class="w-full mt-6 bg-green-600 hover:bg-green-700 py-6 rounded-3xl text-xl font-bold">Bestätigen & Passwort ändern</button>
+        `;
+      } else {
+        html += `
+          <button onclick="verifyCode()" class="w-full mt-6 bg-green-600 hover:bg-green-700 py-6 rounded-3xl text-xl font-bold">Bestätigen</button>
+        `;
+      }
+
+      html += `
+        <button onclick="resendCode(${isReset})" class="w-full mt-3 text-purple-400 hover:text-purple-300">Code erneut senden</button>
+        <button onclick="${isReset ? 'showForgotPassword()' : 'showRegisterModal()'}" class="w-full mt-2 text-zinc-400 hover:text-white text-sm">← Zurück</button>
+      `;
+
+      document.getElementById('modalContent').innerHTML = html;
+    }
+
+    function verifyCode() {
+      const input = document.getElementById('codeInput').value.trim();
+      const password = document.getElementById('regPass') ? document.getElementById('regPass').value.trim() : null;
+
+      if (input !== VERIFICATION_CODE) return alert("❌ Falscher Code! (Der Code ist 666)");
+
+      if (password) {
+        saveUser(currentEmail, currentUsername, password);
+        currentUser = { username: currentUsername, email: currentEmail };
         document.getElementById('mainModal').classList.add('hidden');
         showDashboard();
-        alert("✅ Erfolgreich verifiziert! Willkommen bei kiobio.lol");
+        alert("✅ Registrierung erfolgreich!");
+      }
+    }
+
+    function verifyResetCode() {
+      const input = document.getElementById('codeInput').value.trim();
+      const newPass = document.getElementById('newPassword').value.trim();
+
+      if (input !== VERIFICATION_CODE) return alert("❌ Falscher Code! (Der Code ist 666)");
+      if (!newPass) return alert("Bitte neues Passwort eingeben");
+
+      if (users[currentEmail]) {
+        users[currentEmail].password = newPass;
+        localStorage.setItem('kiobioUsers', JSON.stringify(users));
+        alert("✅ Passwort erfolgreich geändert!");
+        showLoginModal();
+      }
+    }
+
+    function sendResetCode() {
+      const email = document.getElementById('forgotEmail').value.trim();
+      if (!email) return alert("Bitte E-Mail eingeben");
+
+      currentEmail = email;
+
+      try {
+        emailjs.send("service_zni05q6", "template_c2x5n7s", {
+          to_email: email,
+          verification_code: VERIFICATION_CODE,
+          username: "User"
+        });
+      } catch (e) {}
+
+      alert(`✅ Reset-Code (666) wurde an ${email} gesendet!`);
+      showVerificationScreen(true);
+    }
+
+    function resendCode(isReset) {
+      if (isReset) {
+        sendResetCode();
       } else {
-        alert("❌ Falscher Code! Bitte versuche es erneut.");
+        sendVerificationCode();
+      }
+    }
+
+    function loginUser() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPass').value.trim();
+
+      if (!email || !password) return alert("Bitte E-Mail und Passwort eingeben");
+
+      const user = users[email];
+      if (user && user.password === password) {
+        currentUser = { username: user.username, email: email };
+        document.getElementById('mainModal').classList.add('hidden');
+        showDashboard();
+      } else {
+        alert("❌ Falsche E-Mail oder Passwort");
       }
     }
 
@@ -154,10 +253,6 @@
       document.getElementById('dashboard').classList.remove('hidden');
       document.getElementById('dashName').textContent = currentUser.username;
       document.getElementById('dashUsername').textContent = currentUser.username;
-    }
-
-    function showLoginModal() {
-      alert("🔑 Login-Funktion (Magic Link) kommt bald!");
     }
 
     function logout() {
