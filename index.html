@@ -3,95 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>kiobio.lol</title>
+    <title>@<span id="pageUsername"></span> - kiobio.lol</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            background: #000; color: #fff; overflow: hidden; 
-            font-family: 'Courier New', monospace; 
-            cursor: none;
-        }
-        .custom-cursor {
-            position: fixed; width: 40px; height: 40px;
-            background: url('https://i.imgur.com/2fZ3XzK.png') no-repeat center;
-            background-size: contain; pointer-events: none; z-index: 9999;
-            transform: translate(-50%, -50%); display: none;
-        }
-        .cursor-trail { position: fixed; pointer-events: none; z-index: 9998; }
-        .trail-dot { position: absolute; width: 6px; height: 6px; background: rgba(192,38,211,0.9); border-radius: 50%; transform: translate(-50%,-50%); }
-
-        video#bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; opacity: 0.75; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Courier New', monospace; }
+        body { background:#000; color:#fff; overflow:hidden; cursor:none; }
         
-        .glow { text-shadow: 0 0 30px #c026d3; }
+        .custom-cursor {
+            position:fixed; width:40px; height:40px;
+            background:url('https://i.imgur.com/2fZ3XzK.png') no-repeat center;
+            background-size:contain; pointer-events:none; z-index:9999;
+            transform:translate(-50%,-50%); display:none;
+        }
+        
+        #background { position:fixed; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-2; filter:brightness(0.7); }
+        #banner { position:fixed; top:0; left:0; width:100%; height:280px; object-fit:cover; z-index:-1; }
+        
+        #profile-block {
+            position:relative; margin:220px auto 0; width:90%; max-width:820px;
+            background:rgba(0,0,0,0.85); border:2px solid #c026d3;
+            padding:30px; border-radius:15px; backdrop-filter:blur(12px);
+        }
+        .profile-picture {
+            width:160px; height:160px; border-radius:50%; border:4px solid #c026d3;
+            margin-top:-100px; box-shadow:0 0 30px #c026d3;
+        }
+        #profile-name { font-size:42px; font-weight:bold; text-shadow:0 0 20px #c026d3; }
+        
+        .music-player {
+            background:rgba(0,0,0,0.6); border:1px solid #c026d3; padding:12px; border-radius:12px; margin:20px 0;
+        }
     </style>
 </head>
 <body>
 
     <div class="custom-cursor" id="customCursor"></div>
-    <div id="cursorTrail" class="cursor-trail"></div>
+    <video id="background" autoplay loop muted playsinline></video>
+    <img id="banner" src="" alt="Banner">
 
-    <video id="bg" autoplay loop muted playsinline>
-        <source src="https://files.catbox.moe/41vjqo.mp4" type="video/mp4">
-    </video>
+    <div id="profile-block" class="text-center">
+        <img id="profilePic" class="profile-picture mx-auto" src="https://i.pravatar.cc/300">
+        
+        <h1 id="profile-name" class="mt-6 text-4xl">Loading...</h1>
+        <p id="usernameTag" class="text-purple-400 text-xl"></p>
+        <p id="profile-bio" class="mt-6 text-lg text-gray-300"></p>
 
-    <!-- HERO / LANDING -->
-    <div id="hero" class="min-h-screen flex items-center justify-center text-center relative z-10">
-        <div class="max-w-2xl">
-            <h1 class="text-7xl font-bold glow mb-4">kiobio.lol</h1>
-            <p class="text-2xl mb-12 text-gray-300">Alles, was du willst. Genau hier.</p>
-            <button onclick="showLoginModal()" class="bg-purple-600 hover:bg-purple-700 px-10 py-5 rounded-3xl text-xl mr-4">Anmelden</button>
-            <button onclick="showRegisterModal()" class="border-2 border-purple-500 hover:bg-purple-500/10 px-10 py-5 rounded-3xl text-xl">Kostenlos registrieren</button>
-        </div>
-    </div>
-
-    <!-- DASHBOARD -->
-    <div id="dashboard" class="hidden min-h-screen pt-20 relative z-10">
-        <div class="max-w-4xl mx-auto px-6 text-center">
-            <h1 class="text-5xl font-bold mb-4">Willkommen zurück, <span id="welcomeName" class="text-purple-400"></span>!</h1>
-            <p class="text-gray-400 mb-12">Was möchtest du machen?</p>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
-                <div onclick="goToProfile()" class="bg-zinc-900 border border-purple-500/50 hover:border-purple-500 p-10 rounded-3xl cursor-pointer transition hover:scale-105">
-                    <div class="text-6xl mb-6">👤</div>
-                    <h3 class="text-3xl font-bold">Mein Profil ansehen</h3>
-                    <p class="text-gray-400 mt-3">@deinusername</p>
-                </div>
-
-                <div onclick="editProfile()" class="bg-zinc-900 border border-purple-500/50 hover:border-purple-500 p-10 rounded-3xl cursor-pointer transition hover:scale-105">
-                    <div class="text-6xl mb-6">✏️</div>
-                    <h3 class="text-3xl font-bold">Profil bearbeiten</h3>
-                    <p class="text-gray-400 mt-3">Bio, Bild, Hintergrund...</p>
+        <!-- MUSIC PLAYER -->
+        <div id="musicPlayer" class="music-player hidden">
+            <div class="flex items-center gap-4">
+                <button onclick="toggleMusic()" id="playBtn" class="text-2xl">▶️</button>
+                <div class="flex-1">
+                    <div id="songTitle" class="text-sm">No song loaded</div>
+                    <input type="range" id="progress" class="w-full" value="0">
                 </div>
             </div>
-
-            <button onclick="logout()" class="mt-16 text-red-500 hover:text-red-600 text-lg">Abmelden</button>
         </div>
-    </div>
 
-    <!-- LOGIN MODAL -->
-    <div id="loginModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
-        <div class="bg-zinc-900 p-10 rounded-3xl w-full max-w-md border border-purple-500/30">
-            <h2 class="text-3xl font-bold text-center mb-8">Anmelden</h2>
-            <input id="loginEmail" type="email" value="u3271805041@gmail.com" class="w-full bg-zinc-800 p-4 rounded-2xl mb-4">
-            <input id="loginPassword" type="password" value="666666" class="w-full bg-zinc-800 p-4 rounded-2xl mb-6">
-            <button onclick="doLogin()" class="w-full bg-purple-600 py-4 rounded-2xl font-semibold text-lg">Anmelden</button>
-        </div>
-    </div>
+        <!-- Badges -->
+        <div id="badges" class="flex justify-center gap-4 my-8"></div>
 
-    <!-- REGISTER MODAL -->
-    <div id="registerModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
-        <div class="bg-zinc-900 p-10 rounded-3xl w-full max-w-md border border-purple-500/30">
-            <h2 class="text-3xl font-bold text-center mb-8">Registrieren</h2>
-            <input id="regEmail" type="email" placeholder="E-Mail" class="w-full bg-zinc-800 p-4 rounded-2xl mb-4">
-            <input id="regUsername" type="text" placeholder="Benutzername" class="w-full bg-zinc-800 p-4 rounded-2xl mb-4">
-            <input id="regPassword" type="password" placeholder="Passwort (min. 6)" class="w-full bg-zinc-800 p-4 rounded-2xl mb-6">
-            <button onclick="registerUser()" class="w-full bg-purple-600 py-4 rounded-2xl font-semibold text-lg">Registrieren</button>
-        </div>
+        <!-- Social Links -->
+        <div id="socialLinks" class="flex justify-center gap-8 mt-6"></div>
     </div>
 
     <script>
@@ -104,110 +80,60 @@
           appId: "1:1003434485509:web:872f257b0758051c80b96c"
         };
         firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
         const db = firebase.database();
 
-        let currentUser = null;
+        let audio = new Audio();
+        let isPlaying = false;
 
-        // Cursor
-        function initCursor() {
-            const cursor = document.getElementById('customCursor');
-            const trail = document.getElementById('cursorTrail');
-            document.addEventListener('mousemove', e => {
-                cursor.style.left = e.clientX + 'px';
-                cursor.style.top = e.clientY + 'px';
-                cursor.style.display = 'block';
+        async function loadProfile() {
+            const username = window.location.pathname.replace('/@', '') || 
+                           new URLSearchParams(window.location.search).get('user');
+            
+            document.getElementById('pageUsername').textContent = username;
+            document.getElementById('usernameTag').textContent = `@${username}`;
 
-                const dot = document.createElement('div');
-                dot.className = 'trail-dot';
-                dot.style.left = e.clientX + 'px';
-                dot.style.top = e.clientY + 'px';
-                trail.appendChild(dot);
-                setTimeout(() => dot.remove(), 600);
-            });
-        }
+            const snap = await db.ref('users').orderByChild('username').equalTo(username).limitToFirst(1).once('value');
+            const user = Object.values(snap.val() || {})[0];
 
-        // Auth Functions
-        async function doLogin() {
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            try {
-                const res = await auth.signInWithEmailAndPassword(email, password);
-                currentUser = res.user;
-                hideModals();
-                showDashboard();
-            } catch (e) { alert("Login fehlgeschlagen: " + e.message); }
-        }
+            if (!user) return alert("Profil nicht gefunden");
 
-        async function registerUser() {
-            const email = document.getElementById('regEmail').value.trim();
-            const username = document.getElementById('regUsername').value.trim().toLowerCase();
-            const password = document.getElementById('regPassword').value.trim();
+            // Profile Data
+            document.getElementById('profile-name').textContent = user.displayName || username;
+            document.getElementById('profile-bio').textContent = user.bio || "Keine Bio...";
+            document.getElementById('profilePic').src = user.profilePic || "https://i.pravatar.cc/300";
 
-            if (!username || password.length < 6) return alert("Benutzername + Passwort (min. 6 Zeichen) erforderlich");
+            // Banner
+            if (user.banner) document.getElementById('banner').src = user.banner;
 
-            try {
-                const res = await auth.createUserWithEmailAndPassword(email, password);
-                await db.ref('users/' + res.user.uid).set({
-                    username: username,
-                    displayName: username,
-                    bio: "Neu auf kiobio.lol 🔥",
-                    profilePic: "https://i.pravatar.cc/300?u=" + Date.now(),
-                    badges: ["verified"]
-                });
-                currentUser = res.user;
-                hideModals();
-                showDashboard();
-            } catch (e) { alert(e.message); }
-        }
-
-        function hideModals() {
-            document.getElementById('loginModal').classList.add('hidden');
-            document.getElementById('registerModal').classList.add('hidden');
-        }
-
-        function showLoginModal() {
-            hideModals();
-            document.getElementById('loginModal').classList.remove('hidden');
-        }
-
-        function showRegisterModal() {
-            hideModals();
-            document.getElementById('registerModal').classList.remove('hidden');
-        }
-
-        function showDashboard() {
-            document.getElementById('hero').classList.add('hidden');
-            document.getElementById('dashboard').classList.remove('hidden');
-            document.getElementById('welcomeName').textContent = currentUser.email.split('@')[0];
-        }
-
-        function goToProfile() {
-            if (currentUser) {
-                // Hier später die Profil-Seite öffnen (kannst du als separate Datei machen)
-                window.location.href = `/@${currentUser.username || 'deinusername'}`;
+            // Background
+            if (user.backgroundVideo) {
+                document.getElementById('background').src = user.backgroundVideo;
+            } else if (user.backgroundImage) {
+                document.getElementById('background').src = user.backgroundImage;
             }
+
+            // Music
+            if (user.musicUrl) {
+                audio.src = user.musicUrl;
+                document.getElementById('songTitle').textContent = user.musicTitle || "Custom Song";
+                document.getElementById('musicPlayer').classList.remove('hidden');
+            }
+
+            // Badges & Socials (kannst du später erweitern)
         }
 
-        function editProfile() {
-            alert("Profil-Editor kommt bald! (kann ich dir als Nächstes bauen)");
+        function toggleMusic() {
+            if (isPlaying) {
+                audio.pause();
+                document.getElementById('playBtn').textContent = '▶️';
+            } else {
+                audio.play();
+                document.getElementById('playBtn').textContent = '⏸️';
+            }
+            isPlaying = !isPlaying;
         }
 
-        function logout() {
-            auth.signOut();
-            location.reload();
-        }
-
-        // Init
-        window.onload = () => {
-            initCursor();
-            auth.onAuthStateChanged(user => {
-                if (user) {
-                    currentUser = user;
-                    showDashboard();
-                }
-            });
-        };
+        window.onload = loadProfile;
     </script>
 </body>
 </html>
