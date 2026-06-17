@@ -11,109 +11,94 @@
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
 
     <style>
-        body { font-family: system-ui, -apple-system, sans-serif; }
-        .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); }
+        body { font-family: system-ui, sans-serif; background: #09090b; color: #f4f4f5; }
+        .glass { background: rgba(24, 24, 27, 0.85); backdrop-filter: blur(16px); }
     </style>
 </head>
-<body class="bg-zinc-950 text-zinc-100 min-h-screen">
+<body class="min-h-screen">
 
     <!-- NAV -->
-    <nav class="fixed top-0 w-full bg-zinc-900/80 backdrop-blur-md border-b border-zinc-800 z-50">
+    <nav class="fixed top-0 w-full bg-zinc-900/90 backdrop-blur-md border-b border-zinc-800 z-50">
         <div class="max-w-6xl mx-auto px-6 py-5 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <span class="text-3xl">🔫</span>
-                <span class="text-2xl font-bold tracking-tight">kiobio.lol</span>
+                <span class="text-2xl font-bold">kiobio.lol</span>
             </div>
-            <button onclick="logout()" id="navBtn" class="hidden px-6 py-2 bg-red-600 hover:bg-red-700 rounded-xl">Abmelden</button>
+            <button onclick="logout()" id="navBtn" class="hidden px-6 py-2.5 bg-red-600 rounded-2xl">Abmelden</button>
         </div>
     </nav>
 
     <!-- HERO -->
     <section id="hero" class="min-h-screen flex items-center justify-center text-center">
         <div class="max-w-2xl px-6">
-            <h1 class="text-6xl font-bold mb-6">Dein Link-in-Bio.<br>Dein Style.</h1>
-            <p class="text-xl text-zinc-400 mb-10">Modern. Schnell. Voll anpassbar.</p>
-            <button onclick="showLoginModal()" class="bg-white text-black px-10 py-4 rounded-2xl font-semibold text-lg hover:bg-zinc-200">Anmelden</button>
-            <button onclick="showRegisterModal()" class="ml-4 border border-zinc-700 hover:border-zinc-500 px-10 py-4 rounded-2xl font-semibold text-lg">Kostenlos registrieren</button>
+            <h1 class="text-6xl font-bold mb-6">Dein Profil.<br>Dein Style.</h1>
+            <p class="text-xl text-zinc-400 mb-10">Modern • Clean • Voll anpassbar</p>
+            <button onclick="showLoginModal()" class="bg-white text-black px-10 py-4 rounded-2xl font-semibold text-lg">Anmelden</button>
+            <button onclick="showRegisterModal()" class="ml-4 border border-zinc-700 px-10 py-4 rounded-2xl text-lg">Registrieren</button>
         </div>
     </section>
 
     <!-- DASHBOARD -->
-    <div id="dashboard" class="hidden min-h-screen pt-24 pb-12">
+    <div id="dashboard" class="hidden min-h-screen pt-24">
         <div class="max-w-5xl mx-auto px-6">
-            <h1 class="text-4xl font-bold mb-2">Willkommen zurück, <span id="welcomeName" class="text-violet-400"></span></h1>
-            <p class="text-zinc-400">Verwalte dein Profil</p>
+            <h1 class="text-5xl font-bold">Willkommen zurück, <span id="welcomeName" class="text-violet-400"></span>!</h1>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-                <!-- Profil Card -->
-                <div onclick="goToProfile()" class="glass border border-zinc-700 rounded-3xl p-8 hover:border-violet-500 transition cursor-pointer">
-                    <div class="text-5xl mb-6">👤</div>
-                    <h3 class="text-2xl font-semibold mb-2">Mein Profil</h3>
-                    <p class="text-zinc-400">Öffentliche Seite ansehen</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+                <div onclick="goToProfile()" class="glass border border-zinc-700 rounded-3xl p-10 hover:border-violet-500 cursor-pointer transition">
+                    <div class="text-6xl mb-6">👤</div>
+                    <h3 class="text-3xl font-semibold">Mein Profil ansehen</h3>
                 </div>
-
-                <!-- Editor Card -->
-                <div onclick="openProfileEditor()" class="glass border border-zinc-700 rounded-3xl p-8 hover:border-violet-500 transition cursor-pointer">
-                    <div class="text-5xl mb-6">✏️</div>
-                    <h3 class="text-2xl font-semibold mb-2">Profil bearbeiten</h3>
-                    <p class="text-zinc-400">Banner, Musik, Bio, etc.</p>
-                </div>
-
-                <!-- Stats -->
-                <div class="glass border border-zinc-700 rounded-3xl p-8">
-                    <div class="text-5xl mb-6">📊</div>
-                    <h3 class="text-2xl font-semibold mb-2">Statistiken</h3>
-                    <p class="text-zinc-400">Views • Likes • Besucher</p>
+                <div onclick="openProfileEditor()" class="glass border border-zinc-700 rounded-3xl p-10 hover:border-violet-500 cursor-pointer transition">
+                    <div class="text-6xl mb-6">✏️</div>
+                    <h3 class="text-3xl font-semibold">Profil bearbeiten</h3>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- PROFIL EDITOR -->
+    <!-- EDITOR MODAL -->
     <div id="editorModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-        <div class="bg-zinc-900 rounded-3xl w-full max-w-2xl mx-4 p-8">
+        <div class="bg-zinc-900 rounded-3xl w-full max-w-2xl mx-4 p-10">
             <h2 class="text-3xl font-bold mb-8">Profil bearbeiten</h2>
             
             <div class="space-y-6">
-                <div>
-                    <label class="block text-sm mb-2 text-zinc-400">Display Name</label>
-                    <input id="editDisplayName" class="w-full bg-zinc-800 rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-violet-500">
-                </div>
-                <div>
-                    <label class="block text-sm mb-2 text-zinc-400">Bio</label>
-                    <textarea id="editBio" rows="3" class="w-full bg-zinc-800 rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-violet-500"></textarea>
-                </div>
+                <input id="editDisplayName" placeholder="Display Name" class="w-full bg-zinc-800 rounded-2xl px-5 py-4">
+                <textarea id="editBio" rows="4" placeholder="Deine Bio..." class="w-full bg-zinc-800 rounded-2xl px-5 py-4"></textarea>
 
                 <div class="grid grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-sm mb-2 text-zinc-400">Banner Bild</label>
-                        <input type="file" id="bannerInput" accept="image/*" class="w-full bg-zinc-800 rounded-2xl px-5 py-4">
+                        <label class="block text-sm mb-2">Profilbild</label>
+                        <input type="file" id="picInput" accept="image/*" class="block w-full">
                     </div>
                     <div>
-                        <label class="block text-sm mb-2 text-zinc-400">Profilbild</label>
-                        <input type="file" id="picInput" accept="image/*" class="w-full bg-zinc-800 rounded-2xl px-5 py-4">
+                        <label class="block text-sm mb-2">Banner</label>
+                        <input type="file" id="bannerInput" accept="image/*" class="block w-full">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm mb-2 text-zinc-400">Hintergrund Musik (MP3)</label>
-                    <input type="file" id="musicInput" accept="audio/mp3" class="w-full bg-zinc-800 rounded-2xl px-5 py-4">
+                    <label class="block text-sm mb-2">Musik (.mp3)</label>
+                    <input type="file" id="musicInput" accept="audio/mp3" class="block w-full">
+                    <input id="musicTitle" placeholder="Song Titel (optional)" class="mt-3 w-full bg-zinc-800 rounded-2xl px-5 py-3">
                 </div>
             </div>
 
             <div class="flex gap-4 mt-10">
-                <button onclick="saveProfile()" class="flex-1 bg-violet-600 hover:bg-violet-700 py-4 rounded-2xl font-semibold">Speichern</button>
-                <button onclick="closeEditor()" class="flex-1 bg-zinc-800 hover:bg-zinc-700 py-4 rounded-2xl">Abbrechen</button>
+                <button onclick="saveProfileChanges()" class="flex-1 bg-violet-600 py-4 rounded-2xl font-semibold">Speichern</button>
+                <button onclick="closeEditor()" class="flex-1 bg-zinc-800 py-4 rounded-2xl">Abbrechen</button>
             </div>
         </div>
     </div>
 
-    <!-- Login & Register Modals (kurz) -->
-    <!-- ... (wie in vorherigen Versionen) ... -->
-
     <script>
-        // Firebase Config hier einfügen
-        const firebaseConfig = { /* deine Config */ };
+        const firebaseConfig = {
+          apiKey: "AIzaSyD6NPF9FIJsDipQg3dvxSohtAJCGVF4NUc",
+          authDomain: "kiobiool.firebaseapp.com",
+          databaseURL: "https://kiobiool-default-rtdb.europe-west1.firebasedatabase.app",
+          projectId: "kiobiool",
+          storageBucket: "kiobiool.firebasestorage.app",
+          appId: "1:1003434485509:web:872f257b0758051c80b96c"
+        };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
@@ -121,19 +106,18 @@
 
         let currentUser = null;
 
-        function showLoginModal() { /* ... */ }
-        function showRegisterModal() { /* ... */ }
-        async function doLogin() { /* ... */ }
-        async function registerUser() { /* ... */ }
+        async function doLogin() { /* gleiche Funktion wie vorher */ }
+        async function registerUser() { /* gleiche Funktion wie vorher */ }
 
         function showDashboard() {
             document.getElementById('hero').classList.add('hidden');
             document.getElementById('dashboard').classList.remove('hidden');
             document.getElementById('welcomeName').textContent = currentUser.email.split('@')[0];
+            document.getElementById('navBtn').classList.remove('hidden');
         }
 
         function goToProfile() {
-            window.open(`profile.html`, '_blank');
+            window.open('profile.html', '_blank');
         }
 
         function openProfileEditor() {
@@ -144,9 +128,43 @@
             document.getElementById('editorModal').classList.add('hidden');
         }
 
-        async function saveProfile() {
-            alert("✅ Änderungen gespeichert (Upload-Funktion kann ich noch erweitern)");
+        async function saveProfileChanges() {
+            if (!currentUser) return;
+
+            const updates = {
+                displayName: document.getElementById('editDisplayName').value || currentUser.email.split('@')[0],
+                bio: document.getElementById('editBio').value
+            };
+
+            // Uploads
+            const picFile = document.getElementById('picInput').files[0];
+            if (picFile) {
+                const url = await uploadFile(picFile, `profilePics/${currentUser.uid}`);
+                updates.profilePic = url;
+            }
+
+            const bannerFile = document.getElementById('bannerInput').files[0];
+            if (bannerFile) {
+                const url = await uploadFile(bannerFile, `banners/${currentUser.uid}`);
+                updates.banner = url;
+            }
+
+            const musicFile = document.getElementById('musicInput').files[0];
+            if (musicFile) {
+                const url = await uploadFile(musicFile, `music/${currentUser.uid}`);
+                updates.musicUrl = url;
+                updates.musicTitle = document.getElementById('musicTitle').value || "Custom Track";
+            }
+
+            await db.ref('users/' + currentUser.uid).update(updates);
+            alert("✅ Profil erfolgreich aktualisiert!");
             closeEditor();
+        }
+
+        async function uploadFile(file, path) {
+            const ref = storage.ref(path);
+            await ref.put(file);
+            return await ref.getDownloadURL();
         }
 
         function logout() {
