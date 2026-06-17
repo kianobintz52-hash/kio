@@ -5,38 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>kiobio.lol</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
-    body { 
-      font-family: system-ui, sans-serif; 
-      color: white; 
-      overflow: hidden; 
-    }
-    video#bgVideo {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      z-index: -1;
-      opacity: 0.85;
-    }
-    .glow-purple { 
-      text-shadow: 0 0 35px #c026d3, 0 0 70px #7e22ce; 
-    }
+    body { font-family: system-ui, sans-serif; color: white; overflow: hidden; }
+    video#bgVideo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; opacity: 0.85; }
+    .glow-purple { text-shadow: 0 0 35px #c026d3, 0 0 70px #7e22ce; }
   </style>
 </head>
 <body>
 
-  <!-- Video automatisch starten (muted) -->
   <video id="bgVideo" autoplay loop muted playsinline>
     <source src="https://files.catbox.moe/41vjqo.mp4" type="video/mp4">
   </video>
-
-  <!-- Kleiner Sound Button (unten rechts) -->
-  <button onclick="unmuteVideo()" 
-          class="fixed bottom-6 right-6 z-50 bg-black/70 hover:bg-purple-600 px-5 py-3 rounded-2xl flex items-center gap-2 text-sm font-medium transition">
-    <span id="soundIcon">🔇</span>
-    <span id="soundText">Sound aktivieren</span>
-  </button>
 
   <!-- NAV -->
   <nav class="fixed top-0 w-full z-50 bg-[#0f0a23]/95 backdrop-blur-md border-b border-purple-500/30">
@@ -45,8 +25,8 @@
         <span class="text-4xl">🔫</span>
         <span class="text-3xl font-bold tracking-tighter">kiobio.lol</span>
       </div>
-      <button onclick="showAuthModal()" class="bg-purple-600 hover:bg-purple-700 px-8 py-3 rounded-2xl font-semibold">
-        Dashboard
+      <button onclick="showLoginModal()" class="bg-purple-600 hover:bg-purple-700 px-8 py-3 rounded-2xl font-semibold">
+        Anmelden
       </button>
     </div>
   </nav>
@@ -54,39 +34,114 @@
   <!-- HERO -->
   <section class="min-h-screen flex items-center justify-center text-center pt-20">
     <div class="max-w-4xl px-6 z-10">
-      <h1 class="text-6xl md:text-7xl font-bold glow-purple mb-8 leading-tight">
-        Alles, was du willst,<br>genau hier.
-      </h1>
-      <p class="text-xl text-purple-200 mb-12">
-        kiobio.lol – Moderne Link-in-Bio Seiten
-      </p>
-      <button onclick="showAuthModal()" 
-              class="bg-purple-600 hover:bg-purple-700 px-12 py-6 rounded-3xl text-2xl font-semibold">
+      <h1 class="text-6xl md:text-7xl font-bold glow-purple mb-8">Alles, was du willst,<br>genau hier.</h1>
+      <button onclick="showRegisterModal()" class="bg-purple-600 hover:bg-purple-700 px-12 py-6 rounded-3xl text-2xl font-semibold">
         Kostenlos registrieren
       </button>
     </div>
   </section>
 
+  <!-- MODAL -->
+  <div id="mainModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[100]">
+    <div class="bg-zinc-900 p-10 rounded-3xl w-full max-w-md">
+      <h2 id="modalTitle" class="text-3xl font-bold text-center mb-8"></h2>
+      <div id="modalContent" class="space-y-6"></div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="hidden min-h-screen bg-zinc-950 p-8">
+    <div class="max-w-5xl mx-auto">
+      <h1 class="text-4xl font-bold mb-2">Willkommen zurück, <span id="dashName" class="text-purple-400"></span>!</h1>
+      <p class="text-purple-300 mb-10">kiobio.lol/<span id="dashUsername"></span></p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-zinc-900 p-8 rounded-3xl">
+          <h3 class="text-xl mb-6">Profil bearbeiten</h3>
+          <button onclick="alert('Profil-Editor wird bald hier erscheinen')" class="bg-purple-600 w-full py-5 rounded-2xl">Jetzt anpassen</button>
+        </div>
+        <div class="bg-zinc-900 p-8 rounded-3xl">
+          <h3 class="text-xl mb-6">Statistiken</h3>
+          <p class="text-6xl font-bold text-purple-400">0</p>
+          <p class="text-zinc-400">Profilaufrufe diese Woche</p>
+        </div>
+      </div>
+      
+      <button onclick="logout()" class="mt-12 text-red-500 hover:text-red-400">Abmelden</button>
+    </div>
+  </div>
+
   <script>
-    const video = document.getElementById('bgVideo');
+    // Dein Public Key
+    emailjs.init("IuyLZ33ctDj1VxqXE");
 
-    // Automatischer Start (muted)
-    video.play().catch(e => {
-      console.log("Autoplay blockiert vom Browser");
-    });
+    let currentUser = null;
+    let verificationCode = "";
 
-    function unmuteVideo() {
-      video.muted = false;
-      video.play();
-      document.getElementById('soundIcon').textContent = '🔊';
-      document.getElementById('soundText').textContent = 'Sound an';
+    function showRegisterModal() {
+      document.getElementById('mainModal').classList.remove('hidden');
+      document.getElementById('modalTitle').textContent = "Registrieren";
+      document.getElementById('modalContent').innerHTML = `
+        <input id="regEmail" type="email" placeholder="Deine E-Mail" class="w-full p-5 bg-zinc-800 rounded-2xl">
+        <input id="regUser" placeholder="Username" class="w-full p-5 bg-zinc-800 rounded-2xl mt-4">
+        <button onclick="sendVerificationCode()" class="w-full mt-8 bg-purple-600 py-6 rounded-3xl text-xl font-bold">Verifizierungscode senden</button>
+      `;
     }
 
-    function showAuthModal() {
-      const name = prompt("Dein Username:", "demo");
-      if (name) {
-        alert(`✅ Profil "${name}.kiobio.lol" erstellt!`);
+    function sendVerificationCode() {
+      const email = document.getElementById('regEmail').value;
+      const username = document.getElementById('regUser').value || "user";
+
+      if (!email) return alert("Bitte E-Mail eingeben");
+
+      verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+      // Echte Email senden mit EmailJS
+      emailjs.send("service_id", "template_id", {
+        to_email: email,
+        verification_code: verificationCode,
+        username: username
+      }).then(() => {
+        alert(`✅ Verifizierungscode wurde an ${email} gesendet!`);
+        showVerificationScreen(username, email);
+      }).catch(err => {
+        alert("Fehler beim Senden. Demo-Code: " + verificationCode);
+        showVerificationScreen(username, email);
+      });
+    }
+
+    function showVerificationScreen(username, email) {
+      document.getElementById('modalTitle').textContent = "Code bestätigen";
+      document.getElementById('modalContent').innerHTML = `
+        <p class="text-center text-purple-300">Code an ${email}</p>
+        <input id="codeInput" maxlength="6" placeholder="123456" class="w-full p-6 bg-zinc-800 rounded-2xl text-3xl text-center tracking-widest">
+        <button onclick="verifyCode('${username}', '${email}')" class="w-full mt-8 bg-green-600 py-6 rounded-3xl text-xl font-bold">Bestätigen</button>
+      `;
+    }
+
+    function verifyCode(username, email) {
+      const input = document.getElementById('codeInput').value;
+      if (input === verificationCode) {
+        currentUser = { username, email };
+        document.getElementById('mainModal').classList.add('hidden');
+        showDashboard();
+      } else {
+        alert("Falscher Code!");
       }
+    }
+
+    function showDashboard() {
+      document.getElementById('dashboard').classList.remove('hidden');
+      document.getElementById('dashName').textContent = currentUser.username;
+      document.getElementById('dashUsername').textContent = currentUser.username;
+    }
+
+    function showLoginModal() {
+      alert("Login-Funktion kommt bald (Magic Link)");
+    }
+
+    function logout() {
+      location.reload();
     }
   </script>
 </body>
