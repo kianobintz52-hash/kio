@@ -13,7 +13,6 @@
     body { font-family: system-ui, sans-serif; color: white; overflow-x: hidden; }
     video#bgVideo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; opacity: 0.85; }
     .glow-purple { text-shadow: 0 0 40px #c026d3, 0 0 80px #7e22ce; }
-    .sidebar-active { background-color: #6b21a8; color: white; }
   </style>
 </head>
 <body class="dark">
@@ -53,64 +52,10 @@
 
   <!-- DASHBOARD -->
   <div id="dashboard" class="hidden min-h-screen bg-zinc-950">
-    <div class="flex flex-col md:flex-row h-screen pt-16">
-      <div class="w-full md:w-72 bg-[#0f0a23] border-b md:border-r border-purple-500/20 p-6">
-        <div class="flex items-center gap-3 mb-10">
-          <span class="text-3xl">🔫</span>
-          <span class="text-2xl font-bold">kiobio.lol</span>
-        </div>
-        <div class="space-y-1">
-          <a href="#" onclick="switchTab(1)" class="sidebar-active flex items-center gap-3 px-4 py-3 rounded-2xl">✏️ Profil bearbeiten</a>
-          <a href="#" onclick="showMyPublicProfile()" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10">👀 Mein Profil</a>
-        </div>
-      </div>
-
-      <div class="flex-1 p-8 overflow-y-auto">
-        <div id="mainContent">
-          <div id="tab1">
-            <h2 class="text-3xl font-bold mb-8">Profil bearbeiten</h2>
-            <div class="max-w-2xl space-y-8">
-              <div>
-                <label class="block text-sm mb-2">Anzeigename</label>
-                <input id="editName" class="w-full bg-zinc-800 p-4 rounded-2xl">
-              </div>
-              <div>
-                <label class="block text-sm mb-2">Bio</label>
-                <textarea id="editBio" rows="4" class="w-full bg-zinc-800 p-4 rounded-2xl"></textarea>
-              </div>
-              <div>
-                <label class="block text-sm mb-2">Profilbild</label>
-                <input type="file" id="picUpload" accept="image/*" class="w-full bg-zinc-800 p-4 rounded-2xl" onchange="uploadProfilePic(event)">
-              </div>
-              <div>
-                <label class="block text-sm mb-2">Banner (Bild/Video)</label>
-                <input type="file" id="bannerUpload" accept="image/*,video/*" class="w-full bg-zinc-800 p-4 rounded-2xl" onchange="uploadBanner(event)">
-              </div>
-              <div>
-                <label class="block text-sm mb-2">Musik (MP3)</label>
-                <input type="file" id="musicUpload" accept="audio/*" class="w-full bg-zinc-800 p-4 rounded-2xl" onchange="uploadMusic(event)">
-              </div>
-              <button onclick="saveProfileChanges()" class="w-full bg-purple-600 hover:bg-purple-700 py-5 rounded-3xl font-semibold">Speichern</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- PUBLIC PROFILE -->
-  <div id="publicProfilePage" class="hidden min-h-screen bg-zinc-950 py-10">
-    <div class="max-w-4xl mx-auto bg-zinc-900 rounded-3xl overflow-hidden">
-      <div class="relative h-64" id="publicBannerContainer"></div>
-      <div class="flex justify-center -mt-20 relative z-10">
-        <img id="publicProfilePic" class="w-44 h-44 rounded-3xl object-cover border-4 border-zinc-900">
-      </div>
-      <div class="text-center px-8 pt-6 pb-12">
-        <h1 id="publicName" class="text-5xl font-bold"></h1>
-        <p id="publicUsername" class="text-purple-400 text-2xl"></p>
-        <p id="publicBio" class="mt-8 text-zinc-300"></p>
-        <audio id="publicMusic" controls class="mt-12 w-full max-w-md mx-auto"></audio>
-      </div>
+    <div class="max-w-2xl mx-auto text-center pt-32">
+      <h1 class="text-5xl font-bold mb-4">Willkommen zurück, <span id="welcomeName"></span>!</h1>
+      <button onclick="showMyPublicProfile()" class="bg-purple-600 hover:bg-purple-700 px-10 py-4 rounded-2xl text-lg mt-8">Mein Profil ansehen</button>
+      <button onclick="logout()" class="ml-4 bg-red-600 hover:bg-red-700 px-10 py-4 rounded-2xl text-lg">Abmelden</button>
     </div>
   </div>
 
@@ -130,15 +75,59 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
-    const storage = firebase.storage();
 
     let currentUser = null;
 
+    // ==================== REGISTRIERUNG ====================
+    function showRegisterModal() {
+      document.getElementById('modalTitle').textContent = "Registrieren";
+      document.getElementById('modalContent').innerHTML = `
+        <input id="regEmail" type="email" placeholder="E-Mail" class="w-full bg-zinc-800 p-4 rounded-2xl">
+        <input id="regUsername" type="text" placeholder="Benutzername" class="w-full bg-zinc-800 p-4 rounded-2xl">
+        <input id="regPassword" type="password" placeholder="Passwort (mind. 6 Zeichen)" class="w-full bg-zinc-800 p-4 rounded-2xl">
+        <button onclick="registerUser()" class="w-full bg-purple-600 py-4 rounded-2xl font-semibold mt-4">Registrieren</button>
+      `;
+      document.getElementById('mainModal').classList.remove('hidden');
+    }
+
+    async function registerUser() {
+      const email = document.getElementById('regEmail').value.trim();
+      const username = document.getElementById('regUsername').value.trim();
+      const password = document.getElementById('regPassword').value.trim();
+
+      if (!email || !username || password.length < 6) {
+        alert("Bitte alle Felder richtig ausfüllen (Passwort mindestens 6 Zeichen)");
+        return;
+      }
+
+      try {
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+
+        // Nutzerdaten in Database speichern
+        await db.ref('users/' + user.uid).set({
+          email: email,
+          username: username,
+          displayName: username,
+          bio: "",
+          profilePic: "https://i.pravatar.cc/300?u=" + Date.now()
+        });
+
+        alert("✅ Registrierung erfolgreich!");
+        closeModal();
+        currentUser = user;
+        showDashboard();
+      } catch (error) {
+        alert("Fehler: " + error.message);
+      }
+    }
+
+    // ==================== LOGIN ====================
     function showLoginModal() {
       document.getElementById('modalTitle').textContent = "Anmelden";
       document.getElementById('modalContent').innerHTML = `
-        <input id="loginEmail" type="email" value="u3271805041@gmail.com" class="w-full bg-zinc-800 p-4 rounded-2xl">
-        <input id="loginPassword" type="password" value="666666" class="w-full bg-zinc-800 p-4 rounded-2xl">
+        <input id="loginEmail" type="email" placeholder="E-Mail" class="w-full bg-zinc-800 p-4 rounded-2xl" value="u3271805041@gmail.com">
+        <input id="loginPassword" type="password" placeholder="Passwort" class="w-full bg-zinc-800 p-4 rounded-2xl" value="666666">
         <button onclick="doLogin()" class="w-full bg-purple-600 py-4 rounded-2xl font-semibold mt-4">Anmelden</button>
       `;
       document.getElementById('mainModal').classList.remove('hidden');
@@ -147,14 +136,14 @@
     async function doLogin() {
       const email = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword').value.trim();
-      
+
       try {
         const userCredential = await auth.signInWithEmailAndPassword(email, password);
         currentUser = userCredential.user;
         closeModal();
         showDashboard();
-      } catch (e) {
-        alert("Login fehlgeschlagen: " + e.message);
+      } catch (error) {
+        alert("Login fehlgeschlagen: " + error.message);
       }
     }
 
@@ -166,21 +155,16 @@
       document.getElementById('hero').classList.add('hidden');
       document.getElementById('dashboard').classList.remove('hidden');
       document.getElementById('navBtn').textContent = "Abmelden";
-      document.getElementById('navBtn').onclick = () => auth.signOut();
+      document.getElementById('navBtn').onclick = logout;
+    }
+
+    function logout() {
+      auth.signOut();
+      location.reload();
     }
 
     function showMyPublicProfile() {
-      if (currentUser) window.location.href = `/@k`;
-    }
-
-    function showPublicProfileFor(userData) {
-      document.getElementById('hero').classList.add('hidden');
-      document.getElementById('dashboard').classList.add('hidden');
-      document.getElementById('publicProfilePage').classList.remove('hidden');
-
-      document.getElementById('publicName').textContent = userData.displayName || userData.username;
-      document.getElementById('publicUsername').textContent = '@' + userData.username;
-      document.getElementById('publicBio').textContent = userData.bio || "Keine Bio...";
+      if (currentUser) window.location.href = `/@k`;   // Vorläufig für Owner
     }
 
     window.onload = () => {
