@@ -122,13 +122,6 @@
         <div class="form-footer">Bereits registriert? <a onclick="switchView('view-login')">Einloggen</a></div>
     </div>
 
-    <div id="view-verify" class="container" style="text-align: center;">
-        <h2>E-Mail verifizieren ✉️</h2>
-        <p style="color: #a1a1aa; margin-bottom: 20px;">Bitte bestätige den Link in deiner E-Mail, um dein Dashboard freizuschalten.</p>
-        <button class="btn" onclick="location.reload()">Ich habe verifiziert (Aktualisieren)</button>
-        <button class="btn btn-sec" onclick="window.firebaseLogout()">Zurück zum Login</button>
-    </div>
-
     <div id="view-forgot" class="container">
         <h2>Passwort zurücksetzen</h2>
         <form id="forgot-form">
@@ -199,11 +192,11 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-        // Deine bereitgestellte Firebase Konfiguration
+        // Deine Firebase Konfiguration
         const firebaseConfig = {
             apiKey: "AIzaSyD6NPF9FIJsDipQg3dvxSohtAJCGVF4NUc",
             authDomain: "kiobiool.firebaseapp.com",
@@ -222,24 +215,21 @@
 
         let currentUserDoc = null; 
 
-        // Routen/Ansichten-Wechsler
+        // Ansichten-Wechsler
         window.switchView = function(viewId) {
             document.querySelectorAll('.container, #view-profile').forEach(el => el.style.display = 'none');
             const target = document.getElementById(viewId);
-            if(target) {
-                if(viewId.startsWith('view-v')) target.style.display = 'block'; 
-                else target.style.display = 'block';
-            }
+            if(target) target.style.display = 'block';
         };
 
-        // --- 1. USERNAME CHECK & REGISTRIERUNG ---
+        // --- 1. USERNAME CHECK & REGISTRIERUNG (OHNE VERIFY) ---
         document.getElementById('register-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = document.getElementById('reg-user').value.trim().toLowerCase();
             const email = document.getElementById('reg-email').value;
             const password = document.getElementById('reg-pass').value;
 
-            // Username Check auf Einzigartigkeit via Firestore query
+            // Username-Check
             const q = query(collection(db, "users"), where("username", "==", username));
             const querySnapshot = await getDocs(q);
             if (!querySnapshot.empty) {
@@ -249,10 +239,8 @@
 
             try {
                 const cred = await createUserWithEmailAndPassword(auth, email, password);
-                // E-Mail Verifizierung senden
-                await sendEmailVerification(cred.user);
                 
-                // User-Profil vorab in Datenbank anlegen
+                // User-Profil direkt in der Datenbank anlegen
                 await setDoc(doc(db, "users", cred.user.uid), {
                     uid: cred.user.uid,
                     username: username,
@@ -263,8 +251,8 @@
                     avatar: "", banner: ""
                 });
 
-                alert("Konto angelegt! Bitte überprüfe dein E-Mail Postfach zur Verifizierung.");
-                location.reload();
+                alert("Konto erfolgreich erstellt!");
+                // Der Zustand ändert sich über onAuthStateChanged automatisch -> Dashboard öffnet sich
             } catch (err) { alert(err.message); }
         });
 
@@ -289,9 +277,8 @@
         // --- 4. LOGOUT ---
         window.firebaseLogout = () => signOut(auth).then(() => location.reload());
 
-        // --- 5. SCHUTZ DER ROUTEN & REALTIME STATE ---
+        // --- 5. SCHUTZ DER ROUTEN & STATUS PRÜFUNG ---
         onAuthStateChanged(auth, async (user) => {
-            // Falls ein Username in der URL steht (z.B. ?u=testuser), laden wir das öffentliche Profil
             const urlParams = new URLSearchParams(window.location.search);
             const pubUser = urlParams.get('u');
 
@@ -301,12 +288,7 @@
             }
 
             if (user) {
-                // E-Mail Verifizierungsprüfung
-                if (!user.emailVerified) {
-                    switchView('view-verify');
-                    return;
-                }
-                // Daten für das Dashboard laden
+                // Daten laden und direkt das Dashboard freischalten (Keine Überprüfung auf emailVerified mehr)
                 const userDoc = await getDoc(doc(db, "users", user.uid));
                 if(userDoc.exists()) {
                     currentUserDoc = userDoc.data();
@@ -331,7 +313,7 @@
             list.appendChild(row);
         };
 
-        // Live-Vorschau-Generator im Dashboard
+        // Live-Vorschau-Generator
         window.liveUpdatePreview = function() {
             document.getElementById('prev-title').innerText = document.getElementById('db-title').value || 'Dein Name';
             document.getElementById('prev-bio').innerText = document.getElementById('db-bio').value || '';
@@ -349,7 +331,7 @@
                 }
             });
         };
-        // Event-Listener für Live-Inputs
+
         document.getElementById('db-title').addEventListener('input', window.liveUpdatePreview);
         document.getElementById('db-bio').addEventListener('input', window.liveUpdatePreview);
         document.getElementById('db-theme').addEventListener('change', window.liveUpdatePreview);
@@ -370,7 +352,7 @@
             window.liveUpdatePreview();
         }
 
-        // --- 7. FILE UPLOADS & SAVE DATA ---
+        // --- 7. UPLOADS & SPEICHERN ---
         window.saveProfileData = async function() {
             if(!auth.currentUser) return;
             const uid = auth.currentUser.uid;
@@ -381,20 +363,17 @@
             const avatarFile = document.getElementById('file-avatar').files[0];
             const bannerFile = document.getElementById('file-banner').files[0];
 
-            // Upload Avatar falls neu ausgewählt
             if(avatarFile) {
                 const avaRef = ref(storage, `avatars/${uid}`);
                 await uploadBytes(avaRef, avatarFile);
                 avatarUrl = await getDownloadURL(avaRef);
             }
-            // Upload Banner falls neu ausgewählt
             if(bannerFile) {
                 const banRef = ref(storage, `banners/${uid}`);
                 await uploadBytes(banRef, bannerFile);
                 bannerUrl = await getDownloadURL(banRef);
             }
 
-            // Links kompilieren
             const links = [];
             document.querySelectorAll('.link-item').forEach(item => {
                 const name = item.querySelector('.link-name').value;
@@ -412,11 +391,11 @@
             };
 
             await setDoc(doc(db, "users", uid), updatedData, { merge: true });
-            alert("Änderungen erfolgreich gespeichert und hochgeladen!");
+            alert("Änderungen erfolgreich gespeichert!");
             location.reload();
         };
 
-        // --- 8. ÖFFENTLICHE USER-SEITE LADEN & INTRO ---
+        // --- 8. ÖFFENTLICHE SEITE ---
         async function loadPublicProfile(username) {
             const q = query(collection(db, "users"), where("username", "==", username));
             const querySnapshot = await getDocs(q);
@@ -427,8 +406,6 @@
             }
 
             const data = querySnapshot.docs[0].data();
-            
-            // Render öffentliche Seite
             document.title = data.title;
             const view = document.getElementById('view-profile');
             view.className = "profile-view " + (data.theme || 'theme-dark');
@@ -446,7 +423,6 @@
                 });
             }
 
-            // INTRO-PAGE Aktivierung (Click to Enter)
             const intro = document.getElementById('intro-overlay');
             intro.style.display = 'flex';
             window.startPage = function() {
