@@ -3,560 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>guns.lol | Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Orbitron:wght@500;700&family=Permanent+Marker&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <title>Bio Link</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        @font-face {
-            font-family: 'Angel Wish';
-            src: url('assets/Angel_wish.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
-
+        /* CSS-Regeln aus deiner style.css */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body, * { cursor: none !important; }
         body {
-            background-color: #0d0d0e;
-            color: #f4f4f5;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: 'Roboto Mono', monospace;
+            overflow: auto;
+            position: relative;
             min-height: 100vh;
             display: flex;
-            --primary-color: #00CED1;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
-
-        .auth-wrapper {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            display: flex; justify-content: center; align-items: center; background: #0d0d0e; z-index: 99999;
+        #custom-cursor {
+            position: fixed; width: 40px; height: 40px; background-size: contain;
+            background-repeat: no-repeat; background-position: center; pointer-events: none;
+            z-index: 9999999; transition: transform 0.1s ease, opacity 0.3s ease;
+            filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.8)); will-change: transform, left, top; opacity: 0;
         }
-        
-        .container {
-            background: #16161a; border: 1px solid #232329; padding: 35px; border-radius: 14px;
-            width: 100%; max-width: 420px; box-shadow: 0 10px 40px rgba(0,0,0,0.7); display: none;
-        }
-        .container.active { display: block !important; }
-
-        h2, h3 { margin-bottom: 20px; font-weight: 600; }
-        .form-group { margin-bottom: 18px; }
-        label { display: block; margin-bottom: 8px; font-size: 0.75rem; color: #a1a1aa; text-transform: uppercase; }
-        input, select, textarea {
-            width: 100%; padding: 12px; background: #0d0d0e; border: 1px solid #232329;
-            border-radius: 8px; color: #fff; font-size: 0.95rem;
-        }
-        input:focus { outline: none; border-color: #3f3f46; }
-        .btn {
-            width: 100%; padding: 12px; background: #fff; color: #000; border: none;
-            border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: 0.2s;
-        }
-        .btn:hover { opacity: 0.9; }
-        .form-footer { text-align: center; margin-top: 20px; font-size: 0.85rem; color: #a1a1aa; }
-        .form-footer a { color: #fff; text-decoration: none; cursor: pointer; font-weight: bold; }
-
-        /* --- DASHBOARD --- */
-        #view-dashboard { width: 100%; display: none; min-height: 100vh; }
-        
-        .sidebar {
-            width: 250px; background: #111113; border-right: 1px solid #1c1c21;
-            padding: 24px 16px; display: flex; flex-direction: column; gap: 8px;
-        }
-        .logo { font-size: 1.3rem; font-weight: 700; color: #fff; margin-bottom: 24px; }
-        .side-btn {
-            display: flex; align-items: center; gap: 12px; padding: 12px 14px;
-            color: #a1a1aa; text-decoration: none; border-radius: 8px; font-size: 0.95rem; cursor: pointer;
-        }
-        .side-btn:hover, .side-btn.active { background: #1c1c21; color: #fff; }
-        
-        .main-content { flex: 1; padding: 40px; overflow-y: auto; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .section-title { font-size: 1.4rem; font-weight: 600; margin-bottom: 24px; border-bottom: 1px solid #232329; padding-bottom: 10px; }
-
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 30px; }
-        .stat-card { background: #16161a; border: 1px solid #232329; padding: 20px; border-radius: 12px; }
-        .stat-label { font-size: 0.8rem; color: #a1a1aa; text-transform: uppercase; margin-bottom: 6px; }
-        .stat-value { font-size: 1.4rem; font-weight: 700; }
-
-        .upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-        .upload-card {
-            background: #16161a; border: 1px solid #232329; padding: 20px; border-radius: 12px;
-            display: flex; flex-direction: column; gap: 10px; min-height: 130px; justify-content: space-between;
-        }
-        .upload-zone {
-            border: 2px dashed #232329; border-radius: 8px; padding: 15px; text-align: center;
-            font-size: 0.8rem; color: #71717a; cursor: pointer; position: relative;
-        }
-        .upload-zone input { position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; }
-        .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
-
-        .sidebar-user { margin-top: auto; padding: 12px; background: #16161a; border: 1px solid #232329; border-radius: 8px; display: flex; flex-direction: column; gap: 4px; }
-        .sb-username { font-weight: 600; font-size: 0.9rem; }
-        .sb-uid { font-size: 0.75rem; color: #71717a; }
-
-        /* --- PUBLIC PROFILE SEITE --- */
-        #view-profile { display: none; width: 100vw; height: 100vh; position: fixed; top:0; left:0; z-index: 999999; background: #0a0a0a; overflow-y: auto; }
-        .p-banner { width: 100%; height: 280px; background-size: cover; background-position: center; background-color: #1c1c21; }
-        
-        .p-card {
-            max-width: 680px; width: 90%; background: rgba(22, 22, 26, 0.75); border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); margin: -80px auto 40px auto;
-            border-radius: 20px; padding: 40px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.9); position: relative; z-index: 10;
-        }
-        .p-avatar { 
-            width: 130px; height: 130px; border-radius: 50%; border: 3px solid var(--primary-color); 
-            object-fit: cover; margin: -100px auto 15px auto; display: block; background: #232329;
-            box-shadow: 0 0 15px var(--primary-color);
-        }
-        
-        #pub-title {
-            font-family: 'Angel Wish', 'Courier New', sans-serif;
-            font-size: 36px;
-            font-weight: bold;
-            letter-spacing: 3px;
-            color: #fff;
-            margin-bottom: 10px;
-        }
-
-        /* Badges Styling im Profil */
-        .badge-box {
-            background: rgba(255, 255, 255, 0.08);
-            padding: 2px;
-            border-radius: 12px;
-            display: inline-block;
-            margin: 10px auto;
-        }
-        .badge-box-inner {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 6px 12px;
-            border-radius: 10px;
-            display: flex;
-            gap: 8px;
-        }
-        .badge {
-            width: 22px;
-            height: 22px;
-            transition: transform 0.2s;
-        }
-        .badge:hover { transform: scale(1.2); }
-
-        .profile-socials { display: flex; justify-content: center; gap: 15px; margin-top: 25px; flex-wrap: wrap; }
-        .social-icon-img {
-            width: 34px;
-            height: 34px;
-            transition: transform 0.3s ease;
-        }
-        .social-icon-img:hover {
-            transform: scale(1.3) rotateY(10deg);
-        }
-
-        #intro-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000;
-            display: flex; justify-content: center; align-items: center; z-index: 9999999; cursor: pointer; font-size: 1.2rem; font-weight: bold; color: white; letter-spacing: 2px;
-            font-family: 'Courier New', monospace;
-        }
-        .matrix-bg { position: fixed; top:0; left:0; width:100vw; height:100vh; opacity: 0.15; pointer-events: none; z-index: 1; }
-
-        @media (max-width: 480px) {
-            .stats-grid { grid-template-columns: 1fr 1fr; }
-            .upload-grid, .settings-grid { grid-template-columns: 1fr; }
-            .sidebar { width: 70px; padding: 20px 8px; }
-            .logo, .sb-username, .sb-uid { display: none; }
-            .main-content { padding: 20px; }
+        .overlay #custom-cursor { opacity: 0 !important; }
+        a, button, .ctrl, .link, .spotify-widget, .discord-presence { position: relative; z-index: 1; }
+        #bg-video { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -1; filter: brightness(0.4); }
+        .video-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0); z-index: -1; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 1; cursor: pointer !important; }
+        #overlay-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+        .overlay-blur { position: absolute; top: 0; left: 0; width: 100%; height: 100%; backdrop-filter: blur(10px); background: rgba(0, 0, 0, 0.7); z-index: 2; }
+        .overlay-content { text-align: center; color: #fff; position: relative; z-index: 3; }
+        .overlay-title { font-size: 20px; font-weight: bold; margin-bottom: 20px; letter-spacing: 4px; opacity: 0.8; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.8; } }
+        .c3d-container { perspective: 1000px; width: 780px; height: auto; min-height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center; transform: translateY(10px); }
+        .overlay-hidden .c3d-container { opacity: 1; transform: translateY(0); transition: opacity 0.8s ease-out 0.5s, transform 0.8s ease-out 0.5s; }
+        .overlay-hidden .overlay { opacity: 0; visibility: hidden; }
+        #c3d { display: flex; flex-direction: column; gap: 8px; opacity: 0.9; transform-style: preserve-3d; will-change: transform; transition: transform 0.1s ease-out; }
+        .card { background: rgba(25, 25, 25, 1); padding: 30px 40px; border-radius: 5px; width: 700px; height: auto; min-height: 292px; max-height: 300px; border: 10px medium rgba(255, 255, 255); position: relative; transform-style: preserve-3d; will-change: transform; transition: all 0.3s ease-out; box-sizing: border-box; overflow: visible !important; backdrop-filter: blur(21px); transform: translateY(-100px); }
+        /* Weitere notwendige responsive CSS-Klassen */
+        @media (max-width: 800px) {
+            .c3d-container { width: 95vw; height: 200px; perspective: 800px; transform: translateY(50px); }
+            .card { width: 90vw; max-width: 700px; height: auto; min-height: 280px; padding: 30px 40px; }
+            .player { width: 90vw; max-width: 700px; height: 85px; padding: 10px 25px; }
+            .presence-container { flex-direction: row; gap: 15px; }
+            .discord-presence, .spotify-widget { width: calc(50% - 8px); max-width: none; height: 80px; }
+            .overlay-title { font-size: 64px; letter-spacing: 4px; }
+            .name { font-size: 28px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="auth-wrapper" id="auth-area">
-        <div id="view-login" class="container active">
-            <h2>Anmelden</h2>
-            <form id="login-form">
-                <div class="form-group"><label>E-Mail</label><input type="email" id="login-email" required></div>
-                <div class="form-group"><label>Passwort</label><input type="password" id="login-pass" required></div>
-                <button type="submit" class="btn">Login</button>
-            </form>
-            <div class="form-footer">Kein Konto? <a onclick="switchView('view-register')">Registrieren</a></div>
-        </div>
-
-        <div id="view-register" class="container">
-            <h2>Registrieren</h2>
-            <form id="register-form">
-                <div class="form-group"><label>Wunsch-Username</label><input type="text" id="reg-user" required placeholder="z.B. b35"></div>
-                <div class="form-group"><label>E-Mail</label><input type="email" id="reg-email" required></div>
-                <div class="form-group"><label>Passwort</label><input type="password" id="reg-pass" required></div>
-                <button type="submit" class="btn">Konto erstellen</button>
-            </form>
-            <div class="form-footer">Bereits registriert? <a onclick="switchView('view-login')">Einloggen</a></div>
+    <div class="overlay" id="overlay">
+        <div class="overlay-blur"></div>
+        <div class="overlay-content">
+            <div class="overlay-title">CLICK TO ENTER</div>
         </div>
     </div>
 
-    <div id="view-dashboard">
-        <div class="sidebar">
-            <div class="logo">🧬 guns.lol</div>
-            <div class="side-btn active" id="btn-tab-konto" onclick="switchTab('konto')">👤 Konto</div>
-            <div class="side-btn" id="btn-tab-anpassen" onclick="switchTab('anpassen')">🎨 Anpassen</div>
-            <div class="sidebar-user">
-                <div class="sb-username" id="sb-u">...</div>
-                <div class="sb-uid" id="sb-id">UID: --</div>
+    <div class="c3d-container">
+        <div id="c3d">
+            <div class="card" id="mainCard">
+                <div class="name" id="discord-username">Lade...</div>
+                <div id="discord-activity-line">No activity</div>
             </div>
-            <div class="side-btn" style="color: #ef4444; margin-top: auto;" onclick="window.firebaseLogout()">🚪 Ausloggen</div>
-        </div>
-
-        <div class="main-content">
-            <div id="tab-konto" class="tab-content active">
-                <div class="section-title">Kontoübersicht</div>
-                <div class="stats-grid">
-                    <div class="stat-card"><div class="stat-label">Benutzername</div><div class="stat-value" id="card-username">...</div></div>
-                    <div class="stat-card"><div class="stat-label">Alias</div><div class="stat-value">0</div></div>
-                    <div class="stat-card"><div class="stat-label">UID</div><div class="stat-value" id="card-uid">...</div></div>
-                    <div class="stat-card"><div class="stat-label">Profilaufrufe</div><div class="stat-value">1.337</div></div>
-                </div>
-                <h3>Allgemeine Daten</h3>
-                <div class="form-group"><label>Anzeigename (Titel)</label><input type="text" id="db-title"></div>
-                <div class="form-group"><label>Beschreibung / Bio</label><textarea id="db-bio" rows="3"></textarea></div>
-                
-                <h3 style="margin-top: 25px;">Social Media Links</h3>
-                <div class="settings-grid">
-                    <div class="form-group"><label>Discord</label><input type="text" id="db-soc-discord" placeholder="Einladungs-Link oder Name"></div>
-                    <div class="form-group"><label>GitHub</label><input type="text" id="db-soc-github" placeholder="GitHub Profil-URL"></div>
-                    <div class="form-group"><label>TikTok</label><input type="text" id="db-soc-tiktok" placeholder="Username"></div>
-                    <div class="form-group"><label>YouTube</label><input type="text" id="db-soc-youtube" placeholder="Kanal-URL"></div>
-                </div>
-                <button class="btn" onclick="window.saveProfileData()">Änderungen speichern</button>
-                <p style="margin-top:15px; font-size:0.85rem;">Deine Profil-URL: <a id="live-url-text" style="color:#38bdf8; font-weight: bold;" target="_blank"></a></p>
-            </div>
-
-            <div id="tab-anpassen" class="tab-content">
-                <div class="section-title">Design & Medien</div>
-                
-                <div class="upload-grid">
-                    <div class="upload-card">
-                        <div class="stat-label">Profilbild (Aus Explorer)</div>
-                        <div class="upload-zone"><span id="lbl-avatar">Datei wählen</span><input type="file" id="file-avatar" accept="image/*"></div>
-                    </div>
-                    <div class="upload-card">
-                        <div class="stat-label">Hintergrund-Banner (Aus Explorer)</div>
-                        <div class="upload-zone"><span id="lbl-banner">Datei wählen</span><input type="file" id="file-banner" accept="image/*"></div>
-                    </div>
-                </div>
-
-                <div class="form-group" style="margin-top: 10px;">
-                    <label>Hintergrund-Musik (.mp3 Link)</label>
-                    <input type="text" id="db-audio-url" placeholder="Hier direkten .mp3 Musik-Link einfügen (z.B. Discord-Anhang-Link)">
-                    <small style="color: #a1a1aa; font-size: 0.75rem; display:block; margin-top:4px;">Tipp: Lade deine .mp3 auf Discord hoch, kopiere den Link und füge ihn hier ein!</small>
-                </div>
-
-                <div class="section-title" style="margin-top:30px;">Erweiterte Profil-Stylings</div>
-                <div class="settings-grid">
-                    <div class="form-group"><label>Profil-Schriftart</label>
-                        <select id="db-font">
-                            <option value="sans-serif">Standard</option>
-                            <option value="'Orbitron', sans-serif">Neon / Cyber</option>
-                            <option value="'Courier Prime', monospace">Hacker / Code</option>
-                            <option value="'Permanent Marker', cursive">Graffiti</option>
-                            <option value="'Angel Wish', sans-serif">Angel Wish (Spezial)</option>
-                        </select>
-                    </div>
-                    <div class="form-group"><label>Hintergrundeffekt</label>
-                        <select id="db-effect">
-                            <option value="none">Kein Effekt</option>
-                            <option value="matrix">Matrix Rain</option>
-                        </select>
-                    </div>
-                </div>
-                <button class="btn" id="btn-save-design" onclick="window.saveProfileData()">Design & Medien speichern</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="view-profile">
-        <canvas id="matrixCanvas" class="matrix-bg" style="display:none;"></canvas>
-        <div id="pub-banner" class="p-banner"></div>
-        <div class="p-card" id="profile-card-element">
-            <img id="pub-avatar" class="p-avatar" src="https://via.placeholder.com/110">
-            <h2 id="pub-title"></h2>
             
-            <div class="badge-box">
-                <div class="badge-box-inner">
-                    <img src="assets/staff.gif" alt="Staff" class="badge" title="Staff Member">
-                    <img src="assets/owner.gif" alt="Owner" class="badge" title="Owner">
-                    <img src="assets/partner.gif" alt="Partner" class="badge" title="Partner">
-                    <img src="assets/developer.png" alt="Developer" class="badge" title="Developer">
-                    <img src="assets/verified.gif" alt="Verified" class="badge" title="Verified">
-                </div>
+            <div class="player" id="playerElement">
+                <button class="ctrl play" id="playBtn" title="Play/Pause">PLAY</button>
+                <button class="ctrl next" id="nextBtn" title="Next">NEXT</button>
+                <div id="viewCount">0</div>
             </div>
-
-            <p id="pub-bio" style="color:#a1a1aa; white-space: pre-wrap; margin-top: 10px;"></p>
-            <div class="profile-socials" id="pub-socials"></div>
         </div>
-        <audio id="pub-audio" loop></audio>
     </div>
-    <div id="intro-overlay" style="display: none;">[ CLICK TO ENTER ]</div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyD6NPF9FIJsDipQg3dvxSohtAJCGVF4NUc",
-            authDomain: "kiobiool.firebaseapp.com",
-            databaseURL: "https://kiobiool-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "kiobiool",
-            storageBucket: "kiobiool.firebasestorage.app",
-            messagingSenderId: "1003434485509",
-            appId: "1:1003434485509:web:872f257b0758051c80b96c"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        let currentUserDoc = null;
-
-        const resizeAndToBase64 = file => new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = event => {
-                const img = new Image();
-                img.src = event.target.result;
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 400; 
-                    const scaleSize = MAX_WIDTH / img.width;
-                    canvas.width = MAX_WIDTH;
-                    canvas.height = img.height * scaleSize;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    resolve(canvas.toDataURL('image/jpeg', 0.6));
-                };
-            };
-        });
-
-        document.getElementById('file-avatar').addEventListener('change', (e) => { if(e.target.files[0]) document.getElementById('lbl-avatar').innerText = "✓ " + e.target.files[0].name; });
-        document.getElementById('file-banner').addEventListener('change', (e) => { if(e.target.files[0]) document.getElementById('lbl-banner').innerText = "✓ " + e.target.files[0].name; });
-
-        window.switchView = function(viewId) {
-            document.querySelectorAll('.auth-wrapper .container').forEach(el => el.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
-        };
-
-        window.switchTab = function(tabName) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.side-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(`tab-${tabName}`).classList.add('active');
-            document.getElementById(`btn-tab-${tabName}`).classList.add('active');
-        };
-
-        // REGISTRIERUNG
-        document.getElementById('register-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('reg-user').value.trim().toLowerCase();
-            const email = document.getElementById('reg-email').value;
-            const password = document.getElementById('reg-pass').value;
-
-            try {
-                const q = query(collection(db, "users"), where("username", "==", username));
-                const snap = await getDocs(q);
-                if (!snap.empty) return alert("Username vergeben!");
-
-                const cred = await createUserWithEmailAndPassword(auth, email, password);
-                const counterRef = doc(db, "config", "user_counter");
-                let num = 1;
-
-                await runTransaction(db, async (t) => {
-                    const cDoc = await t.get(counterRef);
-                    if (cDoc.exists()) num = cDoc.data().currentValue + 1;
-                    t.set(counterRef, { currentValue: num });
-                });
-
-                await setDoc(doc(db, "users", cred.user.uid), {
-                    uid: cred.user.uid, uidNumber: num, username: username,
-                    title: username, bio: "Willkommen auf meinem Profil!", font: "sans-serif", effect: "none", socials: {},
-                    avatar: "", banner: "", audio: ""
-                });
-                alert("Konto erfolgreich erstellt!");
-            } catch (err) { alert(err.message); }
-        });
-
-        // LOGIN
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            try { await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value); } 
-            catch (err) { alert(err.message); }
-        });
-
-        window.firebaseLogout = () => signOut(auth).then(() => location.reload());
-
-        // AUTH STATE CONTROLLER & ROUTING
-        onAuthStateChanged(auth, async (user) => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const pubUser = urlParams.get('u');
-
-            if (pubUser) {
-                document.getElementById('auth-area').style.display = 'none';
-                document.getElementById('view-dashboard').style.display = 'none';
-                loadPublicProfile(pubUser.toLowerCase());
-                return;
-            }
-
-            if (user) {
-                document.getElementById('auth-area').style.display = 'none';
-                const uDoc = await getDoc(doc(db, "users", user.uid));
-                if(uDoc.exists()) {
-                    currentUserDoc = uDoc.data();
-                    document.getElementById('card-username').innerText = currentUserDoc.username;
-                    document.getElementById('sb-u').innerText = currentUserDoc.username;
-                    document.getElementById('card-uid').innerText = currentUserDoc.uidNumber || '1';
-                    document.getElementById('sb-id').innerText = "UID: " + (currentUserDoc.uidNumber || '1');
-                    document.getElementById('db-title').value = currentUserDoc.title || '';
-                    document.getElementById('db-bio').value = currentUserDoc.bio || '';
-                    
-                    const soc = currentUserDoc.socials || {};
-                    document.getElementById('db-soc-discord').value = soc.discord || '';
-                    document.getElementById('db-soc-github').value = soc.github || '';
-                    document.getElementById('db-soc-tiktok').value = soc.tiktok || '';
-                    document.getElementById('db-soc-youtube').value = soc.youtube || '';
-
-                    document.getElementById('db-font').value = currentUserDoc.font || 'sans-serif';
-                    document.getElementById('db-effect').value = currentUserDoc.effect || 'none';
-                    document.getElementById('db-audio-url').value = currentUserDoc.audio || '';
-                    
-                    const pUrl = window.location.origin + window.location.pathname + "?u=" + currentUserDoc.username;
-                    document.getElementById('live-url-text').innerText = pUrl;
-                    document.getElementById('live-url-text').href = pUrl;
-                    document.getElementById('view-dashboard').style.display = 'flex';
+    <script>
+        // 1. ZUERST DIE KONFIGURATION (config.js)
+        const config = {
+            general: {
+                backgroundMusic: { enabled: true, volume: 0.5 }
+            },
+            viewCounter: {
+                enabled: true,
+                jsonBlob: { blobId: "DEINE_BLOB_ID_HIER" }
+            },
+            discord: {
+                fallbackData: {
+                    username: "User",
+                    discriminator: "0",
+                    avatar: "https://via.placeholder.com/150"
                 }
-            } else {
-                document.getElementById('view-dashboard').style.display = 'none';
-                document.getElementById('auth-area').style.display = 'flex';
-                switchView('view-login');
+            },
+            spotifyWidget: {
+                playlist: { name: "Meine Playlist", creator: "Ich", saves: "100", songs: "50" }
             }
-        });
-
-        // SPEICHER-LOGIK
-        window.saveProfileData = async function() {
-            if(!auth.currentUser) return;
-            const uid = auth.currentUser.uid;
-            const btn = document.getElementById('btn-save-design');
-            if(btn) btn.innerText = "Wird gespeichert...";
-
-            let avaBase64 = currentUserDoc.avatar || "";
-            let banBase64 = currentUserDoc.banner || "";
-
-            const fAva = document.getElementById('file-avatar').files[0];
-            const fBan = document.getElementById('file-banner').files[0];
-
-            if(fAva) avaBase64 = await resizeAndToBase64(fAva);
-            if(fBan) banBase64 = await resizeAndToBase64(fBan);
-
-            const socials = {
-                discord: document.getElementById('db-soc-discord').value.trim(),
-                github: document.getElementById('db-soc-github').value.trim(),
-                tiktok: document.getElementById('db-soc-tiktok').value.trim(),
-                youtube: document.getElementById('db-soc-youtube').value.trim()
-            };
-
-            await setDoc(doc(db, "users", uid), {
-                title: document.getElementById('db-title').value,
-                bio: document.getElementById('db-bio').value,
-                font: document.getElementById('db-font').value,
-                effect: document.getElementById('db-effect').value,
-                socials: socials, 
-                avatar: avaBase64, 
-                banner: banBase64, 
-                audio: document.getElementById('db-audio-url').value.trim()
-            }, { merge: true });
-
-            alert("Erfolgreich gespeichert!");
-            location.reload();
         };
 
-        // PROFIL LADEN
-        async function loadPublicProfile(username) {
-            const q = query(collection(db, "users"), where("username", "==", username));
-            const snap = await getDocs(q);
-            if(snap.empty) {
-                document.body.innerHTML = "<h2 style='text-align:center; color:white; padding-top:50px;'>Profil existiert nicht! (404)</h2>";
-                return;
-            }
-            const data = snap.docs[0].data();
-            
-            document.getElementById('pub-title').innerText = data.title || username;
-            document.getElementById('pub-bio').innerText = data.bio || '';
-            document.getElementById('profile-card-element').style.fontFamily = data.font || 'sans-serif';
-            
-            if(data.avatar) document.getElementById('pub-avatar').src = data.avatar;
-            if(data.banner) document.getElementById('pub-banner').style.backgroundImage = `url('${data.banner}')`;
-            
-            const aud = document.getElementById('pub-audio');
-            if(data.audio) { 
-                aud.src = data.audio; 
-                aud.load(); 
-            }
-
-            const socBox = document.getElementById('pub-socials');
-            socBox.innerHTML = '';
-            
-            // Zuordnung der Plattformen zu den entsprechenden Assets
-            const iconMapping = {
-                discord: 'assets/discord.png',
-                github: 'assets/github.png',
-                tiktok: 'assets/tiktok.png',
-                youtube: 'assets/youtube.png'
-            };
-
-            if(data.socials) {
-                Object.keys(data.socials).forEach(k => {
-                    const v = data.socials[k];
-                    if(v) {
-                        const a = document.createElement('a');
-                        a.target = "_blank";
-                        a.href = v.startsWith('http') ? v : 'https://' + v;
-                        
-                        if(iconMapping[k]) {
-                            const img = document.createElement('img');
-                            img.src = iconMapping[k];
-                            img.alt = k;
-                            img.className = 'social-icon-img';
-                            img.title = v;
-                            a.appendChild(img);
-                        } else {
-                            a.innerText = k.toUpperCase();
-                        }
-                        socBox.appendChild(a);
-                    }
-                });
-            }
-
-            if(data.effect === 'matrix') initMatrix();
-
-            const intro = document.getElementById('intro-overlay');
-            intro.style.display = 'flex';
-            
-            window.startPage = function() {
-                intro.style.display = 'none';
-                document.getElementById('view-profile').style.display = 'block';
-                if(data.audio) {
-                    aud.play().catch(e => console.log("Audio Wiedergabe blockiert"));
-                }
-            };
-            intro.setAttribute('onclick', 'startPage()');
+        // 2. MUSIK PLAYER LOGIK (musicPlayer.js)
+        let isDragging = false;
+        const playBtn = document.getElementById('playBtn');
+        if (playBtn) {
+            playBtn.addEventListener('click', () => {
+                console.log("Musik wird abgespielt/pausiert...");
+            });
         }
 
-        function initMatrix() {
-            const canvas = document.getElementById('matrixCanvas'); canvas.style.display = 'block';
-            const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789🧬"; const fontSize = 14;
-            const columns = canvas.width / fontSize; const drops = Array(Math.floor(columns)).fill(1);
-            function draw() {
-                ctx.fillStyle = "rgba(10, 10, 10, 0.05)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = "#0f0"; ctx.font = fontSize + "px monospace";
-                for (let i = 0; i < drops.length; i++) {
-                    const text = letters[Math.floor(Math.random() * letters.length)];
-                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                    if (drops[i] * fontSize > canvas.height && Math.random() * 0.975 > 0.95) drops[i] = 0;
-                    drops[i]++;
-                }
+        // 3. SEITENAUFRUFE (viewCounter.js)
+        async function initViewCounter() {
+            if (!config.viewCounter || !config.viewCounter.enabled) return;
+            const blobId = config.viewCounter.jsonBlob.blobId;
+            const apiUrl = "https://api.jsonblob.com/api/jsonBlob/";
+            try {
+                const counterElement = document.getElementById('viewCount');
+                if (counterElement) counterElement.textContent = "123"; // Beispielwert/Live-Fetch-Logik
+            } catch (error) {
+                console.error("View counter error:", error);
             }
-            setInterval(draw, 33);
+        }
+
+        // 4. NEIGUNGSEFFEKT (tiltEffect.js)
+        const c3dElement = document.getElementById('c3d');
+        const mainCardElement = document.getElementById('mainCard');
+        const playerElement = document.getElementById('playerElement');
+        if (c3dElement && mainCardElement && playerElement) {
+            c3dElement.addEventListener('mousemove', (e) => {
+                let rect = mainCardElement.getBoundingClientRect();
+                let x = e.clientX - rect.left - (rect.width/2);
+                let y = e.clientY - rect.top - (rect.height/2);
+                mainCardElement.style.transform = `rotateY(${x / 20}deg) rotateX(${-y / 20}deg)`;
+            });
+            c3dElement.addEventListener('mouseleave', () => {
+                mainCardElement.style.transform = 'rotateY(0deg) rotateX(0deg)';
+            });
+        }
+
+        // 5. DISCORD STATUS (discord.js)
+        function showFallbackDiscordPresence() {
+            const usernameEl = document.getElementById('discord-username');
+            if (usernameEl) usernameEl.textContent = config.discord.fallbackData.username;
+        }
+
+        // 6. SPOTIFY INTERAKTION (spotify-interaction.js)
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("Spotify Integration geladen.");
+        });
+
+        // 7. MAIN LOGIK (main.js)
+        const overlay = document.getElementById('overlay');
+        if (overlay) {
+            overlay.addEventListener('click', () => {
+                document.body.classList.add('overlay-hidden');
+                initViewCounter();
+                showFallbackDiscordPresence();
+                overlay.style.opacity = '0';
+                setTimeout(() => overlay.remove(), 800);
+            });
         }
     </script>
 </body>
