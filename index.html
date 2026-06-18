@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kio</title>
+    <title>kio</title>
     <style>
         * {
             margin: 0;
@@ -222,29 +222,6 @@
             height: 150px;
         }
 
-        .profile-container::after {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border-radius: 50%;
-            background: radial-gradient(
-                circle at 10px 10px,
-                var(--primary-color, #00CED1) 10%,
-                transparent 15%
-            );
-            animation: orbit 3s linear infinite;
-            z-index: -1;
-            filter: blur(1px);
-            box-shadow: none;
-        }
-
-        .profile-container.fast-orbit::after {
-            animation: fast-orbit 0.5s linear forwards;
-        }
-
         .profile-picture {
             width: 150px;
             height: 150px;
@@ -264,7 +241,7 @@
         .name-and-badges {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
             margin-bottom: 10px;
         }
 
@@ -317,22 +294,6 @@
         .badge-container:hover .tooltip {
             visibility: visible;
             opacity: 1 !important;
-        }
-
-        .badge-box {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 2px;
-            border-radius: 15px;
-            display: inline-block;
-        }
-
-        .badge-box-inner {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 5px;
-            border-radius: 12px;
-            display: flex;
-            gap: 8px;
-            box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.2);
         }
 
         .badge {
@@ -416,28 +377,6 @@
 
         #visitor-count {
             opacity: 1 !important;
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 0;
-            pointer-events: auto;
-            opacity: 1 !important;
-        }
-
-        .social-icon {
-            width: 36px;
-            height: 36px;
-            transition: transform 0.3s ease;
-            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.7));
-            pointer-events: auto;
-            opacity: 1 !important;
-        }
-
-        .social-icon:hover {
-            transform: scale(1.4) rotateY(15deg);
         }
 
         #skills-block {
@@ -600,16 +539,6 @@
             100% { transform: translate(0); }
         }
 
-        @keyframes orbit {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes fast-orbit {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
         @keyframes titleGlitch {
             0% { content: ""; }
             20% { content: "k"; }
@@ -738,16 +667,6 @@
                 margin: 15px 0;
             }
 
-            .social-links {
-                gap: 10px;
-                justify-content: center;
-            }
-
-            .social-icon {
-                width: 32px;
-                height: 32px;
-            }
-
             .visitor-counter {
                 font-size: 12px;
                 padding: 6px 12px;
@@ -861,52 +780,48 @@
         <div id="profile-block">
             <div class="profile-header">
                 <div class="profile-container">
-                    <img src="profile.gif" alt="Profile" class="profile-picture">
+                    <img src="pentagram-sigil-of-baphomet-satanic-symbol-devil-icon-occult-art-esoteric-dark-ritual.png" alt="Profile" class="profile-picture">
                 </div>
                 <div class="profile-info">
                     <div class="name-and-badges">
-                        <div id="profile-name">Kio</div>
+                        <div id="profile-name">kio</div>
                         
-                        <div class="badge-box">
-                            <div class="badge-box-inner">
-                                <div class="badge-group">
-                                    <div class="badge-container">
-                                        <img src="staff.gif" alt="Staff" class="badge">
-                                        <span class="tooltip">Staff Member</span>
-                                    </div>
-                                    <div class="badge-container">
-                                        <img src="owner.gif" alt="Owner" class="badge">
-                                        <span class="tooltip">Owner</span>
-                                    </div>
-                                    <div class="badge-container">
-                                        <img src="partner.gif" alt="Partner" class="badge">
-                                        <span class="tooltip">Partner</span>
-                                    </div>
-                                    <div class="badge-container">
-                                        <img src="developer.png" alt="Developer" class="badge">
-                                        <span class="tooltip">Developer</span>
-                                    </div>
-                                    <div class="badge-container">
-                                        <img src="bug_bounty.gif" alt="Bug Bounty" class="badge">
-                                        <span class="tooltip">Bug Bounty</span>
-                                    </div>
-                                    <div class="badge-container">
-                                        <img src="hated_guns.gif" alt="Hated by Guns.lol" class="badge">
-                                        <span class="tooltip">Hated by Guns.lol</span>
-                                    </div>
-                                    <div class="badge-container">
-                                        <img src="hated_fakecrime.gif" alt="Hated by Fakecrime.bio" class="badge">
-                                        <span class="tooltip">Hated by Fakecrime.bio</span>
-                                    </div>
-                                    <div class="badge-container">
-                                        <img src="verified.gif" alt="Verified" class="badge">
-                                        <span class="tooltip">Verified</span>
-                                    </div>
-                                    <div class="badge-container">
-                                        <img src="rule_maker.gif" alt="Rule Maker" class="badge">
-                                        <span class="tooltip">Rule Maker</span>
-                                    </div>
-                                </div>
+                        <div class="badge-group">
+                            <div class="badge-container">
+                                <img src="staff.gif" alt="Staff" class="badge">
+                                <span class="tooltip">Staff Member</span>
+                            </div>
+                            <div class="badge-container">
+                                <img src="owner.gif" alt="Owner" class="badge">
+                                <span class="tooltip">Owner</span>
+                            </div>
+                            <div class="badge-container">
+                                <img src="partner.gif" alt="Partner" class="badge">
+                                <span class="tooltip">Partner</span>
+                            </div>
+                            <div class="badge-container">
+                                <img src="developer.png" alt="Developer" class="badge">
+                                <span class="tooltip">Developer</span>
+                            </div>
+                            <div class="badge-container">
+                                <img src="bug_bounty.gif" alt="Bug Bounty" class="badge">
+                                <span class="tooltip">Bug Bounty</span>
+                            </div>
+                            <div class="badge-container">
+                                <img src="hated_guns.gif" alt="Hated by Guns.lol" class="badge">
+                                <span class="tooltip">Hated by Guns.lol</span>
+                            </div>
+                            <div class="badge-container">
+                                <img src="hated_fakecrime.gif" alt="Hated by Fakecrime.bio" class="badge">
+                                <span class="tooltip">Hated by Fakecrime.bio</span>
+                            </div>
+                            <div class="badge-container">
+                                <img src="verified.gif" alt="Verified" class="badge">
+                                <span class="tooltip">Verified</span>
+                            </div>
+                            <div class="badge-container">
+                                <img src="rule_maker.gif" alt="Rule Maker" class="badge">
+                                <span class="tooltip">Rule Maker</span>
                             </div>
                         </div>
                     </div>
@@ -920,13 +835,6 @@
             <div class="bio-separator"></div>
 
             <div class="profile-footer">
-                <div class="social-links">
-                    <img src="github.png" alt="GitHub" class="social-icon">
-                    <img src="tiktok.png" alt="TikTok" class="social-icon">
-                    <img src="soundcloud.png" alt="SoundCloud" class="social-icon">
-                    <img src="namemc.png" alt="NameMC" class="social-icon">
-                </div>
-
                 <div class="visitor-counter">
                     <svg class="visitor-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -1006,7 +914,7 @@
         <source src="background.mp3" type="audio/mp3">
     </audio>
     <audio id="hacker-music" loop muted>
-        <source src="real.mp3" type="audio/mp3">
+        <source src="terrorist.mp3" type="audio/mp3">
     </audio>
     <audio id="rain-music" loop muted>
         <source src="rain_music.mp3" type="audio/mp3">
