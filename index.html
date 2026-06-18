@@ -2,94 +2,105 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>haunt.gg Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>y3zd Profile</title>
+    <style>
+        /* CSS aus style.css */
+        :root {
+            --primary-color: #00CED1; 
+            --secondary-color: #FF6B9E;
+            --background-dark: #0A0A1A;
+            --text-color: #E0E0FF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Space Mono', monospace;
+            background: var(--background-dark);
+            color: var(--text-color);
+            overflow-x: hidden;
+            overflow-y: auto;
+            perspective: 1000px;
+            cursor: none;
+        }
+
+        .custom-cursor {
+            position: fixed;
+            width: 32px;
+            height: 32px;
+            background: url('assets/custom_cursor.png') no-repeat center center;
+            background-size: contain;
+            pointer-events: none;
+            z-index: 10000;
+            transition: transform 0.1s ease-out;
+            filter: hue-rotate(var(--cursor-hue, 0deg)); 
+        }
+
+        .container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+        }
+
+        #background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Glitch Animation Keyframes */
+        @keyframes glitch-anim {
+            0% { clip: rect(35px, 9999px, 14px, 0); }
+            10% { clip: rect(60px, 9999px, 50px, 0); }
+            30% { clip: rect(28px, 9999px, 15px, 0); }
+            100% { clip: rect(90px, 9999px, 55px, 0); }
+        }
+    </style>
 </head>
-<body class="bg-neutral-50 flex h-screen overflow-hidden">
+<body>
 
-    <aside class="w-64 bg-white border-r p-6 flex flex-col justify-between">
-        <nav class="space-y-3">
-            <h1 class="font-bold text-xl mb-8">haunt.gg</h1>
-            <button onclick="showTab('customize')" class="block text-sm font-semibold hover:text-pink-500">🪄 Anpassen</button>
-            <button onclick="showTab('assets')" class="block text-sm font-semibold hover:text-pink-500">🖼️ Assets</button>
-            <button onclick="showTab('links')" class="block text-sm font-semibold hover:text-pink-500">🔗 Links</button>
-            <button onclick="showTab('security')" class="block text-sm font-semibold hover:text-pink-500">🛡️ Security & 2FA</button>
-            <button onclick="showTab('premium')" class="block text-sm font-semibold hover:text-pink-500">👑 Premium</button>
-            <button onclick="showTab('discord')" class="block text-sm font-semibold hover:text-pink-500">👾 Discord</button>
-        </nav>
-        <button onclick="logout()" class="text-red-500 text-sm font-bold">Logout</button>
-    </aside>
+    <div class="custom-cursor" id="cursor"></div>
 
-    <main class="flex-1 p-10 overflow-y-auto">
+    <div class="container">
+        <video id="background" autoplay loop muted playsinline>
+            <source src="assets/background.mp4" type="video/mp4">
+        </video>
         
-        <div id="tab-customize" class="tab-content hidden">
-            <h2 class="text-2xl font-bold mb-4">Profil Anpassen</h2>
-            <div class="bg-white p-6 rounded-2xl border shadow-sm">
-                <input id="display_name" placeholder="Anzeigename" class="w-full p-2 border rounded-lg mb-4">
-                <textarea id="bio" placeholder="Bio" class="w-full p-2 border rounded-lg mb-4"></textarea>
-                <button onclick="saveProfile()" class="bg-pink-500 text-white px-6 py-2 rounded-lg">Speichern</button>
-            </div>
-        </div>
-
-        <div id="tab-assets" class="tab-content hidden">
-            <h2 class="text-2xl font-bold mb-4">Assets verwalten</h2>
-            <p class="text-sm text-neutral-600 mb-4">Unterstützt: PNG, JPG, GIF, WebP (max 10MB).</p>
-            <input type="file" id="asset-upload" onchange="uploadAsset(event)" class="mb-4">
-        </div>
-
-        <div id="tab-security" class="tab-content hidden">
-            <h2 class="text-2xl font-bold mb-4">Security & 2FA</h2>
-            <div class="bg-white p-6 rounded-2xl border">
-                <p class="mb-4">Aktiviere 2FA, um deinen Account zu schützen.</p>
-                <button onclick="alert('2FA Prozess gestartet')" class="bg-black text-white px-6 py-2 rounded-lg">Enable 2FA</button>
-            </div>
-        </div>
-
-        <div id="tab-premium" class="tab-content hidden">
-            <h2 class="text-2xl font-bold mb-4">Premium Features</h2>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="p-6 border rounded-2xl bg-white">👑 Lifetime Premium</div>
-                <div class="p-6 border rounded-2xl bg-white">⚡ Alias Namen</div>
-                <div class="p-6 border rounded-2xl bg-white">🎨 Custom Fonts</div>
-            </div>
-        </div>
-
-        <div id="tab-discord" class="tab-content hidden">
-            <h2 class="text-2xl font-bold mb-4">Discord Verknüpfung</h2>
-            <button onclick="alert('Discord Auth')" class="bg-indigo-600 text-white px-6 py-2 rounded-lg">Connect Discord</button>
-        </div>
-
-    </main>
+        <main id="content">
+            <h1>Willkommen auf meinem Profil</h1>
+        </main>
+    </div>
 
     <script>
-        const supabase = supabase.createClient('DEINE_URL', 'DEIN_KEY');
+        // JavaScript aus script.js
+        document.addEventListener('DOMContentLoaded', () => {
+            const cursor = document.getElementById('cursor');
 
-        function showTab(id) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
-            document.getElementById('tab-' + id).classList.remove('hidden');
-        }
-
-        async function saveProfile() {
-            const { data: { user } } = await supabase.auth.getUser();
-            await supabase.from('profiles').upsert({
-                id: user.id,
-                display_name: document.getElementById('display_name').value,
-                bio: document.getElementById('bio').value
+            // Custom Cursor Logik
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
             });
-            alert("Profil gespeichert!");
-        }
 
-        async function uploadAsset(e) {
-            const file = e.target.files[0];
-            const { data: { user } } = await supabase.auth.getUser();
-            await supabase.storage.from('assets').upload(`${user.id}/asset`, file, { upsert: true });
-            alert("Asset erfolgreich hochgeladen!");
-        }
-
-        function logout() { supabase.auth.signOut(); location.reload(); }
-        
-        showTab('customize');
+            console.log("Seite geladen und Skripte initialisiert.");
+            
+            // Medien-Initialisierung
+            const backgroundMusic = document.getElementById('background-music');
+            if (backgroundMusic) {
+                backgroundMusic.volume = 0.3;
+            }
+        });
     </script>
 </body>
 </html>
