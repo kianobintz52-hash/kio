@@ -7,37 +7,39 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        body { background: #020407; font-family: 'Courier New', monospace; }
-        .tab-active { border-bottom: 4px solid #ef4444; color: white; }
-        .log { background: #111827; border-left: 4px solid #ef4444; }
+        body { background: linear-gradient(135deg, #020407 0%, #0a0f1c 100%); font-family: 'Courier New', monospace; }
+        .tab-active { border-bottom: 4px solid #ef4444; color: #fff; font-weight: bold; }
+        .log-entry { background: #111827; border-left: 5px solid #ef4444; }
     </style>
 </head>
 <body class="min-h-screen text-white">
     <div class="max-w-6xl mx-auto p-8">
-        <div class="flex items-center gap-4 mb-10">
-            <div class="text-6xl">☠️</div>
-            <h1 class="text-6xl font-bold text-red-500 tracking-tighter">OATHNET REAL</h1>
+        <div class="flex items-center gap-5 mb-12">
+            <div class="text-7xl">☠️</div>
+            <h1 class="text-6xl font-bold tracking-tighter text-red-500">OATHNET REAL</h1>
         </div>
 
         <!-- Tabs -->
-        <div class="flex border-b border-gray-700 mb-8 overflow-x-auto">
-            <button onclick="switchTab(0)" class="tab-active px-8 py-4 text-lg" id="tab0">Allgemein</button>
-            <button onclick="switchTab(1)" class="px-8 py-4 text-lg text-gray-400 hover:text-white" id="tab1">Discord</button>
-            <button onclick="switchTab(2)" class="px-8 py-4 text-lg text-gray-400 hover:text-white" id="tab2">Victims</button>
-            <button onclick="switchTab(3)" class="px-8 py-4 text-lg text-gray-400 hover:text-white" id="tab3">Stealer Logs</button>
-            <button onclick="switchTab(4)" class="px-8 py-4 text-lg text-gray-400 hover:text-white" id="tab4">OSINT</button>
+        <div class="flex border-b border-gray-700 mb-10 text-lg overflow-x-auto">
+            <button onclick="switchTab(0)" class="tab-active px-8 py-4" id="tab0">Allgemein</button>
+            <button onclick="switchTab(1)" class="px-8 py-4 text-gray-400 hover:text-white" id="tab1">Discord</button>
+            <button onclick="switchTab(2)" class="px-8 py-4 text-gray-400 hover:text-white" id="tab2">Victims</button>
+            <button onclick="switchTab(3)" class="px-8 py-4 text-gray-400 hover:text-white" id="tab3">Stealer Logs</button>
+            <button onclick="switchTab(4)" class="px-8 py-4 text-gray-400 hover:text-white" id="tab4">OSINT</button>
         </div>
 
-        <div class="max-w-3xl">
-            <input id="query" type="text" placeholder="Discord ID, E-Mail, Username, IP..." 
-                   class="w-full bg-zinc-900 border border-red-900 rounded-3xl px-8 py-7 text-xl focus:outline-none focus:border-red-500">
+        <div class="max-w-3xl mx-auto">
+            <input id="query" type="text" 
+                   placeholder="Discord ID, E-Mail oder Username..."
+                   class="w-full bg-zinc-900 border border-red-900 rounded-3xl px-8 py-7 text-xl focus:border-red-500 focus:outline-none">
+            
             <button onclick="performSearch()" 
-                    class="mt-6 w-full bg-red-600 hover:bg-red-700 py-6 rounded-3xl text-xl font-bold">
-                <i class="fas fa-search"></i> SUCHEN
+                    class="mt-6 w-full bg-red-600 hover:bg-red-700 py-7 rounded-3xl text-xl font-bold">
+                <i class="fas fa-search mr-3"></i> SUCHEN
             </button>
         </div>
 
-        <div id="results" class="hidden mt-12 bg-zinc-900 border border-red-900 rounded-3xl p-8"></div>
+        <div id="results" class="hidden mt-12 bg-zinc-900 border border-red-900 rounded-3xl p-10"></div>
     </div>
 
     <script>
@@ -45,74 +47,75 @@
 
         function switchTab(tab) {
             currentTab = tab;
-            document.querySelectorAll('button[id^="tab"]').forEach((b, i) => {
-                b.classList.toggle('tab-active', i === tab);
-                b.classList.toggle('text-gray-400', i !== tab);
+            document.querySelectorAll('button[id^="tab"]').forEach((btn, i) => {
+                btn.classList.toggle('tab-active', i === tab);
+                btn.classList.toggle('text-gray-400', i !== tab);
             });
         }
 
-        async function performSearch() {
+        function performSearch() {
             const query = document.getElementById('query').value.trim();
             if (!query) return alert("Bitte etwas eingeben!");
 
             const resultsDiv = document.getElementById('results');
             resultsDiv.classList.remove('hidden');
             resultsDiv.innerHTML = `
-                <div class="text-center py-20">
-                    <i class="fas fa-spinner fa-spin text-6xl text-red-500"></i>
-                    <p class="mt-8 text-xl">Suche in der echten OathNet Datenbank...</p>
+                <div class="text-center py-24">
+                    <i class="fas fa-spinner fa-spin text-7xl text-red-500"></i>
+                    <p class="mt-10 text-2xl">Durchsuche echte Stealer Logs...</p>
                 </div>`;
 
             setTimeout(() => {
-                let html = `<h2 class="text-3xl font-bold mb-8 text-red-400">ERGEBNISSE FÜR: ${query}</h2>`;
+                let html = `<h2 class="text-3xl font-bold mb-10 text-red-400">ERGEBNISSE FÜR: <span class="text-white">${query}</span></h2>`;
 
+                // Discord ID → besonders viele Logs + IPs
                 if (currentTab === 1 || /^\d{17,19}$/.test(query)) {
-                    // Discord Tab
                     html += `
-                        <div class="flex gap-8 bg-black p-8 rounded-3xl">
-                            <img src="https://i.pravatar.cc/300?u=${query}" class="w-32 h-32 rounded-2xl border-4 border-red-500">
+                        <div class="flex gap-10 items-center bg-black p-10 rounded-3xl mb-10 border border-red-900">
+                            <img src="https://i.pravatar.cc/300?u=${query}" class="w-40 h-40 rounded-2xl border-4 border-red-500">
                             <div>
-                                <h3 class="text-4xl font-bold">shadow_${query.slice(-6)}</h3>
-                                <p class="text-emerald-400">#1337</p>
-                                <p class="text-gray-400">ID: ${query}</p>
-                                <p class="mt-6 text-red-400">Mehrere Stealer-Logs gefunden</p>
+                                <h3 class="text-5xl font-bold">shadow_${query.slice(-6)}</h3>
+                                <p class="text-emerald-400 text-2xl">#1337</p>
+                                <p class="text-gray-400">Discord ID: ${query}</p>
                             </div>
                         </div>`;
-                } else if (currentTab === 2) {
-                    // Victims Tab
-                    html += `<h3 class="text-red-400 text-xl mb-6">Victims Profile gefunden</h3>`;
-                } else if (currentTab === 4) {
-                    // OSINT Tab
-                    html += `<h3 class="text-red-400 text-xl mb-6">OSINT Ergebnisse</h3>`;
-                } else {
-                    // Default + Stealer
-                    html += `<h3 class="text-red-400 text-xl mb-6">Stealer Logs (${Math.floor(Math.random()*15)+8} gefunden)</h3>`;
                 }
 
-                // Realistisch aussehende Logs
-                html += `<div class="space-y-6 mt-8">`;
-                const stealers = ["RedLine", "Luna", "Raccoon", "Atomic", "Viper", "Medusa"];
-                for (let i = 0; i < 7; i++) {
+                html += `<h3 class="text-xl text-red-400 mb-6">GESTOHLENE ACCOUNTS & LOGS</h3>`;
+                html += `<div class="space-y-6">`;
+
+                const services = [
+                    {name: "TikTok", user: query.includes('@') ? query.split('@')[0] : "user_" + query.slice(-5)},
+                    {name: "Netflix", user: query.includes('@') ? query : "netflix_" + query.slice(-4)},
+                    {name: "Crunchyroll", user: "crunchy_" + query.slice(-5)},
+                    {name: "Discord", user: "shadow_" + query.slice(-6)},
+                    {name: "Roblox", user: "RobloxUser" + query.slice(-4)},
+                    {name: "Spotify", user: query.includes('@') ? query.split('@')[0] : "spotify_user"},
+                    {name: "Instagram", user: query.includes('@') ? query.split('@')[0] : "insta_" + query.slice(-5)}
+                ];
+
+                services.forEach(s => {
+                    const ip = `185.${Math.floor(Math.random()*200)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
                     html += `
-                        <div class="log p-6 rounded-2xl">
-                            <strong class="text-amber-400">${stealers[i % stealers.length]}</strong> • 2026-06-${10+i}<br>
-                            IP: 185.${Math.floor(Math.random()*200)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}<br>
-                            ${query.includes('@') ? `Email: ${query}` : `Username: ${query}`}
+                        <div class="log-entry p-7 rounded-2xl">
+                            <div class="flex justify-between items-start">
+                                <strong class="text-amber-400 text-xl">${s.name}</strong>
+                                <span class="text-gray-500 text-sm">RedLine • 2026-06-${Math.floor(Math.random()*28)+1}</span>
+                            </div>
+                            <p><strong>Username/Email:</strong> <span class="text-emerald-400">${s.user}</span></p>
+                            <p><strong>IP:</strong> <span class="text-orange-400">${ip}</span></p>
+                            ${currentTab === 1 || /^\d{17,19}$/.test(query) ? `<p class="text-xs text-red-400 mt-2">Verknüpft mit Discord ID: ${query}</p>` : ''}
                         </div>`;
-                }
-                html += `</div>`;
+                });
 
+                html += `</div>`;
                 resultsDiv.innerHTML = html;
-            }, 900);
+            }, 850);
         }
 
-        // Enter Taste
         document.getElementById('query').addEventListener('keypress', e => {
             if (e.key === 'Enter') performSearch();
         });
-
-        // Tailwind Config
-        tailwind.config = { content: ["*"] };
     </script>
 </body>
 </html>
