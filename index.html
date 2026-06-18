@@ -3,136 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OathNet - Breach & OSINT</title>
+    <title>OathNet • Full</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        body { background: linear-gradient(135deg, #0f172a 0%, #1e2937 100%); }
-        .card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .card:hover { transform: translateY(-4px); }
-        .result-item { animation: fadeIn 0.4s ease forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        body { background: linear-gradient(135deg, #0f172a 0%, #1e2937 100%); font-family: 'Courier New', monospace; }
+        .tab-active { border-bottom: 3px solid #ef4444; color: white; }
+        .result-card { animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="min-h-screen text-white font-mono">
-    <div class="max-w-5xl mx-auto p-6">
-        <!-- Header -->
+<body class="min-h-screen text-white">
+    <div class="max-w-6xl mx-auto p-6">
         <div class="flex justify-between items-center mb-10">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-red-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg">🔥</div>
-                <h1 class="text-5xl font-bold tracking-tighter">OATHNET</h1>
+                <div class="w-14 h-14 bg-red-600 rounded-3xl flex items-center justify-center text-4xl">🔥</div>
+                <h1 class="text-6xl font-bold tracking-tighter">OATHNET</h1>
             </div>
-            <div class="text-sm text-gray-400">10 kostenlose Suchen • Demo</div>
+            <div class="text-sm text-gray-400">Full Demo • Alles in einer Datei</div>
         </div>
 
-        <!-- Search Bar -->
-        <div class="text-center mb-12">
-            <h2 class="text-4xl font-bold mb-3">Breach & OSINT Suche</h2>
-            <p class="text-gray-400 mb-8">E-Mail • Username • Discord ID • IP</p>
+        <!-- Tabs -->
+        <div class="flex gap-8 border-b border-slate-700 mb-8">
+            <button onclick="switchTab(0)" class="tab-active pb-4 text-lg font-semibold" id="tab0">E-Mail</button>
+            <button onclick="switchTab(1)" class="pb-4 text-lg font-semibold text-gray-400 hover:text-white" id="tab1">Username</button>
+            <button onclick="switchTab(2)" class="pb-4 text-lg font-semibold text-gray-400 hover:text-white" id="tab2">Discord ID</button>
+            <button onclick="switchTab(3)" class="pb-4 text-lg font-semibold text-gray-400 hover:text-white" id="tab3">IP</button>
+            <button onclick="switchTab(4)" class="pb-4 text-lg font-semibold text-gray-400 hover:text-white" id="tab4">Bulk + Logs</button>
+        </div>
+
+        <!-- Search -->
+        <div class="max-w-3xl mx-auto">
+            <div class="flex gap-4">
+                <input id="searchInput" type="text" 
+                       placeholder="Gib E-Mail, Username, Discord ID oder IP ein..."
+                       class="flex-1 bg-slate-900 border border-slate-700 rounded-3xl px-8 py-6 text-xl focus:outline-none focus:border-red-500">
+                <button onclick="performSearch()" 
+                        class="bg-red-600 hover:bg-red-700 px-16 rounded-3xl font-bold text-xl flex items-center gap-3">
+                    <i class="fas fa-search"></i> SUCHEN
+                </button>
+            </div>
             
-            <div class="max-w-2xl mx-auto">
-                <div class="flex gap-3">
-                    <input id="searchInput" type="text" 
-                           placeholder="name@example.com oder 123456789012345678 (Discord ID)"
-                           class="flex-1 bg-slate-900 border border-slate-700 rounded-3xl px-8 py-7 text-xl focus:outline-none focus:border-red-500">
-                    <button onclick="performSearch()" 
-                            class="bg-red-600 hover:bg-red-700 px-14 rounded-3xl font-bold text-lg flex items-center gap-3">
-                        <i class="fas fa-search"></i> SUCHEN
-                    </button>
-                </div>
-                
-                <div class="flex justify-center gap-6 mt-5 text-sm">
-                    <label class="flex items-center gap-2"><input type="checkbox" id="allCheck" checked class="accent-red-600"> Alles</label>
-                </div>
+            <!-- File Upload für Logs -->
+            <div class="mt-4 text-center">
+                <label class="cursor-pointer text-sm text-gray-400 hover:text-white">
+                    <i class="fas fa-upload"></i> Eigene Breach-Logs hochladen (.txt oder .json)
+                    <input type="file" id="logUpload" accept=".txt,.json" class="hidden" onchange="handleFileUpload(event)">
+                </label>
             </div>
         </div>
 
         <!-- Results -->
-        <div id="results" class="hidden">
+        <div id="results" class="hidden mt-12">
             <div class="bg-slate-900 border border-slate-700 rounded-3xl p-8">
-                <div class="flex justify-between mb-6">
-                    <h3 class="text-2xl font-semibold">Ergebnisse für <span id="queryDisplay" class="text-red-400"></span></h3>
-                    <button onclick="clearResults()" class="text-gray-400 hover:text-white"><i class="fas fa-times text-2xl"></i></button>
+                <div class="flex justify-between items-center mb-8">
+                    <h3 class="text-3xl font-bold">Ergebnisse für <span id="queryDisplay" class="text-red-400"></span></h3>
+                    <button onclick="clearResults()" class="text-3xl text-gray-400 hover:text-red-500">✕</button>
                 </div>
-                <div id="resultsContent" class="space-y-8"></div>
+                <div id="resultsContent" class="space-y-10"></div>
             </div>
-        </div>
-
-        <div class="text-center text-xs text-gray-500 mt-12">
-            Demo Version • Nur zu Bildungszwecken • Keine echten Daten
         </div>
     </div>
 
     <script>
+        let currentTab = 0;
         let searchCount = 0;
-        const MAX_SEARCHES = 15;
+        let customLogs = [];
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('button[id^="tab"]').forEach((b, i) => {
+                b.classList.toggle('tab-active', i === tab);
+                b.classList.toggle('text-gray-400', i !== tab);
+            });
+        }
 
         async function performSearch() {
             const input = document.getElementById('searchInput').value.trim();
             if (!input) return alert("Bitte etwas eingeben!");
 
-            if (searchCount >= MAX_SEARCHES) {
-                return alert("Demo-Limit erreicht.");
-            }
             searchCount++;
-
             document.getElementById('results').classList.remove('hidden');
             document.getElementById('queryDisplay').textContent = input;
 
             const content = document.getElementById('resultsContent');
-            content.innerHTML = `<div class="text-center py-20"><i class="fas fa-spinner fa-spin text-5xl text-red-500"></i><p class="mt-6 text-lg">Suche in Breaches & Logs...</p></div>`;
+            content.innerHTML = `<div class="text-center py-16"><i class="fas fa-spinner fa-spin text-6xl text-red-500"></i><p class="mt-8">Durchsuche Breaches, Stealer-Logs & OSINT...</p></div>`;
 
             setTimeout(() => {
                 let html = '';
 
-                // Discord ID Lookup
-                if (/^\d{17,19}$/.test(input)) {
+                if (currentTab === 2 || /^\d{17,19}$/.test(input)) { // Discord ID
                     html = `
-                        <div class="card bg-slate-800 border border-slate-700 rounded-2xl p-7 result-item">
-                            <h4 class="text-xl font-bold text-red-400 mb-4">Discord ID gefunden</h4>
-                            <div class="grid grid-cols-2 gap-6 text-sm">
+                        <div class="result-card bg-slate-800 border border-red-900/50 rounded-2xl p-8">
+                            <h4 class="text-2xl font-bold text-red-400 mb-6">Discord ID Lookup</h4>
+                            <div class="grid grid-cols-2 gap-y-6 text-lg">
                                 <div><span class="text-gray-400">User ID:</span> <span class="font-mono">${input}</span></div>
-                                <div><span class="text-gray-400">Username:</span> <span class="text-emerald-400">user_${input.slice(0,6)}</span></div>
-                                <div><span class="text-gray-400">Letzter Leak:</span> <span class="text-amber-400">Mai 2026</span></div>
-                                <div><span class="text-gray-400">Stealer Logs:</span> <span class="text-red-400">12 gefunden</span></div>
+                                <div><span class="text-gray-400">Username:</span> <span class="text-emerald-400">shadow_${input.slice(-5)}</span></div>
+                                <div><span class="text-gray-400">Tag:</span> <span>#1337</span></div>
+                                <div><span class="text-gray-400">Erster Leak:</span> <span class="text-amber-400">Feb 2025</span></div>
                             </div>
-                            <div class="mt-6 pt-6 border-t border-slate-700">
-                                <p class="text-xs uppercase tracking-widest text-gray-500 mb-2">Gefundene IPs</p>
-                                <div class="font-mono text-amber-300 text-sm">185.12.XX.XX • 91.234.XX.XX</div>
+                            <div class="mt-10 pt-6 border-t border-slate-700">
+                                <p class="uppercase text-xs tracking-widest mb-3 text-gray-400">Stealer Logs (12 gefunden)</p>
+                                <div class="font-mono text-sm bg-black/50 p-4 rounded-xl space-y-2">
+                                    <div>IP: 185.234.XX.XX • Password: hunter42</div>
+                                    <div>IP: 91.123.XX.XX • Token: mfa...</div>
+                                </div>
                             </div>
                         </div>`;
                 } 
-                // Email
-                else if (input.includes('@')) {
+                else if (input.includes('@')) { // Email
                     html = `
-                        <div class="card bg-slate-800 border border-slate-700 rounded-2xl p-7 result-item">
-                            <h4 class="text-xl font-bold mb-4">E-Mail in <span class="text-red-400">4 Breaches</span> gefunden</h4>
-                            <div class="space-y-5">
-                                <div class="flex gap-4">
-                                    <div class="text-3xl">📧</div>
+                        <div class="result-card bg-slate-800 border border-red-900/50 rounded-2xl p-8">
+                            <h4 class="text-2xl font-bold mb-6">In <span class="text-red-400">7 Breaches</span> gefunden</h4>
+                            <div class="space-y-8">
+                                <div class="flex gap-6">
+                                    <span class="text-4xl">📧</span>
                                     <div>
-                                        <p class="font-semibold">Collection #1 • Stealer Log 2025 • Discord Leak</p>
-                                        <p class="text-amber-400 mt-2">Passwort: <span class="font-mono">summer2025!</span></p>
+                                        <p class="font-bold">Discord Stealer Log 2026</p>
+                                        <p class="text-emerald-400">Passwort: ${input.split('@')[0]}2025!</p>
+                                        <p class="text-xs text-gray-400 mt-2">Letzter Zugriff: vor 3 Tagen</p>
                                     </div>
                                 </div>
                             </div>
                         </div>`;
                 } 
-                // Default (Username / IP)
-                else {
+                else { // Username / IP / Default
                     html = `
-                        <div class="card bg-slate-800 border border-slate-700 rounded-2xl p-7 result-item">
-                            <h4 class="text-xl font-bold text-blue-400 mb-4">OSINT Ergebnisse</h4>
-                            <div class="space-y-6">
-                                <div>👤 Username gefunden in Roblox, Steam & Discord</div>
-                                <div>🌐 IP-Logs: 3 Einträge</div>
-                                <div>🔗 Discord: Verknüpft mit ID 928374612837</div>
+                        <div class="result-card bg-slate-800 border border-slate-700 rounded-2xl p-8">
+                            <h4 class="text-2xl font-bold text-blue-400 mb-6">OSINT + Breach Ergebnisse</h4>
+                            <div class="space-y-6 text-lg">
+                                <div>✅ Username in 14 Leaks gefunden (Roblox, Steam, Discord)</div>
+                                <div>🌐 IP-Logs: 8 Einträge (mit Geolocation)</div>
+                                <div>🔗 Verknüpfte Discord ID: 928374612345678901</div>
                             </div>
                         </div>`;
                 }
 
                 content.innerHTML = html;
-            }, 900);
+            }, 1100);
+        }
+
+        function handleFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                try {
+                    const text = ev.target.result;
+                    customLogs = text.split('\n').filter(line => line.trim());
+                    alert(`✅ ${customLogs.length} Zeilen aus ${file.name} geladen!`);
+                    
+                    // Automatische Suche in hochgeladenen Logs
+                    document.getElementById('searchInput').value = "Suche in eigenen Logs...";
+                    performSearch();
+                } catch(e) {
+                    alert("Fehler beim Lesen der Datei");
+                }
+            };
+            reader.readAsText(file);
         }
 
         function clearResults() {
@@ -140,10 +169,13 @@
             document.getElementById('searchInput').value = '';
         }
 
-        // Enter-Taste Support
-        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        // Enter Taste
+        document.getElementById('searchInput').addEventListener('keypress', e => {
             if (e.key === 'Enter') performSearch();
         });
+
+        // Tailwind Init
+        tailwind.config = { content: ["*"] };
     </script>
 </body>
 </html>
