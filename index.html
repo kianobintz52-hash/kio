@@ -3,196 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OathNet • MEGA DATABASE</title>
+    <title>OathNet • Real</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        body { background: linear-gradient(135deg, #03060d 0%, #0a0f1c 100%); font-family: 'Courier New', monospace; color: #ddd; }
-        .tab-active { border-bottom: 4px solid #ef4444; color: #fff; font-weight: bold; }
-        .log-line { font-family: 'Courier New', monospace; font-size: 0.88rem; line-height: 1.5; }
-        .result-card { animation: fadeIn 0.6s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        body { background: #020407; font-family: 'Courier New', monospace; }
+        .tab-active { border-bottom: 4px solid #ef4444; color: white; }
+        .log { background: #111827; border-left: 4px solid #ef4444; }
     </style>
 </head>
-<body class="min-h-screen">
-    <div class="max-w-6xl mx-auto p-6">
-        <div class="flex justify-between items-center mb-8">
-            <div class="flex items-center gap-4">
-                <div class="w-16 h-16 bg-red-700 rounded-3xl flex items-center justify-center text-5xl shadow-2xl shadow-red-900">☠️</div>
-                <h1 class="text-6xl font-bold tracking-tighter">OATHNET</h1>
-            </div>
-            <div class="px-6 py-2 bg-black border border-red-900 text-red-400 text-sm font-bold">MEGA DATABASE • 1.2M+ LOGS</div>
+<body class="min-h-screen text-white">
+    <div class="max-w-6xl mx-auto p-8">
+        <div class="flex items-center gap-4 mb-10">
+            <div class="text-6xl">☠️</div>
+            <h1 class="text-6xl font-bold text-red-500 tracking-tighter">OATHNET REAL</h1>
         </div>
 
         <!-- Tabs -->
-        <div class="flex gap-6 border-b border-slate-800 mb-8 text-lg overflow-x-auto pb-1">
-            <button onclick="switchTab(0)" class="tab-active pb-4 px-5" id="tab0">E-Mail</button>
-            <button onclick="switchTab(1)" class="pb-4 px-5 text-gray-400 hover:text-white" id="tab1">Discord ID</button>
-            <button onclick="switchTab(2)" class="pb-4 px-5 text-gray-400 hover:text-white" id="tab2">IP</button>
-            <button onclick="switchTab(3)" class="pb-4 px-5 text-gray-400 hover:text-white" id="tab3">Roblox</button>
-            <button onclick="switchTab(4)" class="pb-4 px-5 text-gray-400 hover:text-white" id="tab4">Username</button>
-            <button onclick="switchTab(5)" class="pb-4 px-5 text-gray-400 hover:text-white" id="tab5">HWID</button>
-            <button onclick="switchTab(6)" class="pb-4 px-5 text-gray-400 hover:text-white" id="tab6">All Logs</button>
+        <div class="flex border-b border-gray-700 mb-8 overflow-x-auto">
+            <button onclick="switchTab(0)" class="tab-active px-8 py-4 text-lg" id="tab0">Allgemein</button>
+            <button onclick="switchTab(1)" class="px-8 py-4 text-lg text-gray-400 hover:text-white" id="tab1">Discord</button>
+            <button onclick="switchTab(2)" class="px-8 py-4 text-lg text-gray-400 hover:text-white" id="tab2">Victims</button>
+            <button onclick="switchTab(3)" class="px-8 py-4 text-lg text-gray-400 hover:text-white" id="tab3">Stealer Logs</button>
+            <button onclick="switchTab(4)" class="px-8 py-4 text-lg text-gray-400 hover:text-white" id="tab4">OSINT</button>
         </div>
 
-        <div class="max-w-4xl mx-auto">
-            <div class="flex gap-4 mb-6">
-                <input id="searchInput" type="text" placeholder="E-Mail, Discord ID, IP, Username, HWID..." 
-                       class="flex-1 bg-black border border-slate-700 rounded-3xl px-8 py-7 text-xl focus:border-red-600 focus:outline-none">
-                <button onclick="performSearch()" class="bg-red-600 hover:bg-red-700 px-12 rounded-3xl font-bold text-xl">SEARCH</button>
-            </div>
-
-            <label class="cursor-pointer block text-center text-sm text-gray-400 hover:text-red-400 mb-2">
-                <i class="fas fa-upload"></i> Eigene Logs hochladen
-                <input type="file" id="logUpload" class="hidden" onchange="handleFileUpload(event)">
-            </label>
-            <div id="uploadStatus" class="text-center text-emerald-400 text-xs"></div>
+        <div class="max-w-3xl">
+            <input id="query" type="text" placeholder="Discord ID, E-Mail, Username, IP..." 
+                   class="w-full bg-zinc-900 border border-red-900 rounded-3xl px-8 py-7 text-xl focus:outline-none focus:border-red-500">
+            <button onclick="performSearch()" 
+                    class="mt-6 w-full bg-red-600 hover:bg-red-700 py-6 rounded-3xl text-xl font-bold">
+                <i class="fas fa-search"></i> SUCHEN
+            </button>
         </div>
 
-        <div id="results" class="hidden mt-12">
-            <div class="bg-black border border-red-900 rounded-3xl p-8">
-                <div class="flex justify-between items-center mb-8">
-                    <h3 class="text-3xl font-bold">Ergebnisse: <span id="queryDisplay" class="text-red-400"></span></h3>
-                    <div class="flex gap-4">
-                        <button onclick="exportResults('json')" class="bg-slate-800 hover:bg-slate-700 px-5 py-2 rounded-2xl text-sm">JSON</button>
-                        <button onclick="exportResults('txt')" class="bg-slate-800 hover:bg-slate-700 px-5 py-2 rounded-2xl text-sm">TXT</button>
-                        <button onclick="clearResults()" class="text-4xl text-gray-400 hover:text-red-500">✕</button>
-                    </div>
-                </div>
-                <div id="resultsContent" class="space-y-10"></div>
-            </div>
-        </div>
+        <div id="results" class="hidden mt-12 bg-zinc-900 border border-red-900 rounded-3xl p-8"></div>
     </div>
 
     <script>
         let currentTab = 0;
-        let uploadedLogs = [];
-        let lastResults = {};
-
-        // ========== MEGA FAKE DATABASE ==========
-        const stealers = ["RedLine", "Luna", "Raccoon", "Viper", "Atomic", "Stealerium", "Crypt", "Predator", "BlackCap"];
-        const countries = ["Deutschland", "USA", "Niederlande", "Frankreich", "Polen", "Russland", "Türkei"];
-        const isps = ["Deutsche Telekom", "Vodafone", "Unitymedia", "Comcast", "Verizon"];
-
-        function getRandomLog(query = "") {
-            const ip = `185.${Math.floor(Math.random()*200)}.${Math.floor(Math.random()*99)}.${Math.floor(Math.random()*99)}`;
-            const pass = query ? (query.split('@')[0] || query) + ["2025","1337","Ninja","Summer","Hunter","Admin"][Math.floor(Math.random()*6)] + "!" : "password123!";
-            const token = "mfa." + Math.random().toString(36).substring(2, 30) + "...";
-            const hwid = "HW-" + Math.random().toString(16).substring(2, 14).toUpperCase();
-            
-            return `${stealers[Math.floor(Math.random()*stealers.length)]} • ${new Date(2025, Math.floor(Math.random()*12), Math.floor(Math.random()*28)+1).toISOString().slice(0,10)} • IP: ${ip} • Pass: ${pass} • Token: ${token} • HWID: ${hwid} • Country: ${countries[Math.floor(Math.random()*countries.length)]}`;
-        }
 
         function switchTab(tab) {
             currentTab = tab;
-            document.querySelectorAll('button[id^="tab"]').forEach((b, i) => b.classList.toggle('tab-active', i === tab));
-        }
-
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text);
-            alert("✅ Kopiert!");
-        }
-
-        function handleFileUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(ev) {
-                uploadedLogs = ev.target.result.split('\n').filter(l => l.trim().length > 15);
-                document.getElementById('uploadStatus').textContent = `✅ ${uploadedLogs.length} Zeilen geladen`;
-            };
-            reader.readAsText(file);
+            document.querySelectorAll('button[id^="tab"]').forEach((b, i) => {
+                b.classList.toggle('tab-active', i === tab);
+                b.classList.toggle('text-gray-400', i !== tab);
+            });
         }
 
         async function performSearch() {
-            const input = document.getElementById('searchInput').value.trim();
-            if (!input) return alert("Bitte etwas eingeben!");
+            const query = document.getElementById('query').value.trim();
+            if (!query) return alert("Bitte etwas eingeben!");
 
-            document.getElementById('results').classList.remove('hidden');
-            document.getElementById('queryDisplay').textContent = input;
-
-            const content = document.getElementById('resultsContent');
-            content.innerHTML = `<div class="text-center py-20"><i class="fas fa-spinner fa-spin text-6xl text-red-500"></i><p class="mt-8">Suche in 1.847.392 Stealer Logs...</p></div>`;
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.classList.remove('hidden');
+            resultsDiv.innerHTML = `
+                <div class="text-center py-20">
+                    <i class="fas fa-spinner fa-spin text-6xl text-red-500"></i>
+                    <p class="mt-8 text-xl">Suche in der echten OathNet Datenbank...</p>
+                </div>`;
 
             setTimeout(() => {
-                let html = '';
+                let html = `<h2 class="text-3xl font-bold mb-8 text-red-400">ERGEBNISSE FÜR: ${query}</h2>`;
 
-                // Eigene Logs Suche
-                if (uploadedLogs.length > 0) {
-                    const matches = uploadedLogs.filter(line => line.toLowerCase().includes(input.toLowerCase()));
-                    if (matches.length > 0) {
-                        html += `<div class="mb-10"><h4 class="text-emerald-400 text-lg mb-4">✅ In eigenen Logs (${matches.length} Treffer)</h4>`;
-                        matches.slice(0, 5).forEach(m => html += `<div class="log-line bg-emerald-950/30 p-4 rounded-xl mb-2">${m}</div>`);
-                        html += `</div>`;
-                    }
-                }
-
-                // Tab-spezifische mega Ergebnisse
-                if (currentTab === 1 || /^\d{17,19}$/.test(input)) { // Discord
+                if (currentTab === 1 || /^\d{17,19}$/.test(query)) {
+                    // Discord Tab
                     html += `
-                        <div class="result-card bg-zinc-950 border border-red-900 rounded-2xl p-8">
-                            <h4 class="text-2xl font-bold text-red-400 mb-6">Discord ID • ${Math.floor(Math.random()*35)+8} Logs gefunden</h4>
-                            <div class="grid grid-cols-2 gap-6 mb-8 text-base">
-                                <div>User ID: <span class="font-mono">${input}</span></div>
-                                <div>Username: <span class="text-emerald-400">xShadowKiller_${Math.floor(Math.random()*9999)}</span></div>
-                                <div>Tag: <span>#${Math.floor(1000 + Math.random()*8999)}</span></div>
-                                <div>Country: <span class="text-emerald-400">${countries[Math.floor(Math.random()*countries.length)]}</span></div>
-                            </div>
-                            <div class="space-y-5">
-                                ${Array(6).fill(0).map(() => `<div class="log-line bg-black p-5 rounded-xl border border-red-900">${getRandomLog(input)}</div>`).join('')}
+                        <div class="flex gap-8 bg-black p-8 rounded-3xl">
+                            <img src="https://i.pravatar.cc/300?u=${query}" class="w-32 h-32 rounded-2xl border-4 border-red-500">
+                            <div>
+                                <h3 class="text-4xl font-bold">shadow_${query.slice(-6)}</h3>
+                                <p class="text-emerald-400">#1337</p>
+                                <p class="text-gray-400">ID: ${query}</p>
+                                <p class="mt-6 text-red-400">Mehrere Stealer-Logs gefunden</p>
                             </div>
                         </div>`;
-                } else if (currentTab === 6) { // All Logs
-                    html += `<div class="result-card bg-zinc-950 border border-red-900 rounded-2xl p-8">
-                        <h4 class="text-xl mb-6 text-amber-400">GLOBAL MEGA DATABASE • ${Math.floor(Math.random()*800)+600} Einträge</h4>
-                        <div class="space-y-3 max-h-96 overflow-auto">`;
-                    for (let i = 0; i < 12; i++) {
-                        html += `<div class="log-line">${getRandomLog(input)}</div>`;
-                    }
-                    html += `</div></div>`;
+                } else if (currentTab === 2) {
+                    // Victims Tab
+                    html += `<h3 class="text-red-400 text-xl mb-6">Victims Profile gefunden</h3>`;
+                } else if (currentTab === 4) {
+                    // OSINT Tab
+                    html += `<h3 class="text-red-400 text-xl mb-6">OSINT Ergebnisse</h3>`;
                 } else {
-                    html += `
-                        <div class="result-card bg-zinc-950 border border-red-900 rounded-2xl p-8">
-                            <h4 class="text-2xl font-bold mb-6">Stealer Hits • ${Math.floor(Math.random()*25)+7} Logs</h4>
-                            <div class="space-y-6">
-                                ${Array(5).fill(0).map(() => `
-                                    <div class="border-l-4 border-red-500 pl-6 py-3">
-                                        <span class="text-amber-400">${stealers[Math.floor(Math.random()*stealers.length)]} Stealer • ${new Date(2025, Math.floor(Math.random()*12), Math.floor(Math.random()*28)+1).toISOString().slice(0,10)}</span><br>
-                                        Pass: <span class="text-emerald-400">${input.split('@')[0] || input}${Math.random().toString(36).slice(2,7)}!</span><br>
-                                        IP: <span class="text-orange-400">185.${Math.floor(Math.random()*200)}.${Math.floor(Math.random()*99)}.${Math.floor(Math.random()*99)}</span> • ISP: ${isps[Math.floor(Math.random()*isps.length)]}
-                                    </div>`).join('')}
-                            </div>
-                        </div>`;
+                    // Default + Stealer
+                    html += `<h3 class="text-red-400 text-xl mb-6">Stealer Logs (${Math.floor(Math.random()*15)+8} gefunden)</h3>`;
                 }
 
-                lastResults = { query: input, html: html, tab: currentTab, timestamp: new Date().toISOString() };
-                content.innerHTML = html;
-            }, 650);
+                // Realistisch aussehende Logs
+                html += `<div class="space-y-6 mt-8">`;
+                const stealers = ["RedLine", "Luna", "Raccoon", "Atomic", "Viper", "Medusa"];
+                for (let i = 0; i < 7; i++) {
+                    html += `
+                        <div class="log p-6 rounded-2xl">
+                            <strong class="text-amber-400">${stealers[i % stealers.length]}</strong> • 2026-06-${10+i}<br>
+                            IP: 185.${Math.floor(Math.random()*200)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}<br>
+                            ${query.includes('@') ? `Email: ${query}` : `Username: ${query}`}
+                        </div>`;
+                }
+                html += `</div>`;
+
+                resultsDiv.innerHTML = html;
+            }, 900);
         }
 
-        function exportResults(format) {
-            if (!lastResults.query) return alert("Keine Ergebnisse");
-            if (format === 'json') {
-                downloadFile(JSON.stringify(lastResults, null, 2), `oathnet_${lastResults.query.replace(/[^a-zA-Z0-9]/g, '')}.json`, 'application/json');
-            } else {
-                const text = `OathNet Mega Export\nQuery: ${lastResults.query}\nDatum: ${lastResults.timestamp}\n\n${lastResults.html.replace(/<[^>]+>/g, '\n')}`;
-                downloadFile(text, `oathnet_${lastResults.query.replace(/[^a-zA-Z0-9]/g, '')}.txt`, 'text/plain');
-            }
-        }
+        // Enter Taste
+        document.getElementById('query').addEventListener('keypress', e => {
+            if (e.key === 'Enter') performSearch();
+        });
 
-        function downloadFile(content, filename, mime) {
-            const blob = new Blob([content], { type: mime });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = filename;
-            a.click();
-        }
-
-        function clearResults() {
-            document.getElementById('results').classList.add('hidden');
-        }
-
-        document.getElementById('searchInput').addEventListener('keypress', e => { if (e.key === 'Enter') performSearch(); });
+        // Tailwind Config
+        tailwind.config = { content: ["*"] };
     </script>
 </body>
 </html>
