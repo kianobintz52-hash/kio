@@ -3,21 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>guns.lol | Konto</title>
+    <title>guns.lol | Dashboard</title>
     <style>
-        /* --- DESIGN SYSTEM (Guns.lol Replikation aus image_e1c3e1.jpg) --- */
+        /* --- DESIGN SYSTEM (Guns.lol Replikation aus image_e1b8be.jpg) --- */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             background-color: #0d0d0e;
             color: #f4f4f5;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            display: flex;
             min-height: 100vh;
+            display: flex;
         }
 
-        /* Container für Login / Register */
+        /* Verhindert Überlagerung von Login & Dashboard */
         .auth-wrapper {
-            display: flex; justify-content: center; align-items: center; width: 100vw; min-height: 100vh; padding: 20px;
+            position: fixed; top:0; left:0; width: 100vw; height: 100vh;
+            display: flex; justify-content: center; align-items: center; background: #0d0d0e; z-index: 99999;
         }
         .container {
             background: #16161a; border: 1px solid #232329; padding: 35px; border-radius: 14px;
@@ -26,85 +27,88 @@
         .container.active { display: block; }
 
         /* Formular Elemente */
-        h2 { margin-bottom: 24px; font-size: 1.6rem; font-weight: 600; text-align: center; }
+        h2, h3 { margin-bottom: 20px; font-weight: 600; }
         .form-group { margin-bottom: 18px; }
-        label { display: block; margin-bottom: 8px; font-size: 0.75rem; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.5px; }
+        label { display: block; margin-bottom: 8px; font-size: 0.75rem; color: #a1a1aa; text-transform: uppercase; }
         input, select, textarea {
             width: 100%; padding: 12px; background: #0d0d0e; border: 1px solid #232329;
-            border-radius: 8px; color: #fff; font-size: 0.95rem; transition: border 0.2s;
+            border-radius: 8px; color: #fff; font-size: 0.95rem;
         }
         input:focus { outline: none; border-color: #3f3f46; }
         .btn {
             width: 100%; padding: 12px; background: #fff; color: #000; border: none;
-            border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+            border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer;
         }
-        .btn:hover { opacity: 0.9; }
+        .btn-sec { background: #232329; color: #fff; border: 1px solid #2e2e38; margin-top: 10px; }
         .form-footer { text-align: center; margin-top: 20px; font-size: 0.85rem; color: #a1a1aa; }
-        .form-footer a, .forgot-link { color: #fff; text-decoration: none; cursor: pointer; font-weight: 500; }
+        .form-footer a, .forgot-link { color: #fff; text-decoration: none; cursor: pointer; }
         .forgot-link { display: block; text-align: right; margin-top: -10px; margin-bottom: 20px; font-size: 0.85rem; }
 
-        /* --- DASHBOARD LAYOUT (Aus dem Screenshot) --- */
-        #view-dashboard { width: 100%; display: none; }
-        #view-dashboard.active { display: flex; }
-
-        /* Linke Sidebar */
+        /* --- DASHBOARD STRUCTURE --- */
+        #view-dashboard { width: 100%; display: flex; min-height: 100vh; }
+        
         .sidebar {
-            width: 240px; background: #111113; border-right: 1px solid #1c1c21;
-            padding: 24px 16px; display: flex; flex-direction: column; gap: 8px; min-height: 100vh;
+            width: 250px; background: #111113; border-right: 1px solid #1c1c21;
+            padding: 24px 16px; display: flex; flex-direction: column; gap: 8px;
         }
-        .logo { font-size: 1.3rem; font-weight: 700; color: #fff; margin-bottom: 24px; display: flex; align-items: center; gap: 8px; }
+        .logo { font-size: 1.3rem; font-weight: 700; color: #fff; margin-bottom: 24px; }
         .side-btn {
-            display: flex; align-items: center; gap: 12px; padding: 10px 14px;
-            color: #a1a1aa; text-decoration: none; border-radius: 8px; font-size: 0.95rem; transition: all 0.2s; cursor: pointer;
+            display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+            color: #a1a1aa; text-decoration: none; border-radius: 8px; font-size: 0.95rem; cursor: pointer;
         }
         .side-btn:hover, .side-btn.active { background: #1c1c21; color: #fff; }
+        
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .section-title { font-size: 1.4rem; font-weight: 600; margin-bottom: 24px; }
 
-        /* Hauptinhalt rechts */
-        .main-content { flex: 1; padding: 40px; overflow-y: auto; background: #0d0d0e; }
-        .section-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 20px; color: #fff; }
-
-        /* Die 4 Karten oben */
+        /* --- STYLING AUS IMAGE_E1C3E1.JPG (KONTO) --- */
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 30px; }
-        @media (max-width: 1024px) { .stats-grid { grid-template-columns: 1fr 1fr; } }
-        @media (max-width: 640px) { .stats-grid { grid-template-columns: 1fr; } }
+        .stat-card { background: #16161a; border: 1px solid #232329; padding: 20px; border-radius: 12px; }
+        .stat-label { font-size: 0.8rem; color: #a1a1aa; text-transform: uppercase; margin-bottom: 6px; }
+        .stat-value { font-size: 1.4rem; font-weight: 700; }
 
-        .stat-card { background: #16161a; border: 1px solid #232329; padding: 20px; border-radius: 12px; position: relative; }
-        .stat-label { font-size: 0.8rem; color: #a1a1aa; margin-bottom: 8px; text-transform: uppercase; }
-        .stat-value { font-size: 1.4rem; font-weight: 700; color: #fff; }
-        .stat-subtext { font-size: 0.75rem; color: #71717a; margin-top: 6px; }
+        /* --- STYLING AUS IMAGE_E1B8BE.JPG (ANPASSEN) --- */
+        .upload-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 30px; }
+        @media (max-width: 1000px) { .upload-grid { grid-template-columns: 1fr 1fr; } }
+        
+        .upload-card {
+            background: #16161a; border: 1px solid #232329; padding: 20px; border-radius: 12px;
+            display: flex; flex-direction: column; gap: 10px; min-height: 160px; justify-content: space-between;
+        }
+        .upload-zone {
+            border: 2px dashed #232329; border-radius: 8px; padding: 20px; text-align: center;
+            font-size: 0.8rem; color: #71717a; cursor: pointer; position: relative;
+        }
+        .upload-zone input { position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; }
 
-        /* Editor & Preview Bereich */
-        .dash-layout { display: grid; grid-template-columns: 1fr 360px; gap: 30px; }
-        @media (max-width: 1100px) { .dash-layout { grid-template-columns: 1fr; } }
+        .premium-banner {
+            background: linear-gradient(90deg, #2e104d, #140526); border: 1px solid #4c1d95;
+            padding: 16px; border-radius: 12px; text-align: center; font-size: 0.9rem; margin-bottom: 30px; color: #ddd;
+        }
 
-        .editor-box { background: #16161a; border: 1px solid #232329; padding: 24px; border-radius: 12px; }
-        .link-item { display: flex; gap: 10px; margin-bottom: 10px; }
-        .btn-del { background: #ef4444; color: white; border: none; padding: 0 12px; border-radius: 8px; cursor: pointer; }
-        .btn-sec { background: #232329; color: #fff; margin-top: 8px; border: 1px solid #2e2e38; }
+        .general-adjust-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
-        /* Live Preview */
-        .profile-view { width: 100%; max-width: 100%; border-radius: 14px; overflow: hidden; border: 1px solid #232329; background: #000; }
-        .p-banner { width: 100%; height: 120px; background: #232329; background-size: cover; background-position: center; }
-        .p-avatar-wrap { text-align: center; margin-top: -45px; margin-bottom: 12px; }
-        .p-avatar { width: 90px; height: 90px; border-radius: 50%; border: 3px solid #16161a; object-fit: cover; background: #333; }
-        .p-info { text-align: center; padding: 0 20px 20px 20px; }
-        .p-bio { color: #a1a1aa; font-size: 0.9rem; margin-top: 4px; margin-bottom: 16px; }
-        .p-links { display: flex; flex-direction: column; gap: 10px; }
-        .p-btn { display: block; padding: 10px; border-radius: 6px; text-decoration: none; text-align: center; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid #232329; font-size: 0.9rem; }
+        /* --- USER BLOCKS FÜR SIDEBAR UNTEN --- */
+        .sidebar-user {
+            margin-top: auto; padding: 12px; background: #16161a; border: 1px solid #232329; border-radius: 8px;
+            display: flex; flex-direction: column; gap: 4px;
+        }
+        .sb-username { font-weight: 600; font-size: 0.9rem; }
+        .sb-uid { font-size: 0.75rem; color: #71717a; }
 
-        /* ÖFFENTLICHE PROFILE SEITE */
-        #view-profile { display: none; width: 100%; max-width: 480px; margin: 40px auto; }
+        /* ÖFFENTLICHE SEITE */
+        #view-profile { display: none; width: 100vw; height: 100vh; position: fixed; top:0; left:0; z-index: 999999; }
+        .p-banner { width: 100%; height: 200px; background-size: cover; background-position: center; background-color: #232329; }
+        .p-avatar { width: 110px; height: 110px; border-radius: 50%; border: 4px solid #0d0d0e; margin-top: -55px; object-fit: cover; }
         #intro-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000;
-            display: flex; justify-content: center; align-items: center; z-index: 9999;
-            cursor: pointer; font-size: 1.4rem; letter-spacing: 4px; text-transform: uppercase;
+            display: flex; justify-content: center; align-items: center; z-index: 9999999; cursor: pointer;
         }
     </style>
 </head>
 <body>
-
-    <!-- INTRO OVERLAY FOR PUBLIC PROFILE -->
-    <div id="intro-overlay" style="display: none;">[ click to enter ]</div>
 
     <!-- AUTHENTICATION WRAPPER -->
     <div class="auth-wrapper" id="auth-area">
@@ -143,95 +147,100 @@
         </div>
     </div>
 
-    <!-- GUNS.LOL INSPIRED DASHBOARD -->
-    <div id="view-dashboard">
-        <!-- Linker Sidebar Navigationsbereich -->
+    <!-- MAIN DASHBOARD -->
+    <div id="view-dashboard" style="display: none;">
+        <!-- Sidebar Navigation -->
         <div class="sidebar">
             <div class="logo">🧬 guns.lol</div>
-            <div class="side-btn active">👤 Konto</div>
-            <div class="side-btn" onclick="alert('Anpassen-Tab (In Entwicklung)')">🎨 Anpassen</div>
-            <div class="side-btn" onclick="alert('Statistiken (In Entwicklung)')">📊 Statistiken</div>
-            <div style="margin-top: auto;" class="side-btn" onclick="window.firebaseLogout()">🚪 Ausloggen</div>
-        </div>
-
-        <!-- Hauptinhalt Bereich -->
-        <div class="main-content">
-            <div class="section-title">Kontoübersicht</div>
+            <div class="side-btn active" id="btn-tab-konto" onclick="switchTab('konto')">👤 Konto</div>
+            <div class="side-btn" id="btn-tab-anpassen" onclick="switchTab('anpassen')">🎨 Anpassen</div>
             
-            <!-- Die 4 Info-Karten oben (wie im Screenshot) -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Benutzername</div>
-                    <div class="stat-value" id="card-username">...</div>
-                    <div class="stat-subtext">Registrierter Name</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Alias</div>
-                    <div class="stat-value">0</div>
-                    <div class="stat-subtext">Keine Aliase aktiv</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">UID</div>
-                    <div class="stat-value" id="card-uid">...</div>
-                    <div class="stat-subtext">Fortlaufende Nummer</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Profilaufrufe</div>
-                    <div class="stat-value">0</div>
-                    <div class="stat-subtext">+0 in den letzten 7 Tagen</div>
-                </div>
+            <div class="sidebar-user">
+                <div class="sb-username" id="sb-u">b35</div>
+                <div class="sb-uid" id="sb-id">UID: 1.920.918</div>
             </div>
+            <div class="side-btn" style="color: #ef4444;" onclick="window.firebaseLogout()">🚪 Ausloggen</div>
+        </div>
 
-            <div class="section-title">Profil bearbeiten</div>
-            <div class="dash-layout">
-                <!-- Editor Formular -->
-                <div class="editor-box">
+        <!-- Right Side Main Content Window -->
+        <div class="main-content">
+            
+            <!-- TAB 1: KONTO OVERVIEW (image_e1c3e1.jpg) -->
+            <div id="tab-konto" class="tab-content active">
+                <div class="section-title">Kontoübersicht</div>
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-label">Benutzername</div><div class="stat-value" id="card-username">...</div></div>
+                    <div class="stat-card"><div class="stat-label">Alias</div><div class="stat-value">0</div></div>
+                    <div class="stat-card"><div class="stat-label">UID</div><div class="stat-value" id="card-uid">...</div></div>
+                    <div class="stat-card"><div class="stat-label">Profilaufrufe</div><div class="stat-value">0</div></div>
+                </div>
+
+                <h3>Allgemeine Daten</h3>
+                <div class="container active" style="background:transparent; border:none; padding:0; max-width:100%;">
                     <div class="form-group"><label>Anzeigename (Titel)</label><input type="text" id="db-title"></div>
-                    <div class="form-group"><label>Bio (Beschreibung)</label><textarea id="db-bio" rows="2"></textarea></div>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
-                        <div><label>Avatar Bild</label><input type="file" id="file-avatar" accept="image/*"></div>
-                        <div><label>Banner Bild</label><input type="file" id="file-banner" accept="image/*"></div>
-                    </div>
+                    <div class="form-group"><label>Beschreibung / Bio</label><textarea id="db-bio" rows="3"></textarea></div>
+                    <button class="btn" onclick="window.saveProfileData()">Änderungen speichern</button>
+                    <p style="margin-top:15px; font-size:0.85rem;">Deine URL: <a id="live-url-text" style="color:#fff;" target="_blank"></a></p>
+                </div>
+            </div>
 
-                    <label>Social Links</label>
-                    <div id="dashboard-links-list"></div>
-                    <button class="btn btn-sec" type="button" onclick="window.addLinkInput('', '')">+ Link hinzufügen</button>
-                    
-                    <button class="btn" style="margin-top: 30px;" onclick="window.saveProfileData()">Änderungen speichern</button>
-                    <p style="font-size:0.85rem; text-align:center; color:#a1a1aa; margin-top:14px;">Deine Profil-URL: <a id="live-url-text" style="color:#fff;" target="_blank"></a></p>
+            <!-- TAB 2: ANPASSEN / MEDIA UPLOADS (image_e1b8be.jpg) -->
+            <div id="tab-anpassen" class="tab-content">
+                <div class="section-title">Medien-Upload</div>
+                
+                <div class="upload-grid">
+                    <div class="upload-card">
+                        <div class="stat-label">Hintergrund (Bild/Video)</div>
+                        <div class="upload-zone">Klicken zum Auswählen<input type="file" id="file-banner" accept="image/*,video/*"></div>
+                    </div>
+                    <div class="upload-card">
+                        <div class="stat-label">Audio (.mp3)</div>
+                        <div class="upload-zone">Klicken zum Auswählen<input type="file" id="file-audio" accept="audio/mp3"></div>
+                    </div>
+                    <div class="upload-card">
+                        <div class="stat-label">Profil-Avatar</div>
+                        <div class="upload-zone">Klicken zum Auswählen<input type="file" id="file-avatar" accept="image/*"></div>
+                    </div>
+                    <div class="upload-card">
+                        <div class="stat-label">Custom Cursor (.cur)</div>
+                        <div class="upload-zone">Klicken zum Auswählen<input type="file" id="file-cursor"></div>
+                    </div>
                 </div>
 
-                <!-- Echtzeit Live-Preview Karte daneben -->
-                <div>
-                    <label>Vorschau</label>
-                    <div id="preview-card" class="profile-view">
-                        <div id="prev-banner" class="p-banner"></div>
-                        <div class="p-avatar-wrap"><img id="prev-avatar" class="p-avatar" src="https://via.placeholder.com/100"></div>
-                        <div class="p-info">
-                            <h2 id="prev-title">Name</h2>
-                            <p id="prev-bio" class="p-bio">Bio Text</p>
-                            <div id="prev-links" class="p-links"></div>
-                        </div>
+                <div class="premium-banner">Du willst exklusive Features? Schalte mehr frei mit 💎 Premium</div>
+
+                <div class="section-title">Allgemeine Anpassung</div>
+                <div class="general-adjust-grid">
+                    <div class="upload-card" style="min-height: auto;">
+                        <label>Hintergrundeffekt</label>
+                        <select id="db-effect">
+                            <option value="none">Kein Effekt</option>
+                            <option value="matrix">Matrix Code Rain</option>
+                            <option value="glitch">Altes TV / Glitch</option>
+                        </select>
+                    </div>
+                    <div class="upload-card" style="min-height: auto;">
+                        <label>Discord Presence aktivieren</label>
+                        <button class="btn btn-sec" style="margin:0;" onclick="alert('Discord Verbindung folgt!')">Discord-Konto verbinden</button>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 
-    <!-- ÖFFENTLICHE PROFIL ANSICHT -->
-    <div id="view-profile" class="profile-view">
+    <!-- PUBLIC BIO-LINK PROFILE LAYER -->
+    <div id="view-profile">
         <div id="pub-banner" class="p-banner"></div>
-        <div class="p-avatar-wrap"><img id="pub-avatar" class="p-avatar" src="https://via.placeholder.com/100"></div>
-        <div class="p-info">
-            <h2 id="pub-title">Loading...</h2>
-            <p id="pub-bio" class="p-bio"></p>
-            <div id="pub-links" class="p-links"></div>
+        <div style="text-align: center;">
+            <img id="pub-avatar" class="p-avatar" src="https://via.placeholder.com/110">
+            <h2 id="pub-title" style="margin-top:15px;"></h2>
+            <p id="pub-bio" style="color:#a1a1aa;"></p>
         </div>
     </div>
+    <div id="intro-overlay" style="display: none; color:white;">[ click to enter ]</div>
 
-
-    <!-- --- FIREBASE ENGINE --- -->
+    <!-- --- FIREBASE LOGIC ENGINE --- -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -253,79 +262,61 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         const storage = getStorage(app);
-
         let currentUserDoc = null;
 
+        // Login / Register Form-Switcher
         window.switchView = function(viewId) {
-            document.querySelectorAll('.container').forEach(el => el.classList.remove('active'));
-            const target = document.getElementById(viewId);
-            if(target) target.classList.add('active');
+            document.querySelectorAll('.auth-wrapper .container').forEach(el => el.style.display = 'none');
+            document.getElementById(viewId).style.display = 'block';
         };
 
-        // --- REGISTRIERUNG MIT HÖHERZÄHLENDER UID ---
+        // Tab-Wechsler (Konto / Anpassen)
+        window.switchTab = function(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.side-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            document.getElementById(`btn-tab-${tabName}`).classList.add('active');
+        };
+
+        // REGISTER PROCESS WITH BLOCK-SAFE UID AUTO-INCREMENT
         document.getElementById('register-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = document.getElementById('reg-user').value.trim().toLowerCase();
             const email = document.getElementById('reg-email').value;
             const password = document.getElementById('reg-pass').value;
 
-            // Einzigartigkeit prüfen
             const q = query(collection(db, "users"), where("username", "==", username));
             const querySnapshot = await getDocs(q);
-            if (!querySnapshot.empty) {
-                alert("Username bereits vergeben!");
-                return;
-            }
+            if (!querySnapshot.empty) { return alert("Username bereits vergeben!"); }
 
             try {
                 const cred = await createUserWithEmailAndPassword(auth, email, password);
-                
-                // Transaktion um UID sicher hochzuzählen (1, 2, 3...)
                 const globalCounterRef = doc(db, "config", "user_counter");
                 let finalUidNumber = 1;
 
                 await runTransaction(db, async (transaction) => {
                     const counterDoc = await transaction.get(globalCounterRef);
-                    if (counterDoc.exists()) {
-                        finalUidNumber = counterDoc.data().currentValue + 1;
-                    }
+                    if (counterDoc.exists()) finalUidNumber = counterDoc.data().currentValue + 1;
                     transaction.set(globalCounterRef, { currentValue: finalUidNumber });
                 });
 
-                // User Profil in DB abspeichern
                 await setDoc(doc(db, "users", cred.user.uid), {
-                    uid: cred.user.uid,
-                    uidNumber: finalUidNumber,
-                    username: username,
-                    title: username,
-                    bio: "Willkommen auf meiner Bio-Seite!",
-                    links: [], avatar: "", banner: ""
+                    uid: cred.user.uid, uidNumber: finalUidNumber, username: username,
+                    title: username, bio: "Willkommen auf meinem Profil!", links: []
                 });
-
-                alert("Registrierung erfolgreich!");
+                alert("Registriert!");
             } catch (err) { alert(err.message); }
         });
 
-        // --- LOGIN & DISPATCHING ---
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            try {
-                await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value);
-            } catch (err) { alert(err.message); }
-        });
-
-        document.getElementById('forgot-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            try {
-                await sendPasswordResetEmail(auth, document.getElementById('forgot-email').value);
-                alert("Reset-Link verschickt!");
-                switchView('view-login');
-            } catch (err) { alert(err.message); }
+            try { await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value); } 
+            catch (err) { alert(err.message); }
         });
 
         window.firebaseLogout = () => signOut(auth).then(() => location.reload());
 
-        // ROUTING LOGIK (Dashboard vs Public Profile)
+        // STATE CONTROLLER
         onAuthStateChanged(auth, async (user) => {
             const urlParams = new URLSearchParams(window.location.search);
             const pubUser = urlParams.get('u');
@@ -341,68 +332,30 @@
                 const userDoc = await getDoc(doc(db, "users", user.uid));
                 if(userDoc.exists()) {
                     currentUserDoc = userDoc.data();
-                    setupDashboard(currentUserDoc);
-                    document.getElementById('view-dashboard').classList.add('active');
+                    // Dashboard füllen
+                    document.getElementById('card-username').innerText = currentUserDoc.username;
+                    document.getElementById('sb-u').innerText = currentUserDoc.username;
+                    document.getElementById('card-uid').innerText = Number(currentUserDoc.uidNumber || 0).toLocaleString();
+                    document.getElementById('sb-id').innerText = "UID: " + Number(currentUserDoc.uidNumber || 0).toLocaleString();
+                    document.getElementById('db-title').value = currentUserDoc.title || '';
+                    document.getElementById('db-bio').value = currentUserDoc.bio || '';
+                    
+                    const profileUrl = window.location.origin + window.location.pathname + "?u=" + currentUserDoc.username;
+                    document.getElementById('live-url-text').innerText = profileUrl;
+                    document.getElementById('live-url-text').href = profileUrl;
+
+                    document.getElementById('view-dashboard').style.display = 'flex';
                 }
             } else {
-                document.getElementById('view-dashboard').classList.remove('active');
+                document.getElementById('view-dashboard').style.display = 'none';
                 document.getElementById('auth-area').style.display = 'flex';
-                switchView('view-login');
             }
         });
 
-        // DYNAMISCHE LINKS IM EDITOR
-        window.addLinkInput = function(name = '', url = '') {
-            const list = document.getElementById('dashboard-links-list');
-            const row = document.createElement('div');
-            row.className = 'link-item';
-            row.innerHTML = `
-                <input type="text" placeholder="Plattform" value="${name}" class="link-name" oninput="window.liveUpdatePreview()">
-                <input type="url" placeholder="https://..." value="${url}" class="link-url" oninput="window.liveUpdatePreview()">
-                <button class="btn-del" type="button" onclick="this.parentElement.remove(); window.liveUpdatePreview();">X</button>
-            `;
-            list.appendChild(row);
-        };
-
-        window.liveUpdatePreview = function() {
-            document.getElementById('prev-title').innerText = document.getElementById('db-title').value || 'Dein Name';
-            document.getElementById('prev-bio').innerText = document.getElementById('db-bio').value || '';
-            const pLinks = document.getElementById('prev-links');
-            pLinks.innerHTML = '';
-            document.querySelectorAll('.link-item').forEach(item => {
-                const name = item.querySelector('.link-name').value;
-                const url = item.querySelector('.link-url').value;
-                if(name) pLinks.innerHTML += `<a href="${url}" target="_blank" class="p-btn">${name}</a>`;
-            });
-        };
-
-        document.getElementById('db-title').addEventListener('input', window.liveUpdatePreview);
-        document.getElementById('db-bio').addEventListener('input', window.liveUpdatePreview);
-
-        function setupDashboard(data) {
-            // Stats Karten befüllen (wie guns.lol)
-            document.getElementById('card-username').innerText = data.username;
-            document.getElementById('card-uid').innerText = Number(data.uidNumber || 0).toLocaleString();
-
-            document.getElementById('db-title').value = data.title || '';
-            document.getElementById('db-bio').value = data.bio || '';
-            
-            const profileUrl = window.location.origin + window.location.pathname + "?u=" + data.username;
-            document.getElementById('live-url-text').innerText = profileUrl;
-            document.getElementById('live-url-text').href = profileUrl;
-
-            document.getElementById('dashboard-links-list').innerHTML = '';
-            if(data.links) data.links.forEach(l => window.addLinkInput(l.name, l.url));
-            if(data.avatar) document.getElementById('prev-avatar').src = data.avatar;
-            if(data.banner) document.getElementById('prev-banner').style.backgroundImage = `url('${data.banner}')`;
-            window.liveUpdatePreview();
-        }
-
-        // SPEICHERN & IMMAG HOSTING
+        // MULTI-MEDIA FILE UPLOADER
         window.saveProfileData = async function() {
             if(!auth.currentUser) return;
             const uid = auth.currentUser.uid;
-
             let avatarUrl = currentUserDoc.avatar || "";
             let bannerUrl = currentUserDoc.banner || "";
 
@@ -420,58 +373,35 @@
                 bannerUrl = await getDownloadURL(banRef);
             }
 
-            const links = [];
-            document.querySelectorAll('.link-item').forEach(item => {
-                const name = item.querySelector('.link-name').value;
-                const url = item.querySelector('.link-url').value;
-                if(name) links.push({name, url});
-            });
-
             await setDoc(doc(db, "users", uid), {
                 title: document.getElementById('db-title').value,
                 bio: document.getElementById('db-bio').value,
-                links: links, avatar: avatarUrl, banner: bannerUrl
+                avatar: avatarUrl, banner: bannerUrl
             }, { merge: true });
 
-            alert("Konto-Änderungen erfolgreich live geschaltet!");
+            alert("Daten aktualisiert!");
             location.reload();
         };
 
-        // PUBLIC PROFILE GENERATION
+        // PUBLIC BIOLINK PROFIL PAGE GENERATOR
         async function loadPublicProfile(username) {
             const q = query(collection(db, "users"), where("username", "==", username));
             const querySnapshot = await getDocs(q);
-            
             if(querySnapshot.empty) {
-                document.body.innerHTML = "<h2 style='text-align:center; margin-top:50px;'>Profil existiert nicht (404)</h2>";
+                document.body.innerHTML = "<h2 style='text-align:center; padding-top:50px;'>Profil existiert nicht! (404)</h2>";
                 return;
             }
-
             const data = querySnapshot.docs[0].data();
-            document.title = data.title;
-            
             document.getElementById('pub-title').innerText = data.title;
             document.getElementById('pub-bio').innerText = data.bio;
             if(data.avatar) document.getElementById('pub-avatar').src = data.avatar;
             if(data.banner) document.getElementById('pub-banner').style.backgroundImage = `url('${data.banner}')`;
 
-            const pubLinks = document.getElementById('pub-links');
-            pubLinks.innerHTML = '';
-            if(data.links) {
-                data.links.forEach(l => {
-                    pubLinks.innerHTML += `<a href="${l.url}" target="_blank" class="p-btn">${l.name}</a>`;
-                });
-            }
-
             const intro = document.getElementById('intro-overlay');
             intro.style.display = 'flex';
             window.startPage = function() {
-                intro.style.transition = "opacity 0.4s";
-                intro.style.opacity = 0;
-                setTimeout(() => {
-                    intro.style.display = 'none';
-                    document.getElementById('view-profile').style.display = 'block';
-                }, 400);
+                intro.style.display = 'none';
+                document.getElementById('view-profile').style.display = 'block';
             };
             intro.setAttribute('onclick', 'startPage()');
         }
