@@ -15,11 +15,13 @@
             display: flex;
         }
 
-        /* FIX: Auth-Wrapper sauber isoliert, damit er sich nicht aufhängt */
+        /* FIX: Auth-Wrapper startet unsichtbar, um das Flackern zu verhindern */
         .auth-wrapper {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            display: flex; justify-content: center; align-items: center; background: #0d0d0e; z-index: 99999;
+            display: none; justify-content: center; align-items: center; background: #0d0d0e; z-index: 99999;
         }
+        
+        /* FIX: Die Login/Register Boxen sind standardmäßig im CSS zu */
         .container {
             background: #16161a; border: 1px solid #232329; padding: 35px; border-radius: 14px;
             width: 100%; max-width: 420px; box-shadow: 0 10px 40px rgba(0,0,0,0.7); display: none;
@@ -113,7 +115,7 @@
     <!-- AUTHENTICATION WRAPPER -->
     <div class="auth-wrapper" id="auth-area">
         <!-- LOGIN -->
-        <div id="view-login" class="container active">
+        <div id="view-login" class="container">
             <h2>Anmelden</h2>
             <form id="login-form">
                 <div class="form-group"><label>E-Mail</label><input type="email" id="login-email" required></div>
@@ -264,7 +266,7 @@
         const storage = getStorage(app);
         let currentUserDoc = null;
 
-        // FIX: Sichtbarkeit umschalten repariert (.active Klassenkorrektur)
+        // Sichtbarkeit umschalten
         window.switchView = function(viewId) {
             document.querySelectorAll('.auth-wrapper .container').forEach(el => el.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
@@ -318,7 +320,7 @@
 
         window.firebaseLogout = () => signOut(auth).then(() => location.reload());
 
-        // STATE CONTROLLER (Steuert ob man das Login oder Dashboard sieht)
+        // STATE CONTROLLER (Prüft den Login-Zustand sauber ab)
         onAuthStateChanged(auth, async (user) => {
             const urlParams = new URLSearchParams(window.location.search);
             const pubUser = urlParams.get('u');
@@ -330,12 +332,12 @@
             }
 
             if (user) {
+                // Wenn User eingeloggt ist: Dashboard an, Login-Bereich aus
                 document.getElementById('auth-area').style.display = 'none';
                 const userDoc = await getDoc(doc(db, "users", user.uid));
                 if(userDoc.exists()) {
                     currentUserDoc = userDoc.data();
                     
-                    // Dashboard mit Daten füttern
                     document.getElementById('card-username').innerText = currentUserDoc.username;
                     document.getElementById('sb-u').innerText = currentUserDoc.username;
                     document.getElementById('card-uid').innerText = Number(currentUserDoc.uidNumber || 0).toLocaleString();
@@ -350,6 +352,7 @@
                     document.getElementById('view-dashboard').style.display = 'flex';
                 }
             } else {
+                // Wenn ausgeloggt: Dashboard aus, Login-Bereich an!
                 document.getElementById('view-dashboard').style.display = 'none';
                 document.getElementById('auth-area').style.display = 'flex';
                 switchView('view-login');
