@@ -5,257 +5,460 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bio-Link Platform</title>
     <style>
-        /* Basis-Styling (Guns.lol Dark Aesthetic) */
+        /* --- DESIGN SYSTEM (Guns.lol Style) --- */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             background-color: #09090b;
             color: #fafafa;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Roboto, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            overflow-x: hidden;
+            padding: 20px;
         }
 
-        /* Container für die Formulare & Dashboard */
-        .auth-container, .dashboard-container {
+        /* Container & Grid */
+        .container {
             background: #141417;
             border: 1px solid #27272a;
-            padding: 40px;
+            padding: 30px;
             border-radius: 12px;
             width: 100%;
-            max-width: 420px;
+            max-width: 450px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            display: none; /* Wird per JS gesteuert */
+            display: none;
+        }
+        .container.active { display: block; }
+
+        /* Große Dashboard Ansicht */
+        #view-dashboard { max-width: 1000px; }
+        .dash-layout { display: grid; grid-template-columns: 1fr 380px; gap: 30px; }
+        @media (max-width: 900px) {
+            .dash-layout { grid-template-columns: 1fr; }
         }
 
-        .active { display: block; }
-
-        h2 { text-align: center; margin-bottom: 24px; font-weight: 600; letter-spacing: -0.5px; }
-        p.subtitle { text-align: center; color: #a1a1aa; font-size: 0.9rem; margin-top: -15px; margin-bottom: 20px; }
-
-        /* Input Felder */
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-size: 0.85rem; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.5px; }
-        input {
-            width: 100%;
-            padding: 12px;
-            background: #09090b;
-            border: 1px solid #27272a;
-            border-radius: 6px;
-            color: #fff;
-            font-size: 1rem;
-            transition: border 0.2s;
+        /* Form & Inputs */
+        h2, h3 { margin-bottom: 20px; font-weight: 600; letter-spacing: -0.5px; }
+        .form-group { margin-bottom: 16px; }
+        label { display: block; margin-bottom: 6px; font-size: 0.8rem; color: #a1a1aa; text-transform: uppercase; }
+        input, select, textarea {
+            width: 100%; padding: 10px; background: #09090b; border: 1px solid #27272a;
+            border-radius: 6px; color: #fff; font-size: 0.95rem; transition: border 0.2s;
         }
-        input:focus { outline: none; border-color: #3f3f46; }
-
-        /* Buttons */
+        input:focus, select:focus { outline: none; border-color: #52525b; }
+        
         .btn {
-            width: 100%;
-            padding: 12px;
-            background: #ffffff;
-            color: #000000;
-            border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.2s;
+            width: 100%; padding: 12px; background: #fff; color: #000; border: none;
+            border-radius: 6px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
         }
         .btn:hover { opacity: 0.9; }
+        .btn-sec { background: #27272a; color: #fff; margin-top: 5px; }
 
-        /* Links unter den Formularen */
-        .form-footer { text-align: center; margin-top: 20px; font-size: 0.85rem; color: #a1a1aa; }
-        .form-footer a { color: #ffffff; text-decoration: none; font-weight: 500; cursor: pointer; }
-        .form-footer a:hover { text-decoration: underline; }
-        .forgot-link { display: block; text-align: right; margin-top: -15px; margin-bottom: 20px; font-size: 0.85rem; color: #a1a1aa; text-decoration: none; }
-        .forgot-link:hover { color: #fff; }
+        .form-footer { text-align: center; margin-top: 15px; font-size: 0.85rem; color: #a1a1aa; }
+        .form-footer a, .forgot-link { color: #fff; text-decoration: none; cursor: pointer; font-weight: 500; }
+        .forgot-link { display: block; text-align: right; margin-top: -10px; margin-bottom: 15px; font-size: 0.85rem; }
 
-        /* --- DASHBOARD STYLING --- */
-        .dashboard-container { max-width: 800px; width: 90%; }
-        .dash-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #27272a; padding-bottom: 15px; margin-bottom: 25px; }
-        .logout-btn { background: #ef4444; color: white; padding: 6px 12px; border-radius: 4px; font-size: 0.85rem; cursor: pointer; border: none; }
+        /* --- DYNAMISCHE LINKS IM DASHBOARD --- */
+        .link-item { display: flex; gap: 10px; margin-bottom: 10px; }
+        .btn-del { background: #ef4444; color: white; border: none; padding: 0 10px; border-radius: 6px; cursor: pointer; }
+
+        /* --- THEMES FÜR ÖFFENTLICHE SEITE --- */
+        .profile-view { width: 100%; max-width: 500px; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.6); position: relative; }
         
-        .dash-content { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-        @media(max-width: 768px) { .dash-content { grid-template-columns: 1fr; } }
+        /* Theme: Dark (Standard) */
+        .theme-dark { background: #0a0a0a; color: #fff; border: 1px solid #222; }
+        .theme-dark .p-btn { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid #333; }
         
-        .editor-section { background: #1c1c21; padding: 20px; border-radius: 8px; border: 1px solid #27272a; }
+        /* Theme: Glassmorphism */
+        .theme-glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
+        .theme-glass .p-btn { background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
         
-        /* Live-Vorschau Box im Dashboard */
-        .preview-section { 
-            background: #0a0a0a; 
-            border: 1px solid #27272a; 
-            border-radius: 8px; 
-            padding: 30px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center;
-            justify-content: center;
-            text-align: center;
+        /* Theme: Cyberpunk */
+        .theme-cyber { background: #001219; color: #00f0ff; border: 2px solid #ff007f; }
+        .theme-cyber .p-btn { background: #ff007f; color: #000; font-weight: bold; }
+
+        /* --- COMPONENTEN DER PROFILSEITE --- */
+        .p-banner { width: 100%; height: 140px; background: #27272a; background-size: cover; background-position: center; }
+        .p-avatar-wrap { text-align: center; margin-top: -50px; margin-bottom: 15px; }
+        .p-avatar { width: 100px; height: 100px; border-radius: 50%; border: 3px solid #141417; background: #444; object-fit: cover; }
+        .p-info { text-align: center; padding: 0 20px 25px 20px; }
+        .p-bio { color: #a1a1aa; font-size: 0.95rem; margin-top: 5px; margin-bottom: 20px; }
+        .p-links { display: flex; flex-direction: column; gap: 12px; }
+        .p-btn { display: block; padding: 12px; border-radius: 8px; text-decoration: none; transition: transform 0.2s; text-align: center; }
+        .p-btn:hover { transform: scale(1.02); }
+
+        /* Intro Screen Overlay */
+        #intro-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000;
+            display: flex; justify-content: center; align-items: center; z-index: 9999;
+            cursor: pointer; font-size: 1.5rem; letter-spacing: 4px; text-transform: uppercase;
         }
-        .preview-avatar { width: 80px; height: 80px; border-radius: 50%; border: 2px solid #fff; margin-bottom: 15px; }
-        .preview-links { width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
-        .preview-btn { background: rgba(255,255,255,0.05); border: 1px solid #27272a; padding: 10px; border-radius: 6px; color: #fff; text-decoration: none; font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
-    <!-- 1. LOGIN MASK -->
-    <div id="view-login" class="auth-container active">
+    <div id="intro-overlay" style="display: none;">[ click to enter ]</div>
+
+    <div id="view-login" class="container">
         <h2>Anmelden</h2>
-        <p class="subtitle">Willkommen zurück bei guns.lol-Clone</p>
-        <form onsubmit="handleLogin(event)">
-            <div class="form-group">
-                <label>E-Mail oder Username</label>
-                <input type="text" id="login-user" required placeholder="deinname@beispiel.de">
-            </div>
-            <div class="form-group">
-                <label>Passwort</label>
-                <input type="password" id="login-pass" required placeholder="••••••••">
-            </div>
+        <form id="login-form">
+            <div class="form-group"><label>E-Mail</label><input type="email" id="login-email" required></div>
+            <div class="form-group"><label>Passwort</label><input type="password" id="login-pass" required></div>
             <a class="forgot-link" onclick="switchView('view-forgot')">Passwort vergessen?</a>
             <button type="submit" class="btn">Login</button>
         </form>
-        <div class="form-footer">
-            Noch kein Konto? <a onclick="switchView('view-register')">Registrieren</a>
-        </div>
+        <div class="form-footer">Kein Konto? <a onclick="switchView('view-register')">Registrieren</a></div>
     </div>
 
-    <!-- 2. REGISTER MASK -->
-    <div id="view-register" class="auth-container">
+    <div id="view-register" class="container">
         <h2>Registrieren</h2>
-        <p class="subtitle">Erstelle deinen eigenen Bio-Link</p>
-        <form onsubmit="handleRegister(event)">
-            <div class="form-group">
-                <label>Username (guns.lol/deinname)</label>
-                <input type="text" id="reg-name" required placeholder="wunschname">
-            </div>
-            <div class="form-group">
-                <label>E-Mail Adresse</label>
-                <input type="email" id="reg-email" required placeholder="name@beispiel.de">
-            </div>
-            <div class="form-group">
-                <label>Passwort</label>
-                <input type="password" id="reg-pass" required placeholder="••••••••">
-            </div>
-            <button type="submit" class="btn">Konto erstellen</button>
+        <form id="register-form">
+            <div class="form-group"><label>Wunsch-Username</label><input type="text" id="reg-user" required placeholder="z.B. chef"></div>
+            <div class="form-group"><label>E-Mail</label><input type="email" id="reg-email" required></div>
+            <div class="form-group"><label>Passwort</label><input type="password" id="reg-pass" required></div>
+            <button type="submit" class="btn">Account erstellen</button>
         </form>
-        <div class="form-footer">
-            Bereits registriert? <a onclick="switchView('view-login')">Einloggen</a>
-        </div>
+        <div class="form-footer">Bereits registriert? <a onclick="switchView('view-login')">Einloggen</a></div>
     </div>
 
-    <!-- 3. FORGOT PASSWORD MASK -->
-    <div id="view-forgot" class="auth-container">
+    <div id="view-verify" class="container" style="text-align: center;">
+        <h2>E-Mail verifizieren ✉️</h2>
+        <p style="color: #a1a1aa; margin-bottom: 20px;">Bitte bestätige den Link in deiner E-Mail, um dein Dashboard freizuschalten.</p>
+        <button class="btn" onclick="location.reload()">Ich habe verifiziert (Aktualisieren)</button>
+        <button class="btn btn-sec" onclick="window.firebaseLogout()">Zurück zum Login</button>
+    </div>
+
+    <div id="view-forgot" class="container">
         <h2>Passwort zurücksetzen</h2>
-        <p class="subtitle">Gib deine E-Mail ein, um einen Reset-Link zu erhalten</p>
-        <form onsubmit="handleForgot(event)">
-            <div class="form-group">
-                <label>Deine E-Mail Adresse</label>
-                <input type="email" id="forgot-email" required placeholder="name@beispiel.de">
-            </div>
-            <button type="submit" class="btn">Reset-Link senden</button>
+        <form id="forgot-form">
+            <div class="form-group"><label>Deine E-Mail</label><input type="email" id="forgot-email" required></div>
+            <button type="submit" class="btn">Reset-Link anfordern</button>
         </form>
-        <div class="form-footer">
-            <a onclick="switchView('view-login')">Zurück zum Login</a>
-        </div>
+        <div class="form-footer"><a onclick="switchView('view-login')">Zurück zum Login</a></div>
     </div>
 
-    <!-- 4. DASHBOARD (Nach Login) -->
-    <div id="view-dashboard" class="dashboard-container">
-        <div class="dash-header">
-            <div>
-                <h3>Willkommen, <span id="dash-username">User</span>! 👋</h3>
-                <p style="font-size: 0.85rem; color: #a1a1aa; margin-top: 4px;">Verwalte hier deine Profilkarte</p>
-            </div>
-            <button class="logout-btn" onclick="switchView('view-login')">Ausloggen</button>
+    <div id="view-dashboard" class="container">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center;">
+            <h3>Dashboard (guns.lol-Clone)</h3>
+            <button class="btn btn-sec" style="width: auto; margin:0;" onclick="window.firebaseLogout()">Logout</button>
         </div>
+        
+        <div class="dash-layout">
+            <div>
+                <div class="form-group"><label>Anzeigename (Title)</label><input type="text" id="db-title"></div>
+                <div class="form-group"><label>Bio</label><textarea id="db-bio" rows="2"></textarea></div>
+                
+                <div class="form-group">
+                    <label>Design-Theme</label>
+                    <select id="db-theme">
+                        <option value="theme-dark">Dark Minimal</option>
+                        <option value="theme-glass">Glassmorphism Blur</option>
+                        <option value="theme-cyber">Cyberpunk Neon</option>
+                    </select>
+                </div>
 
-        <div class="dash-content">
-            <!-- Link Editor links -->
-            <div class="editor-section">
-                <h4 style="margin-bottom: 15px;">Profil bearbeiten</h4>
-                <div class="form-group">
-                    <label>Anzeigename</label>
-                    <input type="text" id="edit-title" value="Dein Name" oninput="updatePreview()">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;" class="form-group">
+                    <div><label>Avatar (Quadratisch)</label><input type="file" id="file-avatar" accept="image/*"></div>
+                    <div><label>Banner</label><input type="file" id="file-banner" accept="image/*"></div>
                 </div>
-                <div class="form-group">
-                    <label>Bio (Beschreibung)</label>
-                    <input type="text" id="edit-bio" value="Hier steht deine kurze Beschreibung." oninput="updatePreview()">
-                </div>
-                <div class="form-group">
-                    <label>Discord Link</label>
-                    <input type="text" id="edit-discord" value="https://discord.com" oninput="updatePreview()">
-                </div>
-                <div class="form-group">
-                    <label>Instagram Link</label>
-                    <input type="text" id="edit-instagram" value="https://instagram.com" oninput="updatePreview()">
-                </div>
-                <button class="btn" style="margin-top: 10px;" onclick="alert('Änderungen gespeichert! (Simulation)')">Speichern</button>
+
+                <h4 style="margin: 20px 0 10px 0;">Deine Social Links</h4>
+                <div id="dashboard-links-list"></div>
+                <button class="btn btn-sec" type="button" onclick="window.addLinkInput('', '')">+ Link hinzufügen</button>
+                
+                <button class="btn" style="margin-top: 25px;" onclick="window.saveProfileData()">Änderungen speichern & Veröffentlichen</button>
+                <p style="font-size:0.8rem; text-align:center; color:#a1a1aa; margin-top:10px;">Deine Live-URL: <a id="live-url-text" style="color:#fff;" target="_blank"></a></p>
             </div>
 
-            <!-- Live Preview rechts -->
             <div>
-                <h4 style="margin-bottom: 15px; color: #a1a1aa;">Live-Vorschau</h4>
-                <div class="preview-section">
-                    <img src="https://via.placeholder.com/100" class="preview-avatar" alt="Avatar">
-                    <h2 id="prev-title" style="font-size: 1.4rem; margin-bottom: 5px;">Dein Name</h2>
-                    <p id="prev-bio" style="color: #b3b3b3; font-size: 0.85rem; margin-bottom: 20px;">Hier steht deine kurze Beschreibung.</p>
-                    <div class="preview-links">
-                        <a id="prev-discord" href="#" target="_blank" class="preview-btn">Discord</a>
-                        <a id="prev-instagram" href="#" target="_blank" class="preview-btn">Instagram</a>
+                <label>Echtzeit-Vorschau</label>
+                <div id="preview-card" class="profile-view theme-dark">
+                    <div id="prev-banner" class="p-banner"></div>
+                    <div class="p-avatar-wrap"><img id="prev-avatar" class="p-avatar" src="https://via.placeholder.com/100"></div>
+                    <div class="p-info">
+                        <h2 id="prev-title">Name</h2>
+                        <p id="prev-bio" class="p-bio">Bio Text</p>
+                        <div id="prev-links" class="p-links"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        // Funktion zum Wechseln der Ansichten
-        function switchView(viewId) {
-            // Alle Container verstecken
-            document.querySelectorAll('.auth-container, .dashboard-container').forEach(el => {
-                el.classList.remove('active');
+    <div id="view-profile" class="profile-view" style="display:none;">
+        <div id="pub-banner" class="p-banner"></div>
+        <div class="p-avatar-wrap"><img id="pub-avatar" class="p-avatar" src="https://via.placeholder.com/100"></div>
+        <div class="p-info">
+            <h2 id="pub-title">Loading...</h2>
+            <p id="pub-bio" class="p-bio"></p>
+            <div id="pub-links" class="p-links"></div>
+        </div>
+    </div>
+
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+
+        // Deine bereitgestellte Firebase Konfiguration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD6NPF9FIJsDipQg3dvxSohtAJCGVF4NUc",
+            authDomain: "kiobiool.firebaseapp.com",
+            databaseURL: "https://kiobiool-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "kiobiool",
+            storageBucket: "kiobiool.firebasestorage.app",
+            messagingSenderId: "1003434485509",
+            appId: "1:1003434485509:web:872f257b0758051c80b96c",
+            measurementId: "G-DRW31WCCN5"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        let currentUserDoc = null; 
+
+        // Routen/Ansichten-Wechsler
+        window.switchView = function(viewId) {
+            document.querySelectorAll('.container, #view-profile').forEach(el => el.style.display = 'none');
+            const target = document.getElementById(viewId);
+            if(target) {
+                if(viewId.startsWith('view-v')) target.style.display = 'block'; 
+                else target.style.display = 'block';
+            }
+        };
+
+        // --- 1. USERNAME CHECK & REGISTRIERUNG ---
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('reg-user').value.trim().toLowerCase();
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-pass').value;
+
+            // Username Check auf Einzigartigkeit via Firestore query
+            const q = query(collection(db, "users"), where("username", "==", username));
+            const querySnapshot = await getDocs(q);
+            if (!querySnapshot.empty) {
+                alert("Dieser Username ist leider schon vergeben!");
+                return;
+            }
+
+            try {
+                const cred = await createUserWithEmailAndPassword(auth, email, password);
+                // E-Mail Verifizierung senden
+                await sendEmailVerification(cred.user);
+                
+                // User-Profil vorab in Datenbank anlegen
+                await setDoc(doc(db, "users", cred.user.uid), {
+                    uid: cred.user.uid,
+                    username: username,
+                    title: username,
+                    bio: "Willkommen auf meiner Seite!",
+                    theme: "theme-dark",
+                    links: [],
+                    avatar: "", banner: ""
+                });
+
+                alert("Konto angelegt! Bitte überprüfe dein E-Mail Postfach zur Verifizierung.");
+                location.reload();
+            } catch (err) { alert(err.message); }
+        });
+
+        // --- 2. LOGIN ---
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value);
+            } catch (err) { alert("Login-Fehler: " + err.message); }
+        });
+
+        // --- 3. PASSWORT VERGESSEN ---
+        document.getElementById('forgot-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                await sendPasswordResetEmail(auth, document.getElementById('forgot-email').value);
+                alert("Reset-Link wurde per Mail gesendet!");
+                switchView('view-login');
+            } catch (err) { alert(err.message); }
+        });
+
+        // --- 4. LOGOUT ---
+        window.firebaseLogout = () => signOut(auth).then(() => location.reload());
+
+        // --- 5. SCHUTZ DER ROUTEN & REALTIME STATE ---
+        onAuthStateChanged(auth, async (user) => {
+            // Falls ein Username in der URL steht (z.B. ?u=testuser), laden wir das öffentliche Profil
+            const urlParams = new URLSearchParams(window.location.search);
+            const pubUser = urlParams.get('u');
+
+            if (pubUser) {
+                loadPublicProfile(pubUser.toLowerCase());
+                return;
+            }
+
+            if (user) {
+                // E-Mail Verifizierungsprüfung
+                if (!user.emailVerified) {
+                    switchView('view-verify');
+                    return;
+                }
+                // Daten für das Dashboard laden
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if(userDoc.exists()) {
+                    currentUserDoc = userDoc.data();
+                    setupDashboard(currentUserDoc);
+                    switchView('view-dashboard');
+                }
+            } else {
+                switchView('view-login');
+            }
+        });
+
+        // --- 6. DYNAMIC LINKS MANAGEMENT ---
+        window.addLinkInput = function(name = '', url = '') {
+            const list = document.getElementById('dashboard-links-list');
+            const row = document.createElement('div');
+            row.className = 'link-item';
+            row.innerHTML = `
+                <input type="text" placeholder="Plattform (z.B. Discord)" value="${name}" class="link-name" oninput="window.liveUpdatePreview()">
+                <input type="url" placeholder="https://..." value="${url}" class="link-url" oninput="window.liveUpdatePreview()">
+                <button class="btn-del" type="button" onclick="this.parentElement.remove(); window.liveUpdatePreview();">X</button>
+            `;
+            list.appendChild(row);
+        };
+
+        // Live-Vorschau-Generator im Dashboard
+        window.liveUpdatePreview = function() {
+            document.getElementById('prev-title').innerText = document.getElementById('db-title').value || 'Dein Name';
+            document.getElementById('prev-bio').innerText = document.getElementById('db-bio').value || '';
+            
+            const card = document.getElementById('preview-card');
+            card.className = "profile-view " + document.getElementById('db-theme').value;
+
+            const pLinks = document.getElementById('prev-links');
+            pLinks.innerHTML = '';
+            document.querySelectorAll('.link-item').forEach(item => {
+                const name = item.querySelector('.link-name').value;
+                const url = item.querySelector('.link-url').value;
+                if(name) {
+                    pLinks.innerHTML += `<a href="${url}" target="_blank" class="p-btn">${name}</a>`;
+                }
             });
-            // Gewünschten Container anzeigen
-            document.getElementById(viewId).classList.add('active');
+        };
+        // Event-Listener für Live-Inputs
+        document.getElementById('db-title').addEventListener('input', window.liveUpdatePreview);
+        document.getElementById('db-bio').addEventListener('input', window.liveUpdatePreview);
+        document.getElementById('db-theme').addEventListener('change', window.liveUpdatePreview);
+
+        function setupDashboard(data) {
+            document.getElementById('db-title').value = data.title || '';
+            document.getElementById('db-bio').value = data.bio || '';
+            document.getElementById('db-theme').value = data.theme || 'theme-dark';
+            document.getElementById('live-url-text').innerText = window.location.origin + window.location.pathname + "?u=" + data.username;
+            document.getElementById('live-url-text').href = window.location.origin + window.location.pathname + "?u=" + data.username;
+
+            document.getElementById('dashboard-links-list').innerHTML = '';
+            if(data.links) {
+                data.links.forEach(l => window.addLinkInput(l.name, l.url));
+            }
+            if(data.avatar) document.getElementById('prev-avatar').src = data.avatar;
+            if(data.banner) document.getElementById('prev-banner').style.backgroundImage = `url('${data.banner}')`;
+            window.liveUpdatePreview();
         }
 
-        // Login logik simulieren
-        function handleLogin(e) {
-            e.preventDefault();
-            const user = document.getElementById('login-user').value;
-            document.getElementById('dash-username').innerText = user.split('@')[0]; // Username im Dash setzen
-            switchView('view-dashboard');
-        }
+        // --- 7. FILE UPLOADS & SAVE DATA ---
+        window.saveProfileData = async function() {
+            if(!auth.currentUser) return;
+            const uid = auth.currentUser.uid;
 
-        // Registrierung simulieren
-        function handleRegister(e) {
-            e.preventDefault();
-            const name = document.getElementById('reg-name').value;
-            alert('Konto für ' + name + ' wurde erfolgreich simuliert erstellt!');
-            switchView('view-login');
-        }
+            let avatarUrl = currentUserDoc.avatar || "";
+            let bannerUrl = currentUserDoc.banner || "";
 
-        // Passwort vergessen simulieren
-        function handleForgot(e) {
-            e.preventDefault();
-            const email = document.getElementById('forgot-email').value;
-            alert('Ein simulierter Zurücksetzungs-Link wurde an ' + email + ' gesendet!');
-            switchView('view-login');
-        }
+            const avatarFile = document.getElementById('file-avatar').files[0];
+            const bannerFile = document.getElementById('file-banner').files[0];
 
-        // Live-Vorschau im Dashboard aktualisieren
-        function updatePreview() {
-            document.getElementById('prev-title').innerText = document.getElementById('edit-title').value;
-            document.getElementById('prev-bio').innerText = document.getElementById('edit-bio').value;
-            document.getElementById('prev-discord').href = document.getElementById('edit-discord').value;
-            document.getElementById('prev-instagram').href = document.getElementById('edit-instagram').value;
-        }
+            // Upload Avatar falls neu ausgewählt
+            if(avatarFile) {
+                const avaRef = ref(storage, `avatars/${uid}`);
+                await uploadBytes(avaRef, avatarFile);
+                avatarUrl = await getDownloadURL(avaRef);
+            }
+            // Upload Banner falls neu ausgewählt
+            if(bannerFile) {
+                const banRef = ref(storage, `banners/${uid}`);
+                await uploadBytes(banRef, bannerFile);
+                bannerUrl = await getDownloadURL(banRef);
+            }
 
-        // Initiale Vorschau laden
-        updatePreview();
+            // Links kompilieren
+            const links = [];
+            document.querySelectorAll('.link-item').forEach(item => {
+                const name = item.querySelector('.link-name').value;
+                const url = item.querySelector('.link-url').value;
+                if(name) links.push({name, url});
+            });
+
+            const updatedData = {
+                title: document.getElementById('db-title').value,
+                bio: document.getElementById('db-bio').value,
+                theme: document.getElementById('db-theme').value,
+                links: links,
+                avatar: avatarUrl,
+                banner: bannerUrl
+            };
+
+            await setDoc(doc(db, "users", uid), updatedData, { merge: true });
+            alert("Änderungen erfolgreich gespeichert und hochgeladen!");
+            location.reload();
+        };
+
+        // --- 8. ÖFFENTLICHE USER-SEITE LADEN & INTRO ---
+        async function loadPublicProfile(username) {
+            const q = query(collection(db, "users"), where("username", "==", username));
+            const querySnapshot = await getDocs(q);
+            
+            if(querySnapshot.empty) {
+                document.body.innerHTML = "<h2>User nicht gefunden (404)</h2>";
+                return;
+            }
+
+            const data = querySnapshot.docs[0].data();
+            
+            // Render öffentliche Seite
+            document.title = data.title;
+            const view = document.getElementById('view-profile');
+            view.className = "profile-view " + (data.theme || 'theme-dark');
+            
+            document.getElementById('pub-title').innerText = data.title;
+            document.getElementById('pub-bio').innerText = data.bio;
+            if(data.avatar) document.getElementById('pub-avatar').src = data.avatar;
+            if(data.banner) document.getElementById('pub-banner').style.backgroundImage = `url('${data.banner}')`;
+
+            const pubLinks = document.getElementById('pub-links');
+            pubLinks.innerHTML = '';
+            if(data.links) {
+                data.links.forEach(l => {
+                    pubLinks.innerHTML += `<a href="${l.url}" target="_blank" class="p-btn">${l.name}</a>`;
+                });
+            }
+
+            // INTRO-PAGE Aktivierung (Click to Enter)
+            const intro = document.getElementById('intro-overlay');
+            intro.style.display = 'flex';
+            window.startPage = function() {
+                intro.style.transition = "opacity 0.5s";
+                intro.style.opacity = 0;
+                setTimeout(() => {
+                    intro.style.display = 'none';
+                    view.style.display = 'block';
+                }, 500);
+            };
+            intro.setAttribute('onclick', 'startPage()');
+        }
     </script>
 </body>
 </html>
