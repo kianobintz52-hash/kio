@@ -3,103 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>y3zd Profile</title>
+    <title>OathNet - Breach & OSINT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* CSS aus style.css */
-        :root {
-            --primary-color: #00CED1; 
-            --secondary-color: #FF6B9E;
-            --background-dark: #0A0A1A;
-            --text-color: #E0E0FF;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
-        }
-
-        body {
-            font-family: 'Space Mono', monospace;
-            background: var(--background-dark);
-            color: var(--text-color);
-            overflow-x: hidden;
-            overflow-y: auto;
-            perspective: 1000px;
-            cursor: none;
-        }
-
-        .custom-cursor {
-            position: fixed;
-            width: 32px;
-            height: 32px;
-            background: url('assets/custom_cursor.png') no-repeat center center;
-            background-size: contain;
-            pointer-events: none;
-            z-index: 10000;
-            transition: transform 0.1s ease-out;
-            filter: hue-rotate(var(--cursor-hue, 0deg)); 
-        }
-
-        .container {
-            width: 100%;
-            height: 100vh;
-            position: relative;
-        }
-
-        #background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        /* Glitch Animation Keyframes */
-        @keyframes glitch-anim {
-            0% { clip: rect(35px, 9999px, 14px, 0); }
-            10% { clip: rect(60px, 9999px, 50px, 0); }
-            30% { clip: rect(28px, 9999px, 15px, 0); }
-            100% { clip: rect(90px, 9999px, 55px, 0); }
-        }
+        body { background: linear-gradient(135deg, #0f172a 0%, #1e2937 100%); }
+        .card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card:hover { transform: translateY(-4px); }
+        .result-item { animation: fadeIn 0.4s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body>
+<body class="min-h-screen text-white font-mono">
+    <div class="max-w-5xl mx-auto p-6">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-10">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-red-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg">🔥</div>
+                <h1 class="text-5xl font-bold tracking-tighter">OATHNET</h1>
+            </div>
+            <div class="text-sm text-gray-400">10 kostenlose Suchen • Demo</div>
+        </div>
 
-    <div class="custom-cursor" id="cursor"></div>
+        <!-- Search Bar -->
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold mb-3">Breach & OSINT Suche</h2>
+            <p class="text-gray-400 mb-8">E-Mail • Username • Discord ID • IP</p>
+            
+            <div class="max-w-2xl mx-auto">
+                <div class="flex gap-3">
+                    <input id="searchInput" type="text" 
+                           placeholder="name@example.com oder 123456789012345678 (Discord ID)"
+                           class="flex-1 bg-slate-900 border border-slate-700 rounded-3xl px-8 py-7 text-xl focus:outline-none focus:border-red-500">
+                    <button onclick="performSearch()" 
+                            class="bg-red-600 hover:bg-red-700 px-14 rounded-3xl font-bold text-lg flex items-center gap-3">
+                        <i class="fas fa-search"></i> SUCHEN
+                    </button>
+                </div>
+                
+                <div class="flex justify-center gap-6 mt-5 text-sm">
+                    <label class="flex items-center gap-2"><input type="checkbox" id="allCheck" checked class="accent-red-600"> Alles</label>
+                </div>
+            </div>
+        </div>
 
-    <div class="container">
-        <video id="background" autoplay loop muted playsinline>
-            <source src="assets/background.mp4" type="video/mp4">
-        </video>
-        
-        <main id="content">
-            <h1>Willkommen auf meinem Profil</h1>
-        </main>
+        <!-- Results -->
+        <div id="results" class="hidden">
+            <div class="bg-slate-900 border border-slate-700 rounded-3xl p-8">
+                <div class="flex justify-between mb-6">
+                    <h3 class="text-2xl font-semibold">Ergebnisse für <span id="queryDisplay" class="text-red-400"></span></h3>
+                    <button onclick="clearResults()" class="text-gray-400 hover:text-white"><i class="fas fa-times text-2xl"></i></button>
+                </div>
+                <div id="resultsContent" class="space-y-8"></div>
+            </div>
+        </div>
+
+        <div class="text-center text-xs text-gray-500 mt-12">
+            Demo Version • Nur zu Bildungszwecken • Keine echten Daten
+        </div>
     </div>
 
     <script>
-        // JavaScript aus script.js
-        document.addEventListener('DOMContentLoaded', () => {
-            const cursor = document.getElementById('cursor');
+        let searchCount = 0;
+        const MAX_SEARCHES = 15;
 
-            // Custom Cursor Logik
-            document.addEventListener('mousemove', (e) => {
-                cursor.style.left = e.clientX + 'px';
-                cursor.style.top = e.clientY + 'px';
-            });
+        async function performSearch() {
+            const input = document.getElementById('searchInput').value.trim();
+            if (!input) return alert("Bitte etwas eingeben!");
 
-            console.log("Seite geladen und Skripte initialisiert.");
-            
-            // Medien-Initialisierung
-            const backgroundMusic = document.getElementById('background-music');
-            if (backgroundMusic) {
-                backgroundMusic.volume = 0.3;
+            if (searchCount >= MAX_SEARCHES) {
+                return alert("Demo-Limit erreicht.");
             }
+            searchCount++;
+
+            document.getElementById('results').classList.remove('hidden');
+            document.getElementById('queryDisplay').textContent = input;
+
+            const content = document.getElementById('resultsContent');
+            content.innerHTML = `<div class="text-center py-20"><i class="fas fa-spinner fa-spin text-5xl text-red-500"></i><p class="mt-6 text-lg">Suche in Breaches & Logs...</p></div>`;
+
+            setTimeout(() => {
+                let html = '';
+
+                // Discord ID Lookup
+                if (/^\d{17,19}$/.test(input)) {
+                    html = `
+                        <div class="card bg-slate-800 border border-slate-700 rounded-2xl p-7 result-item">
+                            <h4 class="text-xl font-bold text-red-400 mb-4">Discord ID gefunden</h4>
+                            <div class="grid grid-cols-2 gap-6 text-sm">
+                                <div><span class="text-gray-400">User ID:</span> <span class="font-mono">${input}</span></div>
+                                <div><span class="text-gray-400">Username:</span> <span class="text-emerald-400">user_${input.slice(0,6)}</span></div>
+                                <div><span class="text-gray-400">Letzter Leak:</span> <span class="text-amber-400">Mai 2026</span></div>
+                                <div><span class="text-gray-400">Stealer Logs:</span> <span class="text-red-400">12 gefunden</span></div>
+                            </div>
+                            <div class="mt-6 pt-6 border-t border-slate-700">
+                                <p class="text-xs uppercase tracking-widest text-gray-500 mb-2">Gefundene IPs</p>
+                                <div class="font-mono text-amber-300 text-sm">185.12.XX.XX • 91.234.XX.XX</div>
+                            </div>
+                        </div>`;
+                } 
+                // Email
+                else if (input.includes('@')) {
+                    html = `
+                        <div class="card bg-slate-800 border border-slate-700 rounded-2xl p-7 result-item">
+                            <h4 class="text-xl font-bold mb-4">E-Mail in <span class="text-red-400">4 Breaches</span> gefunden</h4>
+                            <div class="space-y-5">
+                                <div class="flex gap-4">
+                                    <div class="text-3xl">📧</div>
+                                    <div>
+                                        <p class="font-semibold">Collection #1 • Stealer Log 2025 • Discord Leak</p>
+                                        <p class="text-amber-400 mt-2">Passwort: <span class="font-mono">summer2025!</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                } 
+                // Default (Username / IP)
+                else {
+                    html = `
+                        <div class="card bg-slate-800 border border-slate-700 rounded-2xl p-7 result-item">
+                            <h4 class="text-xl font-bold text-blue-400 mb-4">OSINT Ergebnisse</h4>
+                            <div class="space-y-6">
+                                <div>👤 Username gefunden in Roblox, Steam & Discord</div>
+                                <div>🌐 IP-Logs: 3 Einträge</div>
+                                <div>🔗 Discord: Verknüpft mit ID 928374612837</div>
+                            </div>
+                        </div>`;
+                }
+
+                content.innerHTML = html;
+            }, 900);
+        }
+
+        function clearResults() {
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('searchInput').value = '';
+        }
+
+        // Enter-Taste Support
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') performSearch();
         });
     </script>
 </body>
