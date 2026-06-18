@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>guns.lol | Dashboard</title>
-    <!-- Google Fonts für die coolen Profil-Schriftarten nachladen -->
     <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Orbitron:wght@500;700&family=Permanent+Marker&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
         /* --- DESIGN SYSTEM (Guns.lol Replikation) --- */
@@ -98,15 +97,15 @@
         .sb-uid { font-size: 0.75rem; color: #71717a; }
 
         /* --- ÖFFENTLICHE SEITE (BIO-LINK) --- */
-        #view-profile { display: none; width: 100vw; height: 100vh; position: fixed; top:0; left:0; z-index: 999999; background: #0a0a0a; overflow: hidden; }
+        #view-profile { display: none; width: 100vw; height: 100vh; position: fixed; top:0; left:0; z-index: 999999; background: #0a0a0a; overflow-y: auto; }
         .p-banner { width: 100%; height: 280px; background-size: cover; background-position: center; background-color: #16161a; }
         
         .p-card {
-            max-width: 550px; width: 90%; background: rgba(22, 22, 26, 0.65); border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); margin: -80px auto 0 auto;
+            max-width: 550px; width: 90%; background: rgba(22, 22, 26, 0.75); border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); margin: -80px auto 40px auto;
             border-radius: 20px; padding: 40px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.8); position: relative; z-index: 10;
         }
-        .p-avatar { width: 120px; height: 120px; border-radius: 50%; border: 4px solid #0a0a0a; object-fit: cover; margin: -100px auto 15px auto; display: block; }
+        .p-avatar { width: 120px; height: 120px; border-radius: 50%; border: 4px solid #0a0a0a; object-fit: cover; margin: -100px auto 15px auto; display: block; background: #111; }
         
         /* Social Media Icons Box im Profil */
         .profile-socials { display: flex; justify-content: center; gap: 15px; margin-top: 25px; flex-wrap: wrap; }
@@ -122,14 +121,12 @@
         }
 
         /* Hintergrund-Effekte */
-        .matrix-bg { position: absolute; top:0; left:0; width:100%; height:100%; opacity: 0.15; pointer-events: none; z-index: 1; }
+        .matrix-bg { position: fixed; top:0; left:0; width:100vw; height:100vh; opacity: 0.15; pointer-events: none; z-index: 1; }
     </style>
 </head>
 <body>
 
-    <!-- AUTHENTICATION WRAPPER -->
     <div class="auth-wrapper" id="auth-area">
-        <!-- LOGIN -->
         <div id="view-login" class="container active">
             <h2>Anmelden</h2>
             <form id="login-form">
@@ -141,7 +138,6 @@
             <div class="form-footer">Kein Konto? <a onclick="switchView('view-register')">Registrieren</a></div>
         </div>
 
-        <!-- REGISTER -->
         <div id="view-register" class="container">
             <h2>Registrieren</h2>
             <form id="register-form">
@@ -153,7 +149,6 @@
             <div class="form-footer">Bereits registriert? <a onclick="switchView('view-login')">Einloggen</a></div>
         </div>
 
-        <!-- FORGOT PASSWORD -->
         <div id="view-forgot" class="container">
             <h2>Passwort zurücksetzen</h2>
             <form id="forgot-form">
@@ -164,9 +159,7 @@
         </div>
     </div>
 
-    <!-- MAIN DASHBOARD -->
     <div id="view-dashboard">
-        <!-- Sidebar Navigation -->
         <div class="sidebar">
             <div class="logo">🧬 guns.lol</div>
             <div class="side-btn active" id="btn-tab-konto" onclick="switchTab('konto')">👤 Konto</div>
@@ -179,10 +172,8 @@
             <div class="side-btn" style="color: #ef4444; margin-top: 10px;" onclick="window.firebaseLogout()">🚪 Ausloggen</div>
         </div>
 
-        <!-- Right Side Main Content Window -->
         <div class="main-content">
             
-            <!-- TAB 1: KONTO OVERVIEW -->
             <div id="tab-konto" class="tab-content active">
                 <div class="section-title">Kontoübersicht</div>
                 <div class="stats-grid">
@@ -210,7 +201,6 @@
                 </div>
             </div>
 
-            <!-- TAB 2: ANPASSEN / MEDIA UPLOADS -->
             <div id="tab-anpassen" class="tab-content">
                 <div class="section-title">Medien-Upload</div>
                 
@@ -262,7 +252,6 @@
         </div>
     </div>
 
-    <!-- PUBLIC BIO-LINK PROFILE LAYER -->
     <div id="view-profile">
         <canvas id="matrixCanvas" class="matrix-bg" style="display:none;"></canvas>
         <div id="pub-banner" class="p-banner"></div>
@@ -271,15 +260,12 @@
             <h2 id="pub-title"></h2>
             <p id="pub-bio" style="color:#a1a1aa; white-space: pre-wrap; margin-top: 10px; font-size: 0.95rem;"></p>
             
-            <!-- Dynamische Social Buttons -->
             <div class="profile-socials" id="pub-socials"></div>
         </div>
-        <!-- Hintergrund-Musik-Player -->
         <audio id="pub-audio" loop></audio>
     </div>
     <div id="intro-overlay" style="display: none; color:white;">[ CLICK TO ENTER ]</div>
 
-    <!-- --- FIREBASE LOGIC ENGINE --- -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -362,6 +348,7 @@
 
             if (pubUser) {
                 document.getElementById('auth-area').style.display = 'none';
+                document.getElementById('view-dashboard').style.display = 'none';
                 loadPublicProfile(pubUser.toLowerCase());
                 return;
             }
@@ -403,7 +390,7 @@
             }
         });
 
-        // SAVE DATA DATA (Inklusive Multi-Media Uploads & Fonts)
+        // SAVE DATA DATA
         window.saveProfileData = async function() {
             if(!auth.currentUser) return;
             const uid = auth.currentUser.uid;
@@ -470,7 +457,14 @@
             
             if(data.avatar) document.getElementById('pub-avatar').src = data.avatar;
             if(data.banner) document.getElementById('pub-banner').style.backgroundImage = `url('${data.banner}')`;
-            if(data.audio) document.getElementById('pub-audio').src = data.audio;
+            
+            const aud = document.getElementById('pub-audio');
+            if(data.audio) {
+                aud.src = data.audio;
+                aud.load();
+            } else {
+                aud.removeAttribute('src');
+            }
 
             // Social Buttons rendern
             const socBox = document.getElementById('pub-socials');
@@ -493,19 +487,21 @@
                 initMatrix();
             }
 
-            // Musik-Overlay aktivieren
+            // Overlay aktivieren
             const intro = document.getElementById('intro-overlay');
             intro.style.display = 'flex';
+            
             window.startPage = function() {
                 intro.style.display = 'none';
                 document.getElementById('view-profile').style.display = 'block';
-                const aud = document.getElementById('pub-audio');
-                if(aud.src) aud.play().catch(e => console.log("Audio-Autoplay geblockt"));
+                if(aud.src) {
+                    aud.play().catch(e => console.log("Audio-Autoplay von Browser geblockt"));
+                }
             };
             intro.setAttribute('onclick', 'startPage()');
         }
 
-        // MATRIX EFFECT REPLICA SYSTEM
+        // MATRIX EFFECT SYSTEM
         function initMatrix() {
             const canvas = document.getElementById('matrixCanvas');
             canvas.style.display = 'block';
