@@ -15,16 +15,16 @@
             display: flex;
         }
 
-        /* Verhindert Überlagerung von Login & Dashboard */
+        /* FIX: Auth-Wrapper sauber isoliert, damit er sich nicht aufhängt */
         .auth-wrapper {
-            position: fixed; top:0; left:0; width: 100vw; height: 100vh;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             display: flex; justify-content: center; align-items: center; background: #0d0d0e; z-index: 99999;
         }
         .container {
             background: #16161a; border: 1px solid #232329; padding: 35px; border-radius: 14px;
             width: 100%; max-width: 420px; box-shadow: 0 10px 40px rgba(0,0,0,0.7); display: none;
         }
-        .container.active { display: block; }
+        .container.active { display: block !important; }
 
         /* Formular Elemente */
         h2, h3 { margin-bottom: 20px; font-weight: 600; }
@@ -41,11 +41,11 @@
         }
         .btn-sec { background: #232329; color: #fff; border: 1px solid #2e2e38; margin-top: 10px; }
         .form-footer { text-align: center; margin-top: 20px; font-size: 0.85rem; color: #a1a1aa; }
-        .form-footer a, .forgot-link { color: #fff; text-decoration: none; cursor: pointer; }
+        .form-footer a, .forgot-link { color: #fff; text-decoration: none; cursor: pointer; font-weight: bold; }
         .forgot-link { display: block; text-align: right; margin-top: -10px; margin-bottom: 20px; font-size: 0.85rem; }
 
         /* --- DASHBOARD STRUCTURE --- */
-        #view-dashboard { width: 100%; display: flex; min-height: 100vh; }
+        #view-dashboard { width: 100%; display: none; min-height: 100vh; }
         
         .sidebar {
             width: 250px; background: #111113; border-right: 1px solid #1c1c21;
@@ -63,13 +63,13 @@
         .tab-content.active { display: block; }
         .section-title { font-size: 1.4rem; font-weight: 600; margin-bottom: 24px; }
 
-        /* --- STYLING AUS IMAGE_E1C3E1.JPG (KONTO) --- */
+        /* --- STYLING AUS KONTO-ÜBERSICHT --- */
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 30px; }
         .stat-card { background: #16161a; border: 1px solid #232329; padding: 20px; border-radius: 12px; }
         .stat-label { font-size: 0.8rem; color: #a1a1aa; text-transform: uppercase; margin-bottom: 6px; }
         .stat-value { font-size: 1.4rem; font-weight: 700; }
 
-        /* --- STYLING AUS IMAGE_E1B8BE.JPG (ANPASSEN) --- */
+        /* --- STYLING AUS ANPASSEN (image_e1b8be.jpg) --- */
         .upload-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 30px; }
         @media (max-width: 1000px) { .upload-grid { grid-template-columns: 1fr 1fr; } }
         
@@ -148,7 +148,7 @@
     </div>
 
     <!-- MAIN DASHBOARD -->
-    <div id="view-dashboard" style="display: none;">
+    <div id="view-dashboard">
         <!-- Sidebar Navigation -->
         <div class="sidebar">
             <div class="logo">🧬 guns.lol</div>
@@ -156,10 +156,10 @@
             <div class="side-btn" id="btn-tab-anpassen" onclick="switchTab('anpassen')">🎨 Anpassen</div>
             
             <div class="sidebar-user">
-                <div class="sb-username" id="sb-u">b35</div>
-                <div class="sb-uid" id="sb-id">UID: 1.920.918</div>
+                <div class="sb-username" id="sb-u">...</div>
+                <div class="sb-uid" id="sb-id">UID: --</div>
             </div>
-            <div class="side-btn" style="color: #ef4444;" onclick="window.firebaseLogout()">🚪 Ausloggen</div>
+            <div class="side-btn" style="color: #ef4444; margin-top: 10px;" onclick="window.firebaseLogout()">🚪 Ausloggen</div>
         </div>
 
         <!-- Right Side Main Content Window -->
@@ -176,7 +176,7 @@
                 </div>
 
                 <h3>Allgemeine Daten</h3>
-                <div class="container active" style="background:transparent; border:none; padding:0; max-width:100%;">
+                <div style="background:transparent; border:none; padding:0; max-width:100%;">
                     <div class="form-group"><label>Anzeigename (Titel)</label><input type="text" id="db-title"></div>
                     <div class="form-group"><label>Beschreibung / Bio</label><textarea id="db-bio" rows="3"></textarea></div>
                     <button class="btn" onclick="window.saveProfileData()">Änderungen speichern</button>
@@ -264,10 +264,10 @@
         const storage = getStorage(app);
         let currentUserDoc = null;
 
-        // Login / Register Form-Switcher
+        // FIX: Sichtbarkeit umschalten repariert (.active Klassenkorrektur)
         window.switchView = function(viewId) {
-            document.querySelectorAll('.auth-wrapper .container').forEach(el => el.style.display = 'none');
-            document.getElementById(viewId).style.display = 'block';
+            document.querySelectorAll('.auth-wrapper .container').forEach(el => el.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
         };
 
         // Tab-Wechsler (Konto / Anpassen)
@@ -278,7 +278,7 @@
             document.getElementById(`btn-tab-${tabName}`).classList.add('active');
         };
 
-        // REGISTER PROCESS WITH BLOCK-SAFE UID AUTO-INCREMENT
+        // REGISTER
         document.getElementById('register-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = document.getElementById('reg-user').value.trim().toLowerCase();
@@ -304,19 +304,21 @@
                     uid: cred.user.uid, uidNumber: finalUidNumber, username: username,
                     title: username, bio: "Willkommen auf meinem Profil!", links: []
                 });
-                alert("Registriert!");
+                alert("Konto erfolgreich erstellt!");
             } catch (err) { alert(err.message); }
         });
 
+        // LOGIN
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            try { await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value); } 
-            catch (err) { alert(err.message); }
+            try { 
+                await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value); 
+            } catch (err) { alert(err.message); }
         });
 
         window.firebaseLogout = () => signOut(auth).then(() => location.reload());
 
-        // STATE CONTROLLER
+        // STATE CONTROLLER (Steuert ob man das Login oder Dashboard sieht)
         onAuthStateChanged(auth, async (user) => {
             const urlParams = new URLSearchParams(window.location.search);
             const pubUser = urlParams.get('u');
@@ -332,7 +334,8 @@
                 const userDoc = await getDoc(doc(db, "users", user.uid));
                 if(userDoc.exists()) {
                     currentUserDoc = userDoc.data();
-                    // Dashboard füllen
+                    
+                    // Dashboard mit Daten füttern
                     document.getElementById('card-username').innerText = currentUserDoc.username;
                     document.getElementById('sb-u').innerText = currentUserDoc.username;
                     document.getElementById('card-uid').innerText = Number(currentUserDoc.uidNumber || 0).toLocaleString();
@@ -349,6 +352,7 @@
             } else {
                 document.getElementById('view-dashboard').style.display = 'none';
                 document.getElementById('auth-area').style.display = 'flex';
+                switchView('view-login');
             }
         });
 
@@ -379,11 +383,11 @@
                 avatar: avatarUrl, banner: bannerUrl
             }, { merge: true });
 
-            alert("Daten aktualisiert!");
+            alert("Daten erfolgreich gespeichert!");
             location.reload();
         };
 
-        // PUBLIC BIOLINK PROFIL PAGE GENERATOR
+        // PUBLIC PROFIL PAGE GENERATOR
         async function loadPublicProfile(username) {
             const q = query(collection(db, "users"), where("username", "==", username));
             const querySnapshot = await getDocs(q);
