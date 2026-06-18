@@ -3,143 +3,259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mein Bio-Link</title>
+    <title>Bio-Link Platform</title>
     <style>
-        /* Basis-Styling (Dunkler Look) */
+        /* Basis-Styling (Guns.lol Dark Aesthetic) */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            margin: 0;
-            padding: 0;
-            background-color: #0a0a0a;
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #09090b;
+            color: #fafafa;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Intro-Bildschirm (Click to Enter) */
-        #intro {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 999;
-            cursor: pointer;
-            transition: opacity 0.5s ease;
-            font-size: 1.5rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        /* Haupt-Profilkarte */
-        .profile-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+        /* Container für die Formulare & Dashboard */
+        .auth-container, .dashboard-container {
+            background: #141417;
+            border: 1px solid #27272a;
             padding: 40px;
-            border-radius: 16px;
-            text-align: center;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            max-width: 400px;
-            width: 90%;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.8s ease;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: none; /* Wird per JS gesteuert */
         }
 
-        /* Profilbild */
-        .avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 2px solid #fff;
-            margin-bottom: 15px;
-        }
+        .active { display: block; }
 
-        h1 {
-            margin: 10px 0 5px 0;
-            font-size: 1.8rem;
-        }
+        h2 { text-align: center; margin-bottom: 24px; font-weight: 600; letter-spacing: -0.5px; }
+        p.subtitle { text-align: center; color: #a1a1aa; font-size: 0.9rem; margin-top: -15px; margin-bottom: 20px; }
 
-        .bio {
-            color: #b3b3b3;
-            font-size: 0.95rem;
-            margin-bottom: 25px;
-        }
-
-        /* Social Links */
-        .links {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .link-btn {
-            background: rgba(255, 255, 255, 0.05);
-            color: white;
-            text-decoration: none;
+        /* Input Felder */
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-size: 0.85rem; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.5px; }
+        input {
+            width: 100%;
             padding: 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-            font-weight: 500;
+            background: #09090b;
+            border: 1px solid #27272a;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 1rem;
+            transition: border 0.2s;
         }
+        input:focus { outline: none; border-color: #3f3f46; }
 
-        .link-btn:hover {
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 12px;
             background: #ffffff;
             color: #000000;
-            transform: scale(1.03);
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
         }
+        .btn:hover { opacity: 0.9; }
+
+        /* Links unter den Formularen */
+        .form-footer { text-align: center; margin-top: 20px; font-size: 0.85rem; color: #a1a1aa; }
+        .form-footer a { color: #ffffff; text-decoration: none; font-weight: 500; cursor: pointer; }
+        .form-footer a:hover { text-decoration: underline; }
+        .forgot-link { display: block; text-align: right; margin-top: -15px; margin-bottom: 20px; font-size: 0.85rem; color: #a1a1aa; text-decoration: none; }
+        .forgot-link:hover { color: #fff; }
+
+        /* --- DASHBOARD STYLING --- */
+        .dashboard-container { max-width: 800px; width: 90%; }
+        .dash-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #27272a; padding-bottom: 15px; margin-bottom: 25px; }
+        .logout-btn { background: #ef4444; color: white; padding: 6px 12px; border-radius: 4px; font-size: 0.85rem; cursor: pointer; border: none; }
+        
+        .dash-content { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        @media(max-width: 768px) { .dash-content { grid-template-columns: 1fr; } }
+        
+        .editor-section { background: #1c1c21; padding: 20px; border-radius: 8px; border: 1px solid #27272a; }
+        
+        /* Live-Vorschau Box im Dashboard */
+        .preview-section { 
+            background: #0a0a0a; 
+            border: 1px solid #27272a; 
+            border-radius: 8px; 
+            padding: 30px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .preview-avatar { width: 80px; height: 80px; border-radius: 50%; border: 2px solid #fff; margin-bottom: 15px; }
+        .preview-links { width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        .preview-btn { background: rgba(255,255,255,0.05); border: 1px solid #27272a; padding: 10px; border-radius: 6px; color: #fff; text-decoration: none; font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
-    <!-- Intro Screen -->
-    <div id="intro" onclick="startPage()">[ click to enter ]</div>
+    <!-- 1. LOGIN MASK -->
+    <div id="view-login" class="auth-container active">
+        <h2>Anmelden</h2>
+        <p class="subtitle">Willkommen zurück bei guns.lol-Clone</p>
+        <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label>E-Mail oder Username</label>
+                <input type="text" id="login-user" required placeholder="deinname@beispiel.de">
+            </div>
+            <div class="form-group">
+                <label>Passwort</label>
+                <input type="password" id="login-pass" required placeholder="••••••••">
+            </div>
+            <a class="forgot-link" onclick="switchView('view-forgot')">Passwort vergessen?</a>
+            <button type="submit" class="btn">Login</button>
+        </form>
+        <div class="form-footer">
+            Noch kein Konto? <a onclick="switchView('view-register')">Registrieren</a>
+        </div>
+    </div>
 
-    <!-- Hintergrundmusik (Optional: Setze deine eigene URL ein) -->
-    <audio id="bg-music" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-    </audio>
+    <!-- 2. REGISTER MASK -->
+    <div id="view-register" class="auth-container">
+        <h2>Registrieren</h2>
+        <p class="subtitle">Erstelle deinen eigenen Bio-Link</p>
+        <form onsubmit="handleRegister(event)">
+            <div class="form-group">
+                <label>Username (guns.lol/deinname)</label>
+                <input type="text" id="reg-name" required placeholder="wunschname">
+            </div>
+            <div class="form-group">
+                <label>E-Mail Adresse</label>
+                <input type="email" id="reg-email" required placeholder="name@beispiel.de">
+            </div>
+            <div class="form-group">
+                <label>Passwort</label>
+                <input type="password" id="reg-pass" required placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn">Konto erstellen</button>
+        </form>
+        <div class="form-footer">
+            Bereits registriert? <a onclick="switchView('view-login')">Einloggen</a>
+        </div>
+    </div>
 
-    <!-- Hauptinhalt -->
-    <div class="profile-card" id="profile">
-        <!-- Ersetze den Platzhalter mit deinem Bild -->
-        <img src="https://via.placeholder.com/100" alt="Avatar" class="avatar">
-        
-        <h1>Dein Name</h1>
-        <p class="bio">Hier steht deine kurze Beschreibung oder dein Spruch.</p>
+    <!-- 3. FORGOT PASSWORD MASK -->
+    <div id="view-forgot" class="auth-container">
+        <h2>Passwort zurücksetzen</h2>
+        <p class="subtitle">Gib deine E-Mail ein, um einen Reset-Link zu erhalten</p>
+        <form onsubmit="handleForgot(event)">
+            <div class="form-group">
+                <label>Deine E-Mail Adresse</label>
+                <input type="email" id="forgot-email" required placeholder="name@beispiel.de">
+            </div>
+            <button type="submit" class="btn">Reset-Link senden</button>
+        </form>
+        <div class="form-footer">
+            <a onclick="switchView('view-login')">Zurück zum Login</a>
+        </div>
+    </div>
 
-        <div class="links">
-            <a href="https://discord.com" target="_blank" class="link-btn">Discord</a>
-            <a href="https://instagram.com" target="_blank" class="link-btn">Instagram</a>
-            <a href="https://github.com" target="_blank" class="link-btn">GitHub</a>
+    <!-- 4. DASHBOARD (Nach Login) -->
+    <div id="view-dashboard" class="dashboard-container">
+        <div class="dash-header">
+            <div>
+                <h3>Willkommen, <span id="dash-username">User</span>! 👋</h3>
+                <p style="font-size: 0.85rem; color: #a1a1aa; margin-top: 4px;">Verwalte hier deine Profilkarte</p>
+            </div>
+            <button class="logout-btn" onclick="switchView('view-login')">Ausloggen</button>
+        </div>
+
+        <div class="dash-content">
+            <!-- Link Editor links -->
+            <div class="editor-section">
+                <h4 style="margin-bottom: 15px;">Profil bearbeiten</h4>
+                <div class="form-group">
+                    <label>Anzeigename</label>
+                    <input type="text" id="edit-title" value="Dein Name" oninput="updatePreview()">
+                </div>
+                <div class="form-group">
+                    <label>Bio (Beschreibung)</label>
+                    <input type="text" id="edit-bio" value="Hier steht deine kurze Beschreibung." oninput="updatePreview()">
+                </div>
+                <div class="form-group">
+                    <label>Discord Link</label>
+                    <input type="text" id="edit-discord" value="https://discord.com" oninput="updatePreview()">
+                </div>
+                <div class="form-group">
+                    <label>Instagram Link</label>
+                    <input type="text" id="edit-instagram" value="https://instagram.com" oninput="updatePreview()">
+                </div>
+                <button class="btn" style="margin-top: 10px;" onclick="alert('Änderungen gespeichert! (Simulation)')">Speichern</button>
+            </div>
+
+            <!-- Live Preview rechts -->
+            <div>
+                <h4 style="margin-bottom: 15px; color: #a1a1aa;">Live-Vorschau</h4>
+                <div class="preview-section">
+                    <img src="https://via.placeholder.com/100" class="preview-avatar" alt="Avatar">
+                    <h2 id="prev-title" style="font-size: 1.4rem; margin-bottom: 5px;">Dein Name</h2>
+                    <p id="prev-bio" style="color: #b3b3b3; font-size: 0.85rem; margin-bottom: 20px;">Hier steht deine kurze Beschreibung.</p>
+                    <div class="preview-links">
+                        <a id="prev-discord" href="#" target="_blank" class="preview-btn">Discord</a>
+                        <a id="prev-instagram" href="#" target="_blank" class="preview-btn">Instagram</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        function startPage() {
-            // Intro ausblenden
-            const intro = document.getElementById('intro');
-            intro.style.opacity = '0';
-            setTimeout(() => intro.style.display = 'none', 500);
-
-            // Musik abspielen
-            const music = document.getElementById('bg-music');
-            music.play().catch(error => console.log("Audio-Autoplay wurde blockiert: ", error));
-
-            // Profilkarte anzeigen
-            const profile = document.getElementById('profile');
-            profile.style.opacity = '1';
-            profile.style.transform = 'translateY(0)';
+        // Funktion zum Wechseln der Ansichten
+        function switchView(viewId) {
+            // Alle Container verstecken
+            document.querySelectorAll('.auth-container, .dashboard-container').forEach(el => {
+                el.classList.remove('active');
+            });
+            // Gewünschten Container anzeigen
+            document.getElementById(viewId).classList.add('active');
         }
+
+        // Login logik simulieren
+        function handleLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('login-user').value;
+            document.getElementById('dash-username').innerText = user.split('@')[0]; // Username im Dash setzen
+            switchView('view-dashboard');
+        }
+
+        // Registrierung simulieren
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value;
+            alert('Konto für ' + name + ' wurde erfolgreich simuliert erstellt!');
+            switchView('view-login');
+        }
+
+        // Passwort vergessen simulieren
+        function handleForgot(e) {
+            e.preventDefault();
+            const email = document.getElementById('forgot-email').value;
+            alert('Ein simulierter Zurücksetzungs-Link wurde an ' + email + ' gesendet!');
+            switchView('view-login');
+        }
+
+        // Live-Vorschau im Dashboard aktualisieren
+        function updatePreview() {
+            document.getElementById('prev-title').innerText = document.getElementById('edit-title').value;
+            document.getElementById('prev-bio').innerText = document.getElementById('edit-bio').value;
+            document.getElementById('prev-discord').href = document.getElementById('edit-discord').value;
+            document.getElementById('prev-instagram').href = document.getElementById('edit-instagram').value;
+        }
+
+        // Initiale Vorschau laden
+        updatePreview();
     </script>
 </body>
 </html>
