@@ -3,245 +3,276 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>haunt.gg Clone</title>
-    <!-- Tailwind CSS -->
+    <title>haunt.gg Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #fcfafb; }
+        /* Individueller Pink-Ton für Toggles und Slider */
+        .accent-pink { accent-color: #db2777; }
+        /* Custom Scrollbar für die Sidebar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #e5e5e5; border-radius: 10px; }
     </style>
 </head>
-<body class="text-neutral-900 antialiased selection:bg-pink-100 bg-white">
+<body class="text-neutral-900 antialiased min-h-screen flex">
 
-    <!-- ================= 1. DIE STARTSEITE ================= -->
-    <div id="home-view" class="block">
-        <header class="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
-            <div class="flex items-center gap-2 font-extrabold text-2xl tracking-tight">
-                <span class="text-pink-300 text-3xl">🦇</span>
+    <!-- ================= LEFTSIDE SIDEBAR ================= -->
+    <aside class="w-64 border-r border-neutral-200/60 bg-white h-screen sticky top-0 flex flex-col justify-between p-4 shrink-0">
+        <div>
+            <!-- Logo -->
+            <div class="flex items-center gap-2 font-extrabold text-xl tracking-tight px-2 py-3 mb-4">
+                <span class="text-pink-400 text-2xl">🦇</span>
                 <span>haunt<span class="text-neutral-400">.gg</span></span>
             </div>
-        </header>
 
-        <main class="max-w-4xl mx-auto px-6 pt-24 pb-12 text-center flex flex-col items-center justify-center min-h-[70vh]">
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-neutral-50 text-xs font-medium text-neutral-500 border border-neutral-100 mb-8">
-                <span class="text-pink-400">🛒 Market</span>
-                <span class="text-neutral-300">|</span>
-                <span>Rare 1-char names & badges</span>
-            </div>
-
-            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight text-black max-w-2xl leading-[1.1] mb-6">
-                Make the internet <br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-200 to-purple-200 filter saturate-150">remember</span> you.
-            </h1>
-
-            <p class="text-neutral-400 text-base md:text-lg max-w-xl mb-12">
-                One link for everything you do. Claim your name in seconds.
-            </p>
-
-            <div class="w-full max-w-md flex flex-col sm:flex-row items-center gap-3 bg-neutral-50 p-2 rounded-2xl border border-neutral-100 shadow-sm">
-                <div class="flex items-center w-full px-3 py-2">
-                    <span class="text-pink-400 font-medium text-base">haunt.gg/</span>
-                    <input id="username-input" type="text" placeholder="yourname" class="bg-transparent border-none outline-none w-full ml-1 text-base text-neutral-800 placeholder-neutral-300 font-medium">
-                </div>
-                <button onclick="checkAndClaimName()" class="w-full sm:w-auto bg-neutral-950 text-white text-sm font-semibold px-6 py-3 rounded-xl hover:bg-neutral-800 transition-colors">
-                    Claim →
-                </button>
-            </div>
-            <p id="status-message" class="mt-4 text-sm font-medium"></p>
-        </main>
-    </div>
-
-    <!-- ================= 2. DER EDITOR / DASHBOARD ================= -->
-    <div id="editor-view" class="hidden min-h-screen bg-neutral-50 flex flex-col items-center pt-12 px-4">
-        <div class="w-full max-w-md bg-white border border-neutral-200 rounded-3xl p-6 shadow-sm">
-            <h2 class="text-2xl font-bold mb-1">Profil bearbeiten</h2>
-            <p class="text-sm text-neutral-400 mb-6">Gestalte deine persönliche Seite für <span id="editor-current-user" class="text-pink-500 font-semibold"></span></p>
-            
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-neutral-400 mb-1">Anzeigename</label>
-                    <input id="edit-display-name" type="text" placeholder="z.B. Max Mustermann" class="w-full bg-neutral-50 border border-neutral-200 rounded-xl p-3 outline-none focus:border-neutral-400 text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-neutral-400 mb-1">Bio / Beschreibung</label>
-                    <textarea id="edit-bio" placeholder="Erzähle etwas über dich..." class="w-full bg-neutral-50 border border-neutral-200 rounded-xl p-3 outline-none focus:border-neutral-400 text-sm h-24 resize-none"></textarea>
-                </div>
-                
-                <hr class="border-neutral-100 my-4">
-                
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-neutral-400 mb-2">Deine Links</label>
-                    <div id="editor-links-container" class="space-y-2 mb-3">
-                        <!-- Hier erscheinen dynamisch die Link-Inputs -->
+            <!-- Profil-Wähler Dropdown -->
+            <div class="bg-neutral-50 border border-neutral-200/80 rounded-2xl p-2 flex items-center justify-between mb-6 cursor-pointer hover:bg-neutral-100/50 transition-all">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-neutral-200 text-neutral-500 font-bold rounded-full flex items-center justify-center text-xs">D</div>
+                    <div>
+                        <p class="text-[11px] font-bold text-neutral-400 uppercase tracking-wider leading-none">Profil</p>
+                        <p class="text-sm font-semibold text-neutral-700 mt-0.5">Default</p>
                     </div>
-                    <button onclick="addLinkInputRow()" class="w-full border border-dashed border-neutral-300 text-neutral-500 text-xs py-2 rounded-xl hover:bg-neutral-50 transition-colors font-medium">
-                        + Link hinzufügen
+                </div>
+                <span class="text-neutral-400 text-xs px-1">↕</span>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="space-y-1">
+                <button onclick="switchTab('dashboard')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-neutral-500 hover:bg-neutral-50 hover:text-neutral-900 transition-all">
+                    <span>📊</span> Übersicht
+                </button>
+                <button onclick="switchTab('customize')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-neutral-500 hover:bg-neutral-50 hover:text-neutral-900 transition-all">
+                    <span>🪄</span> Anpassen
+                </button>
+                
+                <!-- Ausklappbarer Profil-Ordner -->
+                <div>
+                    <button class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium text-neutral-800 bg-neutral-50/50 transition-all">
+                        <div class="flex items-center gap-3"><span>👤</span> Profil</div>
+                        <span class="text-[10px] text-neutral-400">▼</span>
                     </button>
+                    <!-- Sub-Items -->
+                    <div class="pl-7 mt-1 space-y-1 border-l border-neutral-100 ml-5">
+                        <button onclick="switchTab('assets')" class="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-pink-600 bg-pink-50/50 block">Assets</button>
+                        <button class="w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-neutral-400 hover:text-neutral-800 block">Über mich</button>
+                        <button class="w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-neutral-400 hover:text-neutral-800 block">Badges</button>
+                        <button class="w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-neutral-400 hover:text-neutral-800 block">Links</button>
+                        <button class="w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-neutral-400 hover:text-neutral-800 block">Projekte</button>
+                    </div>
                 </div>
 
-                <button onclick="saveProfileData()" class="w-full bg-pink-500 text-white font-semibold py-3 rounded-xl hover:bg-pink-600 transition-colors text-sm shadow-sm mt-6">
-                    Profil speichern & veröffentlichen
+                <button class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium text-neutral-400 hover:bg-neutral-50 hover:text-neutral-900 transition-all">
+                    <div class="flex items-center gap-3"><span>⭐</span> Premium</div>
+                    <span class="text-xs">🔒</span>
                 </button>
-                <p id="editor-status" class="text-center text-xs font-medium mt-2"></p>
+                <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-neutral-400 hover:bg-neutral-50 hover:text-neutral-900 transition-all">
+                    <span>🎨</span> Templates
+                </button>
+            </nav>
+        </div>
+
+        <!-- Footer der Sidebar -->
+        <div class="space-y-2">
+            <button class="w-full flex items-center justify-between p-3 bg-neutral-50 border border-neutral-200/60 rounded-2xl text-xs font-semibold text-neutral-600 hover:bg-neutral-100/50 transition-all">
+                <span class="flex items-center gap-2">🔗 Profil teilen</span>
+            </button>
+            <div class="flex items-center justify-between p-2 rounded-2xl hover:bg-neutral-50 transition-all cursor-pointer">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 bg-pink-100 text-pink-600 font-bold rounded-full flex items-center justify-center text-xs">E</div>
+                    <div class="leading-none">
+                        <p class="text-[10px] font-medium text-neutral-400">Angemeldet als</p>
+                        <p class="text-xs font-bold text-neutral-700 mt-0.5">ebay-de</p>
+                    </div>
+                </div>
+                <span class="text-neutral-400 text-xs">•••</span>
             </div>
         </div>
-    </div>
+    </aside>
 
-    <!-- ================= 3. DIE ÖFFENTLICHE PROFILSEITE ================= -->
-    <div id="profile-view" class="hidden min-h-screen bg-neutral-950 text-white flex flex-col items-center pt-24 px-4">
-        <div class="w-24 h-24 bg-gradient-to-tr from-pink-300 to-purple-400 rounded-full mb-6 shadow-lg shadow-pink-500/10"></div>
-        <h1 id="profile-name" class="text-3xl font-extrabold tracking-tight mb-1">Lädt...</h1>
-        <p id="profile-username" class="text-pink-400 font-medium mb-4">@username</p>
-        <p id="profile-bio" class="text-neutral-400 max-w-sm text-center mb-8"></p>
+    <!-- ================= MAIN CONTENT BEREICH ================= -->
+    <main class="flex-1 p-8 overflow-y-auto max-w-6xl mx-auto w-full">
         
-        <div id="profile-links" class="w-full max-w-md flex flex-col gap-4"></div>
-        
-        <a href="index.html" class="mt-12 text-xs text-neutral-600 hover:text-neutral-400 transition-colors">Erstelle dein eigenes Profil bei haunt.gg Clone</a>
-    </div>
+        <!-- Top Header Bar -->
+        <div class="flex items-center justify-between mb-8">
+            <div class="text-xs text-neutral-400 font-medium">
+                🔲 Dashboard &nbsp;>&nbsp; <span id="breadcrumb" class="text-neutral-600 font-semibold">Profil</span> &nbsp;>&nbsp; <span class="text-neutral-800">Assets</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="openLivePreview()" class="bg-pink-50 text-pink-600 text-xs font-bold px-4 py-2 rounded-xl hover:bg-pink-100 transition-all flex items-center gap-1.5 shadow-sm shadow-pink-500/5">
+                    👁️ Live-Vorschau
+                </button>
+                <button class="bg-white border border-neutral-200 text-neutral-600 text-xs font-bold px-4 py-2 rounded-xl hover:bg-neutral-50 transition-all">
+                    Support
+                </button>
+            </div>
+        </div>
 
-    <!-- ================= LOGIK & DATENBANK-STEUERUNG ================= -->
+        <!-- ===== VIEW 1: ANPASSEN (Entsprechend Screenshot 2026-06-18 170744.jpg) ===== -->
+        <div id="view-customize" class="hidden space-y-6">
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight text-neutral-900">Anpassen</h1>
+                <p class="text-xs text-neutral-400 mt-0.5">Globale Farben, Container-Styling und Rahmen deines Profils einstellen.</p>
+            </div>
+
+            <!-- Box: Anpassung -->
+            <div class="bg-white border border-neutral-200/70 rounded-3xl p-6 shadow-sm space-y-5">
+                <h3 class="text-sm font-bold text-neutral-800">Anpassung</h3>
+                <div>
+                    <label class="block text-xs font-bold text-neutral-500 mb-1.5">Anzeigename</label>
+                    <input id="edit-display-name" type="text" placeholder="ebay-de" class="w-full bg-neutral-50 border border-neutral-200 rounded-xl p-3 text-xs font-medium outline-none focus:border-neutral-300">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-neutral-500 mb-1.5">Beschreibung</label>
+                    <textarea id="edit-bio" placeholder="Erzähle Besuchern etwas über dich..." class="w-full h-28 bg-neutral-50 border border-neutral-200 rounded-xl p-3 text-xs font-medium outline-none focus:border-neutral-300 resize-none"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-neutral-500 mb-1.5">Profil-Deckkraft</label>
+                        <input type="range" class="w-full accent-pink" min="0" max="100" value="80">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-neutral-500 mb-1.5">Profil-Unschärfe</label>
+                        <input type="range" class="w-full accent-pink" min="0" max="40" value="20">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== VIEW 2: ASSETS (Entsprechend Screenshot 2026-06-18 170758.jpg & folgende) ===== -->
+        <div id="view-assets" class="block space-y-6">
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight text-neutral-900">Profil Assets</h1>
+                <p class="text-xs text-neutral-400 mt-0.5">Lade Avatar, Hintergründe, Audios und Cursor hoch — und passe an, wie sie sich verhalten.</p>
+            </div>
+
+            <!-- Premium Banner -->
+            <div class="bg-pink-50/60 border border-pink-100 rounded-2xl p-4 flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2 text-neutral-600">
+                    👑 <span class="font-bold text-pink-700">Höhere Limits mit Premium</span> — Mehr Hintergründe und größere Audio-Uploads.
+                </div>
+                <button class="bg-pink-500 text-white font-bold px-3 py-1.5 rounded-lg hover:bg-pink-600 transition-all">Auf Premium upgraden</button>
+            </div>
+
+            <!-- Grid: Avatar & Cursor -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Avatar Card -->
+                <div class="bg-white border border-neutral-200/70 rounded-3xl p-6 shadow-sm space-y-4">
+                    <h3 class="text-sm font-bold text-neutral-800">Avatar</h3>
+                    <div class="border border-dashed border-neutral-200 bg-neutral-50/50 rounded-2xl p-8 text-center cursor-pointer hover:bg-neutral-50 transition-all flex flex-col items-center justify-center">
+                        <span class="text-neutral-400 text-xl mb-1">📤</span>
+                        <p class="text-xs font-semibold text-neutral-600">Datei hier ablegen oder zum Auswählen klicken</p>
+                        <p class="text-[10px] text-neutral-400 mt-1">Max 10.00MB</p>
+                    </div>
+                    <div class="flex items-center justify-between text-xs py-1">
+                        <span class="font-medium text-neutral-600">Avatar anzeigen</span>
+                        <input type="checkbox" checked class="w-8 h-4 bg-neutral-200 checked:bg-pink-500 rounded-full appearance-none cursor-pointer transition-all relative before:content-[''] before:absolute before:w-4 before:h-4 before:bg-white before:rounded-full before:transition-all checked:before:translate-x-4 border border-neutral-300">
+                    </div>
+                </div>
+
+                <!-- Cursor Card -->
+                <div class="bg-white border border-neutral-200/70 rounded-3xl p-6 shadow-sm space-y-4">
+                    <h3 class="text-sm font-bold text-neutral-800">Cursor</h3>
+                    <div class="border border-dashed border-neutral-200 bg-neutral-50/50 rounded-2xl p-8 text-center cursor-pointer hover:bg-neutral-50 transition-all flex flex-col items-center justify-center">
+                        <span class="text-neutral-400 text-xl mb-1">🖱️</span>
+                        <p class="text-xs font-semibold text-neutral-600">Datei hier ablegen oder zum Auswählen klicken</p>
+                        <p class="text-[10px] text-neutral-400 mt-1">Max 10.00MB</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Background & Audio (Screenshot 2026-06-18 170822.jpg) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Hintergründe -->
+                <div class="bg-white border border-neutral-200/70 rounded-3xl p-6 shadow-sm space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-sm font-bold text-neutral-800">Hintergründe</h3>
+                        <button class="text-pink-600 bg-pink-50 text-[11px] font-bold px-2.5 py-1 rounded-lg hover:bg-pink-100 transition-all">+ Hintergrund hinzufügen</button>
+                    </div>
+                    <div class="bg-neutral-50/50 border border-neutral-100 rounded-2xl p-12 text-center flex flex-col items-center justify-center text-xs text-neutral-400">
+                        🖼️ <p class="font-semibold mt-2 text-neutral-500">Noch keine Hintergründe.</p>
+                    </div>
+                </div>
+
+                <!-- Audios -->
+                <div class="bg-white border border-neutral-200/70 rounded-3xl p-6 shadow-sm space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-sm font-bold text-neutral-800">Audios</h3>
+                        <button class="text-pink-600 bg-pink-50 text-[11px] font-bold px-2.5 py-1 rounded-lg hover:bg-pink-100 transition-all">+ Audio hinzufügen</button>
+                    </div>
+                    <div class="bg-neutral-50/50 border border-neutral-100 rounded-2xl p-12 text-center flex flex-col items-center justify-center text-xs text-neutral-400">
+                        🎵 <p class="font-semibold mt-2 text-neutral-500">Noch keine Audios.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Banner Card (Screenshot 2026-06-18 170832.jpg) -->
+            <div class="bg-white border border-neutral-200/70 rounded-3xl p-6 shadow-sm space-y-4">
+                <h3 class="text-sm font-bold text-neutral-800">Banner</h3>
+                <p class="text-xs text-neutral-400 -mt-2">Ein breites Bild oben auf deiner Seite.</p>
+                <div class="border border-dashed border-neutral-200 bg-neutral-50/50 rounded-2xl p-10 text-center cursor-pointer hover:bg-neutral-50 transition-all flex flex-col items-center justify-center">
+                    <span class="text-neutral-400 text-xl mb-1">🎞️</span>
+                    <p class="text-xs font-semibold text-neutral-600">Datei hier ablegen oder zum Auswählen klicken</p>
+                </div>
+            </div>
+
+            <!-- Globaler Speicher-Button -->
+            <div class="pt-4 flex justify-end">
+                <button onclick="saveDashboardData()" class="bg-pink-500 text-white text-xs font-bold px-6 py-3 rounded-xl hover:bg-pink-600 transition-all shadow-md shadow-pink-500/10">
+                    Änderungen speichern 💾
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- ================= JAVASCRIPT-STEUERUNG ================= -->
     <script>
-        // ⚠️ HIER DEINE DATEN EINTRAGEN:
+        // Supabase-Konfiguration (Hier deine Daten einsetzen)
         const SUPABASE_URL = "https://sllwrzqmbftfbezrfjpj.supabase.co";
-        const SUPABASE_ANON_KEY = "HIER_DEINEN_LANGEN_ANON_KEY_EINSETZEN";
-        
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const SUPABASE_ANON_KEY = "DEIN_LANGER_ANON_KEY"; 
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const userParam = urlParams.get('user');
-        let activeEditingUsername = ""; 
+        // Name des aktuell editierten Profils (wird simuliert)
+        const currentUsername = "ebay-de";
 
-        // Routing beim Laden der Seite
-        if (userParam) {
-            document.getElementById('home-view').classList.add('hidden');
-            document.getElementById('profile-view').classList.remove('hidden');
-            loadUserProfile(userParam);
-        }
-
-        // FUNKTION: Namen prüfen oder direkt in den Editor schicken
-        async function checkAndClaimName() {
-            const input = document.getElementById('username-input').value.trim().toLowerCase();
-            const statusEl = document.getElementById('status-message');
-
-            if (!input || input.length < 2) {
-                statusEl.textContent = "⚠️ Der Name muss mindestens 2 Zeichen lang sein.";
-                statusEl.className = "mt-4 text-sm font-medium text-amber-500";
-                return;
-            }
-
-            statusEl.textContent = "Prüfe Verfügbarkeit...";
-            statusEl.className = "mt-4 text-sm font-medium text-neutral-400";
-
-            const { data, error } = await supabase
-                .from('profiles')
-                .select('username')
-                .eq('username', input)
-                .maybeSingle();
-
-            if (data) {
-                statusEl.textContent = `❌ "${input}" ist besetzt. Wenn es deins ist, kannst du es gleich im Editor überschreiben.`;
-                statusEl.className = "mt-4 text-sm font-medium text-red-500";
-            }
+        // Tab-Umschalter
+        function switchTab(tabId) {
+            document.getElementById('view-customize').classList.add('hidden');
+            document.getElementById('view-assets').classList.add('hidden');
             
-            // Name ist frei (oder wir überschreiben ihn testweise einfach): Öffne Editor
-            activeEditingUsername = input;
-            setTimeout(() => {
-                document.getElementById('home-view').classList.add('hidden');
-                document.getElementById('editor-view').classList.remove('hidden');
-                document.getElementById('editor-current-user').textContent = `haunt.gg/${input}`;
-                addLinkInputRow(); // Ersten leeren Link-Slot anzeigen
-            }, 1000);
+            if(tabId === 'customize') {
+                document.getElementById('view-customize').classList.remove('hidden');
+                document.getElementById('breadcrumb').textContent = "Anpassen";
+            } else if(tabId === 'assets') {
+                document.getElementById('view-assets').classList.remove('hidden');
+                document.getElementById('breadcrumb').textContent = "Profil";
+            }
         }
 
-        // FUNKTIONEN FÜR DEN EDITOR
-        function addLinkInputRow(title = "", url = "") {
-            const container = document.getElementById('editor-links-container');
-            const row = document.createElement('div');
-            row.className = "flex gap-2 link-input-row bg-neutral-100 p-2 rounded-xl";
-            row.innerHTML = `
-                <input type="text" placeholder="Titel (z.B. Instagram)" value="${title}" class="link-title w-1/3 bg-white p-2 rounded-lg text-xs outline-none border border-neutral-200">
-                <input type="text" placeholder="URL (https://...)" value="${url}" class="link-url w-2/3 bg-white p-2 rounded-lg text-xs outline-none border border-neutral-200">
-                <button onclick="this.parentElement.remove()" class="text-neutral-400 hover:text-red-500 px-1">✕</button>
-            `;
-            container.appendChild(row);
+        // Simulierter Redirect zur Live-Ansicht
+        function openLivePreview() {
+            window.open(`index.html?user=${currentUsername}`, '_blank');
         }
 
-        async function saveProfileData() {
-            const statusEl = document.getElementById('editor-status');
-            const displayName = document.getElementById('edit-display-name').value.trim();
+        // Profildaten in die Supabase-Datenbank schreiben
+        async function saveDashboardData() {
+            const displayName = document.getElementById('edit-display-name').value.trim() || currentUsername;
             const bio = document.getElementById('edit-bio').value.trim();
-            
-            statusEl.textContent = "Speichere Profil...";
-            statusEl.className = "text-center text-xs font-medium mt-2 text-neutral-500";
 
-            // Alle Links aus den Input-Feldern auslesen und als Array sammeln
-            const linkRows = document.querySelectorAll('.link-input-row');
-            const linksArray = [];
-            linkRows.forEach(row => {
-                const title = row.querySelector('.link-title').value.trim();
-                const url = row.querySelector('.link-url').value.trim();
-                if (title && url) {
-                    linksArray.push({ title, url });
-                }
-            });
-
-            // In Supabase speichern (mittels upsert: updated falls vorhanden, sonst neu einfügen)
-            const { error } = await supabase
+            const { error } = await supabaseClient
                 .from('profiles')
                 .upsert({
-                    username: activeEditingUsername,
-                    display_name: displayName || activeEditingUsername,
-                    bio: bio,
-                    links: linksArray
+                    username: currentUsername,
+                    display_name: displayName,
+                    bio: bio
                 }, { onConflict: 'username' });
 
             if (error) {
-                statusEl.textContent = "Fehler beim Speichern: " + error.message;
-                statusEl.className = "text-center text-xs font-medium mt-2 text-red-500";
+                alert("Fehler beim Speichern: " + error.message);
             } else {
-                statusEl.textContent = "🎉 Erfolgreich gespeichert! Leite weiter...";
-                statusEl.className = "text-center text-xs font-medium mt-2 text-green-500";
-                
-                setTimeout(() => {
-                    window.location.search = `?user=${activeEditingUsername}`;
-                }, 1500);
-            }
-        }
-
-        // FUNKTION: Profildaten öffentlich anzeigen
-        async function loadUserProfile(username) {
-            const { data, error } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('username', username.toLowerCase())
-                .maybeSingle();
-
-            if (!data) {
-                document.getElementById('profile-name').textContent = "404";
-                document.getElementById('profile-username').textContent = `@${username}`;
-                document.getElementById('profile-bio').textContent = "Dieses Profil existiert noch nicht.";
-                return;
-            }
-
-            document.title = `${data.display_name} (@${data.username})`;
-            document.getElementById('profile-name').textContent = data.display_name;
-            document.getElementById('profile-username').textContent = `@${data.username}`;
-            document.getElementById('profile-bio').textContent = data.bio || "Keine Beschreibung hinterlegt.";
-
-            const linksContainer = document.getElementById('profile-links');
-            linksContainer.innerHTML = ''; 
-
-            if (data.links && Array.isArray(data.links)) {
-                data.links.forEach(link => {
-                    const a = document.createElement('a');
-                    a.href = link.url.startsWith('http') ? link.url : `https://${link.url}`;
-                    a.target = "_blank";
-                    a.className = "w-full bg-neutral-900 border border-neutral-800 p-4 rounded-2xl text-center font-medium hover:bg-neutral-850 hover:scale-[1.01] transition-all block text-neutral-200 shadow-sm";
-                    a.textContent = link.title;
-                    linksContainer.appendChild(a);
-                });
+                alert("🎉 Dashboard-Änderungen erfolgreich live geschaltet!");
             }
         }
     </script>
