@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>guns.lol | Dashboard</title>
     <style>
-        /* --- DESIGN SYSTEM (Guns.lol Replikation aus image_e1b8be.jpg) --- */
+        /* --- DESIGN SYSTEM (Guns.lol Replikation) --- */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             background-color: #0d0d0e;
@@ -15,13 +15,12 @@
             display: flex;
         }
 
-        /* FIX: Auth-Wrapper startet unsichtbar, um das Flackern zu verhindern */
+        /* Login-Bereich ist standardmäßig SICHTBAR */
         .auth-wrapper {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            display: none; justify-content: center; align-items: center; background: #0d0d0e; z-index: 99999;
+            display: flex; justify-content: center; align-items: center; background: #0d0d0e; z-index: 99999;
         }
         
-        /* FIX: Die Login/Register Boxen sind standardmäßig im CSS zu */
         .container {
             background: #16161a; border: 1px solid #232329; padding: 35px; border-radius: 14px;
             width: 100%; max-width: 420px; box-shadow: 0 10px 40px rgba(0,0,0,0.7); display: none;
@@ -71,7 +70,7 @@
         .stat-label { font-size: 0.8rem; color: #a1a1aa; text-transform: uppercase; margin-bottom: 6px; }
         .stat-value { font-size: 1.4rem; font-weight: 700; }
 
-        /* --- STYLING AUS ANPASSEN (image_e1b8be.jpg) --- */
+        /* --- STYLING AUS ANPASSEN --- */
         .upload-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 30px; }
         @media (max-width: 1000px) { .upload-grid { grid-template-columns: 1fr 1fr; } }
         
@@ -92,7 +91,6 @@
 
         .general-adjust-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
-        /* --- USER BLOCKS FÜR SIDEBAR UNTEN --- */
         .sidebar-user {
             margin-top: auto; padding: 12px; background: #16161a; border: 1px solid #232329; border-radius: 8px;
             display: flex; flex-direction: column; gap: 4px;
@@ -112,10 +110,8 @@
 </head>
 <body>
 
-    <!-- AUTHENTICATION WRAPPER -->
     <div class="auth-wrapper" id="auth-area">
-        <!-- LOGIN -->
-        <div id="view-login" class="container">
+        <div id="view-login" class="container active">
             <h2>Anmelden</h2>
             <form id="login-form">
                 <div class="form-group"><label>E-Mail</label><input type="email" id="login-email" required></div>
@@ -126,7 +122,6 @@
             <div class="form-footer">Kein Konto? <a onclick="switchView('view-register')">Registrieren</a></div>
         </div>
 
-        <!-- REGISTER -->
         <div id="view-register" class="container">
             <h2>Registrieren</h2>
             <form id="register-form">
@@ -138,7 +133,6 @@
             <div class="form-footer">Bereits registriert? <a onclick="switchView('view-login')">Einloggen</a></div>
         </div>
 
-        <!-- FORGOT PASSWORD -->
         <div id="view-forgot" class="container">
             <h2>Passwort zurücksetzen</h2>
             <form id="forgot-form">
@@ -149,9 +143,7 @@
         </div>
     </div>
 
-    <!-- MAIN DASHBOARD -->
     <div id="view-dashboard">
-        <!-- Sidebar Navigation -->
         <div class="sidebar">
             <div class="logo">🧬 guns.lol</div>
             <div class="side-btn active" id="btn-tab-konto" onclick="switchTab('konto')">👤 Konto</div>
@@ -164,10 +156,7 @@
             <div class="side-btn" style="color: #ef4444; margin-top: 10px;" onclick="window.firebaseLogout()">🚪 Ausloggen</div>
         </div>
 
-        <!-- Right Side Main Content Window -->
         <div class="main-content">
-            
-            <!-- TAB 1: KONTO OVERVIEW (image_e1c3e1.jpg) -->
             <div id="tab-konto" class="tab-content active">
                 <div class="section-title">Kontoübersicht</div>
                 <div class="stats-grid">
@@ -186,10 +175,8 @@
                 </div>
             </div>
 
-            <!-- TAB 2: ANPASSEN / MEDIA UPLOADS (image_e1b8be.jpg) -->
             <div id="tab-anpassen" class="tab-content">
                 <div class="section-title">Medien-Upload</div>
-                
                 <div class="upload-grid">
                     <div class="upload-card">
                         <div class="stat-label">Hintergrund (Bild/Video)</div>
@@ -208,30 +195,11 @@
                         <div class="upload-zone">Klicken zum Auswählen<input type="file" id="file-cursor"></div>
                     </div>
                 </div>
-
                 <div class="premium-banner">Du willst exklusive Features? Schalte mehr frei mit 💎 Premium</div>
-
-                <div class="section-title">Allgemeine Anpassung</div>
-                <div class="general-adjust-grid">
-                    <div class="upload-card" style="min-height: auto;">
-                        <label>Hintergrundeffekt</label>
-                        <select id="db-effect">
-                            <option value="none">Kein Effekt</option>
-                            <option value="matrix">Matrix Code Rain</option>
-                            <option value="glitch">Altes TV / Glitch</option>
-                        </select>
-                    </div>
-                    <div class="upload-card" style="min-height: auto;">
-                        <label>Discord Presence aktivieren</label>
-                        <button class="btn btn-sec" style="margin:0;" onclick="alert('Discord Verbindung folgt!')">Discord-Konto verbinden</button>
-                    </div>
-                </div>
             </div>
-
         </div>
     </div>
 
-    <!-- PUBLIC BIO-LINK PROFILE LAYER -->
     <div id="view-profile">
         <div id="pub-banner" class="p-banner"></div>
         <div style="text-align: center;">
@@ -242,7 +210,6 @@
     </div>
     <div id="intro-overlay" style="display: none; color:white;">[ click to enter ]</div>
 
-    <!-- --- FIREBASE LOGIC ENGINE --- -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -266,13 +233,11 @@
         const storage = getStorage(app);
         let currentUserDoc = null;
 
-        // Sichtbarkeit umschalten
         window.switchView = function(viewId) {
             document.querySelectorAll('.auth-wrapper .container').forEach(el => el.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
         };
 
-        // Tab-Wechsler (Konto / Anpassen)
         window.switchTab = function(tabName) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.side-btn').forEach(el => el.classList.remove('active'));
@@ -287,11 +252,11 @@
             const email = document.getElementById('reg-email').value;
             const password = document.getElementById('reg-pass').value;
 
-            const q = query(collection(db, "users"), where("username", "==", username));
-            const querySnapshot = await getDocs(q);
-            if (!querySnapshot.empty) { return alert("Username bereits vergeben!"); }
-
             try {
+                const q = query(collection(db, "users"), where("username", "==", username));
+                const querySnapshot = await getDocs(q);
+                if (!querySnapshot.empty) { return alert("Username bereits vergeben!"); }
+
                 const cred = await createUserWithEmailAndPassword(auth, email, password);
                 const globalCounterRef = doc(db, "config", "user_counter");
                 let finalUidNumber = 1;
@@ -320,7 +285,7 @@
 
         window.firebaseLogout = () => signOut(auth).then(() => location.reload());
 
-        // STATE CONTROLLER (Prüft den Login-Zustand sauber ab)
+        // STATE CONTROLLER
         onAuthStateChanged(auth, async (user) => {
             const urlParams = new URLSearchParams(window.location.search);
             const pubUser = urlParams.get('u');
@@ -332,8 +297,6 @@
             }
 
             if (user) {
-                // Wenn User eingeloggt ist: Dashboard an, Login-Bereich aus
-                document.getElementById('auth-area').style.display = 'none';
                 const userDoc = await getDoc(doc(db, "users", user.uid));
                 if(userDoc.exists()) {
                     currentUserDoc = userDoc.data();
@@ -349,17 +312,16 @@
                     document.getElementById('live-url-text').innerText = profileUrl;
                     document.getElementById('live-url-text').href = profileUrl;
 
+                    document.getElementById('auth-area').style.display = 'none';
                     document.getElementById('view-dashboard').style.display = 'flex';
                 }
             } else {
-                // Wenn ausgeloggt: Dashboard aus, Login-Bereich an!
                 document.getElementById('view-dashboard').style.display = 'none';
                 document.getElementById('auth-area').style.display = 'flex';
                 switchView('view-login');
             }
         });
 
-        // MULTI-MEDIA FILE UPLOADER
         window.saveProfileData = async function() {
             if(!auth.currentUser) return;
             const uid = auth.currentUser.uid;
@@ -390,7 +352,6 @@
             location.reload();
         };
 
-        // PUBLIC PROFIL PAGE GENERATOR
         async function loadPublicProfile(username) {
             const q = query(collection(db, "users"), where("username", "==", username));
             const querySnapshot = await getDocs(q);
