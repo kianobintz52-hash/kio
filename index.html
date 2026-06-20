@@ -3,13 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>guns.lol - Anpassen</title>
+  <title>kiobio.lol - Anpassen</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
     body { font-family: system-ui, -apple-system, sans-serif; }
     .card { background-color: #1f2937; }
     .nav-active { background-color: #6b46c1; color: white; }
+    .preview-modal {
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   </style>
 </head>
 <body class="bg-zinc-950 text-zinc-100">
@@ -19,7 +23,7 @@
     <div class="w-64 bg-black border-r border-zinc-800 flex flex-col">
       <div class="p-5 flex items-center gap-3 border-b border-zinc-800">
         <div class="w-9 h-9 bg-violet-600 rounded-xl flex items-center justify-center text-2xl">🔫</div>
-        <span class="font-bold text-3xl">guns.lol</span>
+        <span class="font-bold text-3xl">kiobio.lol</span>
       </div>
 
       <nav class="flex-1 px-3 pt-6 space-y-1">
@@ -47,8 +51,43 @@
         <h1 class="text-2xl font-bold" id="page-title">Anpassen</h1>
       </div>
 
-      <div class="flex-1 overflow-auto p-8" id="content">
-        <!-- Wird per JS gefüllt -->
+      <div class="flex-1 overflow-auto p-8" id="content"></div>
+    </div>
+  </div>
+
+  <!-- Profil Vorschau Modal -->
+  <div id="profileModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+    <div class="preview-modal bg-zinc-900 w-full max-w-lg mx-4 rounded-3xl overflow-hidden">
+      <div class="p-4 border-b border-zinc-700 flex items-center justify-between">
+        <h3 class="font-semibold">So sehen andere dein Profil</h3>
+        <button onclick="closeModal()" class="text-zinc-400 hover:text-white text-2xl">×</button>
+      </div>
+      
+      <div class="bg-gradient-to-br from-violet-900 via-black to-zinc-950 h-56 relative">
+        <div class="absolute -bottom-12 left-6 w-24 h-24 border-4 border-zinc-900 rounded-2xl overflow-hidden">
+          <img src="https://picsum.photos/id/64/300/300" class="w-full h-full object-cover" alt="Avatar">
+        </div>
+      </div>
+
+      <div class="pt-16 pb-8 px-8">
+        <h2 class="text-4xl font-bold">alo</h2>
+        <p class="text-zinc-400">kiobio.lol/alo • UID 805,159</p>
+        
+        <div class="mt-6 text-zinc-300">
+          das ist meine Beschreibung<br>
+          Kreativer Mensch • Anime &amp; Gaming Fan
+        </div>
+
+        <div class="mt-8 flex gap-4">
+          <button onclick="alert('Link kopiert: https://kiobio.lol/alo')" 
+                  class="flex-1 bg-violet-600 hover:bg-violet-700 py-4 rounded-2xl font-medium">
+            🔗 Link teilen
+          </button>
+          <button onclick="closeModal()" 
+                  class="flex-1 border border-zinc-600 hover:bg-zinc-800 py-4 rounded-2xl">
+            Schließen
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -68,123 +107,75 @@
           <h2 class="text-xl font-semibold mb-6">Medien-Upload</h2>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div class="card p-6 rounded-3xl text-center border border-dashed border-zinc-600 hover:border-violet-500 cursor-pointer">
-              <div class="h-32 flex items-center justify-center text-5xl mb-4">🎥</div>
-              <p class="font-medium">Hintergrund</p>
-              <p class="text-xs text-zinc-500">.MP4</p>
+              <div class="h-32 flex items-center justify-center text-5xl mb-3">🌄</div>
+              <p class="font-medium">Profil Banner / Hintergrund</p>
             </div>
             <div class="card p-6 rounded-3xl text-center border border-dashed border-zinc-600 hover:border-violet-500 cursor-pointer">
-              <div class="h-32 flex items-center justify-center text-5xl mb-4">🎵</div>
+              <div class="h-32 flex items-center justify-center text-5xl mb-3">🎵</div>
               <p class="font-medium">Audio</p>
             </div>
             <div class="card p-6 rounded-3xl text-center border border-dashed border-zinc-600 hover:border-violet-500 cursor-pointer">
-              <div class="h-32 flex items-center justify-center text-5xl mb-4">👤</div>
+              <div class="h-32 flex items-center justify-center text-5xl mb-3">👤</div>
               <p class="font-medium">Profil-Avatar</p>
             </div>
             <div class="card p-6 rounded-3xl text-center border border-dashed border-zinc-600 hover:border-violet-500 cursor-pointer">
-              <div class="h-32 flex items-center justify-center text-5xl mb-4">🖱️</div>
+              <div class="h-32 flex items-center justify-center text-5xl mb-3">🖱️</div>
               <p class="font-medium">Benutzerdefinierter Cursor</p>
             </div>
           </div>
 
           <h2 class="text-xl font-semibold mt-12 mb-6">Allgemeine Anpassung</h2>
-          <div class="card p-8 rounded-3xl grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <label class="block text-sm mb-2">Beschreibung</label>
-              <input type="text" value="das ist meine Beschreibung" class="w-full bg-zinc-800 p-4 rounded-2xl">
-            </div>
-            <div>
-              <label class="block text-sm mb-2">Discord Presence</label>
-              <div class="bg-zinc-800 p-4 rounded-2xl flex items-center gap-3">
-                <span>Deaktiviert</span>
+          <div class="card p-8 rounded-3xl">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                <label class="block text-sm mb-2">Beschreibung</label>
+                <input type="text" value="das ist meine Beschreibung" class="w-full bg-zinc-800 p-4 rounded-2xl">
               </div>
-            </div>
-            <div>
-              <label class="block text-sm mb-2">Profil-Deckkraft <span class="text-zinc-500">20%</span></label>
-              <input type="range" min="0" max="100" value="20" class="w-full accent-violet-600">
-            </div>
-            <div>
-              <label class="block text-sm mb-2">Profil-Unschärfe <span class="text-zinc-500">20px</span></label>
-              <input type="range" min="0" max="100" value="20" class="w-full accent-violet-600">
-            </div>
-          </div>
-
-          <h2 class="text-xl font-semibold mt-12 mb-6">Farb-Anpassung</h2>
-          <div class="card p-8 rounded-3xl grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <label>Akzentfarbe</label>
-              <input type="color" value="#8b5cf6" class="w-full h-12 mt-2 rounded-2xl">
-            </div>
-            <div>
-              <label>Textfarbe</label>
-              <input type="color" value="#ffffff" class="w-full h-12 mt-2 rounded-2xl">
-            </div>
-            <div>
-              <label>Hintergrundfarbe</label>
-              <input type="color" value="#080808" class="w-full h-12 mt-2 rounded-2xl">
-            </div>
-            <div>
-              <label>Iconfarbe</label>
-              <input type="color" value="#ffffff" class="w-full h-12 mt-2 rounded-2xl">
-            </div>
-          </div>
-
-          <h2 class="text-xl font-semibold mt-12 mb-6">Weitere Anpassungen</h2>
-          <div class="card p-8 rounded-3xl grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="flex items-center justify-between">
-              <span>Monochrome Icons</span>
-              <input type="checkbox" checked class="accent-violet-600 w-5 h-5">
-            </div>
-            <div class="flex items-center justify-between">
-              <span>Animierter Titel</span>
-              <input type="checkbox" checked class="accent-violet-600 w-5 h-5">
-            </div>
-            <div class="flex items-center justify-between">
-              <span>Box-Farben tauschen</span>
-              <input type="checkbox" class="accent-violet-600 w-5 h-5">
+              <div>
+                <label class="block text-sm mb-2">Schriftart</label>
+                <select class="w-full bg-zinc-800 p-4 rounded-2xl">
+                  <option>Inter (Standard)</option>
+                  <option>Poppins</option>
+                  <option>Space Grotesk</option>
+                </select>
+              </div>
             </div>
           </div>
         `;
       } 
-      else if (tab === 4) { // Vorlagen - Eigenes Erstellen
+      else if (tab === 4) { // Vorlagen → Mein Profil anschauen
         title.textContent = 'Vorlagen';
         content.innerHTML = `
-          <h2 class="text-xl font-semibold mb-6">Eigene Vorlage erstellen</h2>
-          <div class="card p-8 rounded-3xl max-w-2xl">
-            <div class="space-y-6">
-              <div>
-                <label class="block text-sm mb-2">Vorlagen-Name</label>
-                <input type="text" id="tpl-name" placeholder="Meine coole Vorlage" class="w-full bg-zinc-800 p-4 rounded-2xl">
-              </div>
-              <div>
-                <label class="block text-sm mb-2">Beschreibung</label>
-                <textarea id="tpl-desc" rows="3" placeholder="Beschreibe deine Vorlage..." class="w-full bg-zinc-800 p-4 rounded-2xl"></textarea>
-              </div>
-              <div>
-                <label class="block text-sm mb-2">Akzentfarbe</label>
-                <input type="color" id="tpl-color" value="#8b5cf6" class="w-full h-12 rounded-2xl">
-              </div>
-              <button onclick="saveTemplate()" 
-                      class="w-full bg-violet-600 hover:bg-violet-700 py-4 rounded-2xl font-bold text-lg">
-                Vorlage speichern
-              </button>
-            </div>
-          </div>
+          <div class="max-w-2xl mx-auto text-center py-16">
+            <div class="text-6xl mb-6">👀</div>
+            <h2 class="text-3xl font-bold mb-3">Dein Profil anschauen</h2>
+            <p class="text-zinc-400 text-lg mb-10">So sieht dein Profil für andere Besucher aus,<br>wenn du ihnen deinen Link schickst.</p>
+            
+            <button onclick="showProfilePreview()" 
+                    class="bg-violet-600 hover:bg-violet-700 px-10 py-5 rounded-3xl text-xl font-semibold flex items-center gap-3 mx-auto">
+              <i class="fa-solid fa-eye"></i>
+              Mein Profil jetzt anschauen
+            </button>
 
-          <p class="text-center text-zinc-500 mt-8">Deine selbst erstellten Vorlagen erscheinen hier.</p>
+            <p class="text-zinc-500 mt-12 text-sm">Link: <span class="text-violet-400">https://kiobio.lol/alo</span></p>
+          </div>
         `;
       } 
       else {
-        title.textContent = 'guns.lol';
+        title.textContent = 'kiobio.lol';
         content.innerHTML = `<p class="text-center py-20 text-zinc-400">Tab wird noch ausgebaut.</p>`;
       }
     }
 
-    function saveTemplate() {
-      const name = document.getElementById('tpl-name').value || "Meine Vorlage";
-      alert(`✅ Vorlage "${name}" wurde gespeichert!\n\n(Diese Demo speichert nur lokal.)`);
+    function showProfilePreview() {
+      document.getElementById('profileModal').classList.remove('hidden');
     }
 
-    // Start mit Anpassen-Tab
+    function closeModal() {
+      document.getElementById('profileModal').classList.add('hidden');
+    }
+
+    // Start mit Anpassen
     window.onload = () => switchTab(1);
   </script>
 </body>
