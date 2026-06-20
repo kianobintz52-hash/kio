@@ -3,86 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>guns.lol - alo</title>
+  <title>guns.lol - Anpassen</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
     body { font-family: system-ui, -apple-system, sans-serif; }
-    .sidebar-active { background-color: #6b46c1; color: white; }
     .card { background-color: #1f2937; }
-    .preview { background: linear-gradient(135deg, #1a1a2e, #16213e); }
-    .template-card { transition: all 0.2s; }
-    .template-card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.3); }
+    .nav-active { background-color: #6b46c1; color: white; }
   </style>
 </head>
 <body class="bg-zinc-950 text-zinc-100">
 
   <div class="flex h-screen overflow-hidden">
     <!-- Sidebar -->
-    <div class="w-72 bg-black border-r border-zinc-800 flex flex-col">
+    <div class="w-64 bg-black border-r border-zinc-800 flex flex-col">
       <div class="p-5 flex items-center gap-3 border-b border-zinc-800">
-        <div class="w-9 h-9 bg-violet-600 rounded-xl flex items-center justify-center text-xl">🔫</div>
-        <span class="font-bold text-3xl tracking-tight">guns.lol</span>
+        <div class="w-9 h-9 bg-violet-600 rounded-xl flex items-center justify-center text-2xl">🔫</div>
+        <span class="font-bold text-3xl">guns.lol</span>
       </div>
 
-      <div class="p-4">
-        <input type="text" placeholder="Funktionen suchen..." 
-               class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-violet-500">
-      </div>
-
-      <nav class="flex-1 px-3 space-y-1 overflow-auto">
-        <a onclick="switchTab(0)" class="flex items-center gap-3 px-5 py-3.5 rounded-2xl cursor-pointer" id="nav-0">
-          <i class="fa-solid fa-user w-5"></i> Konto
+      <nav class="flex-1 px-3 pt-6 space-y-1">
+        <a onclick="switchTab(0)" class="flex items-center gap-3 px-5 py-3 hover:bg-zinc-900 rounded-2xl cursor-pointer">
+          <i class="fa-solid fa-user"></i> Konto
         </a>
-        <a onclick="switchTab(1)" class="flex items-center gap-3 px-5 py-3.5 hover:bg-zinc-900 rounded-2xl cursor-pointer" id="nav-1">
-          <i class="fa-solid fa-wand-magic-sparkles w-5"></i> Anpassen
+        <a onclick="switchTab(1)" class="nav-active flex items-center gap-3 px-5 py-3 rounded-2xl cursor-pointer" id="nav-1">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Anpassen
         </a>
-        <a onclick="switchTab(2)" class="flex items-center gap-3 px-5 py-3.5 hover:bg-zinc-900 rounded-2xl cursor-pointer" id="nav-2">
-          <i class="fa-solid fa-link w-5"></i> Links
+        <a onclick="switchTab(2)" class="flex items-center gap-3 px-5 py-3 hover:bg-zinc-900 rounded-2xl cursor-pointer">
+          <i class="fa-solid fa-link"></i> Links
         </a>
-        <a onclick="switchTab(3)" class="sidebar-active flex items-center gap-3 px-5 py-3.5 rounded-2xl cursor-pointer" id="nav-3">
-          <i class="fa-solid fa-gem w-5"></i> Premium
+        <a onclick="switchTab(3)" class="flex items-center gap-3 px-5 py-3 hover:bg-zinc-900 rounded-2xl cursor-pointer">
+          <i class="fa-solid fa-gem"></i> Premium
         </a>
-        <a onclick="switchTab(4)" class="flex items-center gap-3 px-5 py-3.5 hover:bg-zinc-900 rounded-2xl cursor-pointer" id="nav-4">
-          <i class="fa-solid fa-layer-group w-5"></i> Vorlagen
+        <a onclick="switchTab(4)" class="flex items-center gap-3 px-5 py-3 hover:bg-zinc-900 rounded-2xl cursor-pointer">
+          <i class="fa-solid fa-layer-group"></i> Vorlagen
         </a>
       </nav>
-
-      <div class="p-4 border-t border-zinc-800">
-        <div class="flex items-center gap-3 bg-zinc-900 rounded-2xl p-3">
-          <img src="https://picsum.photos/id/64/64/64" class="w-12 h-12 rounded-full" alt="alo">
-          <div>
-            <p class="font-bold">alo</p>
-            <p class="text-xs text-zinc-500">UID 805,159</p>
-          </div>
-        </div>
-      </div>
     </div>
 
-    <!-- Main Content -->
+    <!-- Hauptbereich -->
     <div class="flex-1 flex flex-col overflow-hidden">
-      <div class="bg-black border-b border-zinc-800 p-5 flex items-center justify-between">
-        <h1 class="text-2xl font-bold" id="page-title">Premium</h1>
+      <div class="bg-black border-b border-zinc-800 p-5">
+        <h1 class="text-2xl font-bold" id="page-title">Anpassen</h1>
       </div>
 
-      <div class="flex-1 overflow-auto p-6" id="content">
-        <!-- Premium Inhalt -->
-      </div>
-    </div>
-
-    <!-- Profil Vorschau -->
-    <div class="w-96 bg-zinc-900 border-l border-zinc-800 hidden lg:flex flex-col">
-      <div class="p-4 border-b border-zinc-800 text-center">
-        <p class="text-sm text-zinc-400">Profil-Vorschau</p>
-      </div>
-      <div class="preview flex-1 p-6 overflow-auto" id="preview">
-        <div class="max-w-md mx-auto bg-black/70 rounded-3xl overflow-hidden border border-zinc-700">
-          <div class="h-48 bg-gradient-to-br from-purple-900 to-black relative flex items-center justify-center text-6xl">🌌</div>
-          <div class="pt-8 pb-6 px-6 text-center">
-            <h2 class="text-3xl font-bold">alo</h2>
-            <p class="text-zinc-400 text-sm mt-1">Kreativer Mensch • Anime Fan</p>
-          </div>
-        </div>
+      <div class="flex-1 overflow-auto p-8" id="content">
+        <!-- Wird per JS gefüllt -->
       </div>
     </div>
   </div>
@@ -90,62 +56,136 @@
   <script>
     function switchTab(tab) {
       document.querySelectorAll('nav a').forEach((el, i) => {
-        el.classList.toggle('sidebar-active', i === tab);
+        el.classList.toggle('nav-active', i === tab);
       });
 
       const content = document.getElementById('content');
       const title = document.getElementById('page-title');
 
-      if (tab === 3) { // Premium
-        title.textContent = 'Premium';
+      if (tab === 1) { // Anpassen
+        title.textContent = 'Anpassen';
         content.innerHTML = `
-          <div class="max-w-2xl mx-auto">
-            <div class="card rounded-3xl p-10 text-center">
-              <div class="inline-flex items-center gap-3 bg-violet-950 text-violet-300 px-5 py-2 rounded-2xl mb-6">
-                <i class="fa-solid fa-gem"></i>
-                <span class="font-semibold">PREMIUM</span>
+          <h2 class="text-xl font-semibold mb-6">Medien-Upload</h2>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="card p-6 rounded-3xl text-center border border-dashed border-zinc-600 hover:border-violet-500 cursor-pointer">
+              <div class="h-32 flex items-center justify-center text-5xl mb-4">🎥</div>
+              <p class="font-medium">Hintergrund</p>
+              <p class="text-xs text-zinc-500">.MP4</p>
+            </div>
+            <div class="card p-6 rounded-3xl text-center border border-dashed border-zinc-600 hover:border-violet-500 cursor-pointer">
+              <div class="h-32 flex items-center justify-center text-5xl mb-4">🎵</div>
+              <p class="font-medium">Audio</p>
+            </div>
+            <div class="card p-6 rounded-3xl text-center border border-dashed border-zinc-600 hover:border-violet-500 cursor-pointer">
+              <div class="h-32 flex items-center justify-center text-5xl mb-4">👤</div>
+              <p class="font-medium">Profil-Avatar</p>
+            </div>
+            <div class="card p-6 rounded-3xl text-center border border-dashed border-zinc-600 hover:border-violet-500 cursor-pointer">
+              <div class="h-32 flex items-center justify-center text-5xl mb-4">🖱️</div>
+              <p class="font-medium">Benutzerdefinierter Cursor</p>
+            </div>
+          </div>
+
+          <h2 class="text-xl font-semibold mt-12 mb-6">Allgemeine Anpassung</h2>
+          <div class="card p-8 rounded-3xl grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <label class="block text-sm mb-2">Beschreibung</label>
+              <input type="text" value="das ist meine Beschreibung" class="w-full bg-zinc-800 p-4 rounded-2xl">
+            </div>
+            <div>
+              <label class="block text-sm mb-2">Discord Presence</label>
+              <div class="bg-zinc-800 p-4 rounded-2xl flex items-center gap-3">
+                <span>Deaktiviert</span>
               </div>
-              
-              <h2 class="text-6xl font-bold">7,99€</h2>
-              <p class="text-2xl text-emerald-400 font-medium">/ Lebenslang</p>
-              <p class="text-zinc-400 mt-1">Einmal zahlen. Für immer behalten.</p>
+            </div>
+            <div>
+              <label class="block text-sm mb-2">Profil-Deckkraft <span class="text-zinc-500">20%</span></label>
+              <input type="range" min="0" max="100" value="20" class="w-full accent-violet-600">
+            </div>
+            <div>
+              <label class="block text-sm mb-2">Profil-Unschärfe <span class="text-zinc-500">20px</span></label>
+              <input type="range" min="0" max="100" value="20" class="w-full accent-violet-600">
+            </div>
+          </div>
 
-              <div class="my-10 border-t border-b border-zinc-700 py-8 text-left">
-                <ul class="space-y-4">
-                  <li class="flex items-center gap-4 text-lg"><span class="text-emerald-400 text-2xl">✓</span> Exklusives Badge</li>
-                  <li class="flex items-center gap-4 text-lg"><span class="text-emerald-400 text-2xl">✓</span> Profil-Layouts</li>
-                  <li class="flex items-center gap-4 text-lg"><span class="text-emerald-400 text-2xl">✓</span> Eigene Schriftarten</li>
-                  <li class="flex items-center gap-4 text-lg"><span class="text-emerald-400 text-2xl">✓</span> Typewriter-Animation</li>
-                  <li class="flex items-center gap-4 text-lg"><span class="text-emerald-400 text-2xl">✓</span> Besondere Profil-Effekte</li>
-                  <li class="flex items-center gap-4 text-lg"><span class="text-emerald-400 text-2xl">✓</span> Erweiterte Anpassungen</li>
-                  <li class="flex items-center gap-4 text-lg"><span class="text-emerald-400 text-2xl">✓</span> Metadaten- & SEO-Anpassung</li>
-                </ul>
-              </div>
+          <h2 class="text-xl font-semibold mt-12 mb-6">Farb-Anpassung</h2>
+          <div class="card p-8 rounded-3xl grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <label>Akzentfarbe</label>
+              <input type="color" value="#8b5cf6" class="w-full h-12 mt-2 rounded-2xl">
+            </div>
+            <div>
+              <label>Textfarbe</label>
+              <input type="color" value="#ffffff" class="w-full h-12 mt-2 rounded-2xl">
+            </div>
+            <div>
+              <label>Hintergrundfarbe</label>
+              <input type="color" value="#080808" class="w-full h-12 mt-2 rounded-2xl">
+            </div>
+            <div>
+              <label>Iconfarbe</label>
+              <input type="color" value="#ffffff" class="w-full h-12 mt-2 rounded-2xl">
+            </div>
+          </div>
 
-              <button onclick="alert('Vielen Dank! Du hast Premium Lifetime für 7,99€ aktiviert (Demo)')" 
-                      class="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 py-5 rounded-2xl text-xl font-bold flex items-center justify-center gap-3">
-                Jetzt kaufen 
-                <span class="text-2xl">🎁</span>
-              </button>
-
-              <p class="text-xs text-zinc-500 mt-6">
-                Mehr erfahren auf <a href="#" class="text-violet-400 hover:underline">https://guns.lol/pricing</a>
-              </p>
+          <h2 class="text-xl font-semibold mt-12 mb-6">Weitere Anpassungen</h2>
+          <div class="card p-8 rounded-3xl grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="flex items-center justify-between">
+              <span>Monochrome Icons</span>
+              <input type="checkbox" checked class="accent-violet-600 w-5 h-5">
+            </div>
+            <div class="flex items-center justify-between">
+              <span>Animierter Titel</span>
+              <input type="checkbox" checked class="accent-violet-600 w-5 h-5">
+            </div>
+            <div class="flex items-center justify-between">
+              <span>Box-Farben tauschen</span>
+              <input type="checkbox" class="accent-violet-600 w-5 h-5">
             </div>
           </div>
         `;
-      } else if (tab === 4) {
-        // Vorlagen (wie zuvor)
+      } 
+      else if (tab === 4) { // Vorlagen - Eigenes Erstellen
         title.textContent = 'Vorlagen';
-        content.innerHTML = `... (Vorlagen bleiben gleich wie letzte Version) ...`;
-      } else {
-        title.textContent = ['Kontoübersicht', 'Anpassen', 'Links', 'Premium', 'Vorlagen'][tab];
-        content.innerHTML = `<p class="text-center text-zinc-400 py-20">Tab bereit.</p>`;
+        content.innerHTML = `
+          <h2 class="text-xl font-semibold mb-6">Eigene Vorlage erstellen</h2>
+          <div class="card p-8 rounded-3xl max-w-2xl">
+            <div class="space-y-6">
+              <div>
+                <label class="block text-sm mb-2">Vorlagen-Name</label>
+                <input type="text" id="tpl-name" placeholder="Meine coole Vorlage" class="w-full bg-zinc-800 p-4 rounded-2xl">
+              </div>
+              <div>
+                <label class="block text-sm mb-2">Beschreibung</label>
+                <textarea id="tpl-desc" rows="3" placeholder="Beschreibe deine Vorlage..." class="w-full bg-zinc-800 p-4 rounded-2xl"></textarea>
+              </div>
+              <div>
+                <label class="block text-sm mb-2">Akzentfarbe</label>
+                <input type="color" id="tpl-color" value="#8b5cf6" class="w-full h-12 rounded-2xl">
+              </div>
+              <button onclick="saveTemplate()" 
+                      class="w-full bg-violet-600 hover:bg-violet-700 py-4 rounded-2xl font-bold text-lg">
+                Vorlage speichern
+              </button>
+            </div>
+          </div>
+
+          <p class="text-center text-zinc-500 mt-8">Deine selbst erstellten Vorlagen erscheinen hier.</p>
+        `;
+      } 
+      else {
+        title.textContent = 'guns.lol';
+        content.innerHTML = `<p class="text-center py-20 text-zinc-400">Tab wird noch ausgebaut.</p>`;
       }
     }
 
-    // Direkt zum Premium-Tab starten
-    window.onload = () => switchTab(3);
+    function saveTemplate() {
+      const name = document.getElementById('tpl-name').value || "Meine Vorlage";
+      alert(`✅ Vorlage "${name}" wurde gespeichert!\n\n(Diese Demo speichert nur lokal.)`);
+    }
+
+    // Start mit Anpassen-Tab
+    window.onload = () => switchTab(1);
   </script>
 </body>
 </html>
