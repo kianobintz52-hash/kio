@@ -3,159 +3,377 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>kiobio.lol - Dashboard</title>
+  <title>ANIME VAULT</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   <style>
-    body { font-family: system-ui, -apple-system, sans-serif; }
-    .card { background-color: #1f2937; }
-    .nav-active { background-color: #6b46c1; color: white; }
-    .modal { animation: fadeIn 0.3s ease; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    body {
+      background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.95)),
+                  url('https://picsum.photos/id/1015/1920/1080') center/cover fixed;
+      font-family: system-ui;
+    }
+    .glass { background: rgba(30,30,40,0.85); backdrop-filter: blur(16px); border: 1px solid rgba(168,85,247,0.4); }
+    .neon-purple { text-shadow: 0 0 25px #c026d3, 0 0 50px #a855f7; }
   </style>
 </head>
-<body class="bg-zinc-950 text-zinc-100">
-
-  <div class="flex h-screen overflow-hidden">
-    <!-- Sidebar -->
-    <div class="w-64 bg-black border-r border-zinc-800 flex flex-col">
-      <div class="p-5 flex items-center gap-3 border-b border-zinc-800">
-        <div class="w-9 h-9 bg-violet-600 rounded-xl flex items-center justify-center text-2xl">🔫</div>
-        <span class="font-bold text-3xl">kiobio.lol</span>
+<body class="text-gray-100 min-h-screen pb-20">
+  <nav class="glass sticky top-0 z-50 border-b border-purple-500 p-4">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <h1 onclick="navigate('shop')" class="text-4xl font-bold neon-purple cursor-pointer">ANIME VAULT</h1>
+        <span class="text-sm text-pink-400 font-medium">Owner & Kiano</span>
       </div>
-
-      <nav class="flex-1 px-3 pt-6 space-y-1">
-        <a onclick="switchTab(0)" class="flex items-center gap-3 px-5 py-3 hover:bg-zinc-900 rounded-2xl cursor-pointer">
-          <i class="fa-solid fa-user"></i> Konto
-        </a>
-        <a onclick="switchTab(1)" class="nav-active flex items-center gap-3 px-5 py-3 rounded-2xl cursor-pointer" id="nav-1">
-          <i class="fa-solid fa-wand-magic-sparkles"></i> Anpassen
-        </a>
-        <a onclick="switchTab(2)" class="flex items-center gap-3 px-5 py-3 hover:bg-zinc-900 rounded-2xl cursor-pointer">
-          <i class="fa-solid fa-link"></i> Links
-        </a>
-        <a onclick="switchTab(3)" class="flex items-center gap-3 px-5 py-3 hover:bg-zinc-900 rounded-2xl cursor-pointer">
-          <i class="fa-solid fa-gem"></i> Premium
-        </a>
-        <a onclick="switchTab(4)" class="flex items-center gap-3 px-5 py-3 hover:bg-zinc-900 rounded-2xl cursor-pointer">
-          <i class="fa-solid fa-layer-group"></i> Vorlagen
-        </a>
-      </nav>
+      <div class="flex gap-8 items-center text-lg">
+        <button onclick="navigate('shop')" class="hover:text-purple-400">Shop</button>
+        <button onclick="navigate('sell')" class="hover:text-purple-400">Verkaufen</button>
+        <button onclick="navigate('profile')" class="hover:text-purple-400">Profil</button>
+        <button onclick="navigate('admin')" id="adminBtn" class="hover:text-purple-400 hidden">👑 Owner</button>
+        <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-6 py-2.5 rounded-2xl">Logout</button>
+      </div>
     </div>
+  </nav>
 
-    <!-- Hauptbereich -->
-    <div class="flex-1 flex flex-col overflow-hidden">
-      <div class="bg-black border-b border-zinc-800 p-5">
-        <h1 class="text-2xl font-bold" id="page-title">Anpassen</h1>
-      </div>
-      <div class="flex-1 overflow-auto p-8" id="content"></div>
+  <!-- Login -->
+  <div id="page-login" class="page max-w-md mx-auto mt-24 p-12 glass rounded-3xl">
+    <h2 class="text-5xl font-bold text-center neon-purple mb-10">ANIME VAULT</h2>
+    <div class="flex gap-4 bg-gray-900 rounded-3xl p-1 mb-8">
+      <button onclick="switchAuthTab(0)" id="tab-login" class="flex-1 py-4 rounded-3xl font-semibold">Login</button>
+      <button onclick="switchAuthTab(1)" id="tab-register" class="flex-1 py-4 rounded-3xl font-semibold">Registrieren</button>
+    </div>
+    <div id="login-form">
+      <input id="login-user" placeholder="Username" class="w-full mb-5 bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
+      <input id="login-pass" type="password" placeholder="Passwort" class="w-full mb-8 bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
+      <button onclick="login()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-5 rounded-2xl text-xl font-bold">Einloggen</button>
+    </div>
+    <div id="register-form" class="hidden">
+      <input id="reg-user" placeholder="Username" class="w-full mb-5 bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
+      <input id="reg-pass" type="password" placeholder="Passwort (mind. 6 Zeichen)" class="w-full mb-8 bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
+      <button onclick="register()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-5 rounded-2xl text-xl font-bold">Konto erstellen</button>
     </div>
   </div>
 
-  <!-- Profil Vorschau Modal (wie andere es sehen) -->
-  <div id="profileModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
-    <div class="modal bg-zinc-900 w-full max-w-md mx-4 rounded-3xl overflow-hidden border border-violet-500/30">
-      <div class="p-4 border-b border-zinc-700 flex justify-between items-center">
-        <h3 class="font-semibold">So sehen andere dein Profil</h3>
-        <button onclick="closeModal()" class="text-3xl text-zinc-400 hover:text-white">×</button>
-      </div>
+  <!-- Shop -->
+  <div id="page-shop" class="page hidden max-w-7xl mx-auto p-8">
+    <h2 class="text-5xl font-bold neon-purple mb-12 text-center">Unsere Produkte</h2>
+    <div id="products" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
+  </div>
 
-      <!-- Fancy Profile Preview -->
-      <div class="relative h-64 bg-gradient-to-br from-violet-900 to-black">
-        <div class="absolute -bottom-12 left-1/2 -translate-x-1/2 w-28 h-28 border-4 border-zinc-900 rounded-2xl overflow-hidden">
-          <img src="https://picsum.photos/id/64/300/300" class="w-full h-full object-cover">
-        </div>
-      </div>
+  <!-- Sell -->
+  <div id="page-sell" class="page hidden max-w-2xl mx-auto p-8">
+    <h2 class="text-4xl font-bold mb-8">Neues Produkt einstellen</h2>
+    <div class="glass p-8 rounded-3xl space-y-6">
+      <input id="new-name" placeholder="Produktname" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
+      <input id="new-price" type="number" step="0.01" placeholder="Preis €" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
+      <input id="new-stock" type="number" value="10" placeholder="Menge" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
+      <input id="new-discord" placeholder="Dein Discord Username (z.B. Kiano#1234)" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
+      <textarea id="new-desc" placeholder="Beschreibung" class="w-full h-32 bg-gray-800 border border-purple-500 rounded-3xl px-6 py-5"></textarea>
+      <button onclick="addProduct()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-6 rounded-3xl text-xl font-bold">Produkt hochladen</button>
+    </div>
+  </div>
 
-      <div class="pt-16 pb-8 px-8 text-center">
-        <h2 class="text-4xl font-bold text-white">alo</h2>
-        <p class="text-violet-400">kiobio.lol/alo</p>
-        
-        <div class="mt-6 text-zinc-300 text-left">
-          das ist meine Beschreibung<br>
-          Kreativer Mensch • Anime & Gaming Fan
-        </div>
+  <!-- Profile -->
+  <div id="page-profile" class="page hidden max-w-7xl mx-auto p-8">
+    <h2 class="text-5xl font-bold neon-purple mb-8">Profil von <span id="profile-name" class="text-purple-400"></span></h2>
+    <div id="profile-products" class="glass p-8 rounded-3xl"></div>
+  </div>
 
-        <div class="mt-8 flex gap-4">
-          <button onclick="alert('Link kopiert: https://kiobio.lol/alo')" 
-                  class="flex-1 bg-violet-600 hover:bg-violet-700 py-4 rounded-2xl font-medium">
-            🔗 Link teilen
-          </button>
-          <button onclick="closeModal()" class="flex-1 border border-zinc-600 hover:bg-zinc-800 py-4 rounded-2xl">
-            Schließen
-          </button>
-        </div>
+  <!-- Admin Panel -->
+  <div id="page-admin" class="page hidden max-w-7xl mx-auto p-8">
+    <h2 class="text-5xl font-bold neon-purple mb-10">👑 Owner Panel</h2>
+    <div class="glass p-8 rounded-3xl">
+      <button onclick="loadAdminPanel()" class="mb-6 bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-2xl flex items-center gap-2">
+        🔄 Neu laden
+      </button>
+      <div id="admin-content"></div>
+    </div>
+  </div>
+
+  <!-- Warenkorb -->
+  <button onclick="showCart()" class="fixed bottom-10 right-10 bg-gradient-to-r from-purple-600 to-pink-600 w-20 h-20 rounded-full flex items-center justify-center text-4xl shadow-2xl hover:scale-110 transition-transform">
+    🛒 <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-xs w-6 h-6 rounded-full flex items-center justify-center">0</span>
+  </button>
+
+  <div id="cart-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
+    <div class="glass rounded-3xl p-8 max-w-lg w-full max-h-[90vh] overflow-auto">
+      <h3 class="text-3xl font-bold mb-6">Warenkorb</h3>
+      <div id="cart-items" class="space-y-4"></div>
+      <div id="cart-total" class="text-3xl font-bold mt-8 mb-8"></div>
+      <div class="bg-indigo-600 text-center py-6 rounded-2xl">
+        <p class="mb-4">Um zu bestellen, tritt dem Discord bei:</p>
+        <a href="https://discord.gg/v2kKvxrDv" target="_blank" class="inline-block bg-white text-indigo-700 font-bold px-10 py-4 rounded-2xl">Discord beitreten</a>
       </div>
+      <button onclick="hideCart()" class="w-full py-4 border border-gray-600 rounded-2xl mt-6">Schließen</button>
     </div>
   </div>
 
   <script>
-    function switchTab(tab) {
-      document.querySelectorAll('nav a').forEach((el, i) => {
-        el.classList.toggle('nav-active', i === tab);
+    const firebaseConfig = {
+      apiKey: "AIzaSyAbz1N77hZDksKP9-yZdiW4GR8JtIcHvbQ",
+      authDomain: "anime-vault-e439b.firebaseapp.com",
+      databaseURL: "https://anime-vault-e439b-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "anime-vault-e439b",
+      storageBucket: "anime-vault-e439b.firebasestorage.app",
+      messagingSenderId: "406742408925",
+      appId: "1:406742408925:web:ba161f393b7e3503164534"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    let currentUser = null;
+    let cart = [];
+    const admins = ["kiollegend", "ZayTox"];
+
+    function isAdmin(user) {
+      return admins.includes(user?.username);
+    }
+
+    function navigate(page) {
+      document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+      document.getElementById(`page-${page}`).classList.remove('hidden');
+      
+      if (page === 'shop') loadProducts();
+      if (page === 'profile') renderProfile();
+      if (page === 'admin' && isAdmin(currentUser)) loadAdminPanel();
+    }
+
+    function loadProducts() {
+      db.ref('products').on('value', (snapshot) => {
+        const data = snapshot.val() || {};
+        let html = '';
+        Object.keys(data).forEach(key => {
+          const p = data[key];
+          html += `
+            <div class="glass rounded-3xl overflow-hidden">
+              <img src="${p.img || 'https://picsum.photos/300/300'}" class="w-full h-64 object-cover">
+              <div class="p-6">
+                <h3 class="font-bold text-xl">${p.name}</h3>
+                <p class="text-3xl font-bold text-purple-400">${p.price} €</p>
+                <p class="text-sm text-gray-400">Von: ${p.seller} • ${p.stock} verfügbar</p>
+                ${p.discord ? `<p class="text-pink-400 mt-1">💬 ${p.discord}</p>` : ''}
+                <button onclick="addToCart('${key}')" class="mt-6 w-full bg-purple-600 hover:bg-purple-700 py-4 rounded-2xl transition">In den Warenkorb</button>
+              </div>
+            </div>`;
+        });
+        document.getElementById('products').innerHTML = html || "<p class='text-center text-gray-400 text-xl py-12'>Noch keine Produkte vorhanden.</p>";
+      });
+    }
+
+    function addProduct() {
+      if (!currentUser) return alert("Bitte einloggen!");
+      const product = {
+        name: document.getElementById('new-name').value.trim(),
+        price: parseFloat(document.getElementById('new-price').value),
+        stock: parseInt(document.getElementById('new-stock').value) || 10,
+        discord: document.getElementById('new-discord').value.trim(),
+        desc: document.getElementById('new-desc').value.trim(),
+        seller: currentUser.username,
+        timestamp: Date.now()
+      };
+
+      if (!product.name || !product.price || !product.discord) {
+        return alert("Name, Preis und Discord Username sind Pflichtfelder!");
+      }
+
+      db.ref('products').push(product).then(() => {
+        alert("✅ Produkt erfolgreich hochgeladen!");
+        // Felder leeren
+        document.getElementById('new-name').value = '';
+        document.getElementById('new-price').value = '';
+        document.getElementById('new-stock').value = '10';
+        document.getElementById('new-discord').value = '';
+        document.getElementById('new-desc').value = '';
+        navigate('shop');
+      });
+    }
+
+    function addToCart(id) {
+      db.ref('products/' + id).once('value', (snap) => {
+        const prod = snap.val();
+        if (!prod || prod.stock <= 0) return alert("Produkt nicht verfügbar");
+        
+        const existing = cart.find(item => item.id === id);
+        if (existing) existing.quantity++;
+        else cart.push({...prod, id, quantity: 1});
+        
+        updateCartCount();
+        alert(`${prod.name} wurde zum Warenkorb hinzugefügt!`);
+      });
+    }
+
+    function updateCartCount() {
+      const count = cart.reduce((a, b) => a + b.quantity, 0);
+      document.getElementById('cart-count').textContent = count;
+    }
+
+    function showCart() {
+      if (cart.length === 0) return alert("Dein Warenkorb ist leer!");
+      
+      let html = '';
+      let total = 0;
+
+      cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+        html += `
+          <div class="flex justify-between items-center bg-gray-800 p-4 rounded-2xl">
+            <div>
+              <div class="font-semibold">${item.name}</div>
+              <div class="text-sm text-gray-400">${item.quantity}x ${item.price} €</div>
+            </div>
+            <div class="text-right font-bold text-purple-400">${itemTotal.toFixed(2)} €</div>
+          </div>`;
       });
 
-      const content = document.getElementById('content');
-      const title = document.getElementById('page-title');
+      document.getElementById('cart-items').innerHTML = html;
+      document.getElementById('cart-total').innerHTML = `Gesamt: <span class="text-purple-400">${total.toFixed(2)} €</span>`;
+      document.getElementById('cart-modal').classList.remove('hidden');
+    }
 
-      if (tab === 0) { // Konto
-        title.textContent = 'Kontoübersicht';
-        content.innerHTML = `
-          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div class="card p-6 rounded-3xl"><p class="text-zinc-400">Benutzername</p><p class="text-3xl font-bold">alo</p></div>
-            <div class="card p-6 rounded-3xl"><p class="text-zinc-400">Alias</p><p class="text-xl font-bold">0 verwendet</p></div>
-            <div class="card p-6 rounded-3xl"><p class="text-zinc-400">UID</p><p class="text-3xl font-bold">805,159</p></div>
-            <div class="card p-6 rounded-3xl"><p class="text-zinc-400">Aufrufe</p><p class="text-3xl font-bold">377</p></div>
-          </div>
-        `;
-      } else if (tab === 1) { // Anpassen
-        title.textContent = 'Anpassen';
-        content.innerHTML = `
-          <h2 class="text-xl font-semibold mb-6">Medien-Upload</h2>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div class="card p-8 rounded-3xl text-center">Profil Banner</div>
-            <div class="card p-8 rounded-3xl text-center">Audio</div>
-            <div class="card p-8 rounded-3xl text-center">Avatar</div>
-            <div class="card p-8 rounded-3xl text-center">Cursor</div>
-          </div>
-          <h2 class="text-xl font-semibold mt-10 mb-6">Schriftart & Farben</h2>
-          <div class="card p-8 rounded-3xl">
-            <select class="w-full bg-zinc-800 p-4 rounded-2xl mb-6">
-              <option>Inter (Standard)</option>
-              <option>Poppins</option>
-              <option>Space Grotesk</option>
-            </select>
-          </div>
-        `;
-      } else if (tab === 4) { // Vorlagen
-        title.textContent = 'Vorlagen';
-        content.innerHTML = `
-          <div class="max-w-lg mx-auto text-center py-20">
-            <div class="text-7xl mb-6">👁️</div>
-            <h2 class="text-3xl font-bold mb-4">Mein Profil anschauen</h2>
-            <p class="text-zinc-400 mb-10">So sieht dein Profil aus, wenn andere den Link erhalten.</p>
-            <button onclick="showProfilePreview()" 
-                    class="bg-violet-600 hover:bg-violet-700 px-12 py-5 rounded-3xl text-xl font-semibold">
-              Profil jetzt ansehen
-            </button>
-          </div>
-        `;
-      } else {
-        title.textContent = 'kiobio.lol';
-        content.innerHTML = `<p class="text-center py-20 text-zinc-400">Dieser Tab wird noch erweitert.</p>`;
+    function hideCart() {
+      document.getElementById('cart-modal').classList.add('hidden');
+    }
+
+    function deleteProduct(productId, seller) {
+      if (!currentUser) return;
+      if (seller !== currentUser.username && !isAdmin(currentUser)) {
+        return alert("Du kannst nur deine eigenen Produkte löschen!");
+      }
+      if (confirm("Produkt wirklich löschen?")) {
+        db.ref('products/' + productId).remove().then(() => {
+          alert("Produkt gelöscht!");
+          loadProducts();
+          if (!document.getElementById('page-profile').classList.contains('hidden')) renderProfile();
+          if (!document.getElementById('page-admin').classList.contains('hidden')) loadAdminPanel();
+        });
       }
     }
 
-    function showProfilePreview() {
-      document.getElementById('profileModal').classList.remove('hidden');
+    function renderProfile() {
+      document.getElementById('profile-name').textContent = currentUser.username;
+      db.ref('products').once('value', (snapshot) => {
+        const data = snapshot.val() || {};
+        let html = '<h3 class="text-2xl mb-6">Deine Produkte</h3>';
+        let hasProducts = false;
+
+        Object.keys(data).forEach(key => {
+          const p = data[key];
+          if (p.seller === currentUser.username) {
+            hasProducts = true;
+            html += `
+              <div class="glass p-6 rounded-2xl mb-4 flex justify-between items-center">
+                <div>
+                  <h4 class="font-bold">${p.name}</h4>
+                  <p class="text-purple-400">${p.price} € • ${p.stock} Stück</p>
+                  ${p.discord ? `<p class="text-pink-400">Discord: ${p.discord}</p>` : ''}
+                </div>
+                <button onclick="deleteProduct('${key}', '${p.seller}')" class="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-2xl">Löschen</button>
+              </div>`;
+          }
+        });
+
+        if (!hasProducts) html += '<p class="text-gray-400">Du hast noch keine Produkte eingestellt.</p>';
+        document.getElementById('profile-products').innerHTML = html;
+      });
     }
 
-    function closeModal() {
-      document.getElementById('profileModal').classList.add('hidden');
+    function loadAdminPanel() {
+      let html = `<h3 class="text-3xl mb-8">👑 Owner Panel - ${currentUser.username}</h3>`;
+
+      db.ref('users').once('value', (userSnap) => {
+        const users = userSnap.val() || {};
+        const userCount = Object.keys(users).length;
+        
+        html += `
+          <h4 class="text-2xl mb-4 mt-6">Registrierte User (${userCount})</h4>
+          <div class="grid gap-3">`;
+
+        if (userCount === 0) {
+          html += `<p class="text-gray-400 p-4">Noch keine User registriert.</p>`;
+        } else {
+          Object.keys(users).forEach(username => {
+            const userData = users[username] || {};
+            const regDate = userData.registered 
+              ? new Date(userData.registered).toLocaleDateString('de-DE') 
+              : "Unbekannt";
+            
+            html += `
+              <div class="glass p-5 rounded-2xl flex justify-between items-center">
+                <span class="font-bold text-lg">${username}</span>
+                <span class="text-sm text-gray-400">Registriert: ${regDate}</span>
+              </div>`;
+          });
+        }
+        html += `</div>`;
+
+        db.ref('products').once('value', (prodSnap) => {
+          const products = prodSnap.val() || {};
+          html += `<h4 class="text-2xl mb-4 mt-10">Alle Produkte (${Object.keys(products).length})</h4>`;
+
+          if (Object.keys(products).length === 0) {
+            html += `<p class="text-gray-400 p-4">Noch keine Produkte vorhanden.</p>`;
+          } else {
+            Object.keys(products).forEach(key => {
+              const p = products[key];
+              html += `
+                <div class="glass p-5 rounded-2xl mb-3 flex justify-between items-center">
+                  <div class="flex-1">
+                    <strong>${p.name}</strong> — ${p.price}€ 
+                    <span class="text-gray-400">von ${p.seller}</span>
+                    ${p.discord ? `<br><span class="text-pink-400">💬 ${p.discord}</span>` : ''}
+                  </div>
+                  <button onclick="deleteProduct('${key}', '${p.seller}')" class="bg-red-600 hover:bg-red-700 px-6 py-2.5 rounded-2xl text-sm">Löschen</button>
+                </div>`;
+            });
+          }
+
+          document.getElementById('admin-content').innerHTML = html;
+        });
+      });
     }
 
-    // Start
-    window.onload = () => switchTab(1);
+    function login() {
+      const username = document.getElementById('login-user').value.trim();
+      if (!username) return alert("Bitte Username eingeben");
+      currentUser = { username };
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      if (isAdmin(currentUser)) document.getElementById('adminBtn').classList.remove('hidden');
+      navigate('shop');
+    }
+
+    function register() {
+      const username = document.getElementById('reg-user').value.trim();
+      if (username.length < 3) return alert("Username zu kurz!");
+      currentUser = { username };
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      db.ref('users/' + username).set({ registered: Date.now() });
+      alert("Registrierung erfolgreich!");
+      navigate('shop');
+    }
+
+    function logout() {
+      if (confirm("Wirklich ausloggen?")) {
+        localStorage.removeItem('currentUser');
+        location.reload();
+      }
+    }
+
+    function switchAuthTab(n) {
+      document.getElementById('login-form').classList.toggle('hidden', n !== 0);
+      document.getElementById('register-form').classList.toggle('hidden', n !== 1);
+    }
+
+    window.onload = () => {
+      const saved = localStorage.getItem('currentUser');
+      if (saved) {
+        currentUser = JSON.parse(saved);
+        if (isAdmin(currentUser)) document.getElementById('adminBtn').classList.remove('hidden');
+        navigate('shop');
+      } else {
+        navigate('login');
+      }
+    };
   </script>
 </body>
 </html>
