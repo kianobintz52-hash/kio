@@ -1,1591 +1,485 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>guns.lol - Platform</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #3b82f6;
-            --primary-dark: #2563eb;
-            --secondary: #8b5cf6;
-            --accent: #ec4899;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --dark-bg: #0f1419;
-            --dark-surface: #1a1f2e;
-            --dark-border: rgba(255, 255, 255, 0.1);
-            --text-primary: #ffffff;
-            --text-secondary: #b3b3b3;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%);
-            color: var(--text-primary);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* Auth Pages */
-        .auth-container {
-            display: flex;
-            min-height: 100vh;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .auth-box {
-            width: 100%;
-            max-width: 420px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            border-radius: 16px;
-            padding: 40px 32px;
-            animation: slideIn 0.4s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .auth-header {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-
-        .auth-header h1 {
-            font-size: 28px;
-            font-weight: 600;
-            margin: 0 0 8px 0;
-        }
-
-        .auth-header p {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin: 0;
-        }
-
-        .auth-logo {
-            font-size: 32px;
-            color: var(--primary);
-            margin-right: 8px;
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 500;
-            margin-bottom: 6px;
-            color: var(--text-secondary);
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: rgba(59, 130, 246, 0.5);
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .form-group input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
-        }
-
-        .btn {
-            padding: 10px 16px;
-            border: none;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .btn-primary {
-            width: 100%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            border: 1px solid rgba(59, 130, 246, 0.5);
-            color: var(--primary);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(59, 130, 246, 0.1);
-        }
-
-        .auth-link {
-            text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 16px;
-            margin-top: 16px;
-        }
-
-        .auth-link p {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin: 0;
-        }
-
-        .auth-link button {
-            background: none;
-            border: none;
-            color: var(--primary);
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            text-decoration: underline;
-        }
-
-        .error-message {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: 8px;
-            padding: 10px 12px;
-            font-size: 13px;
-            color: #fca5a5;
-            margin-bottom: 16px;
-        }
-
-        /* Dashboard Layout */
-        .dashboard-container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: 240px;
-            background: rgba(255, 255, 255, 0.03);
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 24px 16px;
-            display: flex;
-            flex-direction: column;
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-        }
-
-        .sidebar-header {
-            margin-bottom: 32px;
-            font-size: 16px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .sidebar-icon {
-            font-size: 18px;
-            color: var(--primary);
-        }
-
-        .sidebar-nav {
-            flex: 1;
-        }
-
-        .nav-item {
-            width: 100%;
-            padding: 10px 12px;
-            background: transparent;
-            border: none;
-            border-radius: 8px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 13px;
-            text-align: left;
-            margin-bottom: 8px;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 400;
-        }
-
-        .nav-item:hover {
-            background: rgba(59, 130, 246, 0.1);
-        }
-
-        .nav-item.active {
-            background: rgba(59, 130, 246, 0.2);
-            color: var(--primary);
-            font-weight: 500;
-        }
-
-        .nav-section {
-            font-size: 11px;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin: 16px 0 8px 0;
-            padding: 0 12px;
-            font-weight: 600;
-        }
-
-        .nav-item i {
-            font-size: 16px;
-        }
-
-        .btn-logout {
-            width: 100%;
-            padding: 10px 12px;
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            border-radius: 8px;
-            color: #fca5a5;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-        }
-
-        .btn-logout:hover {
-            background: rgba(239, 68, 68, 0.2);
-        }
-
-        /* Main Content */
-        .main-content {
-            margin-left: 240px;
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .top-bar {
-            background: rgba(255, 255, 255, 0.02);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 20px 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .top-bar h1 {
-            font-size: 24px;
-            font-weight: 600;
-            margin: 0;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-        }
-
-        .content-area {
-            padding: 32px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .page {
-            display: none;
-        }
-
-        .page.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* Cards & Grids */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            transition: all 0.3s;
-        }
-
-        .stat-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(59, 130, 246, 0.3);
-        }
-
-        .stat-icon {
-            font-size: 24px;
-            margin-bottom: 12px;
-            display: block;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin: 0 0 8px 0;
-        }
-
-        .stat-value {
-            font-size: 20px;
-            font-weight: 600;
-            margin: 0;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 24px;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding-bottom: 12px;
-        }
-
-        .card-header h3 {
-            font-size: 16px;
-            font-weight: 600;
-            margin: 0;
-        }
-
-        /* Tables */
-        .table-container {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-
-        th {
-            background: rgba(255, 255, 255, 0.02);
-            padding: 12px;
-            text-align: left;
-            font-weight: 600;
-            color: var(--text-secondary);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        td {
-            padding: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        tr:hover {
-            background: rgba(255, 255, 255, 0.02);
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .status-active {
-            background: rgba(16, 185, 129, 0.2);
-            color: #6ee7b7;
-        }
-
-        .status-inactive {
-            background: rgba(107, 114, 128, 0.2);
-            color: #d1d5db;
-        }
-
-        .status-pending {
-            background: rgba(245, 158, 11, 0.2);
-            color: #fcd34d;
-        }
-
-        /* Notifications */
-        .notifications-dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .notification-bell {
-            font-size: 20px;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: all 0.3s;
-        }
-
-        .notification-bell:hover {
-            color: var(--primary);
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: var(--danger);
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .dropdown-menu {
-            position: absolute;
-            top: 40px;
-            right: 0;
-            background: var(--dark-surface);
-            border: 1px solid var(--dark-border);
-            border-radius: 8px;
-            min-width: 300px;
-            max-height: 400px;
-            overflow-y: auto;
-            z-index: 1000;
-            display: none;
-        }
-
-        .dropdown-menu.active {
-            display: block;
-        }
-
-        .notification-item {
-            padding: 12px 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .notification-item:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .notification-item p {
-            margin: 0;
-            font-size: 13px;
-        }
-
-        .notification-time {
-            font-size: 11px;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
-
-        /* Forms */
-        .form {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-            font-family: inherit;
-            font-size: 14px;
-            resize: vertical;
-            min-height: 120px;
-            transition: all 0.3s;
-        }
-
-        textarea:focus {
-            outline: none;
-            border-color: rgba(59, 130, 246, 0.5);
-        }
-
-        select {
-            padding: 10px 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-            font-size: 14px;
-        }
-
-        /* File Upload */
-        .upload-area {
-            border: 2px dashed rgba(59, 130, 246, 0.5);
-            border-radius: 8px;
-            padding: 32px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: rgba(59, 130, 246, 0.05);
-        }
-
-        .upload-area:hover {
-            border-color: var(--primary);
-            background: rgba(59, 130, 246, 0.1);
-        }
-
-        .upload-area.dragover {
-            border-color: var(--primary);
-            background: rgba(59, 130, 246, 0.15);
-        }
-
-        .upload-icon {
-            font-size: 32px;
-            color: var(--primary);
-            margin-bottom: 8px;
-        }
-
-        /* Messages/Chat */
-        .message-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            max-height: 500px;
-            overflow-y: auto;
-        }
-
-        .message {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            padding: 12px;
-            font-size: 13px;
-        }
-
-        .message-sender {
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 4px;
-        }
-
-        .message-time {
-            font-size: 11px;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
-
-        /* Modals */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--dark-surface);
-            border: 1px solid var(--dark-border);
-            border-radius: 12px;
-            padding: 32px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .modal-header h2 {
-            font-size: 20px;
-            font-weight: 600;
-            margin: 0;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 24px;
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .sidebar {
-                width: 200px;
-            }
-
-            .main-content {
-                margin-left: 200px;
-            }
-
-            .grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .dashboard-container {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                position: fixed;
-                left: -240px;
-                height: auto;
-                width: 240px;
-                transition: left 0.3s;
-                z-index: 1000;
-            }
-
-            .sidebar.active {
-                left: 0;
-            }
-
-            .main-content {
-                margin-left: 0;
-            }
-
-            .grid {
-                grid-template-columns: 1fr;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .top-bar {
-                padding: 16px;
-            }
-
-            .content-area {
-                padding: 16px;
-            }
-
-            .modal-content {
-                padding: 24px;
-            }
-        }
-
-        /* Chart Placeholder */
-        .chart {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px dashed rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 40px;
-            text-align: center;
-            color: var(--text-secondary);
-            margin: 20px 0;
-        }
-
-        /* Admin Badge */
-        .admin-badge {
-            display: inline-block;
-            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-left: 8px;
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>biolnk — your link in bio</title>
+<style>
+  :root{
+    --bg:#07060d; --bg2:#0d0a1f; --panel:rgba(20,16,40,.6);
+    --border:rgba(168,85,247,.25); --text:#ece9ff; --muted:#9b96c4;
+    --accent:#a855f7; --accent2:#ec4899; --accent3:#22d3ee;
+    --glow:0 0 24px rgba(168,85,247,.45), 0 0 60px rgba(236,72,153,.25);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;height:100%;font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+  body{background:radial-gradient(1200px 800px at 20% -10%,#2a0a4a 0%,transparent 60%),radial-gradient(1000px 700px at 100% 100%,#4a0a3a 0%,transparent 60%),var(--bg)}
+  a{color:inherit;text-decoration:none}
+  button,input,select,textarea{font-family:inherit;color:inherit}
+  /* layout */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:16px 28px;background:rgba(7,6,13,.55);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+  .brand{font-weight:800;font-size:20px;letter-spacing:.5px;background:linear-gradient(90deg,#a855f7,#ec4899,#22d3ee);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .nav-links{display:flex;gap:18px;align-items:center}
+  .nav-links a{color:var(--muted);font-size:14px}
+  .nav-links a:hover{color:var(--text)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;border:1px solid var(--border);background:rgba(168,85,247,.1);cursor:pointer;font-weight:600;font-size:14px;transition:.2s}
+  .btn:hover{background:rgba(168,85,247,.2);box-shadow:var(--glow);transform:translateY(-1px)}
+  .btn-primary{background:linear-gradient(90deg,#a855f7,#ec4899);border:none;color:#fff}
+  .btn-primary:hover{filter:brightness(1.15);box-shadow:var(--glow)}
+  .btn-ghost{background:transparent}
+  .container{max-width:1200px;margin:0 auto;padding:120px 24px 60px}
+  .view{display:none;animation:fade .4s}
+  .view.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  /* landing */
+  .hero{text-align:center;padding:60px 0 80px}
+  .hero h1{font-size:clamp(40px,7vw,82px);margin:0 0 18px;line-height:1.05;font-weight:800;letter-spacing:-2px}
+  .hero h1 span{background:linear-gradient(90deg,#a855f7,#ec4899,#22d3ee);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p{color:var(--muted);font-size:18px;max-width:600px;margin:0 auto 30px}
+  .hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .features{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-top:60px}
+  .feature{padding:24px;border:1px solid var(--border);border-radius:16px;background:var(--panel);backdrop-filter:blur(10px)}
+  .feature .ico{width:42px;height:42px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,#a855f7,#ec4899);margin-bottom:14px;font-size:20px}
+  .feature h3{margin:0 0 6px;font-size:16px}
+  .feature p{margin:0;color:var(--muted);font-size:14px}
+  /* auth */
+  .auth-wrap{max-width:420px;margin:60px auto;padding:34px;border:1px solid var(--border);border-radius:20px;background:var(--panel);backdrop-filter:blur(14px);box-shadow:var(--glow)}
+  .auth-wrap h2{margin:0 0 6px;text-align:center;font-size:28px}
+  .auth-wrap .sub{color:var(--muted);text-align:center;margin-bottom:24px;font-size:14px}
+  .field{margin-bottom:14px}
+  .field label{display:block;margin-bottom:6px;font-size:13px;color:var(--muted)}
+  .input{width:100%;padding:12px 14px;background:rgba(10,8,20,.6);border:1px solid var(--border);border-radius:10px;font-size:14px;outline:none;transition:.2s}
+  .input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(168,85,247,.2)}
+  .auth-switch{text-align:center;margin-top:18px;color:var(--muted);font-size:13px}
+  .auth-switch a{color:var(--accent);cursor:pointer}
+  .err{color:#ff6b8a;font-size:13px;margin-top:8px;text-align:center;min-height:18px}
+  /* dashboard */
+  .dash{display:grid;grid-template-columns:240px 1fr;gap:24px}
+  .sidebar{position:sticky;top:96px;align-self:start;padding:18px;border:1px solid var(--border);border-radius:16px;background:var(--panel)}
+  .sidebar .me{display:flex;gap:10px;align-items:center;padding-bottom:14px;margin-bottom:14px;border-bottom:1px solid var(--border)}
+  .avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#a855f7,#ec4899);display:grid;place-items:center;font-weight:700;font-size:16px;flex-shrink:0;background-size:cover;background-position:center}
+  .me-info .name{font-weight:600;font-size:14px}
+  .me-info .uname{color:var(--muted);font-size:12px}
+  .menu{display:flex;flex-direction:column;gap:4px}
+  .menu a{padding:10px 12px;border-radius:8px;font-size:14px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:10px}
+  .menu a:hover,.menu a.active{background:rgba(168,85,247,.15);color:var(--text)}
+  .panel{padding:24px;border:1px solid var(--border);border-radius:16px;background:var(--panel);margin-bottom:18px}
+  .panel h3{margin:0 0 16px;font-size:18px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:760px){.row{grid-template-columns:1fr}.dash{grid-template-columns:1fr}.sidebar{position:static}}
+  .grid-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:18px}
+  .stat{padding:18px;border:1px solid var(--border);border-radius:14px;background:var(--panel)}
+  .stat .lbl{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+  .stat .val{font-size:28px;font-weight:800;margin-top:4px;background:linear-gradient(90deg,#a855f7,#22d3ee);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .link-item{display:flex;gap:10px;align-items:center;padding:10px;border:1px solid var(--border);border-radius:10px;margin-bottom:8px;background:rgba(10,8,20,.4)}
+  .link-item .drag{cursor:grab;color:var(--muted)}
+  .link-item input{flex:1;background:transparent;border:none;outline:none;font-size:14px}
+  .link-item .del{background:transparent;border:none;color:#ff6b8a;cursor:pointer;font-size:18px}
+  .swatch-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .swatch{width:34px;height:34px;border-radius:8px;cursor:pointer;border:2px solid transparent}
+  .swatch.active{border-color:#fff}
+  .preview-link{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:8px;background:rgba(168,85,247,.15);color:var(--accent);font-size:13px;margin-top:8px}
+  /* public profile */
+  .profile{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:60px 20px;position:relative;background-size:cover;background-position:center;background-attachment:fixed}
+  .profile::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(2px);z-index:0}
+  .pcard{position:relative;z-index:2;max-width:440px;width:100%;text-align:center;padding:36px 28px;border:1px solid var(--border);border-radius:24px;background:rgba(15,10,30,.72);backdrop-filter:blur(20px);box-shadow:var(--glow)}
+  .pcard .av{width:110px;height:110px;border-radius:50%;margin:0 auto 16px;background:linear-gradient(135deg,#a855f7,#ec4899);display:grid;place-items:center;font-size:42px;font-weight:800;border:3px solid rgba(255,255,255,.15);background-size:cover;background-position:center}
+  .pcard h1{margin:0 0 4px;font-size:26px}
+  .pcard .uname{color:var(--muted);font-size:14px;margin-bottom:12px}
+  .pcard .bio{color:#dcd9f0;margin-bottom:22px;font-size:15px;line-height:1.5}
+  .plink{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:12px;border:1px solid var(--border);background:rgba(20,15,40,.6);margin-bottom:10px;font-weight:600;transition:.2s;cursor:pointer}
+  .plink:hover{background:rgba(168,85,247,.25);transform:translateY(-2px);box-shadow:var(--glow)}
+  .views{color:var(--muted);font-size:12px;margin-top:14px}
+  /* enter screen */
+  .enter{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:rgba(0,0,0,.92);cursor:pointer;backdrop-filter:blur(10px);animation:fade .3s}
+  .enter h2{font-size:32px;background:linear-gradient(90deg,#a855f7,#ec4899);-webkit-background-clip:text;background-clip:text;color:transparent;animation:pulse 2s infinite}
+  @keyframes pulse{50%{opacity:.5}}
+  /* particles */
+  #particles{position:fixed;inset:0;pointer-events:none;z-index:1}
+  /* audio control */
+  .audio-ctrl{position:fixed;bottom:20px;right:20px;z-index:100;width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:rgba(15,10,30,.8);backdrop-filter:blur(10px);display:grid;place-items:center;cursor:pointer;font-size:18px}
+  .badge{display:inline-block;padding:3px 8px;border-radius:6px;background:rgba(34,211,238,.15);color:var(--accent3);font-size:11px;font-weight:600;margin-left:6px}
+  .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);padding:12px 20px;border-radius:10px;background:rgba(15,10,30,.95);border:1px solid var(--accent);z-index:9000;font-size:14px;box-shadow:var(--glow);animation:fade .3s}
+  .copy-btn{padding:6px 10px;border-radius:6px;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.3);color:var(--accent3);font-size:12px;cursor:pointer}
+  textarea.input{min-height:80px;resize:vertical;font-family:inherit}
+</style>
 </head>
 <body>
-    <!-- Login Page -->
-    <div id="loginPage" class="page active">
-        <div class="auth-container">
-            <div class="auth-box">
-                <div class="auth-header">
-                    <div style="font-size: 28px; color: var(--primary); margin-bottom: 12px;">
-                        <i class="fas fa-rocket"></i>
-                    </div>
-                    <h1>guns.lol</h1>
-                    <p>Login to your account</p>
-                </div>
-
-                <form id="loginForm" onsubmit="handleLogin(event)">
-                    <div id="loginError" class="error-message" style="display: none;"></div>
-                    
-                    <div class="form-group">
-                        <label>Email Address</label>
-                        <input type="email" id="loginEmail" placeholder="you@example.com" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" id="loginPassword" placeholder="••••••••" required>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
-                        <i class="fas fa-sign-in-alt"></i> Sign In
-                    </button>
-                </form>
-
-                <div class="auth-link">
-                    <p>Don't have an account? <button onclick="switchPage('registerPage')" style="background: none; border: none; color: var(--primary); cursor: pointer; font-weight: 600; text-decoration: underline;">Create one</button></p>
-                </div>
-            </div>
-        </div>
+<canvas id="particles"></canvas>
+<nav class="nav" id="nav">
+  <div class="brand" onclick="go('landing')" style="cursor:pointer">⚡ biolnk</div>
+  <div class="nav-links" id="navLinks"></div>
+</nav>
+<!-- LANDING -->
+<div id="view-landing" class="view active">
+  <div class="container">
+    <div class="hero">
+      <h1>Your <span>link in bio</span><br/>but actually <span>cool</span>.</h1>
+      <p>Build a stunning profile page with custom backgrounds, music, effects and unlimited links. Free forever.</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary" onclick="go('register')">Get started — it's free</button>
+        <button class="btn btn-ghost" onclick="go('login')">Sign in</button>
+      </div>
     </div>
-
-    <!-- Register Page -->
-    <div id="registerPage" class="page">
-        <div class="auth-container">
-            <div class="auth-box">
-                <div class="auth-header">
-                    <div style="font-size: 28px; color: var(--primary); margin-bottom: 12px;">
-                        <i class="fas fa-rocket"></i>
-                    </div>
-                    <h1>Create Account</h1>
-                    <p>Join the community</p>
-                </div>
-
-                <form id="registerForm" onsubmit="handleRegister(event)">
-                    <div id="registerError" class="error-message" style="display: none;"></div>
-                    
-                    <div class="form-group">
-                        <label>Username</label>
-                        <input type="text" id="registerUsername" placeholder="yourname" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Email Address</label>
-                        <input type="email" id="registerEmail" placeholder="you@example.com" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" id="registerPassword" placeholder="••••••••" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Confirm Password</label>
-                        <input type="password" id="registerPasswordConfirm" placeholder="••••••••" required>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
-                        <i class="fas fa-user-plus"></i> Create Account
-                    </button>
-                </form>
-
-                <div class="auth-link">
-                    <p>Already have an account? <button onclick="switchPage('loginPage')" style="background: none; border: none; color: var(--primary); cursor: pointer; font-weight: 600; text-decoration: underline;">Sign in</button></p>
-                </div>
-            </div>
-        </div>
+    <div class="features">
+      <div class="feature"><div class="ico">🎨</div><h3>Full customization</h3><p>Backgrounds, colors, fonts, effects — make it yours.</p></div>
+      <div class="feature"><div class="ico">🎵</div><h3>Background music</h3><p>Add a song that plays when someone visits.</p></div>
+      <div class="feature"><div class="ico">✨</div><h3>Visual effects</h3><p>Snow, rain, sparkles, particle systems.</p></div>
+      <div class="feature"><div class="ico">📊</div><h3>Analytics</h3><p>Track profile views and link clicks in real time.</p></div>
+      <div class="feature"><div class="ico">🔗</div><h3>Unlimited links</h3><p>Add as many social or custom links as you want.</p></div>
+      <div class="feature"><div class="ico">⚡</div><h3>Lightning fast</h3><p>Profiles load instantly on any device.</p></div>
     </div>
-
-    <!-- Dashboard -->
-    <div id="dashboardPage" class="page">
-        <div class="dashboard-container">
-            <!-- Sidebar -->
-            <div class="sidebar">
-                <div class="sidebar-header">
-                    <i class="fas fa-rocket sidebar-icon"></i>
-                    guns.lol
-                </div>
-
-                <div class="sidebar-nav">
-                    <div class="nav-section">User</div>
-                    <button class="nav-item active" onclick="switchDashboardPage('dashboard')">
-                        <i class="fas fa-chart-line"></i> Dashboard
-                    </button>
-                    <button class="nav-item" onclick="switchDashboardPage('posts')">
-                        <i class="fas fa-file-alt"></i> Posts
-                    </button>
-                    <button class="nav-item" onclick="switchDashboardPage('messages')">
-                        <i class="fas fa-envelope"></i> Messages
-                    </button>
-                    <button class="nav-item" onclick="switchDashboardPage('profile')">
-                        <i class="fas fa-user-circle"></i> Profile
-                    </button>
-                    <button class="nav-item" onclick="switchDashboardPage('settings')">
-                        <i class="fas fa-cog"></i> Settings
-                    </button>
-
-                    <div class="nav-section">Admin</div>
-                    <button class="nav-item" onclick="switchDashboardPage('admin-dashboard')" id="adminNav" style="display: none;">
-                        <i class="fas fa-crown"></i> Admin Panel
-                    </button>
-                    <button class="nav-item" onclick="switchDashboardPage('users')" id="usersNav" style="display: none;">
-                        <i class="fas fa-users"></i> Manage Users
-                    </button>
-                    <button class="nav-item" onclick="switchDashboardPage('analytics')" id="analyticsNav" style="display: none;">
-                        <i class="fas fa-chart-bar"></i> Analytics
-                    </button>
-                    <button class="nav-item" onclick="switchDashboardPage('moderation')" id="moderationNav" style="display: none;">
-                        <i class="fas fa-shield-alt"></i> Moderation
-                    </button>
-                </div>
-
-                <button class="btn-logout" onclick="handleLogout()">
-                    <i class="fas fa-sign-out-alt"></i> Sign Out
-                </button>
-            </div>
-
-            <!-- Main Content -->
-            <div class="main-content">
-                <!-- Top Bar -->
-                <div class="top-bar">
-                    <h1 id="pageTitle">Dashboard</h1>
-                    <div class="user-info">
-                        <div class="notifications-dropdown">
-                            <div class="notification-bell" onclick="toggleNotifications()">
-                                <i class="fas fa-bell"></i>
-                                <span class="notification-badge" id="notificationCount" style="display: none;">3</span>
-                            </div>
-                            <div class="dropdown-menu" id="notificationsMenu">
-                                <div class="notification-item" onclick="markNotificationRead(this)">
-                                    <p><strong>New follower</strong> - @sarah.dev started following you</p>
-                                    <div class="notification-time">2 minutes ago</div>
-                                </div>
-                                <div class="notification-item" onclick="markNotificationRead(this)">
-                                    <p><strong>Post liked</strong> - 12 people liked your latest post</p>
-                                    <div class="notification-time">15 minutes ago</div>
-                                </div>
-                                <div class="notification-item" onclick="markNotificationRead(this)">
-                                    <p><strong>Comment received</strong> - New comment on your post</p>
-                                    <div class="notification-time">1 hour ago</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="user-avatar" id="userAvatar">U</div>
-                        <span id="userDisplay">User</span>
-                    </div>
-                </div>
-
-                <!-- Content Area -->
-                <div class="content-area">
-                    <!-- Dashboard Page -->
-                    <div id="dashboard-content" class="dashboard-section active">
-                        <div class="grid">
-                            <div class="stat-card">
-                                <div class="stat-icon">💰</div>
-                                <p class="stat-label">Account Balance</p>
-                                <p class="stat-value">$2,847.50</p>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">📝</div>
-                                <p class="stat-label">Total Posts</p>
-                                <p class="stat-value">24</p>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">👥</div>
-                                <p class="stat-label">Followers</p>
-                                <p class="stat-value">1,240</p>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">⭐</div>
-                                <p class="stat-label">Engagement Rate</p>
-                                <p class="stat-value">8.3%</p>
-                            </div>
-                        </div>
-
-                        <div class="card">
-                            <div class="card-header">
-                                <h3>Recent Activity</h3>
-                            </div>
-                            <div style="font-size: 13px; color: var(--text-secondary);">
-                                <div style="padding: 12px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
-                                    <i class="fas fa-edit" style="color: var(--primary); margin-right: 8px;"></i> Posted new content
-                                </div>
-                                <div style="padding: 12px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
-                                    <i class="fas fa-heart" style="color: var(--danger); margin-right: 8px;"></i> Received 48 likes on your post
-                                </div>
-                                <div style="padding: 12px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
-                                    <i class="fas fa-comment" style="color: var(--secondary); margin-right: 8px;"></i> New comments (12)
-                                </div>
-                                <div style="padding: 12px 0;">
-                                    <i class="fas fa-trophy" style="color: var(--warning); margin-right: 8px;"></i> Achievement unlocked: Top Creator
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card">
-                            <div class="card-header">
-                                <h3>Monthly Performance</h3>
-                            </div>
-                            <div class="chart">
-                                <i class="fas fa-chart-line" style="font-size: 40px; color: var(--primary); margin-bottom: 12px;"></i>
-                                <p>Chart data visualization would appear here</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Posts Page -->
-                    <div id="posts-content" class="dashboard-section" style="display: none;">
-                        <div style="display: flex; gap: 12px; margin-bottom: 24px;">
-                            <button class="btn btn-primary" onclick="openModal('newPostModal')">
-                                <i class="fas fa-plus"></i> New Post
-                            </button>
-                        </div>
-
-                        <div class="card">
-                            <div class="card-header">
-                                <h3>Your Posts</h3>
-                            </div>
-                            <div class="table-container">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Title</th>
-                                            <th>Status</th>
-                                            <th>Likes</th>
-                                            <th>Comments</th>
-                                            <th>Date</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Amazing insights about Web Dev</td>
-                                            <td><span class="status-badge status-active">Published</span></td>
-                                            <td>348</td>
-                                            <td>24</td>
-                                            <td>2024-01-15</td>
-                                            <td><button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;">Edit</button></td>
-                                        </tr>
-                                        <tr>
-                                            <td>My journey into programming</td>
-                                            <td><span class="status-badge status-active">Published</span></td>
-                                            <td>521</td>
-                                            <td>67</td>
-                                            <td>2024-01-14</td>
-                                            <td><button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;">Edit</button></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Draft: Future plans</td>
-                                            <td><span class="status-badge status-pending">Draft</span></td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>2024-01-10</td>
-                                            <td><button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;">Edit</button></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Messages Page -->
-                    <div id="messages-content" class="dashboard-section" style="display: none;">
-                        <div class="grid" style="grid-template-columns: 300px 1fr; gap: 16px;">
-                            <div class="card">
-                                <div class="card-header" style="flex-direction: column; align-items: flex-start;">
-                                    <h3>Conversations</h3>
-                                </div>
-                                <div style="display: flex; flex-direction: column; gap: 8px;">
-                                    <button class="nav-item" style="margin: 0; background: rgba(59, 130, 246, 0.2); color: var(--primary);">
-                                        <i class="fas fa-user-circle"></i> Sarah Dev
-                                    </button>
-                                    <button class="nav-item" style="margin: 0;">
-                                        <i class="fas fa-user-circle"></i> John Designer
-                                    </button>
-                                    <button class="nav-item" style="margin: 0;">
-                                        <i class="fas fa-user-circle"></i> Mike Admin
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3>Chat with Sarah Dev</h3>
-                                </div>
-                                <div class="message-list">
-                                    <div class="message">
-                                        <div class="message-sender">Sarah Dev</div>
-                                        <div>Hey! How are you doing?</div>
-                                        <div class="message-time">10:30 AM</div>
-                                    </div>
-                                    <div class="message" style="background: rgba(59, 130, 246, 0.1); margin-left: 40px;">
-                                        <div class="message-sender" style="color: var(--primary);">You</div>
-                                        <div>Great! Working on some new features.</div>
-                                        <div class="message-time">10:32 AM</div>
-                                    </div>
-                                    <div class="message">
-                                        <div class="message-sender">Sarah Dev</div>
-                                        <div>That's awesome! Want to collaborate?</div>
-                                        <div class="message-time">10:33 AM</div>
-                                    </div>
-                                </div>
-                                <div style="margin-top: 16px; display: flex; gap: 8px;">
-                                    <input type="text" placeholder="Type a message..." style="flex: 1; padding: 10px 12px; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; background: rgba(255, 255, 255, 0.05); color: var(--text-primary);">
-                                    <button class="btn btn-primary" style="padding: 10px 16px;">
-                                        <i class="fas fa-send"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Profile Page -->
-                    <div id="profile-content" class="dashboard-section" style="display: none;">
-                        <div class="card" style="max-width: 600px;">
-                            <div class="card-header">
-                                <h3>User Profile</h3>
-                            </div>
-                            <div style="text-align: center; margin-bottom: 32px;">
-                                <div style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: 600;">U</div>
-                                <h2 id="profileUsername" style="margin: 0 0 8px 0;">User</h2>
-                                <p id="profileEmail" style="color: var(--text-secondary); margin: 0;">user@example.com</p>
-                            </div>
-
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
-                                <div>
-                                    <label style="color: var(--text-secondary); font-size: 12px;">Bio</label>
-                                    <textarea placeholder="Tell us about yourself..." style="margin-top: 6px;">Creative developer & content creator</textarea>
-                                </div>
-                                <div>
-                                    <label style="color: var(--text-secondary); font-size: 12px;">Location</label>
-                                    <input type="text" placeholder="Your location" style="margin-top: 6px;" value="San Francisco, CA">
-                                </div>
-                            </div>
-
-                            <div style="display: flex; gap: 12px;">
-                                <button class="btn btn-primary">
-                                    <i class="fas fa-save"></i> Save Changes
-                                </button>
-                                <button class="btn btn-secondary">
-                                    <i class="fas fa-image"></i> Change Avatar
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Settings Page -->
-                    <div id="settings-content" class="dashboard-section" style="display: none;">
-                        <div class="card" style="max-width: 600px;">
-                            <div class="card-header">
-                                <h3>Account Settings</h3>
-                            </div>
-                            <div style="display: flex; flex-direction: column; gap: 20px;">
-                                <div>
-                                    <label style="font-weight: 600; margin-bottom: 12px; display: block;">Notification Preferences</label>
-                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-                                        <input type="checkbox" checked id="emailNotifs">
-                                        <label for="emailNotifs" style="color: var(--text-secondary); font-size: 13px; margin: 0;">Email notifications for new followers</label>
-                                    </div>
-                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-                                        <input type="checkbox" checked id="commentNotifs">
-                                        <label for="commentNotifs" style="color: var(--text-secondary); font-size: 13px; margin: 0;">Notify me of new comments</label>
-                                    </div>
-                                    <div style="display: flex; align-items: center; gap: 12px;">
-                                        <input type="checkbox" id="newsNotifs">
-                                        <label for="newsNotifs" style="color: var(--text-secondary); font-size: 13px; margin: 0;">Receive weekly newsletter</label>
-                                    </div>
-                                </div>
-
-                                <hr style="border: none; border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 0;">
-
-                                <div>
-                                    <label style="font-weight: 600; margin-bottom: 12px; display: block;">Privacy Settings</label>
-                                    <div style="margin-bottom: 12px;">
-                                        <label style="color: var(--text-secondary); font-size: 13px;">Profile Visibility</label>
-                                        <select style="width: 100%; margin-top: 6px;">
-                                            <option>Public</option>
-                                            <option>Friends Only</option>
-                                            <option>Private</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <hr style="border: none; border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 0;">
-
-                                <div>
-                                    <label style="font-weight: 600; margin-bottom: 12px; display: block;">Security</label>
-                                    <button class="btn btn-secondary" style="width: 100%; justify-content: center;">
-                                        <i class="fas fa-key"></i> Change Password
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Admin Dashboard -->
-                    <div id="admin-dashboard-content" class="dashboard-section" style="display: none;">
-                        <div class="grid">
-                            <div class="stat-card">
-                                <div class="stat-icon">👥</div>
-                                <p class="stat-label">Total Users</p>
-                                <p class="stat-value">3,247</p>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">📝</div>
-                                <p class="stat-label">Total Posts</p>
-                                <p class="stat-value">24,891</p>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">🚩</div>
-                                <p class="stat-label">Reports</p>
-                                <p class="stat-value">47</p>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">💾</div>
-                                <p class="stat-label">Storage Used</p>
-                                <p class="stat-value">782 GB</p>
-                            </div>
-                        </div>
-
-                        <div class="card">
-                            <div class="card-header">
-                                <h3>System Overview</h3>
-                            </div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                                <div>
-                                    <p style="color: var(--text-secondary); font-size: 12px; margin: 0 0 8px 0;">Server Status</p>
-                                    <p style="font-size: 16px; font-weight: 600; margin: 0;"><span style="color: var(--success);">●</span> Operational</p>
-                                </div>
-                                <div>
-                                    <p style="color: var(--text-secondary); font-size: 12px; margin: 0 0 8px 0;">API Health</p>
-                                    <p style="font-size: 16px; font-weight: 600; margin: 0;"><span style="color: var(--success);">●</span> Healthy</p>
-                                </div>
-                                <div>
-                                    <p style="color: var(--text-secondary); font-size: 12px; margin: 0 0 8px 0;">Active Users</p>
-                                    <p style="font-size: 16px; font-weight: 600; margin: 0;">1,248</p>
-                                </div>
-                                <div>
-                                    <p style="color: var(--text-secondary); font-size: 12px; margin: 0 0 8px 0;">Avg Response Time</p>
-                                    <p style="font-size: 16px; font-weight: 600; margin: 0;">142ms</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Users Management -->
-                    <div id="users-content" class="dashboard-section" style="display: none;">
-                        <div style="margin-bottom: 24px;">
-                            <input type="text" placeholder="Search users..." style="width: 100%; max-width: 400px; padding: 10px 12px; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; background: rgba(255, 255, 255, 0.05); color: var(--text-primary);">
-                        </div>
-
-                        <div class="card">
-                            <div class="card-header">
-                                <h3>User List</h3>
-                            </div>
-                            <div class="table-container">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Username</th>
-                                            <th>Email</th>
-                                            <th>Status</th>
-                                            <th>Joined</th>
-                                            <th>Posts</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>sarah.dev <span class="admin-badge">Admin</span></td>
-                                            <td>sarah@example.com</td>
-                                            <td><span class="status-badge status-active">Active</span></td>
-                                            <td>2023-06-15</td>
-                                            <td>127</td>
-                                            <td><button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;">View</button></td>
-                                        </tr>
-                                        <tr>
-                                            <td>john.design</td>
-                                            <td>john@example.com</td>
-                                            <td><span class="status-badge status-active">Active</span></td>
-                                            <td>2023-08-22</td>
-                                            <td>84</td>
-                                            <td><button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;">View</button></td>
-                                        </tr>
-                                        <tr>
-                                            <td>mike.admin</td>
-                                            <td>mike@example.com</td>
-                                            <td><span class="status-badge status-inactive">Suspended</span></td>
-                                            <td>2023-09-10</td>
-                                            <td>23</td>
-                                            <td><button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;">View</button></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Analytics Page -->
-                    <div id="analytics-content" class="dashboard-section" style="display: none;">
-                        <div class="grid">
-                            <div class="stat-card">
-                                <div class="stat-icon">📈</div>
-                                <p class="stat-label">Daily Active Users</p>
-                                <p class="stat-value">1,248</p>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">📊</div>
-                                <p class="stat-label">Conversion Rate</p>
-                                <p class="stat-value">3.2%</p>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">⏱️</div>
-                                <p class="stat-label">Avg Session Time</p>
-                                <p class="stat-value">12m 34s</p>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">🔗</div>
-                                <p class="stat-label">Total Interactions</p>
-                                <p class="stat-value">45,823</p>
-                            </div>
-                        </div>
-
-                        <div class="card">
-                            <div class="card-header">
-                                <h3>Traffic Over Time</h3>
-                            </div>
-                            <div class="chart">
-                                <i class="fas fa-chart-line" style="font-size: 40px; color: var(--primary); margin-bottom: 12px;"></i>
-                                <p>Analytics data would be visualized here</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Moderation Page -->
-                    <div id="moderation-content" class="dashboard-section" style="display: none;">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3>Reported Content</h3>
-                            </div>
-                            <div class="table-container">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Reported By</th>
-                                            <th>Type</th>
-                                            <th>Reason</th>
-                                            <th>Status</th>
-                                            <th>Date</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>user123</td>
-                                            <td>Post</td>
-                                            <td>Inappropriate content</td>
-                                            <td><span class="status-badge status-pending">Pending</span></td>
-                                            <td>2024-01-16</td>
-                                            <td><button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;">Review</button></td>
-                                        </tr>
-                                        <tr>
-                                            <td>user456</td>
-                                            <td>Comment</td>
-                                            <td>Harassment</td>
-                                            <td><span class="status-badge status-active">Resolved</span></td>
-                                            <td>2024-01-15</td>
-                                            <td><button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;">View</button></td>
-                                        </tr>
-                                        <tr>
-                                            <td>user789</td>
-                                            <td>User</td>
-                                            <td>Spam</td>
-                                            <td><span class="status-badge status-inactive">Dismissed</span></td>
-                                            <td>2024-01-14</td>
-                                            <td><button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;">View</button></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  </div>
+</div>
+<!-- LOGIN -->
+<div id="view-login" class="view">
+  <div class="auth-wrap">
+    <h2>Welcome back</h2>
+    <div class="sub">Sign in to your biolnk account</div>
+    <form onsubmit="login(event)">
+      <div class="field"><label>Username or Email</label><input class="input" id="loginUser" required></div>
+      <div class="field"><label>Password</label><input class="input" type="password" id="loginPass" required></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center" type="submit">Sign in</button>
+      <div class="err" id="loginErr"></div>
+    </form>
+    <div class="auth-switch">No account? <a onclick="go('register')">Create one</a></div>
+  </div>
+</div>
+<!-- REGISTER -->
+<div id="view-register" class="view">
+  <div class="auth-wrap">
+    <h2>Create account</h2>
+    <div class="sub">Claim your username — it's free</div>
+    <form onsubmit="register(event)">
+      <div class="field"><label>Username (your profile URL)</label><input class="input" id="regUser" required placeholder="e.g. neon" pattern="[a-zA-Z0-9_]{3,20}"></div>
+      <div class="field"><label>Email</label><input class="input" type="email" id="regEmail" required></div>
+      <div class="field"><label>Password</label><input class="input" type="password" id="regPass" required minlength="6"></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center" type="submit">Create account</button>
+      <div class="err" id="regErr"></div>
+    </form>
+    <div class="auth-switch">Already have one? <a onclick="go('login')">Sign in</a></div>
+  </div>
+</div>
+<!-- DASHBOARD -->
+<div id="view-dashboard" class="view">
+  <div class="container">
+    <div class="dash">
+      <aside class="sidebar">
+        <div class="me">
+          <div class="avatar" id="meAv"></div>
+          <div class="me-info"><div class="name" id="meName"></div><div class="uname" id="meUname"></div></div>
         </div>
-    </div>
-
-    <!-- Modals -->
-    <div id="newPostModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Create New Post</h2>
-                <button class="modal-close" onclick="closeModal('newPostModal')">&times;</button>
-            </div>
-            <form onsubmit="createPost(event)">
-                <div class="form-group">
-                    <label>Title</label>
-                    <input type="text" placeholder="Post title" required>
-                </div>
-                <div class="form-group">
-                    <label>Content</label>
-                    <textarea placeholder="Write your post..." required></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Category</label>
-                    <select required>
-                        <option>Technology</option>
-                        <option>Design</option>
-                        <option>Business</option>
-                        <option>Personal</option>
-                    </select>
-                </div>
-                <div style="display: flex; gap: 12px; margin-top: 24px;">
-                    <button type="submit" class="btn btn-primary" style="flex: 1; justify-content: center;">
-                        <i class="fas fa-paper-plane"></i> Publish
-                    </button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('newPostModal')" style="flex: 1; justify-content: center;">
-                        Cancel
-                    </button>
-                </div>
-            </form>
+        <div class="menu">
+          <a class="active" data-tab="overview" onclick="tab('overview')">📊 Overview</a>
+          <a data-tab="profile" onclick="tab('profile')">👤 Profile</a>
+          <a data-tab="links" onclick="tab('links')">🔗 Links</a>
+          <a data-tab="customize" onclick="tab('customize')">🎨 Customize</a>
+          <a data-tab="audio" onclick="tab('audio')">🎵 Audio</a>
+          <a data-tab="effects" onclick="tab('effects')">✨ Effects</a>
+          <a onclick="viewProfile()">🚀 View profile</a>
+          <a onclick="logout()">🚪 Logout</a>
         </div>
+      </aside>
+      <main>
+        <!-- overview -->
+        <section data-pane="overview">
+          <div class="grid-stats">
+            <div class="stat"><div class="lbl">Profile views</div><div class="val" id="sViews">0</div></div>
+            <div class="stat"><div class="lbl">Link clicks</div><div class="val" id="sClicks">0</div></div>
+            <div class="stat"><div class="lbl">Links</div><div class="val" id="sLinks">0</div></div>
+            <div class="stat"><div class="lbl">Member since</div><div class="val" id="sSince" style="font-size:16px;padding-top:8px">—</div></div>
+          </div>
+          <div class="panel">
+            <h3>Your link</h3>
+            <p style="color:var(--muted);font-size:14px">Share this URL anywhere:</p>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <code id="profUrl" style="padding:10px 14px;background:rgba(10,8,20,.6);border-radius:8px;font-size:14px;flex:1;min-width:200px"></code>
+              <button class="copy-btn" onclick="copyLink()">Copy</button>
+              <button class="btn" onclick="viewProfile()">Open</button>
+            </div>
+          </div>
+        </section>
+        <!-- profile -->
+        <section data-pane="profile" style="display:none">
+          <div class="panel">
+            <h3>Profile info</h3>
+            <div class="row">
+              <div class="field"><label>Display name</label><input class="input" id="fName"></div>
+              <div class="field"><label>Username</label><input class="input" id="fUname" disabled></div>
+            </div>
+            <div class="field"><label>Avatar URL (image link)</label><input class="input" id="fAvatar" placeholder="https://..."></div>
+            <div class="field"><label>Bio</label><textarea class="input" id="fBio" maxlength="160"></textarea></div>
+            <button class="btn btn-primary" onclick="saveProfile()">Save changes</button>
+          </div>
+        </section>
+        <!-- links -->
+        <section data-pane="links" style="display:none">
+          <div class="panel">
+            <h3>Your links</h3>
+            <div id="linksList"></div>
+            <button class="btn" onclick="addLink()">+ Add link</button>
+            <button class="btn btn-primary" style="margin-left:8px" onclick="saveLinks()">Save</button>
+          </div>
+        </section>
+        <!-- customize -->
+        <section data-pane="customize" style="display:none">
+          <div class="panel">
+            <h3>Background</h3>
+            <div class="field"><label>Background image/video URL (optional)</label><input class="input" id="fBg" placeholder="https://..."></div>
+            <label>Accent color</label>
+            <div class="swatch-row" id="swatches"></div>
+            <div class="field" style="margin-top:14px"><label>Custom color</label><input class="input" type="color" id="fColor" style="width:80px;height:42px;padding:4px"></div>
+            <button class="btn btn-primary" onclick="saveCustom()">Save</button>
+          </div>
+        </section>
+        <!-- audio -->
+        <section data-pane="audio" style="display:none">
+          <div class="panel">
+            <h3>Background music</h3>
+            <p style="color:var(--muted);font-size:14px">Paste a direct MP3/audio URL. Plays when someone enters your profile.</p>
+            <div class="field"><label>Audio URL</label><input class="input" id="fAudio" placeholder="https://example.com/song.mp3"></div>
+            <button class="btn btn-primary" onclick="saveAudio()">Save</button>
+          </div>
+        </section>
+        <!-- effects -->
+        <section data-pane="effects" style="display:none">
+          <div class="panel">
+            <h3>Visual effects</h3>
+            <p style="color:var(--muted);font-size:14px">Particle effects displayed on your profile.</p>
+            <div class="field"><label>Effect</label>
+              <select class="input" id="fEffect">
+                <option value="none">None</option>
+                <option value="snow">❄️ Snow</option>
+                <option value="rain">🌧️ Rain</option>
+                <option value="sparkles">✨ Sparkles</option>
+                <option value="hearts">💜 Hearts</option>
+                <option value="stars">⭐ Stars</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" onclick="saveEffect()">Save</button>
+          </div>
+        </section>
+      </main>
     </div>
-
-    <script>
-        // Auth State
-        let currentUser = null;
-        let isAdmin = false;
-
-        // Initialize
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedUser = localStorage.getItem('currentUser');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                isAdmin = currentUser.isAdmin || false;
-                switchPage('dashboardPage');
-                updateUI();
-            }
-        });
-
-        // Page Switching
-        function switchPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-        }
-
-        function switchDashboardPage(sectionId) {
-            document.querySelectorAll('.dashboard-section').forEach(s => s.style.display = 'none');
-            document.getElementById(sectionId + '-content').style.display = 'block';
-
-            // Update nav items
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            event.target.closest('.nav-item').classList.add('active');
-
-            // Update page title
-            const titles = {
-                'dashboard': 'Dashboard',
-                'posts': 'Posts',
-                'messages': 'Messages',
-                'profile': 'Profile',
-                'settings': 'Settings',
-                'admin-dashboard': 'Admin Panel',
-                'users': 'Manage Users',
-                'analytics': 'Analytics',
-                'moderation': 'Moderation'
-            };
-            document.getElementById('pageTitle').textContent = titles[sectionId];
-        }
-
-        // Auth Handlers
-        function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-
-            // Simulate login
-            if (email && password) {
-                currentUser = {
-                    username: email.split('@')[0],
-                    email: email,
-                    isAdmin: email === 'admin@example.com' // Admin if this email
-                };
-                isAdmin = currentUser.isAdmin;
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                switchPage('dashboardPage');
-                updateUI();
-            }
-        }
-
-        function handleRegister(e) {
-            e.preventDefault();
-            const username = document.getElementById('registerUsername').value;
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value;
-            const confirm = document.getElementById('registerPasswordConfirm').value;
-
-            if (password === confirm) {
-                currentUser = {
-                    username: username,
-                    email: email,
-                    isAdmin: false
-                };
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                switchPage('dashboardPage');
-                updateUI();
-            }
-        }
-
-        function handleLogout() {
-            currentUser = null;
-            isAdmin = false;
-            localStorage.removeItem('currentUser');
-            document.getElementById('loginEmail').value = '';
-            document.getElementById('loginPassword').value = '';
-            switchPage('loginPage');
-        }
-
-        function updateUI() {
-            if (currentUser) {
-                document.getElementById('userDisplay').textContent = currentUser.username;
-                document.getElementById('userAvatar').textContent = currentUser.username[0].toUpperCase();
-                document.getElementById('profileUsername').textContent = currentUser.username;
-                document.getElementById('profileEmail').textContent = currentUser.email;
-
-                // Show/hide admin menu items
-                const adminNav = document.getElementById('adminNav');
-                const usersNav = document.getElementById('usersNav');
-                const analyticsNav = document.getElementById('analyticsNav');
-                const moderationNav = document.getElementById('moderationNav');
-
-                if (isAdmin) {
-                    adminNav.style.display = 'flex';
-                    usersNav.style.display = 'flex';
-                    analyticsNav.style.display = 'flex';
-                    moderationNav.style.display = 'flex';
-                } else {
-                    adminNav.style.display = 'none';
-                    usersNav.style.display = 'none';
-                    analyticsNav.style.display = 'none';
-                    moderationNav.style.display = 'none';
-                }
-            }
-        }
-
-        // Modal Functions
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-        }
-
-        window.onclick = (event) => {
-            if (event.target.classList.contains('modal')) {
-                event.target.classList.remove('active');
-            }
-        };
-
-        // Notifications
-        function toggleNotifications() {
-            document.getElementById('notificationsMenu').classList.toggle('active');
-        }
-
-        function markNotificationRead(element) {
-            element.style.opacity = '0.6';
-        }
-
-        // Posts
-        function createPost(e) {
-            e.preventDefault();
-            alert('Post created successfully!');
-            closeModal('newPostModal');
-        }
-
-        // File Upload
-        const uploadArea = document.querySelector('.upload-area');
-        if (uploadArea) {
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, (e) => {
-                    e.preventDefault();
-                });
-            });
-
-            ['dragenter', 'dragover'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, () => {
-                    uploadArea.classList.add('dragover');
-                });
-            });
-
-            ['dragleave', 'drop'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, () => {
-                    uploadArea.classList.remove('dragover');
-                });
-            });
-        }
-    </script>
+  </div>
+</div>
+<!-- PROFILE (public) -->
+<div id="view-profile" class="view">
+  <div class="profile" id="profileBg">
+    <div class="pcard" id="pcard">
+      <div class="av" id="pAv"></div>
+      <h1 id="pName"></h1>
+      <div class="uname" id="pUname"></div>
+      <div class="bio" id="pBio"></div>
+      <div id="pLinks"></div>
+      <div class="views" id="pViews"></div>
+    </div>
+  </div>
+</div>
+<!-- NOT FOUND -->
+<div id="view-404" class="view">
+  <div class="container" style="text-align:center">
+    <h1 style="font-size:80px;margin:0">404</h1>
+    <p style="color:var(--muted)">This profile doesn't exist.</p>
+    <button class="btn btn-primary" onclick="go('landing')">Go home</button>
+  </div>
+</div>
+<script>
+// ===== state =====
+const DB_KEY='biolnk_db_v1';
+const SESSION_KEY='biolnk_session';
+const COLORS=['#a855f7','#ec4899','#22d3ee','#10b981','#f59e0b','#ef4444','#3b82f6','#fff'];
+function db(){try{return JSON.parse(localStorage.getItem(DB_KEY))||{users:{}}}catch{return{users:{}}}}
+function saveDb(d){localStorage.setItem(DB_KEY,JSON.stringify(d))}
+function session(){return localStorage.getItem(SESSION_KEY)}
+function currentUser(){const u=session();return u?db().users[u]:null}
+// ===== router =====
+function go(view,arg){
+  location.hash = view==='landing'?'':view==='profile'?'/u/'+arg:'/'+view;
+}
+function render(){
+  const h=location.hash.replace(/^#\/?/,'');
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  let view='landing';
+  if(h.startsWith('u/')){
+    const uname=h.slice(2);
+    if(renderProfile(uname)) view='profile'; else view='404';
+  } else if(['login','register','dashboard'].includes(h)){
+    if(h==='dashboard' && !session()){view='login'} else view=h;
+  }
+  document.getElementById('view-'+view).classList.add('active');
+  document.getElementById('nav').style.display = view==='profile'?'none':'flex';
+  document.getElementById('particles').style.display = view==='profile'?'block':'block';
+  if(view==='dashboard') initDash();
+  if(view!=='profile'){stopAudio();stopProfileEffect();initBgParticles()}
+  renderNav();
+  window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',render);
+function renderNav(){
+  const el=document.getElementById('navLinks');
+  const u=currentUser();
+  if(u){
+    el.innerHTML=`<a onclick="go('dashboard')">Dashboard</a><a onclick="viewProfile()">My profile</a><button class="btn btn-ghost" onclick="logout()">Logout</button>`;
+  } else {
+    el.innerHTML=`<a onclick="go('login')">Sign in</a><button class="btn btn-primary" onclick="go('register')">Get started</button>`;
+  }
+}
+// ===== auth =====
+function register(e){
+  e.preventDefault();
+  const u=regUser.value.trim().toLowerCase(), em=regEmail.value.trim(), p=regPass.value;
+  const d=db();
+  if(d.users[u]){regErr.textContent='Username taken';return}
+  if(Object.values(d.users).some(x=>x.email===em)){regErr.textContent='Email already used';return}
+  d.users[u]={username:u,email:em,password:p,name:u,bio:'Welcome to my page ✨',avatar:'',bg:'',color:'#a855f7',audio:'',effect:'sparkles',links:[{label:'Twitter',url:'https://twitter.com'},{label:'Instagram',url:'https://instagram.com'}],views:0,clicks:0,created:Date.now()};
+  saveDb(d);
+  localStorage.setItem(SESSION_KEY,u);
+  go('dashboard');
+}
+function login(e){
+  e.preventDefault();
+  const id=loginUser.value.trim().toLowerCase(), p=loginPass.value;
+  const d=db();
+  const user=d.users[id]||Object.values(d.users).find(x=>x.email===id);
+  if(!user||user.password!==p){loginErr.textContent='Invalid credentials';return}
+  localStorage.setItem(SESSION_KEY,user.username);
+  go('dashboard');
+}
+function logout(){localStorage.removeItem(SESSION_KEY);go('landing')}
+// ===== dashboard =====
+function tab(name){
+  document.querySelectorAll('.menu a[data-tab]').forEach(a=>a.classList.toggle('active',a.dataset.tab===name));
+  document.querySelectorAll('[data-pane]').forEach(p=>p.style.display=p.dataset.pane===name?'block':'none');
+}
+function initDash(){
+  const u=currentUser();if(!u){go('login');return}
+  meName.textContent=u.name;meUname.textContent='@'+u.username;
+  meAv.textContent=u.name[0].toUpperCase();
+  if(u.avatar)meAv.style.backgroundImage=`url(${u.avatar})`,meAv.textContent='';
+  sViews.textContent=u.views;sClicks.textContent=u.clicks;sLinks.textContent=u.links.length;
+  sSince.textContent=new Date(u.created).toLocaleDateString();
+  profUrl.textContent=location.origin+location.pathname+'#/u/'+u.username;
+  fName.value=u.name;fUname.value=u.username;fAvatar.value=u.avatar;fBio.value=u.bio;
+  fBg.value=u.bg;fColor.value=u.color;fAudio.value=u.audio;fEffect.value=u.effect;
+  renderSwatches(u.color);renderLinks(u.links);
+}
+function renderSwatches(active){
+  swatches.innerHTML='';
+  COLORS.forEach(c=>{
+    const s=document.createElement('div');s.className='swatch'+(c===active?' active':'');s.style.background=c;
+    s.onclick=()=>{fColor.value=c;document.querySelectorAll('.swatch').forEach(x=>x.classList.remove('active'));s.classList.add('active')};
+    swatches.appendChild(s);
+  });
+}
+function renderLinks(links){
+  linksList.innerHTML='';
+  links.forEach((l,i)=>{
+    const el=document.createElement('div');el.className='link-item';
+    el.innerHTML=`<span class="drag">⋮⋮</span><input placeholder="Label" value="${escapeHtml(l.label)}" data-k="label"><input placeholder="https://..." value="${escapeHtml(l.url)}" data-k="url"><button class="del" onclick="this.parentElement.remove()">×</button>`;
+    linksList.appendChild(el);
+  });
+}
+function addLink(){const u=currentUser();u.links.push({label:'',url:''});renderLinks(u.links)}
+function saveProfile(){
+  const d=db(),u=d.users[session()];
+  u.name=fName.value.trim()||u.username;u.avatar=fAvatar.value.trim();u.bio=fBio.value.trim();
+  saveDb(d);toast('Profile saved');initDash();
+}
+function saveLinks(){
+  const d=db(),u=d.users[session()],items=[];
+  linksList.querySelectorAll('.link-item').forEach(it=>{
+    const l=it.querySelector('[data-k=label]').value.trim(),url=it.querySelector('[data-k=url]').value.trim();
+    if(l||url)items.push({label:l,url:url});
+  });
+  u.links=items;saveDb(d);toast('Links saved');initDash();
+}
+function saveCustom(){
+  const d=db(),u=d.users[session()];u.bg=fBg.value.trim();u.color=fColor.value;saveDb(d);toast('Saved');
+}
+function saveAudio(){const d=db(),u=d.users[session()];u.audio=fAudio.value.trim();saveDb(d);toast('Saved')}
+function saveEffect(){const d=db(),u=d.users[session()];u.effect=fEffect.value;saveDb(d);toast('Saved')}
+function viewProfile(){const u=currentUser();if(u)go('profile',u.username)}
+function copyLink(){navigator.clipboard.writeText(profUrl.textContent);toast('Copied!')}
+// ===== public profile =====
+let enterEl=null,audioEl=null,profEffectRAF=null;
+function renderProfile(uname){
+  const d=db(),u=d.users[uname.toLowerCase()];
+  if(!u)return false;
+  u.views++;saveDb(d);
+  const card=document.getElementById('pcard');
+  card.style.borderColor=u.color+'66';card.style.boxShadow=`0 0 30px ${u.color}55, 0 0 70px ${u.color}33`;
+  document.getElementById('profileBg').style.background = u.bg?`url(${u.bg}) center/cover fixed`:'';
+  pAv.textContent=u.name[0].toUpperCase();pAv.style.background=`linear-gradient(135deg,${u.color},${u.color}88)`;
+  if(u.avatar){pAv.style.backgroundImage=`url(${u.avatar})`;pAv.textContent=''}
+  pName.textContent=u.name;pUname.textContent='@'+u.username;pBio.textContent=u.bio;
+  pLinks.innerHTML='';
+  u.links.forEach((l,i)=>{
+    const a=document.createElement('a');a.className='plink';a.textContent=l.label||l.url;
+    a.style.borderColor=u.color+'55';
+    a.onclick=()=>{const dd=db();dd.users[uname].clicks++;saveDb(dd);if(l.url)window.open(l.url,'_blank')};
+    pLinks.appendChild(a);
+  });
+  pViews.textContent=`${u.views} views`;
+  // enter screen for audio/effect
+  showEnter(u);
+  return true;
+}
+function showEnter(u){
+  if(enterEl)enterEl.remove();
+  enterEl=document.createElement('div');enterEl.className='enter';
+  enterEl.innerHTML=`<div style="text-align:center"><h2>click to enter</h2><p style="color:#888;font-size:14px">${u.audio?'🎵 audio will play':''}</p></div>`;
+  enterEl.onclick=()=>{
+    enterEl.remove();enterEl=null;
+    if(u.audio){try{audioEl=new Audio(u.audio);audioEl.loop=true;audioEl.volume=.5;audioEl.play().catch(()=>{});addAudioCtrl()}catch{}}
+    startProfileEffect(u.effect);
+  };
+  document.body.appendChild(enterEl);
+}
+function addAudioCtrl(){
+  const b=document.createElement('button');b.className='audio-ctrl';b.id='audioCtrl';b.textContent='🔊';
+  b.onclick=()=>{if(audioEl.paused){audioEl.play();b.textContent='🔊'}else{audioEl.pause();b.textContent='🔇'}};
+  document.body.appendChild(b);
+}
+function stopAudio(){if(audioEl){audioEl.pause();audioEl=null}const c=document.getElementById('audioCtrl');if(c)c.remove();if(enterEl){enterEl.remove();enterEl=null}}
+// ===== particles =====
+const cnv=document.getElementById('particles'),ctx=cnv.getContext('2d');
+let parts=[],mode='bg';
+function resize(){cnv.width=innerWidth;cnv.height=innerHeight}
+addEventListener('resize',resize);resize();
+function initBgParticles(){mode='bg';parts=[];for(let i=0;i<60;i++)parts.push({x:Math.random()*cnv.width,y:Math.random()*cnv.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5,c:Math.random()<.5?'#a855f7':'#ec4899'})}
+function startProfileEffect(eff){
+  mode=eff;parts=[];
+  if(eff==='none'){initBgParticles();return}
+  const n=eff==='rain'?120:eff==='snow'?80:60;
+  for(let i=0;i<n;i++)parts.push(mkPart(eff));
+}
+function mkPart(eff){
+  if(eff==='rain')return{x:Math.random()*cnv.width,y:Math.random()*cnv.height,vy:6+Math.random()*4,vx:-1,len:10+Math.random()*10,t:'rain'};
+  if(eff==='snow')return{x:Math.random()*cnv.width,y:Math.random()*cnv.height,vy:.5+Math.random(),vx:(Math.random()-.5)*.5,r:1+Math.random()*3,t:'snow'};
+  if(eff==='hearts')return{x:Math.random()*cnv.width,y:cnv.height+Math.random()*200,vy:-(.5+Math.random()),vx:(Math.random()-.5)*.4,s:14+Math.random()*14,ch:'💜',t:'em'};
+  if(eff==='stars')return{x:Math.random()*cnv.width,y:cnv.height+Math.random()*200,vy:-(.3+Math.random()),vx:(Math.random()-.5)*.3,s:12+Math.random()*12,ch:'⭐',t:'em'};
+  return{x:Math.random()*cnv.width,y:Math.random()*cnv.height,vx:(Math.random()-.5)*.6,vy:(Math.random()-.5)*.6,r:1+Math.random()*2,c:'#fff',a:Math.random(),t:'spark'};
+}
+function stopProfileEffect(){cancelAnimationFrame(profEffectRAF)}
+function loop(){
+  ctx.clearRect(0,0,cnv.width,cnv.height);
+  parts.forEach((p,i)=>{
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.t==='rain'){ctx.strokeStyle='rgba(150,180,255,.5)';ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-1,p.y+p.len);ctx.stroke();if(p.y>cnv.height)Object.assign(p,mkPart('rain'),{y:-10})}
+    else if(p.t==='snow'){ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.fill();if(p.y>cnv.height)Object.assign(p,mkPart('snow'),{y:-10})}
+    else if(p.t==='em'){ctx.font=p.s+'px serif';ctx.fillText(p.ch,p.x,p.y);if(p.y<-30)Object.assign(p,mkPart(mode),{y:cnv.height+10})}
+    else if(p.t==='spark'){p.a+=.05;ctx.fillStyle=`rgba(255,255,255,${(Math.sin(p.a)+1)/2*.8})`;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.fill();if(p.x<0||p.x>cnv.width||p.y<0||p.y>cnv.height)Object.assign(p,mkPart(mode))}
+    else {ctx.fillStyle=p.c;ctx.globalAlpha=.6;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.fill();ctx.globalAlpha=1;if(p.x<0||p.x>cnv.width)p.vx*=-1;if(p.y<0||p.y>cnv.height)p.vy*=-1}
+  });
+  profEffectRAF=requestAnimationFrame(loop);
+}
+loop();
+// ===== util =====
+function escapeHtml(s){return(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),1800)}
+// init
+initBgParticles();render();
+</script>
 </body>
 </html>
