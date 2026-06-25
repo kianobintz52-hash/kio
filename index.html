@@ -1,379 +1,1591 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ANIME VAULT</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  <style>
-    body {
-      background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.95)),
-                  url('https://picsum.photos/id/1015/1920/1080') center/cover fixed;
-      font-family: system-ui;
-    }
-    .glass { background: rgba(30,30,40,0.85); backdrop-filter: blur(16px); border: 1px solid rgba(168,85,247,0.4); }
-    .neon-purple { text-shadow: 0 0 25px #c026d3, 0 0 50px #a855f7; }
-  </style>
-</head>
-<body class="text-gray-100 min-h-screen pb-20">
-  <nav class="glass sticky top-0 z-50 border-b border-purple-500 p-4">
-    <div class="max-w-7xl mx-auto flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <h1 onclick="navigate('shop')" class="text-4xl font-bold neon-purple cursor-pointer">ANIME VAULT</h1>
-        <span class="text-sm text-pink-400 font-medium">Owner & Kiano</span>
-      </div>
-      <div class="flex gap-8 items-center text-lg">
-        <button onclick="navigate('shop')" class="hover:text-purple-400">Shop</button>
-        <button onclick="navigate('sell')" class="hover:text-purple-400">Verkaufen</button>
-        <button onclick="navigate('profile')" class="hover:text-purple-400">Profil</button>
-        <button onclick="navigate('admin')" id="adminBtn" class="hover:text-purple-400 hidden">👑 Owner</button>
-        <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-6 py-2.5 rounded-2xl">Logout</button>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Login -->
-  <div id="page-login" class="page max-w-md mx-auto mt-24 p-12 glass rounded-3xl">
-    <h2 class="text-5xl font-bold text-center neon-purple mb-10">ANIME VAULT</h2>
-    <div class="flex gap-4 bg-gray-900 rounded-3xl p-1 mb-8">
-      <button onclick="switchAuthTab(0)" id="tab-login" class="flex-1 py-4 rounded-3xl font-semibold">Login</button>
-      <button onclick="switchAuthTab(1)" id="tab-register" class="flex-1 py-4 rounded-3xl font-semibold">Registrieren</button>
-    </div>
-    <div id="login-form">
-      <input id="login-user" placeholder="Username" class="w-full mb-5 bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
-      <input id="login-pass" type="password" placeholder="Passwort" class="w-full mb-8 bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
-      <button onclick="login()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-5 rounded-2xl text-xl font-bold">Einloggen</button>
-    </div>
-    <div id="register-form" class="hidden">
-      <input id="reg-user" placeholder="Username" class="w-full mb-5 bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
-      <input id="reg-pass" type="password" placeholder="Passwort (mind. 6 Zeichen)" class="w-full mb-8 bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
-      <button onclick="register()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-5 rounded-2xl text-xl font-bold">Konto erstellen</button>
-    </div>
-  </div>
-
-  <!-- Shop -->
-  <div id="page-shop" class="page hidden max-w-7xl mx-auto p-8">
-    <h2 class="text-5xl font-bold neon-purple mb-12 text-center">Unsere Produkte</h2>
-    <div id="products" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
-  </div>
-
-  <!-- Sell -->
-  <div id="page-sell" class="page hidden max-w-2xl mx-auto p-8">
-    <h2 class="text-4xl font-bold mb-8">Neues Produkt einstellen</h2>
-    <div class="glass p-8 rounded-3xl space-y-6">
-      <input id="new-name" placeholder="Produktname" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
-      <input id="new-price" type="number" step="0.01" placeholder="Preis €" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
-      <input id="new-stock" type="number" value="10" placeholder="Menge" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
-      <input id="new-discord" placeholder="Dein Discord Username (z.B. Kiano#1234)" class="w-full bg-gray-800 border border-purple-500 rounded-2xl px-6 py-5">
-      <textarea id="new-desc" placeholder="Beschreibung" class="w-full h-32 bg-gray-800 border border-purple-500 rounded-3xl px-6 py-5"></textarea>
-      <button onclick="addProduct()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-6 rounded-3xl text-xl font-bold">Produkt hochladen</button>
-    </div>
-  </div>
-
-  <!-- Profile -->
-  <div id="page-profile" class="page hidden max-w-7xl mx-auto p-8">
-    <h2 class="text-5xl font-bold neon-purple mb-8">Profil von <span id="profile-name" class="text-purple-400"></span></h2>
-    <div id="profile-products" class="glass p-8 rounded-3xl"></div>
-  </div>
-
-  <!-- Admin Panel -->
-  <div id="page-admin" class="page hidden max-w-7xl mx-auto p-8">
-    <h2 class="text-5xl font-bold neon-purple mb-10">👑 Owner Panel</h2>
-    <div class="glass p-8 rounded-3xl">
-      <button onclick="loadAdminPanel()" class="mb-6 bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-2xl flex items-center gap-2">
-        🔄 Neu laden
-      </button>
-      <div id="admin-content"></div>
-    </div>
-  </div>
-
-  <!-- Warenkorb -->
-  <button onclick="showCart()" class="fixed bottom-10 right-10 bg-gradient-to-r from-purple-600 to-pink-600 w-20 h-20 rounded-full flex items-center justify-center text-4xl shadow-2xl hover:scale-110 transition-transform">
-    🛒 <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-xs w-6 h-6 rounded-full flex items-center justify-center">0</span>
-  </button>
-
-  <div id="cart-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
-    <div class="glass rounded-3xl p-8 max-w-lg w-full max-h-[90vh] overflow-auto">
-      <h3 class="text-3xl font-bold mb-6">Warenkorb</h3>
-      <div id="cart-items" class="space-y-4"></div>
-      <div id="cart-total" class="text-3xl font-bold mt-8 mb-8"></div>
-      <div class="bg-indigo-600 text-center py-6 rounded-2xl">
-        <p class="mb-4">Um zu bestellen, tritt dem Discord bei:</p>
-        <a href="https://discord.gg/v2kKvxrDv" target="_blank" class="inline-block bg-white text-indigo-700 font-bold px-10 py-4 rounded-2xl">Discord beitreten</a>
-      </div>
-      <button onclick="hideCart()" class="w-full py-4 border border-gray-600 rounded-2xl mt-6">Schließen</button>
-    </div>
-  </div>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAbz1N77hZDksKP9-yZdiW4GR8JtIcHvbQ",
-      authDomain: "anime-vault-e439b.firebaseapp.com",
-      databaseURL: "https://anime-vault-e439b-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "anime-vault-e439b",
-      storageBucket: "anime-vault-e439b.firebasestorage.app",
-      messagingSenderId: "406742408925",
-      appId: "1:406742408925:web:ba161f393b7e3503164534"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    let currentUser = null;
-    let cart = [];
-    const admins = ["kiollegend", "ZayTox"];
-
-    function isAdmin(user) {
-      return admins.includes(user?.username);
-    }
-
-    function navigate(page) {
-      document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-      document.getElementById(`page-${page}`).classList.remove('hidden');
-      
-      if (page === 'shop') loadProducts();
-      if (page === 'profile') renderProfile();
-      if (page === 'admin' && isAdmin(currentUser)) loadAdminPanel();
-    }
-
-    function loadProducts() {
-      db.ref('products').on('value', (snapshot) => {
-        const data = snapshot.val() || {};
-        let html = '';
-        Object.keys(data).forEach(key => {
-          const p = data[key];
-          html += `
-            <div class="glass rounded-3xl overflow-hidden">
-              <img src="${p.img || 'https://picsum.photos/300/300'}" class="w-full h-64 object-cover">
-              <div class="p-6">
-                <h3 class="font-bold text-xl">${p.name}</h3>
-                <p class="text-3xl font-bold text-purple-400">${p.price} €</p>
-                <p class="text-sm text-gray-400">Von: ${p.seller} • ${p.stock} verfügbar</p>
-                ${p.discord ? `<p class="text-pink-400 mt-1">💬 ${p.discord}</p>` : ''}
-                <button onclick="addToCart('${key}')" class="mt-6 w-full bg-purple-600 hover:bg-purple-700 py-4 rounded-2xl transition">In den Warenkorb</button>
-              </div>
-            </div>`;
-        });
-        document.getElementById('products').innerHTML = html || "<p class='text-center text-gray-400 text-xl py-12'>Noch keine Produkte vorhanden.</p>";
-      });
-    }
-
-    function addProduct() {
-      if (!currentUser) return alert("Bitte einloggen!");
-      const product = {
-        name: document.getElementById('new-name').value.trim(),
-        price: parseFloat(document.getElementById('new-price').value),
-        stock: parseInt(document.getElementById('new-stock').value) || 10,
-        discord: document.getElementById('new-discord').value.trim(),
-        desc: document.getElementById('new-desc').value.trim(),
-        seller: currentUser.username,
-        timestamp: Date.now()
-      };
-
-      if (!product.name || !product.price || !product.discord) {
-        return alert("Name, Preis und Discord Username sind Pflichtfelder!");
-      }
-
-      db.ref('products').push(product).then(() => {
-        alert("✅ Produkt erfolgreich hochgeladen!");
-        // Felder leeren
-        document.getElementById('new-name').value = '';
-        document.getElementById('new-price').value = '';
-        document.getElementById('new-stock').value = '10';
-        document.getElementById('new-discord').value = '';
-        document.getElementById('new-desc').value = '';
-        navigate('shop');
-      });
-    }
-
-    function addToCart(id) {
-      db.ref('products/' + id).once('value', (snap) => {
-        const prod = snap.val();
-        if (!prod || prod.stock <= 0) return alert("Produkt nicht verfügbar");
-        
-        const existing = cart.find(item => item.id === id);
-        if (existing) existing.quantity++;
-        else cart.push({...prod, id, quantity: 1});
-        
-        updateCartCount();
-        alert(`${prod.name} wurde zum Warenkorb hinzugefügt!`);
-      });
-    }
-
-    function updateCartCount() {
-      const count = cart.reduce((a, b) => a + b.quantity, 0);
-      document.getElementById('cart-count').textContent = count;
-    }
-
-    function showCart() {
-      if (cart.length === 0) return alert("Dein Warenkorb ist leer!");
-      
-      let html = '';
-      let total = 0;
-
-      cart.forEach(item => {
-        const itemTotal = item.price * item.quantity;
-        total += itemTotal;
-        html += `
-          <div class="flex justify-between items-center bg-gray-800 p-4 rounded-2xl">
-            <div>
-              <div class="font-semibold">${item.name}</div>
-              <div class="text-sm text-gray-400">${item.quantity}x ${item.price} €</div>
-            </div>
-            <div class="text-right font-bold text-purple-400">${itemTotal.toFixed(2)} €</div>
-          </div>`;
-      });
-
-      document.getElementById('cart-items').innerHTML = html;
-      document.getElementById('cart-total').innerHTML = `Gesamt: <span class="text-purple-400">${total.toFixed(2)} €</span>`;
-      document.getElementById('cart-modal').classList.remove('hidden');
-    }
-
-    function hideCart() {
-      document.getElementById('cart-modal').classList.add('hidden');
-    }
-
-    function deleteProduct(productId, seller) {
-      if (!currentUser) return;
-      if (seller !== currentUser.username && !isAdmin(currentUser)) {
-        return alert("Du kannst nur deine eigenen Produkte löschen!");
-      }
-      if (confirm("Produkt wirklich löschen?")) {
-        db.ref('products/' + productId).remove().then(() => {
-          alert("Produkt gelöscht!");
-          loadProducts();
-          if (!document.getElementById('page-profile').classList.contains('hidden')) renderProfile();
-          if (!document.getElementById('page-admin').classList.contains('hidden')) loadAdminPanel();
-        });
-      }
-    }
-
-    function renderProfile() {
-      document.getElementById('profile-name').textContent = currentUser.username;
-      db.ref('products').once('value', (snapshot) => {
-        const data = snapshot.val() || {};
-        let html = '<h3 class="text-2xl mb-6">Deine Produkte</h3>';
-        let hasProducts = false;
-
-        Object.keys(data).forEach(key => {
-          const p = data[key];
-          if (p.seller === currentUser.username) {
-            hasProducts = true;
-            html += `
-              <div class="glass p-6 rounded-2xl mb-4 flex justify-between items-center">
-                <div>
-                  <h4 class="font-bold">${p.name}</h4>
-                  <p class="text-purple-400">${p.price} € • ${p.stock} Stück</p>
-                  ${p.discord ? `<p class="text-pink-400">Discord: ${p.discord}</p>` : ''}
-                </div>
-                <button onclick="deleteProduct('${key}', '${p.seller}')" class="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-2xl">Löschen</button>
-              </div>`;
-          }
-        });
-
-        if (!hasProducts) html += '<p class="text-gray-400">Du hast noch keine Produkte eingestellt.</p>';
-        document.getElementById('profile-products').innerHTML = html;
-      });
-    }
-
-    function loadAdminPanel() {
-      let html = `<h3 class="text-3xl mb-8">👑 Owner Panel - ${currentUser.username}</h3>`;
-
-      db.ref('users').once('value', (userSnap) => {
-        const users = userSnap.val() || {};
-        const userCount = Object.keys(users).length;
-        
-        html += `
-          <h4 class="text-2xl mb-4 mt-6">Registrierte User (${userCount})</h4>
-          <div class="grid gap-3">`;
-
-        if (userCount === 0) {
-          html += `<p class="text-gray-400 p-4">Noch keine User registriert.</p>`;
-        } else {
-          Object.keys(users).forEach(username => {
-            const userData = users[username] || {};
-            const regDate = userData.registered 
-              ? new Date(userData.registered).toLocaleDateString('de-DE') 
-              : "Unbekannt";
-            
-            html += `
-              <div class="glass p-5 rounded-2xl flex justify-between items-center">
-                <span class="font-bold text-lg">${username}</span>
-                <span class="text-sm text-gray-400">Registriert: ${regDate}</span>
-              </div>`;
-          });
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>guns.lol - Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        html += `</div>`;
 
-        db.ref('products').once('value', (prodSnap) => {
-          const products = prodSnap.val() || {};
-          html += `<h4 class="text-2xl mb-4 mt-10">Alle Produkte (${Object.keys(products).length})</h4>`;
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark-bg: #0f1419;
+            --dark-surface: #1a1f2e;
+            --dark-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+        }
 
-          if (Object.keys(products).length === 0) {
-            html += `<p class="text-gray-400 p-4">Noch keine Produkte vorhanden.</p>`;
-          } else {
-            Object.keys(products).forEach(key => {
-              const p = products[key];
-              html += `
-                <div class="glass p-5 rounded-2xl mb-3 flex justify-between items-center">
-                  <div class="flex-1">
-                    <strong>${p.name}</strong> — ${p.price}€ 
-                    <span class="text-gray-400">von ${p.seller}</span>
-                    ${p.discord ? `<br><span class="text-pink-400">💬 ${p.discord}</span>` : ''}
-                  </div>
-                  <button onclick="deleteProduct('${key}', '${p.seller}')" class="bg-red-600 hover:bg-red-700 px-6 py-2.5 rounded-2xl text-sm">Löschen</button>
-                </div>`;
-            });
-          }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-          document.getElementById('admin-content').innerHTML = html;
+        /* Auth Pages */
+        .auth-container {
+            display: flex;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-box {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 16px;
+            padding: 40px 32px;
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .auth-header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin: 0 0 8px 0;
+        }
+
+        .auth-header p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .auth-logo {
+            font-size: 32px;
+            color: var(--primary);
+            margin-right: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: rgba(59, 130, 246, 0.5);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid rgba(59, 130, 246, 0.5);
+            color: var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .auth-link {
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 16px;
+            margin-top: 16px;
+        }
+
+        .auth-link p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .auth-link button {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 13px;
+            color: #fca5a5;
+            margin-bottom: 16px;
+        }
+
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background: rgba(255, 255, 255, 0.03);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            margin-bottom: 32px;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-icon {
+            font-size: 18px;
+            color: var(--primary);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+        }
+
+        .nav-item {
+            width: 100%;
+            padding: 10px 12px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 13px;
+            text-align: left;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 400;
+        }
+
+        .nav-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .nav-item.active {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .nav-section {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 16px 0 8px 0;
+            padding: 0 12px;
+            font-weight: 600;
+        }
+
+        .nav-item i {
+            font-size: 16px;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 10px 12px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 8px;
+            color: #fca5a5;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 240px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .top-bar {
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-bar h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .content-area {
+            padding: 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Cards & Grids */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .stat-icon {
+            font-size: 24px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin: 0 0 8px 0;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 12px;
+        }
+
+        .card-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+        }
+
+        .status-inactive {
+            background: rgba(107, 114, 128, 0.2);
+            color: #d1d5db;
+        }
+
+        .status-pending {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fcd34d;
+        }
+
+        /* Notifications */
+        .notifications-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .notification-bell {
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.3s;
+        }
+
+        .notification-bell:hover {
+            color: var(--primary);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            background: var(--dark-surface);
+            border: 1px solid var(--dark-border);
+            border-radius: 8px;
+            min-width: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+
+        .dropdown-menu.active {
+            display: block;
+        }
+
+        .notification-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .notification-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .notification-item p {
+            margin: 0;
+            font-size: 13px;
+        }
+
+        .notification-time {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* Forms */
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 120px;
+            transition: all 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        select {
+            padding: 10px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        /* File Upload */
+        .upload-area {
+            border: 2px dashed rgba(59, 130, 246, 0.5);
+            border-radius: 8px;
+            padding: 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--primary);
+            background: rgba(59, 130, 246, 0.15);
+        }
+
+        .upload-icon {
+            font-size: 32px;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        /* Messages/Chat */
+        .message-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .message {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 13px;
+        }
+
+        .message-sender {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--dark-surface);
+            border: 1px solid var(--dark-border);
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .main-content {
+                margin-left: 200px;
+            }
+
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: fixed;
+                left: -240px;
+                height: auto;
+                width: 240px;
+                transition: left 0.3s;
+                z-index: 1000;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .top-bar {
+                padding: 16px;
+            }
+
+            .content-area {
+                padding: 16px;
+            }
+
+            .modal-content {
+                padding: 24px;
+            }
+        }
+
+        /* Chart Placeholder */
+        .chart {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            color: var(--text-secondary);
+            margin: 20px 0;
+        }
+
+        /* Admin Badge */
+        .admin-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="page active">
+        <div class="auth-container">
+            <div class="auth-box">
+                <div class="auth-header">
+                    <div style="font-size: 28px; color: var(--primary); margin-bottom: 12px;">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h1>guns.lol</h1>
+                    <p>Login to your account</p>
+                </div>
+
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div id="loginError" class="error-message" style="display: none;"></div>
+                    
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="loginEmail" placeholder="you@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" placeholder="••••••••" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
+                        <i class="fas fa-sign-in-alt"></i> Sign In
+                    </button>
+                </form>
+
+                <div class="auth-link">
+                    <p>Don't have an account? <button onclick="switchPage('registerPage')" style="background: none; border: none; color: var(--primary); cursor: pointer; font-weight: 600; text-decoration: underline;">Create one</button></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Page -->
+    <div id="registerPage" class="page">
+        <div class="auth-container">
+            <div class="auth-box">
+                <div class="auth-header">
+                    <div style="font-size: 28px; color: var(--primary); margin-bottom: 12px;">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h1>Create Account</h1>
+                    <p>Join the community</p>
+                </div>
+
+                <form id="registerForm" onsubmit="handleRegister(event)">
+                    <div id="registerError" class="error-message" style="display: none;"></div>
+                    
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="registerUsername" placeholder="yourname" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="registerEmail" placeholder="you@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="registerPassword" placeholder="••••••••" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <input type="password" id="registerPasswordConfirm" placeholder="••••••••" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
+                        <i class="fas fa-user-plus"></i> Create Account
+                    </button>
+                </form>
+
+                <div class="auth-link">
+                    <p>Already have an account? <button onclick="switchPage('loginPage')" style="background: none; border: none; color: var(--primary); cursor: pointer; font-weight: 600; text-decoration: underline;">Sign in</button></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboardPage" class="page">
+        <div class="dashboard-container">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <i class="fas fa-rocket sidebar-icon"></i>
+                    guns.lol
+                </div>
+
+                <div class="sidebar-nav">
+                    <div class="nav-section">User</div>
+                    <button class="nav-item active" onclick="switchDashboardPage('dashboard')">
+                        <i class="fas fa-chart-line"></i> Dashboard
+                    </button>
+                    <button class="nav-item" onclick="switchDashboardPage('posts')">
+                        <i class="fas fa-file-alt"></i> Posts
+                    </button>
+                    <button class="nav-item" onclick="switchDashboardPage('messages')">
+                        <i class="fas fa-envelope"></i> Messages
+                    </button>
+                    <button class="nav-item" onclick="switchDashboardPage('profile')">
+                        <i class="fas fa-user-circle"></i> Profile
+                    </button>
+                    <button class="nav-item" onclick="switchDashboardPage('settings')">
+                        <i class="fas fa-cog"></i> Settings
+                    </button>
+
+                    <div class="nav-section">Admin</div>
+                    <button class="nav-item" onclick="switchDashboardPage('admin-dashboard')" id="adminNav" style="display: none;">
+                        <i class="fas fa-crown"></i> Admin Panel
+                    </button>
+                    <button class="nav-item" onclick="switchDashboardPage('users')" id="usersNav" style="display: none;">
+                        <i class="fas fa-users"></i> Manage Users
+                    </button>
+                    <button class="nav-item" onclick="switchDashboardPage('analytics')" id="analyticsNav" style="display: none;">
+                        <i class="fas fa-chart-bar"></i> Analytics
+                    </button>
+                    <button class="nav-item" onclick="switchDashboardPage('moderation')" id="moderationNav" style="display: none;">
+                        <i class="fas fa-shield-alt"></i> Moderation
+                    </button>
+                </div>
+
+                <button class="btn-logout" onclick="handleLogout()">
+                    <i class="fas fa-sign-out-alt"></i> Sign Out
+                </button>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Top Bar -->
+                <div class="top-bar">
+                    <h1 id="pageTitle">Dashboard</h1>
+                    <div class="user-info">
+                        <div class="notifications-dropdown">
+                            <div class="notification-bell" onclick="toggleNotifications()">
+                                <i class="fas fa-bell"></i>
+                                <span class="notification-badge" id="notificationCount" style="display: none;">3</span>
+                            </div>
+                            <div class="dropdown-menu" id="notificationsMenu">
+                                <div class="notification-item" onclick="markNotificationRead(this)">
+                                    <p><strong>New follower</strong> - @sarah.dev started following you</p>
+                                    <div class="notification-time">2 minutes ago</div>
+                                </div>
+                                <div class="notification-item" onclick="markNotificationRead(this)">
+                                    <p><strong>Post liked</strong> - 12 people liked your latest post</p>
+                                    <div class="notification-time">15 minutes ago</div>
+                                </div>
+                                <div class="notification-item" onclick="markNotificationRead(this)">
+                                    <p><strong>Comment received</strong> - New comment on your post</p>
+                                    <div class="notification-time">1 hour ago</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="user-avatar" id="userAvatar">U</div>
+                        <span id="userDisplay">User</span>
+                    </div>
+                </div>
+
+                <!-- Content Area -->
+                <div class="content-area">
+                    <!-- Dashboard Page -->
+                    <div id="dashboard-content" class="dashboard-section active">
+                        <div class="grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">💰</div>
+                                <p class="stat-label">Account Balance</p>
+                                <p class="stat-value">$2,847.50</p>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">📝</div>
+                                <p class="stat-label">Total Posts</p>
+                                <p class="stat-value">24</p>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">👥</div>
+                                <p class="stat-label">Followers</p>
+                                <p class="stat-value">1,240</p>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">⭐</div>
+                                <p class="stat-label">Engagement Rate</p>
+                                <p class="stat-value">8.3%</p>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Recent Activity</h3>
+                            </div>
+                            <div style="font-size: 13px; color: var(--text-secondary);">
+                                <div style="padding: 12px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                    <i class="fas fa-edit" style="color: var(--primary); margin-right: 8px;"></i> Posted new content
+                                </div>
+                                <div style="padding: 12px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                    <i class="fas fa-heart" style="color: var(--danger); margin-right: 8px;"></i> Received 48 likes on your post
+                                </div>
+                                <div style="padding: 12px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                    <i class="fas fa-comment" style="color: var(--secondary); margin-right: 8px;"></i> New comments (12)
+                                </div>
+                                <div style="padding: 12px 0;">
+                                    <i class="fas fa-trophy" style="color: var(--warning); margin-right: 8px;"></i> Achievement unlocked: Top Creator
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Monthly Performance</h3>
+                            </div>
+                            <div class="chart">
+                                <i class="fas fa-chart-line" style="font-size: 40px; color: var(--primary); margin-bottom: 12px;"></i>
+                                <p>Chart data visualization would appear here</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Posts Page -->
+                    <div id="posts-content" class="dashboard-section" style="display: none;">
+                        <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+                            <button class="btn btn-primary" onclick="openModal('newPostModal')">
+                                <i class="fas fa-plus"></i> New Post
+                            </button>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Your Posts</h3>
+                            </div>
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Status</th>
+                                            <th>Likes</th>
+                                            <th>Comments</th>
+                                            <th>Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Amazing insights about Web Dev</td>
+                                            <td><span class="status-badge status-active">Published</span></td>
+                                            <td>348</td>
+                                            <td>24</td>
+                                            <td>2024-01-15</td>
+                                            <td><button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;">Edit</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td>My journey into programming</td>
+                                            <td><span class="status-badge status-active">Published</span></td>
+                                            <td>521</td>
+                                            <td>67</td>
+                                            <td>2024-01-14</td>
+                                            <td><button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;">Edit</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Draft: Future plans</td>
+                                            <td><span class="status-badge status-pending">Draft</span></td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>2024-01-10</td>
+                                            <td><button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;">Edit</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Messages Page -->
+                    <div id="messages-content" class="dashboard-section" style="display: none;">
+                        <div class="grid" style="grid-template-columns: 300px 1fr; gap: 16px;">
+                            <div class="card">
+                                <div class="card-header" style="flex-direction: column; align-items: flex-start;">
+                                    <h3>Conversations</h3>
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 8px;">
+                                    <button class="nav-item" style="margin: 0; background: rgba(59, 130, 246, 0.2); color: var(--primary);">
+                                        <i class="fas fa-user-circle"></i> Sarah Dev
+                                    </button>
+                                    <button class="nav-item" style="margin: 0;">
+                                        <i class="fas fa-user-circle"></i> John Designer
+                                    </button>
+                                    <button class="nav-item" style="margin: 0;">
+                                        <i class="fas fa-user-circle"></i> Mike Admin
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>Chat with Sarah Dev</h3>
+                                </div>
+                                <div class="message-list">
+                                    <div class="message">
+                                        <div class="message-sender">Sarah Dev</div>
+                                        <div>Hey! How are you doing?</div>
+                                        <div class="message-time">10:30 AM</div>
+                                    </div>
+                                    <div class="message" style="background: rgba(59, 130, 246, 0.1); margin-left: 40px;">
+                                        <div class="message-sender" style="color: var(--primary);">You</div>
+                                        <div>Great! Working on some new features.</div>
+                                        <div class="message-time">10:32 AM</div>
+                                    </div>
+                                    <div class="message">
+                                        <div class="message-sender">Sarah Dev</div>
+                                        <div>That's awesome! Want to collaborate?</div>
+                                        <div class="message-time">10:33 AM</div>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 16px; display: flex; gap: 8px;">
+                                    <input type="text" placeholder="Type a message..." style="flex: 1; padding: 10px 12px; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; background: rgba(255, 255, 255, 0.05); color: var(--text-primary);">
+                                    <button class="btn btn-primary" style="padding: 10px 16px;">
+                                        <i class="fas fa-send"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profile Page -->
+                    <div id="profile-content" class="dashboard-section" style="display: none;">
+                        <div class="card" style="max-width: 600px;">
+                            <div class="card-header">
+                                <h3>User Profile</h3>
+                            </div>
+                            <div style="text-align: center; margin-bottom: 32px;">
+                                <div style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: 600;">U</div>
+                                <h2 id="profileUsername" style="margin: 0 0 8px 0;">User</h2>
+                                <p id="profileEmail" style="color: var(--text-secondary); margin: 0;">user@example.com</p>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+                                <div>
+                                    <label style="color: var(--text-secondary); font-size: 12px;">Bio</label>
+                                    <textarea placeholder="Tell us about yourself..." style="margin-top: 6px;">Creative developer & content creator</textarea>
+                                </div>
+                                <div>
+                                    <label style="color: var(--text-secondary); font-size: 12px;">Location</label>
+                                    <input type="text" placeholder="Your location" style="margin-top: 6px;" value="San Francisco, CA">
+                                </div>
+                            </div>
+
+                            <div style="display: flex; gap: 12px;">
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Save Changes
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-image"></i> Change Avatar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings Page -->
+                    <div id="settings-content" class="dashboard-section" style="display: none;">
+                        <div class="card" style="max-width: 600px;">
+                            <div class="card-header">
+                                <h3>Account Settings</h3>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 20px;">
+                                <div>
+                                    <label style="font-weight: 600; margin-bottom: 12px; display: block;">Notification Preferences</label>
+                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                        <input type="checkbox" checked id="emailNotifs">
+                                        <label for="emailNotifs" style="color: var(--text-secondary); font-size: 13px; margin: 0;">Email notifications for new followers</label>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                        <input type="checkbox" checked id="commentNotifs">
+                                        <label for="commentNotifs" style="color: var(--text-secondary); font-size: 13px; margin: 0;">Notify me of new comments</label>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <input type="checkbox" id="newsNotifs">
+                                        <label for="newsNotifs" style="color: var(--text-secondary); font-size: 13px; margin: 0;">Receive weekly newsletter</label>
+                                    </div>
+                                </div>
+
+                                <hr style="border: none; border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 0;">
+
+                                <div>
+                                    <label style="font-weight: 600; margin-bottom: 12px; display: block;">Privacy Settings</label>
+                                    <div style="margin-bottom: 12px;">
+                                        <label style="color: var(--text-secondary); font-size: 13px;">Profile Visibility</label>
+                                        <select style="width: 100%; margin-top: 6px;">
+                                            <option>Public</option>
+                                            <option>Friends Only</option>
+                                            <option>Private</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <hr style="border: none; border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 0;">
+
+                                <div>
+                                    <label style="font-weight: 600; margin-bottom: 12px; display: block;">Security</label>
+                                    <button class="btn btn-secondary" style="width: 100%; justify-content: center;">
+                                        <i class="fas fa-key"></i> Change Password
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Admin Dashboard -->
+                    <div id="admin-dashboard-content" class="dashboard-section" style="display: none;">
+                        <div class="grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">👥</div>
+                                <p class="stat-label">Total Users</p>
+                                <p class="stat-value">3,247</p>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">📝</div>
+                                <p class="stat-label">Total Posts</p>
+                                <p class="stat-value">24,891</p>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">🚩</div>
+                                <p class="stat-label">Reports</p>
+                                <p class="stat-value">47</p>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">💾</div>
+                                <p class="stat-label">Storage Used</p>
+                                <p class="stat-value">782 GB</p>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>System Overview</h3>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                                <div>
+                                    <p style="color: var(--text-secondary); font-size: 12px; margin: 0 0 8px 0;">Server Status</p>
+                                    <p style="font-size: 16px; font-weight: 600; margin: 0;"><span style="color: var(--success);">●</span> Operational</p>
+                                </div>
+                                <div>
+                                    <p style="color: var(--text-secondary); font-size: 12px; margin: 0 0 8px 0;">API Health</p>
+                                    <p style="font-size: 16px; font-weight: 600; margin: 0;"><span style="color: var(--success);">●</span> Healthy</p>
+                                </div>
+                                <div>
+                                    <p style="color: var(--text-secondary); font-size: 12px; margin: 0 0 8px 0;">Active Users</p>
+                                    <p style="font-size: 16px; font-weight: 600; margin: 0;">1,248</p>
+                                </div>
+                                <div>
+                                    <p style="color: var(--text-secondary); font-size: 12px; margin: 0 0 8px 0;">Avg Response Time</p>
+                                    <p style="font-size: 16px; font-weight: 600; margin: 0;">142ms</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Users Management -->
+                    <div id="users-content" class="dashboard-section" style="display: none;">
+                        <div style="margin-bottom: 24px;">
+                            <input type="text" placeholder="Search users..." style="width: 100%; max-width: 400px; padding: 10px 12px; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; background: rgba(255, 255, 255, 0.05); color: var(--text-primary);">
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>User List</h3>
+                            </div>
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Username</th>
+                                            <th>Email</th>
+                                            <th>Status</th>
+                                            <th>Joined</th>
+                                            <th>Posts</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>sarah.dev <span class="admin-badge">Admin</span></td>
+                                            <td>sarah@example.com</td>
+                                            <td><span class="status-badge status-active">Active</span></td>
+                                            <td>2023-06-15</td>
+                                            <td>127</td>
+                                            <td><button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;">View</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td>john.design</td>
+                                            <td>john@example.com</td>
+                                            <td><span class="status-badge status-active">Active</span></td>
+                                            <td>2023-08-22</td>
+                                            <td>84</td>
+                                            <td><button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;">View</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td>mike.admin</td>
+                                            <td>mike@example.com</td>
+                                            <td><span class="status-badge status-inactive">Suspended</span></td>
+                                            <td>2023-09-10</td>
+                                            <td>23</td>
+                                            <td><button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;">View</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Analytics Page -->
+                    <div id="analytics-content" class="dashboard-section" style="display: none;">
+                        <div class="grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">📈</div>
+                                <p class="stat-label">Daily Active Users</p>
+                                <p class="stat-value">1,248</p>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">📊</div>
+                                <p class="stat-label">Conversion Rate</p>
+                                <p class="stat-value">3.2%</p>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">⏱️</div>
+                                <p class="stat-label">Avg Session Time</p>
+                                <p class="stat-value">12m 34s</p>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">🔗</div>
+                                <p class="stat-label">Total Interactions</p>
+                                <p class="stat-value">45,823</p>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Traffic Over Time</h3>
+                            </div>
+                            <div class="chart">
+                                <i class="fas fa-chart-line" style="font-size: 40px; color: var(--primary); margin-bottom: 12px;"></i>
+                                <p>Analytics data would be visualized here</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Moderation Page -->
+                    <div id="moderation-content" class="dashboard-section" style="display: none;">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Reported Content</h3>
+                            </div>
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Reported By</th>
+                                            <th>Type</th>
+                                            <th>Reason</th>
+                                            <th>Status</th>
+                                            <th>Date</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>user123</td>
+                                            <td>Post</td>
+                                            <td>Inappropriate content</td>
+                                            <td><span class="status-badge status-pending">Pending</span></td>
+                                            <td>2024-01-16</td>
+                                            <td><button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;">Review</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td>user456</td>
+                                            <td>Comment</td>
+                                            <td>Harassment</td>
+                                            <td><span class="status-badge status-active">Resolved</span></td>
+                                            <td>2024-01-15</td>
+                                            <td><button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;">View</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td>user789</td>
+                                            <td>User</td>
+                                            <td>Spam</td>
+                                            <td><span class="status-badge status-inactive">Dismissed</span></td>
+                                            <td>2024-01-14</td>
+                                            <td><button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;">View</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="newPostModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create New Post</h2>
+                <button class="modal-close" onclick="closeModal('newPostModal')">&times;</button>
+            </div>
+            <form onsubmit="createPost(event)">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" placeholder="Post title" required>
+                </div>
+                <div class="form-group">
+                    <label>Content</label>
+                    <textarea placeholder="Write your post..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select required>
+                        <option>Technology</option>
+                        <option>Design</option>
+                        <option>Business</option>
+                        <option>Personal</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 12px; margin-top: 24px;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1; justify-content: center;">
+                        <i class="fas fa-paper-plane"></i> Publish
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('newPostModal')" style="flex: 1; justify-content: center;">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Auth State
+        let currentUser = null;
+        let isAdmin = false;
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                isAdmin = currentUser.isAdmin || false;
+                switchPage('dashboardPage');
+                updateUI();
+            }
         });
-      });
-    }
 
-    function login() {
-      const username = document.getElementById('login-user').value.trim();
-      if (!username) return alert("Bitte Username eingeben");
-      currentUser = { username };
-      localStorage.setItem('currentUser', JSON.stringify(currentUser));
-      if (isAdmin(currentUser)) document.getElementById('adminBtn').classList.remove('hidden');
-      navigate('shop');
-    }
+        // Page Switching
+        function switchPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
 
-    function register() {
-      const username = document.getElementById('reg-user').value.trim();
-      if (username.length < 3) return alert("Username zu kurz!");
-      currentUser = { username };
-      localStorage.setItem('currentUser', JSON.stringify(currentUser));
-      db.ref('users/' + username).set({ registered: Date.now() });
-      alert("Registrierung erfolgreich!");
-      navigate('shop');
-    }
+        function switchDashboardPage(sectionId) {
+            document.querySelectorAll('.dashboard-section').forEach(s => s.style.display = 'none');
+            document.getElementById(sectionId + '-content').style.display = 'block';
 
-    function logout() {
-      if (confirm("Wirklich ausloggen?")) {
-        localStorage.removeItem('currentUser');
-        location.reload();
-      }
-    }
+            // Update nav items
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.target.closest('.nav-item').classList.add('active');
 
-    function switchAuthTab(n) {
-      document.getElementById('login-form').classList.toggle('hidden', n !== 0);
-      document.getElementById('register-form').classList.toggle('hidden', n !== 1);
-    }
+            // Update page title
+            const titles = {
+                'dashboard': 'Dashboard',
+                'posts': 'Posts',
+                'messages': 'Messages',
+                'profile': 'Profile',
+                'settings': 'Settings',
+                'admin-dashboard': 'Admin Panel',
+                'users': 'Manage Users',
+                'analytics': 'Analytics',
+                'moderation': 'Moderation'
+            };
+            document.getElementById('pageTitle').textContent = titles[sectionId];
+        }
 
-    window.onload = () => {
-      const saved = localStorage.getItem('currentUser');
-      if (saved) {
-        currentUser = JSON.parse(saved);
-        if (isAdmin(currentUser)) document.getElementById('adminBtn').classList.remove('hidden');
-        navigate('shop');
-      } else {
-        navigate('login');
-      }
-    };
-  </script>
+        // Auth Handlers
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            // Simulate login
+            if (email && password) {
+                currentUser = {
+                    username: email.split('@')[0],
+                    email: email,
+                    isAdmin: email === 'admin@example.com' // Admin if this email
+                };
+                isAdmin = currentUser.isAdmin;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                switchPage('dashboardPage');
+                updateUI();
+            }
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirm = document.getElementById('registerPasswordConfirm').value;
+
+            if (password === confirm) {
+                currentUser = {
+                    username: username,
+                    email: email,
+                    isAdmin: false
+                };
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                switchPage('dashboardPage');
+                updateUI();
+            }
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            isAdmin = false;
+            localStorage.removeItem('currentUser');
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+            switchPage('loginPage');
+        }
+
+        function updateUI() {
+            if (currentUser) {
+                document.getElementById('userDisplay').textContent = currentUser.username;
+                document.getElementById('userAvatar').textContent = currentUser.username[0].toUpperCase();
+                document.getElementById('profileUsername').textContent = currentUser.username;
+                document.getElementById('profileEmail').textContent = currentUser.email;
+
+                // Show/hide admin menu items
+                const adminNav = document.getElementById('adminNav');
+                const usersNav = document.getElementById('usersNav');
+                const analyticsNav = document.getElementById('analyticsNav');
+                const moderationNav = document.getElementById('moderationNav');
+
+                if (isAdmin) {
+                    adminNav.style.display = 'flex';
+                    usersNav.style.display = 'flex';
+                    analyticsNav.style.display = 'flex';
+                    moderationNav.style.display = 'flex';
+                } else {
+                    adminNav.style.display = 'none';
+                    usersNav.style.display = 'none';
+                    analyticsNav.style.display = 'none';
+                    moderationNav.style.display = 'none';
+                }
+            }
+        }
+
+        // Modal Functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        window.onclick = (event) => {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        };
+
+        // Notifications
+        function toggleNotifications() {
+            document.getElementById('notificationsMenu').classList.toggle('active');
+        }
+
+        function markNotificationRead(element) {
+            element.style.opacity = '0.6';
+        }
+
+        // Posts
+        function createPost(e) {
+            e.preventDefault();
+            alert('Post created successfully!');
+            closeModal('newPostModal');
+        }
+
+        // File Upload
+        const uploadArea = document.querySelector('.upload-area');
+        if (uploadArea) {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                });
+            });
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, () => {
+                    uploadArea.classList.add('dragover');
+                });
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, () => {
+                    uploadArea.classList.remove('dragover');
+                });
+            });
+        }
+    </script>
 </body>
 </html>
