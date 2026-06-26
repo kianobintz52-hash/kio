@@ -10,6 +10,9 @@
 <meta property="og:type" content="website"/>
 <meta name="theme-color" content="#a855f7"/>
 <link id="favicon" rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='52' font-size='52'%3E%E2%9C%A8%3C/text%3E%3C/svg%3E"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Instrument+Serif&family=Bebas+Neue&family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#070708;--bg2:#0d0d10;--panel:#131318;--panel2:#1a1a20;
@@ -112,6 +115,9 @@
   /* profile */
   .profile-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;position:relative;overflow:hidden}
   .profile-bg{position:fixed;inset:0;z-index:-2;background:#000}
+  .profile-banner{width:calc(100% + 72px);margin:-36px -36px 16px;height:130px;background:#1a1a20 center/cover no-repeat;border-radius:var(--border-r,20px) var(--border-r,20px) 0 0;position:relative;overflow:hidden}
+  .profile-banner img,.profile-banner video{width:100%;height:100%;object-fit:cover;display:block}
+  .profile-card.has-banner .profile-avatar{margin-top:-66px;position:relative;z-index:2}
   .profile-bg img,.profile-bg video{width:100%;height:100%;object-fit:cover}
   .profile-bg.blurred img,.profile-bg.blurred video{filter:blur(var(--bg-blur,8px))}
   .profile-card{background:rgba(20,20,22,var(--card-opacity,.72));backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:var(--border-w,1px) solid var(--border-c,#26262e);border-radius:var(--border-r,20px);padding:36px;max-width:440px;width:100%;text-align:center;box-shadow:0 0 var(--border-glow,0) var(--border-c,transparent);position:relative;z-index:2}
@@ -141,11 +147,7 @@
   .music-player{position:fixed;bottom:20px;left:20px;background:rgba(20,20,24,.85);backdrop-filter:blur(14px);border:1px solid var(--border);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px;z-index:50;min-width:220px}
   .music-player button{font-size:18px;width:32px;height:32px;border-radius:50%;background:var(--primary);display:grid;place-items:center}
   .music-player .mp-vol{width:70px}
-  /* visualizer */
-  .visualizer{position:fixed;bottom:0;left:0;right:0;height:60px;display:flex;align-items:end;gap:3px;justify-content:center;pointer-events:none;z-index:1}
-  .visualizer span{width:5px;background:linear-gradient(to top,var(--accent,#a855f7),#ec4899);border-radius:2px;transition:height .08s}
-  /* effects layer */
-  .fx-layer{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+  /* effects layer removed */
   /* spotify widget */
   .spotify-now{display:inline-flex;align-items:center;gap:8px;background:rgba(29,185,84,.12);border:1px solid rgba(29,185,84,.3);color:#1db954;padding:6px 12px;border-radius:99px;font-size:12px;margin-top:8px}
   .spotify-now .eq{display:inline-flex;gap:2px}
@@ -175,8 +177,11 @@
   .premium-tag{display:inline-block;background:linear-gradient(135deg,#a855f7,#ec4899);color:#fff;font-size:10px;padding:2px 8px;border-radius:99px;font-weight:700;margin-left:6px;vertical-align:middle}
   .free-tag{display:inline-block;background:linear-gradient(135deg,#22c55e,#10b981);color:#fff;font-size:10px;padding:2px 8px;border-radius:99px;font-weight:700;margin-left:6px}
   /* effect particles */
-  .particle{position:absolute;pointer-events:none;will-change:transform,opacity}
-  .matrix-col{position:absolute;top:-100px;color:#22c55e;font-family:monospace;font-size:18px;writing-mode:vertical-rl;text-shadow:0 0 5px #22c55e;opacity:.8}
+  /* file picker label */
+  .file-pick{display:inline-flex;align-items:center;gap:8px;background:var(--panel2);border:1px dashed var(--border);color:#ccc;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:13px;width:100%;justify-content:center}
+  .file-pick:hover{border-color:var(--primary);color:#fff}
+  .file-pick input{display:none}
+  .preview-thumb{margin-top:8px;max-height:120px;border-radius:8px;display:block}
   @media(max-width:768px){
     .sidebar{width:62px;padding:10px}
     .sidebar .nav-item span:not(.ic),.sidebar .brand .brand-text,.user-chip .meta,.sidebar-bottom .full{display:none}
@@ -194,6 +199,7 @@
 ===================================================== */
 const DB_KEY='kioo_db_v2';
 const SESSION_KEY='kioo_session_v2';
+
 const ALL_BADGES=[
   {id:'staff',name:'Staff',desc:'Teil des Staff-Teams.',icon:'🛠️',color:'#3b82f6'},
   {id:'helper',name:'Helper',desc:'Aktiver Helfer.',icon:'💡',color:'#fbbf24'},
@@ -229,29 +235,40 @@ const SOCIALS=[
   {id:'email',name:'Email',icon:'✉',color:'#888'},
   {id:'website',name:'Website',icon:'🌐',color:'#666'},
 ];
-const EFFECTS=['none','snow','rain','stars','hearts','confetti','sparks','matrix','smoke'];
 const NAME_FX=['none','glow','rainbow','gradient','sparkle','animated'];
+const FONTS=[
+  {id:'inter',name:'Inter',css:"'Inter',system-ui,sans-serif"},
+  {id:'poppins',name:'Poppins',css:"'Poppins',sans-serif"},
+  {id:'space',name:'Space Grotesk',css:"'Space Grotesk',sans-serif"},
+  {id:'jakarta',name:'Plus Jakarta',css:"'Plus Jakarta Sans',sans-serif"},
+  {id:'mono',name:'JetBrains Mono',css:"'JetBrains Mono',monospace"},
+  {id:'serif',name:'Instrument Serif',css:"'Instrument Serif',serif"},
+  {id:'bebas',name:'Bebas Neue',css:"'Bebas Neue',sans-serif"},
+  {id:'pixel',name:'Press Start 2P',css:"'Press Start 2P',monospace"},
+];
+
 /* ---------- DB ---------- */
 function defaultProfile(){
   return {
     bgUrl:'', bgType:'image', // image|video|gif
+    bannerUrl:'', bannerType:'image',
     musicUrl:'', musicAutoplay:true, musicVolume:.5,
     enterScreen:true, enterText:'click anywhere to enter',
     cursorUrl:'', // image or emoji
-    effect:'none',
     nameEffect:'glow',
     typewriter:true,
+    font:'inter',
     cardOpacity:.72, bgBlur:8, frosted:false,
     borderWidth:1, borderColor:'#26262e', borderRadius:20, borderGlow:0, borderAnimated:false,
     accent:'#a855f7',
     discord:{enabled:false, id:''}, // Lanyard id
     spotify:{enabled:false, track:'Lo-Fi Beats', artist:'Chillhop'},
-    visualizer:true,
     titleAnim:['hi','there','welcome to kioo.zeta'],
     favicon:'', // dataurl or emoji
     seo:{title:'',desc:'',color:'#a855f7',image:''},
   };
 }
+
 function loadDB(){
   let raw=localStorage.getItem(DB_KEY);
   if(!raw){
@@ -283,6 +300,7 @@ function clearSession(){localStorage.removeItem(SESSION_KEY);}
 function currentUser(){const s=getSession();if(!s)return null;const db=loadDB();return db.users.find(u=>u.uid===s.uid)||null;}
 function updateUser(uid,patch){const db=loadDB();const u=db.users.find(x=>x.uid===uid);if(u){Object.assign(u,patch);saveDB(db);}}
 function updateProfile(uid,patch){const db=loadDB();const u=db.users.find(x=>x.uid===uid);if(u){Object.assign(u.profile,patch);saveDB(db);}}
+
 /* ---------- UI helpers ---------- */
 const $=id=>document.getElementById(id);
 const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -297,7 +315,10 @@ function modal(title,html,onOk,okText='Speichern'){
   bg.onclick=e=>{if(e.target===bg)bg.remove();};
   return bg;
 }
-function readFile(input,cb){const f=input.files&&input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>cb(e.target.result,f);r.readAsDataURL(f);}
+function readFile(input,cb){const f=input.files&&input.files[0];if(!f)return;if(f.size>8*1024*1024){toast('Datei zu groß (max 8MB)');return;}const r=new FileReader();r.onload=e=>{try{cb(e.target.result,f);}catch(err){toast('Speicher voll – Datei zu groß');}};r.readAsDataURL(f);}
+function safeUpdateProfile(uid,patch){try{updateProfile(uid,patch);return true;}catch(e){toast('Speicher voll – kleinere Datei wählen');return false;}}
+function safeUpdateUser(uid,patch){try{updateUser(uid,patch);return true;}catch(e){toast('Speicher voll – kleinere Datei wählen');return false;}}
+
 /* ---------- ROUTER ---------- */
 let currentPage='overview';
 let pageTitleTimer=null;
@@ -313,6 +334,7 @@ function render(){
   renderApp(user);
 }
 window.addEventListener('hashchange',render);
+
 /* ---------- AUTH ---------- */
 let authMode='login';
 function renderAuth(){
@@ -355,6 +377,7 @@ function doAuth(){
     saveDB(db);setSession(uid);render();
   }
 }
+
 /* ---------- APP SHELL ---------- */
 function navItem(p,icon,label,extra=''){
   return `<div class="nav-item ${currentPage===p?'active':''}" data-p="${p}"><span class="ic">${icon}</span><span>${label}</span>${extra}</div>`;
@@ -367,7 +390,6 @@ function renderApp(user){
       <div class="brand" style="justify-content:flex-start;margin-bottom:18px;font-size:20px"><span class="dot"></span><span class="brand-text">kioo.zeta</span></div>
       ${navItem('overview','📊','Übersicht')}
       ${navItem('customize','🎨','Anpassen')}
-      ${navItem('effects','✨','Profil-Effekte')}
       ${navItem('media','🎵','Media & BG')}
       ${navItem('integrations','🔌','Integrationen')}
       ${navItem('seo','🌐','SEO / Embed')}
@@ -396,7 +418,6 @@ function renderPage(user){
   switch(currentPage){
     case 'overview':return renderOverview(user,m);
     case 'customize':return renderCustomize(user,m);
-    case 'effects':return renderEffectsPage(user,m);
     case 'media':return renderMediaPage(user,m);
     case 'integrations':return renderIntegrations(user,m);
     case 'seo':return renderSEO(user,m);
@@ -407,6 +428,7 @@ function renderPage(user){
     case 'admin':return renderAdmin(user,m);
   }
 }
+
 /* ---------- OVERVIEW ---------- */
 function renderOverview(user,m){
   const c=computeCompletion(user);
@@ -426,7 +448,7 @@ function renderOverview(user,m){
         <button class="manage-btn" onclick="changeDisplayName()">💬 Anzeigenamen ändern</button>
         <button class="manage-btn" onclick="manageAliases()">👤 Aliase verwalten</button>
         <button class="manage-btn" onclick="currentPage='customize';render()">🎨 Anpassen</button>
-        <button class="manage-btn" onclick="currentPage='effects';render()">✨ Effekte</button>
+        <button class="manage-btn" onclick="currentPage='media';render()">🎵 Media &amp; Banner</button>
       </div></div>
     </div>`;
 }
@@ -437,7 +459,7 @@ function computeCompletion(u){
     {label:'Mind. 1 Social',done:u.socials.length>0},
     {label:'Hintergrund setzen',done:!!u.profile.bgUrl},
     {label:'Akzentfarbe gesetzt',done:u.profile.accent!=='#a855f7'},
-    {label:'Effekt aktiv',done:u.profile.effect!=='none'},
+    {label:'Banner hochladen',done:!!u.profile.bannerUrl},
   ];
   const done=t.filter(x=>x.done).length;
   return {percent:Math.round(done/t.length*100),tasks:t};
@@ -459,6 +481,7 @@ window.manageAliases=()=>{
   const u=currentUser();
   modal('Aliase',`<p style="color:var(--muted);margin-bottom:10px">Aktuell: ${esc(u.aliases.join(', ')||'keine')}</p><input id="al" placeholder="Neuer Alias"/>`,bg=>{const v=bg.querySelector('#al').value.trim();if(!v)return false;updateUser(u.uid,{aliases:[...u.aliases,v]});toast('Hinzugefügt');render();},'Hinzufügen');
 };
+
 /* ---------- CUSTOMIZE ---------- */
 function renderCustomize(user,m){
   const p=user.profile;
@@ -469,13 +492,21 @@ function renderCustomize(user,m){
       <h2>Avatar</h2>
       <div class="row" style="gap:18px">
         <div class="avatar" style="width:80px;height:80px;font-size:32px">${user.avatar?`<img src="${esc(user.avatar)}"/>`:esc(user.username[0].toUpperCase())}</div>
-        <div style="flex:1"><input type="file" id="av-file" accept="image/*"/><small>Bild hochladen</small></div>
+        <div style="flex:1"><label class="file-pick">📁 Avatar auswählen (Datei)<input type="file" id="av-file" accept="image/*"/></label>${user.avatar?'<button class="btn btn-ghost btn-sm" id="av-clear" style="margin-top:8px">Entfernen</button>':''}</div>
       </div>
+    </div>
+    <div class="section">
+      <h2>Banner</h2>
+      <div style="margin-bottom:10px">${p.bannerUrl?(p.bannerType==='video'?`<video src="${esc(p.bannerUrl)}" autoplay muted loop class="preview-thumb" style="max-height:120px;width:100%;object-fit:cover;border-radius:10px"></video>`:`<img src="${esc(p.bannerUrl)}" class="preview-thumb" style="width:100%;max-height:120px;object-fit:cover;border-radius:10px"/>`):'<small>Kein Banner</small>'}</div>
+      <label class="file-pick">📁 Banner auswählen (Bild / GIF / Video)<input type="file" id="bn-file" accept="image/*,video/*"/></label>
+      ${p.bannerUrl?'<button class="btn btn-ghost btn-sm" id="bn-clear" style="margin-top:8px">Entfernen</button>':''}
     </div>
     <div class="section">
       <h2>Allgemein</h2>
       <div class="field"><label>Anzeigename</label><input id="dn" value="${esc(user.displayName||'')}"/></div>
       <div class="field"><label>Bio</label><textarea id="bio">${esc(user.bio||'')}</textarea></div>
+      <h3>Schriftart</h3>
+      <select id="ft">${FONTS.map(f=>`<option value="${f.id}" ${p.font===f.id?'selected':''} style="font-family:${f.css}">${f.name}</option>`).join('')}</select>
       <h3>Akzentfarbe</h3>
       <div class="row"><input type="color" id="ac" value="${p.accent}" style="width:60px;height:42px;padding:2px"/><small>Username, Border, Icons</small></div>
       <h3>Border</h3>
@@ -494,62 +525,50 @@ function renderCustomize(user,m){
       </div>
       <h3>Username-Effekt</h3>
       <select id="nf">${NAME_FX.map(f=>`<option value="${f}" ${p.nameEffect===f?'selected':''}>${f}</option>`).join('')}</select>
+      <h3 style="margin-top:14px">Page-Title Animation (Tab)</h3>
+      <input id="tit" value="${esc(p.titleAnim.join(', '))}" placeholder="hi, there, welcome"/>
+      <h3 style="margin-top:14px">Custom Cursor</h3>
+      <label class="file-pick">📁 Cursor-Bild auswählen<input type="file" id="cu-file" accept="image/*"/></label>
+      <input id="cu" placeholder="Oder Emoji z.B. ✨" value="${esc(p.cursorUrl&&!p.cursorUrl.startsWith('data:')?p.cursorUrl:'')}" style="margin-top:8px"/>
       <div style="margin-top:18px"><button class="btn" id="save-c">Speichern</button></div>
     </div>`;
-  $('av-file').onchange=e=>readFile(e.target,d=>{updateUser(user.uid,{avatar:d});toast('Avatar gespeichert');render();});
+  $('av-file').onchange=e=>readFile(e.target,d=>{if(safeUpdateUser(user.uid,{avatar:d})){toast('Avatar gespeichert');render();}});
+  if($('av-clear'))$('av-clear').onclick=()=>{updateUser(user.uid,{avatar:''});render();};
+  $('bn-file').onchange=e=>readFile(e.target,(d,f)=>{const t=f.type.startsWith('video')?'video':'image';if(safeUpdateProfile(user.uid,{bannerUrl:d,bannerType:t})){toast('Banner gespeichert');render();}});
+  if($('bn-clear'))$('bn-clear').onclick=()=>{updateProfile(user.uid,{bannerUrl:''});render();};
+  $('cu-file').onchange=e=>readFile(e.target,d=>{if(safeUpdateProfile(user.uid,{cursorUrl:d})){toast('Cursor gespeichert');}});
   ['bw','br','bg','co','bb'].forEach(id=>$(id).oninput=e=>{const v=e.target.value;$(id+'-v').textContent=id==='co'?v:v;});
   $('save-c').onclick=()=>{
     updateUser(user.uid,{displayName:$('dn').value,bio:$('bio').value});
+    const curEmoji=$('cu').value.trim();
     updateProfile(user.uid,{
       accent:$('ac').value,borderWidth:+$('bw').value,borderRadius:+$('br').value,borderColor:$('bc').value,borderGlow:+$('bg').value,
-      cardOpacity:$('co').value/100,bgBlur:+$('bb').value,frosted:$('fr').checked,typewriter:$('tw').checked,nameEffect:$('nf').value
+      cardOpacity:$('co').value/100,bgBlur:+$('bb').value,frosted:$('fr').checked,typewriter:$('tw').checked,nameEffect:$('nf').value,
+      font:$('ft').value,titleAnim:$('tit').value.split(',').map(s=>s.trim()).filter(Boolean),
+      ...(curEmoji?{cursorUrl:curEmoji}:{})
     });
     toast('Gespeichert');
   };
 }
-/* ---------- EFFECTS ---------- */
-function renderEffectsPage(user,m){
-  const p=user.profile;
-  m.innerHTML=`
-    <h1 class="page-title">Profil-Effekte ✨</h1>
-    <p class="page-sub">Wähle einen Hintergrund-Effekt für deine Seite.</p>
-    <div class="section">
-      <div class="grid-4">
-        ${EFFECTS.map(fx=>`<button class="manage-btn" data-fx="${fx}" style="justify-content:center;${p.effect===fx?'border:1px solid var(--primary);background:rgba(168,85,247,.1)':''}">${fxEmoji(fx)} ${fx}</button>`).join('')}
-      </div>
-      <h3 style="margin-top:18px">Page-Title Animation</h3>
-      <p style="color:var(--muted);font-size:13px;margin-bottom:8px">Komma-getrennt: animiert den Browser-Tab</p>
-      <input id="tit" value="${esc(p.titleAnim.join(', '))}"/>
-      <h3 style="margin-top:18px">Audio-Visualizer</h3>
-      <label><input type="checkbox" id="vz" ${p.visualizer?'checked':''}/> Visualizer am Profil aktivieren</label>
-      <h3 style="margin-top:18px">Custom Cursor</h3>
-      <input id="cu" placeholder="Emoji (z.B. ✨) oder Bild-URL" value="${esc(p.cursorUrl)}"/>
-      <div style="margin-top:18px"><button class="btn" id="save-e">Speichern</button></div>
-    </div>`;
-  document.querySelectorAll('[data-fx]').forEach(b=>b.onclick=()=>{updateProfile(user.uid,{effect:b.dataset.fx});render();});
-  $('save-e').onclick=()=>{
-    updateProfile(user.uid,{titleAnim:$('tit').value.split(',').map(s=>s.trim()).filter(Boolean),visualizer:$('vz').checked,cursorUrl:$('cu').value.trim()});
-    toast('Gespeichert');
-  };
-}
-function fxEmoji(f){return {none:'⭕',snow:'❄️',rain:'🌧️',stars:'⭐',hearts:'❤️',confetti:'🎉',sparks:'⚡',matrix:'🟢',smoke:'💨'}[f]||'✨';}
+
 /* ---------- MEDIA ---------- */
 function renderMediaPage(user,m){
   const p=user.profile;
   m.innerHTML=`
     <h1 class="page-title">Media & Hintergrund</h1>
-    <p class="page-sub">Bild, Video oder GIF als Background — plus Hintergrundmusik.</p>
+    <p class="page-sub">Alles per Datei-Upload — keine URLs nötig.</p>
     <div class="section">
-      <h2>Hintergrund</h2>
-      <div class="field"><label>Typ</label><select id="bt"><option value="image" ${p.bgType==='image'?'selected':''}>Bild / GIF</option><option value="video" ${p.bgType==='video'?'selected':''}>Video</option></select></div>
-      <div class="field"><label>Datei hochladen</label><input type="file" id="bgf" accept="image/*,video/*"/></div>
-      <div class="field"><label>Oder URL</label><input id="bgu" value="${esc(p.bgUrl)}" placeholder="https://..."/></div>
+      <h2>Hintergrund (Bild / GIF / Video)</h2>
+      <div style="margin-bottom:10px">${p.bgUrl?(p.bgType==='video'?`<video src="${esc(p.bgUrl)}" autoplay muted loop class="preview-thumb" style="width:100%;max-height:160px;object-fit:cover"></video>`:`<img src="${esc(p.bgUrl)}" class="preview-thumb" style="width:100%;max-height:160px;object-fit:cover"/>`):'<small>Kein Hintergrund</small>'}</div>
+      <label class="file-pick">📁 Hintergrund-Datei auswählen<input type="file" id="bgf" accept="image/*,video/*"/></label>
+      ${p.bgUrl?'<button class="btn btn-ghost btn-sm" id="bg-clear" style="margin-top:8px">Entfernen</button>':''}
     </div>
     <div class="section">
       <h2>Hintergrundmusik</h2>
-      <div class="field"><label>Audio hochladen</label><input type="file" id="muf" accept="audio/*"/></div>
-      <div class="field"><label>Oder URL</label><input id="muu" value="${esc(p.musicUrl)}" placeholder="https://...mp3"/></div>
-      <div class="row"><label><input type="checkbox" id="map" ${p.musicAutoplay?'checked':''}/> Auto-Play</label><label>Volume <input type="range" id="mvo" min="0" max="100" value="${p.musicVolume*100}" style="width:120px"/></label></div>
+      <div style="margin-bottom:10px">${p.musicUrl?`<audio controls src="${esc(p.musicUrl)}" style="width:100%"></audio>`:'<small>Keine Musik</small>'}</div>
+      <label class="file-pick">📁 Audio-Datei auswählen<input type="file" id="muf" accept="audio/*"/></label>
+      ${p.musicUrl?'<button class="btn btn-ghost btn-sm" id="mu-clear" style="margin-top:8px">Entfernen</button>':''}
+      <div class="row" style="margin-top:10px"><label><input type="checkbox" id="map" ${p.musicAutoplay?'checked':''}/> Auto-Play</label><label>Volume <input type="range" id="mvo" min="0" max="100" value="${p.musicVolume*100}" style="width:120px"/></label></div>
     </div>
     <div class="section">
       <h2>Enter Screen</h2>
@@ -558,16 +577,22 @@ function renderMediaPage(user,m){
     </div>
     <div class="section">
       <h2>Favicon</h2>
-      <input id="fav" placeholder="Emoji (z.B. 🔫) oder Bild-URL" value="${esc(p.favicon)}"/>
+      <label class="file-pick">📁 Favicon-Bild auswählen<input type="file" id="fav-file" accept="image/*"/></label>
+      <input id="fav" placeholder="Oder Emoji z.B. 🔫" value="${esc(p.favicon&&!p.favicon.startsWith('data:')?p.favicon:'')}" style="margin-top:8px"/>
     </div>
     <div style="margin-top:18px"><button class="btn" id="sm">Speichern</button></div>`;
-  $('bgf').onchange=e=>readFile(e.target,d=>{updateProfile(user.uid,{bgUrl:d});toast('BG hochgeladen');$('bgu').value=d;});
-  $('muf').onchange=e=>readFile(e.target,d=>{updateProfile(user.uid,{musicUrl:d});toast('Musik hochgeladen');$('muu').value=d;});
+  $('bgf').onchange=e=>readFile(e.target,(d,f)=>{const t=f.type.startsWith('video')?'video':'image';if(safeUpdateProfile(user.uid,{bgUrl:d,bgType:t})){toast('Hintergrund hochgeladen');render();}});
+  if($('bg-clear'))$('bg-clear').onclick=()=>{updateProfile(user.uid,{bgUrl:''});render();};
+  $('muf').onchange=e=>readFile(e.target,d=>{if(safeUpdateProfile(user.uid,{musicUrl:d})){toast('Musik hochgeladen');render();}});
+  if($('mu-clear'))$('mu-clear').onclick=()=>{updateProfile(user.uid,{musicUrl:''});render();};
+  $('fav-file').onchange=e=>readFile(e.target,d=>{if(safeUpdateProfile(user.uid,{favicon:d})){toast('Favicon gespeichert');}});
   $('sm').onclick=()=>{
-    updateProfile(user.uid,{bgType:$('bt').value,bgUrl:$('bgu').value.trim(),musicUrl:$('muu').value.trim(),musicAutoplay:$('map').checked,musicVolume:$('mvo').value/100,enterScreen:$('en').checked,enterText:$('ent').value.trim(),favicon:$('fav').value.trim()});
+    const favEmoji=$('fav').value.trim();
+    updateProfile(user.uid,{musicAutoplay:$('map').checked,musicVolume:$('mvo').value/100,enterScreen:$('en').checked,enterText:$('ent').value.trim(),...(favEmoji?{favicon:favEmoji}:{})});
     toast('Gespeichert');
   };
 }
+
 /* ---------- INTEGRATIONS ---------- */
 function renderIntegrations(user,m){
   const p=user.profile;
@@ -593,6 +618,7 @@ function renderIntegrations(user,m){
     toast('Gespeichert');
   };
 }
+
 /* ---------- SEO ---------- */
 function renderSEO(user,m){
   const p=user.profile;
@@ -608,6 +634,7 @@ function renderSEO(user,m){
     </div>`;
   $('sv').onclick=()=>{updateProfile(user.uid,{seo:{title:$('st').value,desc:$('sd').value,color:$('sc').value,image:$('si').value}});toast('Gespeichert');};
 }
+
 /* ---------- LINKS ---------- */
 function renderLinks(user,m){
   m.innerHTML=`
@@ -619,6 +646,7 @@ function renderLinks(user,m){
 }
 window.addLink=type=>{const u=currentUser();const s=SOCIALS.find(x=>x.id===type);modal(`${s.name} hinzufügen`,`<input id="lu" placeholder="URL oder Handle"/>`,bg=>{const v=bg.querySelector('#lu').value.trim();if(!v)return false;updateUser(u.uid,{socials:[...u.socials,{type,url:v}]});toast('Hinzugefügt');render();},'Hinzufügen');};
 window.deleteLink=i=>{const u=currentUser();const s=[...u.socials];s.splice(i,1);updateUser(u.uid,{socials:s});render();};
+
 /* ---------- BADGES ---------- */
 function renderBadges(user,m){
   const all=[...ALL_BADGES,...user.customBadges.map(c=>({...c,custom:true}))];
@@ -629,6 +657,7 @@ function renderBadges(user,m){
 }
 window.addCustomBadge=()=>{const u=currentUser();modal('Custom Badge',`<div class="field"><label>Name</label><input id="cn"/></div><div class="field"><label>Icon (Emoji)</label><input id="ci" value="✨"/></div><div class="field"><label>Beschreibung</label><input id="cd"/></div><div class="field"><label>Farbe</label><input type="color" id="cc" value="#a855f7"/></div>`,bg=>{const b={id:'custom_'+Date.now(),name:bg.querySelector('#cn').value.trim()||'Badge',icon:bg.querySelector('#ci').value||'✨',desc:bg.querySelector('#cd').value.trim()||'Custom',color:bg.querySelector('#cc').value};updateUser(u.uid,{customBadges:[...u.customBadges,b],badges:[...u.badges,b.id]});toast('Erstellt');render();},'Erstellen');};
 window.deleteCustomBadge=i=>{const u=currentUser();const cb=[...u.customBadges];const r=cb.splice(i,1)[0];updateUser(u.uid,{customBadges:cb,badges:u.badges.filter(x=>x!==r.id)});render();};
+
 /* ---------- PREMIUM ---------- */
 function renderPremium(user,m){
   m.innerHTML=`
@@ -643,6 +672,7 @@ function renderPremium(user,m){
     </div>`;
 }
 window.claimPremium=()=>{const u=currentUser();updateUser(u.uid,{premium:true,badges:[...new Set([...u.badges,'premium'])]});toast('Premium aktiviert! 🎉');render();};
+
 /* ---------- SETTINGS ---------- */
 function renderSettings(user,m){
   m.innerHTML=`
@@ -660,22 +690,35 @@ function renderSettings(user,m){
   $('ss').onclick=()=>{const p={email:$('se').value};if($('sp').value)p.password=$('sp').value;updateUser(user.uid,p);toast('Gespeichert');};
 }
 window.deleteAccount=()=>{if(!confirm('Wirklich löschen?'))return;const u=currentUser();const db=loadDB();db.users=db.users.filter(x=>x.uid!==u.uid);saveDB(db);clearSession();render();};
+
 /* ---------- ADMIN ---------- */
 function renderAdmin(user,m){
   if(user.role!=='admin'){m.innerHTML='<p>Kein Zugriff</p>';return;}
   const db=loadDB();
   m.innerHTML=`
     <h1 class="page-title">Admin 🛡️</h1>
-    <div class="section"><h2>Nutzer (${db.users.length})</h2>
-      <table><thead><tr><th>UID</th><th>User</th><th>Email</th><th>Views</th><th>Badges</th><th>Premium</th><th>Aktionen</th></tr></thead>
-      <tbody>${db.users.map(u=>`<tr><td>${u.uid}</td><td>${esc(u.username)}<br><small>${esc(u.displayName||'')}</small></td><td>${esc(u.email)}</td><td>${u.views}</td><td>${u.badges.length}</td><td>${u.premium?'✓':'✗'}</td><td><div class="row-btns"><button onclick="adminAddViews(${u.uid})">+Views</button><button onclick="adminManageBadges(${u.uid})">Badges</button><button onclick="adminTogglePremium(${u.uid})">${u.premium?'-':'+'} Prem</button><button onclick="adminSetRole(${u.uid})">Rolle</button>${u.uid!==user.uid?`<button class="danger" onclick="adminDelete(${u.uid})">Del</button>`:''}</div></td></tr>`).join('')}</tbody></table>
+    <div class="grid-4">
+      <div class="stat-card"><div class="stat-head">Nutzer gesamt</div><div class="stat-val">${db.users.length}</div></div>
+      <div class="stat-card"><div class="stat-head">Premium</div><div class="stat-val">${db.users.filter(u=>u.premium).length}</div></div>
+      <div class="stat-card"><div class="stat-head">Admins</div><div class="stat-val">${db.users.filter(u=>u.role==='admin').length}</div></div>
+      <div class="stat-card"><div class="stat-head">Views gesamt</div><div class="stat-val">${db.users.reduce((s,u)=>s+(u.views||0),0).toLocaleString()}</div></div>
+    </div>
+    <div class="section"><h2>Alle Nutzer (${db.users.length})</h2>
+      <input id="adm-q" placeholder="Suche User/Email…" style="margin-bottom:10px"/>
+      <div style="overflow-x:auto"><table><thead><tr><th>UID</th><th>User</th><th>Email</th><th>Rolle</th><th>Erstellt</th><th>Views</th><th>Badges</th><th>Prem</th><th>Aktionen</th></tr></thead>
+      <tbody id="adm-tbody">${renderAdminRows(db.users,user.uid)}</tbody></table></div>
     </div>`;
+  $('adm-q').oninput=e=>{const q=e.target.value.toLowerCase();const filtered=db.users.filter(u=>u.username.toLowerCase().includes(q)||u.email.toLowerCase().includes(q));$('adm-tbody').innerHTML=renderAdminRows(filtered,user.uid);};
+}
+function renderAdminRows(users,selfUid){
+  return users.map(u=>`<tr><td>${u.uid}</td><td><a href="#/u/${esc(u.username)}" style="color:var(--primary)">${esc(u.username)}</a><br><small>${esc(u.displayName||'')}</small></td><td>${esc(u.email)}</td><td>${esc(u.role||'user')}</td><td><small>${new Date(u.createdAt).toLocaleDateString()}</small></td><td>${u.views}</td><td>${u.badges.length}</td><td>${u.premium?'✓':'✗'}</td><td><div class="row-btns"><button onclick="adminAddViews(${u.uid})">+Views</button><button onclick="adminManageBadges(${u.uid})">Badges</button><button onclick="adminTogglePremium(${u.uid})">${u.premium?'-':'+'} Prem</button><button onclick="adminSetRole(${u.uid})">Rolle</button>${u.uid!==selfUid?`<button class="danger" onclick="adminDelete(${u.uid})">Del</button>`:''}</div></td></tr>`).join('');
 }
 window.adminAddViews=uid=>{const v=prompt('+/- Views','100');if(!v)return;const n=parseInt(v);if(isNaN(n))return;const db=loadDB();const u=db.users.find(x=>x.uid===uid);u.views=Math.max(0,u.views+n);saveDB(db);render();};
 window.adminTogglePremium=uid=>{const db=loadDB();const u=db.users.find(x=>x.uid===uid);u.premium=!u.premium;if(u.premium)u.badges=[...new Set([...u.badges,'premium'])];else u.badges=u.badges.filter(b=>b!=='premium');saveDB(db);render();};
 window.adminSetRole=uid=>{const r=prompt('user / admin / staff','user');if(!r)return;const db=loadDB();const u=db.users.find(x=>x.uid===uid);u.role=r;if(r==='admin')u.badges=[...new Set([...u.badges,'admin'])];if(r==='staff')u.badges=[...new Set([...u.badges,'staff'])];saveDB(db);render();};
 window.adminDelete=uid=>{if(!confirm('Löschen?'))return;const db=loadDB();db.users=db.users.filter(x=>x.uid!==uid);saveDB(db);render();};
 window.adminManageBadges=uid=>{const db=loadDB();const u=db.users.find(x=>x.uid===uid);const html=ALL_BADGES.map(b=>`<label style="display:block;padding:6px"><input type="checkbox" data-b="${b.id}" ${u.badges.includes(b.id)?'checked':''}/> ${b.icon} ${b.name}</label>`).join('');modal('Badges für '+u.username,html,bg=>{const checked=[...bg.querySelectorAll('input[data-b]')].filter(c=>c.checked).map(c=>c.dataset.b);const custom=u.badges.filter(b=>b.startsWith('custom_'));updateUser(uid,{badges:[...checked,...custom]});toast('OK');render();});};
+
 /* ============================================================
    PUBLIC PROFILE — alle Effekte hier
 ============================================================ */
@@ -687,6 +730,7 @@ function cleanupProfileFx(){
   if(_audioEl){try{_audioEl.pause();}catch(e){}_audioEl=null;}
   _audioCtx=null;_analyser=null;
 }
+
 function renderProfilePage(username){
   cleanupProfileFx();
   const db=loadDB();
@@ -694,7 +738,9 @@ function renderProfilePage(username){
   if(!u){$('root').innerHTML=`<div style="min-height:100vh;display:grid;place-items:center;text-align:center"><div><h1 style="font-size:60px">404</h1><p>Profil nicht gefunden</p><a href="#" class="btn btn-sm" style="margin-top:16px;display:inline-block">Zurück</a></div></div>`;return;}
   const viewer=currentUser();
   if(!viewer||viewer.uid!==u.uid){u.views++;saveDB(db);}
+
   const p=u.profile;
+
   // SEO + favicon
   const seoTitle=p.seo.title||u.displayName||u.username;
   document.title=seoTitle+' · kioo.zeta';
@@ -704,20 +750,27 @@ function renderProfilePage(username){
   setMeta('og:description',p.seo.desc||u.bio||'',true);
   setMeta('og:image',p.seo.image||u.avatar||'',true);
   setMeta('theme-color',p.seo.color||p.accent);
+
   // build badges/socials
   const badges=u.badges.map(bid=>{const b=ALL_BADGES.find(x=>x.id===bid)||u.customBadges.find(x=>x.id===bid);return b?`<span class="pb" style="color:${b.color}">${b.icon} ${esc(b.name)}</span>`:'';}).join('');
   const socials=u.socials.map(l=>{const s=SOCIALS.find(x=>x.id===l.type)||{icon:'🔗',color:'#666',name:l.type};const href=l.url.startsWith('http')?l.url:`https://${l.url}`;return `<a href="${esc(href)}" target="_blank" rel="noopener" style="background:${s.color}22;color:${s.color}" title="${s.name}">${s.icon}</a>`;}).join('');
+
   const cardStyle=`--card-opacity:${p.cardOpacity};--bg-blur:${p.bgBlur}px;--border-w:${p.borderWidth}px;--border-c:${p.borderColor};--border-r:${p.borderRadius}px;--border-glow:${p.borderGlow}px;--accent:${p.accent}`;
   const nameClass=p.nameEffect&&p.nameEffect!=='none'?`fx-${p.nameEffect}`:'';
+
   const bgHtml=p.bgUrl?(p.bgType==='video'?`<video src="${esc(p.bgUrl)}" autoplay muted loop playsinline></video>`:`<img src="${esc(p.bgUrl)}" alt=""/>`):'';
+  const bannerHtml=p.bannerUrl?(p.bannerType==='video'?`<video src="${esc(p.bannerUrl)}" autoplay muted loop playsinline></video>`:`<img src="${esc(p.bannerUrl)}" alt=""/>`):'';
+  const fontDef=FONTS.find(f=>f.id===p.font)||FONTS[0];
+
   const ds=p.discord.enabled?`<div class="ds-status" id="ds-status"><span class="indot"></span><span>Discord lädt…</span></div>`:'';
   const sp=p.spotify.enabled?`<div class="spotify-now"><span class="eq"><i></i><i></i><i></i></span><span>${esc(p.spotify.track)} — ${esc(p.spotify.artist)}</span></div>`:'';
+
   $('root').innerHTML=`
     ${p.enterScreen?`<div class="enter-screen" id="enterScreen"><div class="es-inner"><h2>${esc(p.enterText||'click anywhere to enter')}</h2><p>kioo.zeta</p></div></div>`:''}
     <div class="profile-bg ${p.bgBlur>0?'blurred':''}">${bgHtml}</div>
-    <div class="fx-layer" id="fxLayer"></div>
-    <div class="profile-page">
-      <div class="profile-card ${p.frosted?'frost':''}" style="${cardStyle}">
+    <div class="profile-page" style="font-family:${fontDef.css}">
+      <div class="profile-card ${p.frosted?'frost':''} ${bannerHtml?'has-banner':''}" style="${cardStyle};font-family:${fontDef.css}">
+        ${bannerHtml?`<div class="profile-banner">${bannerHtml}</div>`:''}
         <div class="profile-avatar">${u.avatar?`<img src="${esc(u.avatar)}"/>`:esc(u.username[0].toUpperCase())}</div>
         <h1 class="profile-name ${nameClass}">${esc(u.displayName||u.username)}</h1>
         <div class="profile-uid">@${esc(u.username)} · UID ${u.uid}</div>
@@ -726,12 +779,11 @@ function renderProfilePage(username){
         ${ds}${sp}
         ${socials?`<div class="profile-socials">${socials}</div>`:''}
         <div class="profile-views">👁 ${u.views.toLocaleString()} Aufrufe</div>
-        ${viewer?`<div style="margin-top:14px"><a href="#" class="btn btn-ghost btn-sm" style="display:inline-block;width:auto;padding:6px 14px">← Dashboard</a></div>`:''}
       </div>
-      ${p.visualizer&&p.musicUrl?`<div class="visualizer" id="vis">${Array(48).fill('<span style="height:4px"></span>').join('')}</div>`:''}
     </div>
     ${p.musicUrl?`<div class="music-player" id="mp"><button id="mpToggle">▶</button><div style="font-size:12px;flex:1"><div style="font-weight:600">Background Music</div><div style="color:var(--muted)">${esc(u.username)}</div></div><input type="range" class="mp-vol" id="mpVol" min="0" max="100" value="${p.musicVolume*100}"/></div>`:''}
   `;
+
   // border animated
   if(p.borderAnimated){
     const card=document.querySelector('.profile-card');
@@ -739,6 +791,7 @@ function renderProfilePage(username){
   }
   // border glow continuous
   if(p.borderGlow>0){const card=document.querySelector('.profile-card');if(card)card.style.boxShadow=`0 0 ${p.borderGlow}px ${p.borderColor}`;}
+
   // cursor
   if(p.cursorUrl){
     if(p.cursorUrl.startsWith('http')||p.cursorUrl.startsWith('data:')){document.body.style.cursor=`url("${p.cursorUrl}") 16 16, auto`;}
@@ -747,6 +800,7 @@ function renderProfilePage(username){
       document.body.style.cursor=`url("${svg}") 16 16, auto`;
     }
   }
+
   // typewriter
   const bioOut=$('bioOut');
   if(bioOut){
@@ -755,6 +809,7 @@ function renderProfilePage(username){
       let i=0;const t=setInterval(()=>{bioOut.textContent=text.slice(0,++i);if(i>=text.length)clearInterval(t);},40);
     } else bioOut.textContent=text;
   }
+
   // music + visualizer
   if(p.musicUrl){
     const audio=new Audio(p.musicUrl);audio.loop=true;audio.volume=p.musicVolume;_audioEl=audio;
@@ -763,35 +818,21 @@ function renderProfilePage(username){
     btn.onclick=()=>{if(audio.paused)tryPlay();else{audio.pause();btn.textContent='▶';}};
     $('mpVol').oninput=e=>{audio.volume=e.target.value/100;};
     if(p.musicAutoplay)setTimeout(tryPlay,300);
-    if(p.visualizer&&$('vis')){
-      try{
-        _audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-        const src=_audioCtx.createMediaElementSource(audio);
-        _analyser=_audioCtx.createAnalyser();_analyser.fftSize=128;
-        src.connect(_analyser);_analyser.connect(_audioCtx.destination);
-        const bars=[...$('vis').children];
-        const data=new Uint8Array(_analyser.frequencyBinCount);
-        const tick=()=>{
-          _analyser.getByteFrequencyData(data);
-          for(let i=0;i<bars.length;i++){const v=data[i%data.length]||0;bars[i].style.height=(4+v/4)+'px';}
-          _visTimer=requestAnimationFrame(tick);
-        };
-        tick();
-      }catch(e){console.warn('viz fail',e);}
-    }
   }
+
   // page title animation
   if(p.titleAnim&&p.titleAnim.length>1){
     let i=0;pageTitleTimer=setInterval(()=>{document.title=p.titleAnim[i%p.titleAnim.length]+' · kioo.zeta';i++;},1500);
   }
-  // effects
-  startEffect(p.effect);
+
   // enter screen
   const es=$('enterScreen');
   if(es){es.onclick=()=>{es.style.transition='opacity .5s';es.style.opacity=0;setTimeout(()=>es.remove(),500);if(_audioEl&&_audioEl.paused)_audioEl.play().catch(()=>{});if(_audioCtx&&_audioCtx.state==='suspended')_audioCtx.resume();};}
+
   // discord lanyard
   if(p.discord.enabled&&p.discord.id){loadLanyard(p.discord.id);_lanyardTimer=setInterval(()=>loadLanyard(p.discord.id),20000);}
 }
+
 function setMeta(name,content,prop=false){
   const sel=prop?`meta[property="${name}"]`:`meta[name="${name}"]`;
   let el=document.querySelector(sel);
@@ -807,6 +848,7 @@ function setFavicon(v){
   if(!link){link=document.createElement('link');link.id='favicon';link.rel='icon';document.head.appendChild(link);}
   link.href=href;
 }
+
 async function loadLanyard(id){
   try{
     const r=await fetch(`https://api.lanyard.rest/v1/users/${id}`);
@@ -822,44 +864,7 @@ async function loadLanyard(id){
     el.innerHTML=`<span class="indot" style="background:${colors[status]||'#888'};box-shadow:0 0 8px ${colors[status]||'#888'}"></span><span>${esc(txt)}</span>`;
   }catch(e){}
 }
-/* ----- EFFECTS ENGINE ----- */
-function startEffect(name){
-  const layer=$('fxLayer');if(!layer||name==='none')return;
-  layer.innerHTML='';
-  const W=window.innerWidth,H=window.innerHeight;
-  if(name==='matrix'){
-    const cols=Math.floor(W/20);
-    for(let i=0;i<cols;i++){const c=document.createElement('div');c.className='matrix-col';c.style.left=(i*20)+'px';c.style.animation=`matrixFall ${4+Math.random()*6}s linear ${Math.random()*5}s infinite`;c.textContent=Array(20).fill(0).map(()=>String.fromCharCode(0x30A0+Math.random()*96|0)).join('');layer.appendChild(c);}
-    if(!document.getElementById('mxKf')){const s=document.createElement('style');s.id='mxKf';s.textContent='@keyframes matrixFall{to{transform:translateY(120vh)}}';document.head.appendChild(s);}
-    return;
-  }
-  const spawn=()=>{
-    const p=document.createElement('div');p.className='particle';
-    const x=Math.random()*W;
-    let content='',size=14,duration=4000+Math.random()*4000;
-    let style=`left:${x}px;top:-30px;font-size:${size}px;`;
-    switch(name){
-      case 'snow':content='❄';size=10+Math.random()*16;duration=6000+Math.random()*5000;style=`left:${x}px;top:-30px;font-size:${size}px;color:#fff;opacity:${.5+Math.random()*.5}`;break;
-      case 'rain':content='|';size=14;duration=900+Math.random()*600;style=`left:${x}px;top:-30px;font-size:${size}px;color:#7dd3fc;opacity:.6`;break;
-      case 'stars':content='✦';size=8+Math.random()*8;duration=3000+Math.random()*3000;style=`left:${x}px;top:${Math.random()*H}px;font-size:${size}px;color:#fef3c7`;p.style.animation=`twinkle ${1+Math.random()*2}s infinite`;break;
-      case 'hearts':content='❤';size=12+Math.random()*14;duration=4000+Math.random()*3000;style=`left:${x}px;top:${H+30}px;font-size:${size}px;color:#ec4899`;break;
-      case 'confetti':content='■';size=6+Math.random()*8;duration=3000+Math.random()*2000;style=`left:${x}px;top:-30px;font-size:${size}px;color:hsl(${Math.random()*360},90%,60%);transform:rotate(${Math.random()*360}deg)`;break;
-      case 'sparks':content='✦';size=4+Math.random()*8;duration=1500+Math.random()*1000;style=`left:${x}px;top:${H/2+Math.random()*100-50}px;font-size:${size}px;color:#fbbf24`;break;
-      case 'smoke':content='●';size=30+Math.random()*40;duration=5000+Math.random()*3000;style=`left:${x}px;top:${H+30}px;font-size:${size}px;color:rgba(200,200,200,.2);filter:blur(8px)`;break;
-    }
-    p.style.cssText='position:absolute;pointer-events:none;'+style;
-    p.textContent=content;
-    layer.appendChild(p);
-    const goUp=name==='hearts'||name==='smoke'||name==='sparks';
-    const ty=goUp?-H-50:H+50;
-    p.animate([{transform:'translate(0,0) rotate(0)'},{transform:`translate(${(Math.random()-.5)*100}px,${ty}px) rotate(${Math.random()*720}deg)`}],{duration,easing:name==='rain'?'linear':'ease-in'});
-    setTimeout(()=>p.remove(),duration);
-  };
-  if(!document.getElementById('twKf')){const s=document.createElement('style');s.id='twKf';s.textContent='@keyframes twinkle{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.3)}}';document.head.appendChild(s);}
-  if(name==='stars'){for(let i=0;i<60;i++)spawn();return;}
-  const rate={snow:200,rain:80,hearts:400,confetti:120,sparks:60,smoke:600}[name]||200;
-  _fxTimer=setInterval(spawn,rate);
-}
+
 render();
 </script>
 </body>
