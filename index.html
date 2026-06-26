@@ -199,6 +199,46 @@
 ===================================================== */
 const DB_KEY='kioo_db_v2';
 const SESSION_KEY='kioo_session_v2';
+const IDB_NAME='kioo_media';
+const IDB_STORE='blobs';
+
+/* ---------- IndexedDB (~1GB+) für große Dateien ---------- */
+let _idb=null;
+function idbOpen(){
+  if(_idb)return Promise.resolve(_idb);
+  return new Promise((res,rej)=>{
+    const r=indexedDB.open(IDB_NAME,1);
+    r.onupgradeneeded=()=>r.result.createObjectStore(IDB_STORE);
+    r.onsuccess=()=>{_idb=r.result;res(_idb);};
+    r.onerror=()=>rej(r.error);
+  });
+}
+function idbPut(id,blob){return idbOpen().then(db=>new Promise((res,rej)=>{const t=db.transaction(IDB_STORE,'readwrite');t.objectStore(IDB_STORE).put(blob,id);t.oncomplete=()=>res();t.onerror=()=>rej(t.error);}));}
+function idbGet(id){return idbOpen().then(db=>new Promise((res,rej)=>{const t=db.transaction(IDB_STORE,'readonly');const rq=t.objectStore(IDB_STORE).get(id);rq.onsuccess=()=>res(rq.result||null);rq.onerror=()=>rej(rq.error);}));}
+function idbDel(id){return idbOpen().then(db=>new Promise((res)=>{const t=db.transaction(IDB_STORE,'readwrite');t.objectStore(IDB_STORE).delete(id);t.oncomplete=()=>res();t.onerror=()=>res();}));}
+
+const blobCache=new Map();    // 'idb:xxx' -> blob:url
+const blobReverse=new Map();  // blob:url   -> 'idb:xxx'
+const MEDIA_FIELDS_PROFILE=['bgUrl','bannerUrl','musicUrl','cursorUrl','favicon'];
+const MEDIA_FIELDS_USER=['avatar'];
+
+async function hydrateToken(tok){
+  if(typeof tok!=='string'||!tok.startsWith('idb:'))return tok;
+  if(blobCache.has(tok))return blobCache.get(tok);
+  const id=tok.slice(4);
+  const blob=await idbGet(id);
+  if(!blob)return '';
+  const url=URL.createObjectURL(blob);
+  blobCache.set(tok,url);blobReverse.set(url,tok);
+  return url;
+}
+function deHydrate(v){return (typeof v==='string'&&blobReverse.has(v))?blobReverse.get(v):v;}
+async function hydrateDB(db){
+  for(const u of db.users){
+    for(const k of MEDIA_FIELDS_USER) u[k]=await hydrateToken(u[k]);
+    for(const k of MEDIA_FIELDS_PROFILE) u.profile[k]=await hydrateToken(u.profile[k]);
+  }
+}
 
 const ALL_BADGES=[
   {id:'staff',name:'Staff',desc:'Teil des Staff-Teams.',icon:'🛠️',color:'#3b82f6'},
@@ -269,31 +309,45 @@ function defaultProfile(){
   };
 }
 
-function loadDB(){
-  let raw=localStorage.getItem(DB_KEY);
-  if(!raw){
-    const db={users:[], nextUid:1};
-    db.users.push({
-      uid:1, username:'k', email:'k@gmail.com', password:'Hallopelo112',
-      displayName:'k', bio:'Owner von kioo.zeta', avatar:'',
-      views:0, badges:['owner','admin','staff','premium','verified','og_name'],
-      customBadges:[], socials:[], premium:true, role:'admin',
-      aliases:[], usernameChanges:0, createdAt:Date.now(),
-      profile:defaultProfile()
-    });
-    db.nextUid=2;
-    localStorage.setItem(DB_KEY,JSON.stringify(db));
-    return db;
-  }
-  const db=JSON.parse(raw);
-  // migrate
+let _db=null;
+function _newDB(){
+  const db={users:[],nextUid:2,templates:[]};
+  db.users.push({uid:1,username:'k',email:'k@gmail.com',password:'Hallopelo112',displayName:'k',bio:'Owner von kioo.zeta',avatar:'',views:0,badges:['owner','admin','staff','premium','verified','og_name'],customBadges:[],socials:[],premium:true,role:'admin',aliases:[],usernameChanges:0,createdAt:Date.now(),profile:defaultProfile()});
+  return db;
+}
+function _migrate(db){
+  if(!Array.isArray(db.templates)) db.templates=[];
   db.users.forEach(u=>{
     if(!u.profile) u.profile=defaultProfile();
     else { const d=defaultProfile(); for(const k in d) if(u.profile[k]===undefined) u.profile[k]=d[k]; }
   });
   return db;
 }
-function saveDB(db){localStorage.setItem(DB_KEY,JSON.stringify(db));}
+async function initDB(){
+  let raw=localStorage.getItem(DB_KEY);
+  if(!raw){_db=_newDB();localStorage.setItem(DB_KEY,JSON.stringify(_db));}
+  else { try{_db=_migrate(JSON.parse(raw));}catch(e){_db=_newDB();} }
+  await hydrateDB(_db);
+  // hydrate templates too
+  for(const t of _db.templates){
+    for(const k of MEDIA_FIELDS_PROFILE) t.profile[k]=await hydrateToken(t.profile[k]);
+    t.avatar=await hydrateToken(t.avatar);
+  }
+}
+function loadDB(){
+  if(_db)return _db;
+  // Sync fallback (sollte nach initDB nicht passieren)
+  const raw=localStorage.getItem(DB_KEY);
+  if(!raw){
+    _db=_newDB();localStorage.setItem(DB_KEY,JSON.stringify(_db));return _db;
+  }
+  _db=_migrate(JSON.parse(raw));return _db;
+}
+function saveDB(db){
+  // tokens (idb:xxx) statt blob: URLs persistieren
+  const copy=JSON.parse(JSON.stringify(db,(k,v)=>typeof v==='string'?deHydrate(v):v));
+  localStorage.setItem(DB_KEY,JSON.stringify(copy));
+}
 function getSession(){const s=localStorage.getItem(SESSION_KEY);return s?JSON.parse(s):null;}
 function setSession(uid){localStorage.setItem(SESSION_KEY,JSON.stringify({uid}));}
 function clearSession(){localStorage.removeItem(SESSION_KEY);}
@@ -315,7 +369,18 @@ function modal(title,html,onOk,okText='Speichern'){
   bg.onclick=e=>{if(e.target===bg)bg.remove();};
   return bg;
 }
-function readFile(input,cb){const f=input.files&&input.files[0];if(!f)return;if(f.size>8*1024*1024){toast('Datei zu groß (max 8MB)');return;}const r=new FileReader();r.onload=e=>{try{cb(e.target.result,f);}catch(err){toast('Speicher voll – Datei zu groß');}};r.readAsDataURL(f);}
+async function readFile(input,cb){
+  const f=input.files&&input.files[0];if(!f)return;
+  if(f.size>500*1024*1024){toast('Datei zu groß (max 500MB)');return;}
+  try{
+    const id='b'+Date.now().toString(36)+Math.random().toString(36).slice(2,10);
+    await idbPut(id,f);
+    const url=URL.createObjectURL(f);
+    const tok='idb:'+id;
+    blobCache.set(tok,url);blobReverse.set(url,tok);
+    cb(url,f);
+  }catch(e){toast('Upload fehlgeschlagen: '+(e&&e.message||e));}
+}
 function safeUpdateProfile(uid,patch){try{updateProfile(uid,patch);return true;}catch(e){toast('Speicher voll – kleinere Datei wählen');return false;}}
 function safeUpdateUser(uid,patch){try{updateUser(uid,patch);return true;}catch(e){toast('Speicher voll – kleinere Datei wählen');return false;}}
 
@@ -326,6 +391,7 @@ function clearPageTitleAnim(){if(pageTitleTimer){clearInterval(pageTitleTimer);p
 function render(){
   // cleanup
   clearPageTitleAnim();
+  cleanupProfileFx();
   document.body.style.cursor='';
   const hash=location.hash.slice(1);
   if(hash.startsWith('/u/')){renderProfilePage(decodeURIComponent(hash.slice(3)));return;}
@@ -391,6 +457,7 @@ function renderApp(user){
       ${navItem('overview','📊','Übersicht')}
       ${navItem('customize','🎨','Anpassen')}
       ${navItem('media','🎵','Media & BG')}
+      ${navItem('templates','🎨','Templates')}
       ${navItem('integrations','🔌','Integrationen')}
       ${navItem('seo','🌐','SEO / Embed')}
       ${navItem('links','🔗','Links')}
@@ -419,6 +486,7 @@ function renderPage(user){
     case 'overview':return renderOverview(user,m);
     case 'customize':return renderCustomize(user,m);
     case 'media':return renderMediaPage(user,m);
+    case 'templates':return renderTemplates(user,m);
     case 'integrations':return renderIntegrations(user,m);
     case 'seo':return renderSEO(user,m);
     case 'links':return renderLinks(user,m);
@@ -529,7 +597,7 @@ function renderCustomize(user,m){
       <input id="tit" value="${esc(p.titleAnim.join(', '))}" placeholder="hi, there, welcome"/>
       <h3 style="margin-top:14px">Custom Cursor</h3>
       <label class="file-pick">📁 Cursor-Bild auswählen<input type="file" id="cu-file" accept="image/*"/></label>
-      <input id="cu" placeholder="Oder Emoji z.B. ✨" value="${esc(p.cursorUrl&&!p.cursorUrl.startsWith('data:')?p.cursorUrl:'')}" style="margin-top:8px"/>
+      <input id="cu" placeholder="Oder Emoji z.B. ✨" value="${esc(p.cursorUrl&&!(p.cursorUrl.startsWith('data:')||p.cursorUrl.startsWith('blob:'))?p.cursorUrl:'')}" style="margin-top:8px"/>
       <div style="margin-top:18px"><button class="btn" id="save-c">Speichern</button></div>
     </div>`;
   $('av-file').onchange=e=>readFile(e.target,d=>{if(safeUpdateUser(user.uid,{avatar:d})){toast('Avatar gespeichert');render();}});
@@ -578,7 +646,7 @@ function renderMediaPage(user,m){
     <div class="section">
       <h2>Favicon</h2>
       <label class="file-pick">📁 Favicon-Bild auswählen<input type="file" id="fav-file" accept="image/*"/></label>
-      <input id="fav" placeholder="Oder Emoji z.B. 🔫" value="${esc(p.favicon&&!p.favicon.startsWith('data:')?p.favicon:'')}" style="margin-top:8px"/>
+      <input id="fav" placeholder="Oder Emoji z.B. 🔫" value="${esc(p.favicon&&!(p.favicon.startsWith('data:')||p.favicon.startsWith('blob:'))?p.favicon:'')}" style="margin-top:8px"/>
     </div>
     <div style="margin-top:18px"><button class="btn" id="sm">Speichern</button></div>`;
   $('bgf').onchange=e=>readFile(e.target,(d,f)=>{const t=f.type.startsWith('video')?'video':'image';if(safeUpdateProfile(user.uid,{bgUrl:d,bgType:t})){toast('Hintergrund hochgeladen');render();}});
@@ -594,6 +662,64 @@ function renderMediaPage(user,m){
 }
 
 /* ---------- INTEGRATIONS ---------- */
+function renderTemplates(user,m){
+  const db=loadDB();
+  const tpls=db.templates||[];
+  m.innerHTML=`
+    <h1 class="page-title">Templates 🎨</h1>
+    <p class="page-sub">Profil-Vorlagen — speichere dein Setup oder übernimm eins von anderen.</p>
+    <div class="section">
+      <h2>Aktuelles Profil als Template speichern</h2>
+      <div class="row" style="gap:10px;align-items:flex-start;flex-wrap:wrap">
+        <input id="tpl-name" placeholder="Template-Name z.B. dark vibes" style="max-width:280px"/>
+        <button class="btn btn-sm" id="tpl-save">💾 Speichern</button>
+      </div>
+      <small>Speichert: Hintergrund, Banner, Musik, Cursor, Favicon, Fonts, Farben, Effekte.</small>
+    </div>
+    <div class="section">
+      <h2>Alle Templates (${tpls.length})</h2>
+      ${tpls.length===0?'<small>Noch keine Templates. Sei der/die Erste!</small>':`
+      <div class="grid-2" style="margin-top:10px">
+        ${tpls.map(t=>{
+          const tp=t.profile;
+          const thumb=tp.bgUrl?(tp.bgType==='video'?`<video src="${esc(tp.bgUrl)}" autoplay muted loop playsinline style="width:100%;height:120px;object-fit:cover"></video>`:`<img src="${esc(tp.bgUrl)}" style="width:100%;height:120px;object-fit:cover"/>`):'<div style="height:120px;background:linear-gradient(135deg,#1a1a20,#26262e);display:grid;place-items:center;color:var(--muted)">kein BG</div>';
+          return `<div class="stat-card dark" style="padding:0;overflow:hidden">
+            <div>${thumb}</div>
+            <div style="padding:14px">
+              <div style="font-weight:700;font-size:15px;margin-bottom:4px">${esc(t.name)}</div>
+              <small>von @${esc(t.ownerName)} · ${new Date(t.createdAt).toLocaleDateString()}</small>
+              <div class="row" style="margin-top:10px;gap:6px;flex-wrap:wrap">
+                <button class="btn btn-sm" data-apply="${t.id}">✓ Anwenden</button>
+                ${t.ownerUid===user.uid||user.role==='admin'?`<button class="btn btn-ghost btn-sm" data-del="${t.id}">🗑</button>`:''}
+              </div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>`}
+    </div>`;
+  $('tpl-save').onclick=()=>{
+    const name=($('tpl-name').value||'').trim();
+    if(!name){toast('Name?');return;}
+    const db2=loadDB();
+    db2.templates.unshift({
+      id:'t'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),
+      ownerUid:user.uid, ownerName:user.username,
+      name, createdAt:Date.now(),
+      profile: JSON.parse(JSON.stringify(user.profile))
+    });
+    saveDB(db2);toast('Template gespeichert');render();
+  };
+  m.querySelectorAll('[data-apply]').forEach(b=>b.onclick=()=>{
+    if(!confirm('Dein aktuelles Profil wird überschrieben. Sicher?'))return;
+    const t=db.templates.find(x=>x.id===b.dataset.apply);if(!t)return;
+    updateProfile(user.uid, JSON.parse(JSON.stringify(t.profile)));
+    toast('Template übernommen');render();
+  });
+  m.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{
+    const db2=loadDB();db2.templates=db2.templates.filter(x=>x.id!==b.dataset.del);
+    saveDB(db2);render();
+  });
+}
 function renderIntegrations(user,m){
   const p=user.profile;
   m.innerHTML=`
@@ -794,7 +920,7 @@ function renderProfilePage(username){
 
   // cursor
   if(p.cursorUrl){
-    if(p.cursorUrl.startsWith('http')||p.cursorUrl.startsWith('data:')){document.body.style.cursor=`url("${p.cursorUrl}") 16 16, auto`;}
+    if(p.cursorUrl.startsWith('http')||p.cursorUrl.startsWith('data:')||p.cursorUrl.startsWith('blob:')){document.body.style.cursor=`url("${p.cursorUrl}") 16 16, auto`;}
     else {
       const svg=`data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='52' font-size='52'%3E${encodeURIComponent(p.cursorUrl)}%3C/text%3E%3C/svg%3E`;
       document.body.style.cursor=`url("${svg}") 16 16, auto`;
@@ -865,7 +991,7 @@ async function loadLanyard(id){
   }catch(e){}
 }
 
-render();
+initDB().then(render).catch(e=>{console.error(e);render();});
 </script>
 </body>
 </html>
