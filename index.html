@@ -627,9 +627,13 @@ function renderMediaPage(user,m){
     <p class="page-sub">Alles per Datei-Upload — keine URLs nötig.</p>
     <div class="section">
       <h2>Hintergrund (Bild / GIF / Video)</h2>
+      <p style="color:var(--muted);font-size:13px;margin:-6px 0 12px">ℹ️ Der Hintergrund erscheint auf deiner öffentlichen Profilseite <a href="#/u/${esc(user.username)}" style="color:var(--primary)">/u/${esc(user.username)}</a> — nicht im Dashboard.</p>
       <div style="margin-bottom:10px">${p.bgUrl?(p.bgType==='video'?`<video src="${esc(p.bgUrl)}" autoplay muted loop class="preview-thumb" style="width:100%;max-height:160px;object-fit:cover"></video>`:`<img src="${esc(p.bgUrl)}" class="preview-thumb" style="width:100%;max-height:160px;object-fit:cover"/>`):'<small>Kein Hintergrund</small>'}</div>
       <label class="file-pick">📁 Hintergrund-Datei auswählen<input type="file" id="bgf" accept="image/*,video/*"/></label>
-      ${p.bgUrl?'<button class="btn btn-ghost btn-sm" id="bg-clear" style="margin-top:8px">Entfernen</button>':''}
+      <div class="row" style="gap:8px;margin-top:8px;flex-wrap:wrap">
+        <a class="btn btn-sm" href="#/u/${esc(user.username)}" style="flex:1;text-align:center">👁 Auf meiner Seite ansehen</a>
+        ${p.bgUrl?'<button class="btn btn-ghost btn-sm" id="bg-clear">Entfernen</button>':''}
+      </div>
     </div>
     <div class="section">
       <h2>Hintergrundmusik</h2>
@@ -649,7 +653,7 @@ function renderMediaPage(user,m){
       <input id="fav" placeholder="Oder Emoji z.B. 🔫" value="${esc(p.favicon&&!(p.favicon.startsWith('data:')||p.favicon.startsWith('blob:'))?p.favicon:'')}" style="margin-top:8px"/>
     </div>
     <div style="margin-top:18px"><button class="btn" id="sm">Speichern</button></div>`;
-  $('bgf').onchange=e=>readFile(e.target,(d,f)=>{const t=f.type.startsWith('video')?'video':'image';if(safeUpdateProfile(user.uid,{bgUrl:d,bgType:t})){toast('Hintergrund hochgeladen');render();}});
+  $('bgf').onchange=e=>readFile(e.target,(d,f)=>{const t=f.type.startsWith('video')?'video':'image';if(safeUpdateProfile(user.uid,{bgUrl:d,bgType:t})){toast('Hintergrund hochgeladen – öffne deine Profil-Vorschau…');setTimeout(()=>{location.hash='#/u/'+user.username;},600);}});
   if($('bg-clear'))$('bg-clear').onclick=()=>{updateProfile(user.uid,{bgUrl:''});render();};
   $('muf').onchange=e=>readFile(e.target,d=>{if(safeUpdateProfile(user.uid,{musicUrl:d})){toast('Musik hochgeladen');render();}});
   if($('mu-clear'))$('mu-clear').onclick=()=>{updateProfile(user.uid,{musicUrl:''});render();};
