@@ -1,1122 +1,709 @@
 <!DOCTYPE html>
-<html lang="en">
-<!doctype html>
 <html lang="de">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>biolnk — your link in bio</title>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>bio.link — dein Profil</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>guns.lol Clone</title>
 <style>
   :root{
-    --bg:#07060d; --bg2:#0d0a1f; --panel:rgba(20,16,40,.6);
-    --border:rgba(168,85,247,.25); --text:#ece9ff; --muted:#9b96c4;
-    --accent:#a855f7; --accent2:#ec4899; --accent3:#22d3ee;
-    --glow:0 0 24px rgba(168,85,247,.45), 0 0 60px rgba(236,72,153,.25);
+    --bg:#080808;--bg2:#0f0f10;--panel:#141416;--panel2:#1b1b1f;
+    --border:#26262b;--text:#fff;--muted:#9a9aa3;
+    --primary:#a855f7;--primary2:#7c3aed;--accent:#1b1b1b;
+    --green:#22c55e;--red:#ef4444;--orange:#f59e0b;--blue:#3b82f6;
   }
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0;height:100%;font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
-  body{background:radial-gradient(1200px 800px at 20% -10%,#2a0a4a 0%,transparent 60%),radial-gradient(1000px 700px at 100% 100%,#4a0a3a 0%,transparent 60%),var(--bg)}
+  *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',system-ui,sans-serif}
+  body{background:var(--bg);color:var(--text);min-height:100vh}
   a{color:inherit;text-decoration:none}
-  button,input,select,textarea{font-family:inherit;color:inherit}
-  /* layout */
-  .nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:16px 28px;background:rgba(7,6,13,.55);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
-  .brand{font-weight:800;font-size:20px;letter-spacing:.5px;background:linear-gradient(90deg,#a855f7,#ec4899,#22d3ee);-webkit-background-clip:text;background-clip:text;color:transparent}
-  .nav-links{display:flex;gap:18px;align-items:center}
-  .nav-links a{color:var(--muted);font-size:14px}
-  .nav-links a:hover{color:var(--text)}
-  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;border:1px solid var(--border);background:rgba(168,85,247,.1);cursor:pointer;font-weight:600;font-size:14px;transition:.2s}
-  .btn:hover{background:rgba(168,85,247,.2);box-shadow:var(--glow);transform:translateY(-1px)}
-  .btn-primary{background:linear-gradient(90deg,#a855f7,#ec4899);border:none;color:#fff}
-  .btn-primary:hover{filter:brightness(1.15);box-shadow:var(--glow)}
-  .btn-ghost{background:transparent}
-  .container{max-width:1200px;margin:0 auto;padding:120px 24px 60px}
-  .view{display:none;animation:fade .4s}
-  .view.active{display:block}
-  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-  /* landing */
-  .hero{text-align:center;padding:60px 0 80px}
-  .hero h1{font-size:clamp(40px,7vw,82px);margin:0 0 18px;line-height:1.05;font-weight:800;letter-spacing:-2px}
-  .hero h1 span{background:linear-gradient(90deg,#a855f7,#ec4899,#22d3ee);-webkit-background-clip:text;background-clip:text;color:transparent}
-  .hero p{color:var(--muted);font-size:18px;max-width:600px;margin:0 auto 30px}
-  .hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-  .features{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-top:60px}
-  .feature{padding:24px;border:1px solid var(--border);border-radius:16px;background:var(--panel);backdrop-filter:blur(10px)}
-  .feature .ico{width:42px;height:42px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,#a855f7,#ec4899);margin-bottom:14px;font-size:20px}
-  .feature h3{margin:0 0 6px;font-size:16px}
-  .feature p{margin:0;color:var(--muted);font-size:14px}
-  /* auth */
-  .auth-wrap{max-width:420px;margin:60px auto;padding:34px;border:1px solid var(--border);border-radius:20px;background:var(--panel);backdrop-filter:blur(14px);box-shadow:var(--glow)}
-  .auth-wrap h2{margin:0 0 6px;text-align:center;font-size:28px}
-  .auth-wrap .sub{color:var(--muted);text-align:center;margin-bottom:24px;font-size:14px}
+  button{cursor:pointer;border:none;font-family:inherit;color:inherit}
+  input,select,textarea{font-family:inherit;background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:10px;width:100%;outline:none}
+  input:focus{border-color:var(--primary)}
+  .hidden{display:none!important}
+  /* AUTH */
+  .auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 50% 0%,rgba(168,85,247,.15),transparent 60%),var(--bg)}
+  .auth-card{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:36px;width:100%;max-width:420px}
+  .logo{display:flex;align-items:center;gap:10px;font-size:24px;font-weight:800;color:var(--primary);margin-bottom:24px;justify-content:center}
+  .logo svg{width:32px;height:32px}
+  .auth-card h1{font-size:22px;margin-bottom:6px;text-align:center}
+  .auth-card p.sub{color:var(--muted);text-align:center;margin-bottom:24px;font-size:14px}
   .field{margin-bottom:14px}
-  .field label{display:block;margin-bottom:6px;font-size:13px;color:var(--muted)}
-  .input{width:100%;padding:12px 14px;background:rgba(10,8,20,.6);border:1px solid var(--border);border-radius:10px;font-size:14px;outline:none;transition:.2s}
-  .input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(168,85,247,.2)}
-  .auth-switch{text-align:center;margin-top:18px;color:var(--muted);font-size:13px}
-  .auth-switch a{color:var(--accent);cursor:pointer}
-  .err{color:#ff6b8a;font-size:13px;margin-top:8px;text-align:center;min-height:18px}
-  /* dashboard */
-  .dash{display:grid;grid-template-columns:240px 1fr;gap:24px}
-  .sidebar{position:sticky;top:96px;align-self:start;padding:18px;border:1px solid var(--border);border-radius:16px;background:var(--panel)}
-  .sidebar .me{display:flex;gap:10px;align-items:center;padding-bottom:14px;margin-bottom:14px;border-bottom:1px solid var(--border)}
-  .avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#a855f7,#ec4899);display:grid;place-items:center;font-weight:700;font-size:16px;flex-shrink:0;background-size:cover;background-position:center}
-  .me-info .name{font-weight:600;font-size:14px}
-  .me-info .uname{color:var(--muted);font-size:12px}
-  .menu{display:flex;flex-direction:column;gap:4px}
-  .menu a{padding:10px 12px;border-radius:8px;font-size:14px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:10px}
-  .menu a:hover,.menu a.active{background:rgba(168,85,247,.15);color:var(--text)}
-  .panel{padding:24px;border:1px solid var(--border);border-radius:16px;background:var(--panel);margin-bottom:18px}
-  .panel h3{margin:0 0 16px;font-size:18px}
-  .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  @media(max-width:760px){.row{grid-template-columns:1fr}.dash{grid-template-columns:1fr}.sidebar{position:static}}
-  .grid-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:18px}
-  .stat{padding:18px;border:1px solid var(--border);border-radius:14px;background:var(--panel)}
-  .stat .lbl{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.5px}
-  .stat .val{font-size:28px;font-weight:800;margin-top:4px;background:linear-gradient(90deg,#a855f7,#22d3ee);-webkit-background-clip:text;background-clip:text;color:transparent}
-  .link-item{display:flex;gap:10px;align-items:center;padding:10px;border:1px solid var(--border);border-radius:10px;margin-bottom:8px;background:rgba(10,8,20,.4)}
-  .link-item .drag{cursor:grab;color:var(--muted)}
-  .link-item input{flex:1;background:transparent;border:none;outline:none;font-size:14px}
-  .link-item .del{background:transparent;border:none;color:#ff6b8a;cursor:pointer;font-size:18px}
-  .swatch-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-  .swatch{width:34px;height:34px;border-radius:8px;cursor:pointer;border:2px solid transparent}
-  .swatch.active{border-color:#fff}
-  .preview-link{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:8px;background:rgba(168,85,247,.15);color:var(--accent);font-size:13px;margin-top:8px}
-  /* public profile */
-  .profile{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:60px 20px;position:relative;background-size:cover;background-position:center;background-attachment:fixed}
-  .profile::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(2px);z-index:0}
-  .pcard{position:relative;z-index:2;max-width:440px;width:100%;text-align:center;padding:36px 28px;border:1px solid var(--border);border-radius:24px;background:rgba(15,10,30,.72);backdrop-filter:blur(20px);box-shadow:var(--glow)}
-  .pcard .av{width:110px;height:110px;border-radius:50%;margin:0 auto 16px;background:linear-gradient(135deg,#a855f7,#ec4899);display:grid;place-items:center;font-size:42px;font-weight:800;border:3px solid rgba(255,255,255,.15);background-size:cover;background-position:center}
-  .pcard h1{margin:0 0 4px;font-size:26px}
-  .pcard .uname{color:var(--muted);font-size:14px;margin-bottom:12px}
-  .pcard .bio{color:#dcd9f0;margin-bottom:22px;font-size:15px;line-height:1.5}
-  .plink{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:12px;border:1px solid var(--border);background:rgba(20,15,40,.6);margin-bottom:10px;font-weight:600;transition:.2s;cursor:pointer}
-  .plink:hover{background:rgba(168,85,247,.25);transform:translateY(-2px);box-shadow:var(--glow)}
-  .views{color:var(--muted);font-size:12px;margin-top:14px}
-  /* enter screen */
-  .enter{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:rgba(0,0,0,.92);cursor:pointer;backdrop-filter:blur(10px);animation:fade .3s}
-  .enter h2{font-size:32px;background:linear-gradient(90deg,#a855f7,#ec4899);-webkit-background-clip:text;background-clip:text;color:transparent;animation:pulse 2s infinite}
-  @keyframes pulse{50%{opacity:.5}}
-  /* particles */
-  #particles{position:fixed;inset:0;pointer-events:none;z-index:1}
-  /* audio control */
-  .audio-ctrl{position:fixed;bottom:20px;right:20px;z-index:100;width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:rgba(15,10,30,.8);backdrop-filter:blur(10px);display:grid;place-items:center;cursor:pointer;font-size:18px}
-  .badge{display:inline-block;padding:3px 8px;border-radius:6px;background:rgba(34,211,238,.15);color:var(--accent3);font-size:11px;font-weight:600;margin-left:6px}
-  .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);padding:12px 20px;border-radius:10px;background:rgba(15,10,30,.95);border:1px solid var(--accent);z-index:9000;font-size:14px;box-shadow:var(--glow);animation:fade .3s}
-  .copy-btn{padding:6px 10px;border-radius:6px;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.3);color:var(--accent3);font-size:12px;cursor:pointer}
-  textarea.input{min-height:80px;resize:vertical;font-family:inherit}
-:root{
-  --bg:#080808; --bg2:#0e0e10; --panel:#131317; --panel2:#1a1a20;
-  --border:#23232b; --muted:#8b8b95; --text:#f3f3f5;
-  --accent:#a855f7; --accent2:#7c3aed; --accent-soft:rgba(168,85,247,.15);
-  --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444;
-}
-*{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-a{color:inherit;text-decoration:none}
-button,input,select,textarea{font:inherit;color:inherit}
-input,textarea,select{background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:10px 14px;width:100%;outline:none;transition:.15s}
-input:focus,textarea:focus,select:focus{border-color:var(--accent)}
-.btn{display:inline-flex;align-items:center;gap:8px;justify-content:center;padding:10px 16px;border-radius:10px;border:1px solid var(--border);background:var(--panel);cursor:pointer;font-weight:600;transition:.15s}
-.btn:hover{background:var(--panel2)}
-.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;box-shadow:0 4px 20px -4px var(--accent-soft)}
-.btn.primary:hover{filter:brightness(1.1)}
-.btn.ghost{background:transparent}
-.btn.danger{color:var(--danger);border-color:#3a1f22}
-.muted{color:var(--muted)}
-.row{display:flex;gap:12px;align-items:center}
-.grid{display:grid;gap:14px}
-.card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:20px}
-.label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:6px;display:block}
-.hidden{display:none!important}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--panel2);border:1px solid var(--border);padding:12px 20px;border-radius:12px;z-index:9999;animation:t .3s}
-@keyframes t{from{opacity:0;transform:translate(-50%,10px)}}
-/* AUTH */
-.auth-wrap{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(900px 500px at 50% -10%,rgba(168,85,247,.15),transparent)}
-.auth-card{width:100%;max-width:420px;background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:32px}
-.auth-card h1{margin:0 0 6px;font-size:26px}
-.auth-card p.sub{margin:0 0 22px;color:var(--muted);font-size:14px}
-.field{margin-bottom:14px}
-/* LANDING */
-.landing{min-height:100vh;background:radial-gradient(1000px 600px at 50% -10%,rgba(168,85,247,.2),transparent)}
-.nav{display:flex;justify-content:space-between;align-items:center;padding:20px 32px;max-width:1200px;margin:0 auto}
-.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px}
-.brand .dot{width:24px;height:24px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent2))}
-.hero{max-width:900px;margin:80px auto;padding:0 24px;text-align:center}
-.hero h1{font-size:clamp(40px,7vw,72px);line-height:1.05;margin:0 0 20px;font-weight:800;letter-spacing:-.02em}
-.hero h1 span{background:linear-gradient(135deg,#fff,var(--accent));-webkit-background-clip:text;color:transparent}
-.hero p{font-size:18px;color:var(--muted);margin:0 0 30px}
-.claim{display:flex;max-width:480px;margin:0 auto;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:6px;gap:6px}
-.claim .pfx{padding:10px 14px;color:var(--muted)}
-.claim input{border:none;background:transparent;padding:10px 0}
-.features{max-width:1100px;margin:60px auto;padding:0 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
-/* DASHBOARD */
-.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
-.sidebar{background:var(--bg2);border-right:1px solid var(--border);padding:20px;display:flex;flex-direction:column;gap:8px;position:sticky;top:0;height:100vh}
-.sidebar .brand{margin-bottom:18px;padding:4px}
-.search{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:8px 12px;margin-bottom:14px;color:var(--muted);font-size:13px}
-.navgroup{display:flex;flex-direction:column;gap:2px}
-.navitem{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:10px;cursor:pointer;font-weight:600;font-size:14px;color:#d6d6dc;transition:.15s}
-.navitem:hover{background:var(--panel)}
-.navitem.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
-.navitem .ico{width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center}
-.subnav{display:flex;flex-direction:column;gap:2px;padding-left:42px;margin:2px 0 6px}
-.subnav a{padding:7px 10px;border-radius:8px;font-size:13px;color:var(--muted);cursor:pointer}
-.subnav a:hover,.subnav a.active{color:var(--text);background:var(--panel)}
-.sidebar .spacer{flex:1}
-.usercard{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;border:1px solid var(--border);background:var(--panel)}
-.usercard .av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:700;color:#fff;overflow:hidden}
-.usercard .av img{width:100%;height:100%;object-fit:cover}
-.usercard small{color:var(--muted);font-size:11px}
-.main{padding:32px 40px;max-width:1400px;width:100%}
-.page-title{font-size:26px;font-weight:700;margin:0 0 22px}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:24px}
-.stat{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--border);border-radius:14px;padding:18px}
-.stat .h{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px;font-weight:600;margin-bottom:8px}
-.stat .v{font-size:24px;font-weight:700}
-.stat .s{font-size:12px;color:var(--muted);margin-top:4px}
-.section-title{font-size:18px;font-weight:700;margin:24px 0 12px}
-.media-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-.upload{background:var(--bg2);border:1px dashed var(--border);border-radius:14px;padding:34px 14px;text-align:center;cursor:pointer;transition:.15s}
-.upload:hover{border-color:var(--accent);background:var(--panel)}
-.upload .ic{font-size:28px;margin-bottom:8px;opacity:.7}
-.upload small{display:block;color:var(--muted);font-size:12px;margin-top:4px}
-.upload.has{border-style:solid;padding:0;overflow:hidden;position:relative}
-.upload.has img,.upload.has video{width:100%;height:140px;object-fit:cover;display:block}
-.upload.has .rm{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.6);border:none;color:#fff;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:11px}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media(max-width:900px){.two{grid-template-columns:1fr}.app{grid-template-columns:1fr}.sidebar{position:relative;height:auto}}
-.toggle{position:relative;display:inline-flex;align-items:center;gap:10px;cursor:pointer}
-.toggle input{display:none}
-.toggle .sw{width:44px;height:24px;border-radius:99px;background:#2a2a32;position:relative;transition:.2s}
-.toggle .sw::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
-.toggle input:checked + .sw{background:linear-gradient(135deg,var(--accent),var(--accent2))}
-.toggle input:checked + .sw::after{transform:translateX(20px)}
-.color-row{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:8px 12px}
-.color-row .sw{width:24px;height:24px;border-radius:50%;border:1px solid var(--border)}
-.color-row input[type=color]{width:0;height:0;opacity:0;padding:0;border:0}
-.color-row input[type=text]{border:none;background:transparent;padding:0;flex:1}
-.slider{width:100%}
-.link-item{display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:8px}
-.link-item .gr{cursor:grab;color:var(--muted)}
-.link-item .ti{font-weight:600}
-.link-item .ur{color:var(--muted);font-size:13px}
-.link-item .ac{margin-left:auto;display:flex;gap:6px}
-.icon-btn{background:var(--panel);border:1px solid var(--border);width:32px;height:32px;border-radius:8px;display:grid;place-items:center;cursor:pointer}
-.icon-btn:hover{background:var(--panel2)}
-.icon-btn.danger:hover{color:var(--danger)}
-.socials{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:10px;margin-bottom:18px}
-.soc{aspect-ratio:1;border-radius:12px;background:var(--bg2);border:1px solid var(--border);display:grid;place-items:center;cursor:pointer;font-size:22px;transition:.15s}
-.soc:hover{background:var(--panel2);transform:translateY(-2px);border-color:var(--accent)}
-.badge-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
-.bd{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px}
-.bd .ic{font-size:24px;width:36px;text-align:center}
-.bd .ti{font-weight:700;font-size:14px}
-.bd .ds{color:var(--muted);font-size:12px}
-/* MODAL */
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:grid;place-items:center;z-index:1000;padding:20px}
-.modal{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:28px;max-width:480px;width:100%;position:relative}
-.modal .x{position:absolute;top:14px;right:14px;background:transparent;border:none;color:var(--muted);font-size:20px;cursor:pointer}
-/* PROFILE PAGE */
-.profile-page{min-height:100vh;display:grid;place-items:center;padding:30px;background:var(--bg)}
-.profile-card{width:100%;max-width:480px;background:rgba(15,15,20,.7);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:24px;padding:36px;text-align:center;box-shadow:0 0 80px var(--accent-soft)}
-.profile-card .av{width:120px;height:120px;border-radius:50%;margin:0 auto 18px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:48px;font-weight:800;overflow:hidden;border:3px solid var(--accent)}
-.profile-card .av img{width:100%;height:100%;object-fit:cover}
-.profile-card h2{margin:0;font-size:30px}
-.profile-card .un{color:var(--muted);margin:4px 0 14px}
-.profile-card .bio{margin:0 0 24px;font-size:15px;line-height:1.5}
-.profile-card .lnk{display:block;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;font-weight:600;transition:.15s}
-.profile-card .lnk:hover{background:var(--accent-soft);border-color:var(--accent);transform:translateY(-2px)}
-.profile-card .views{margin-top:18px;color:var(--muted);font-size:13px;display:inline-flex;align-items:center;gap:6px}
-.profile-card .socs{display:flex;justify-content:center;gap:10px;margin-bottom:18px;flex-wrap:wrap}
-.profile-card .socs a{width:42px;height:42px;border-radius:50%;background:var(--panel);display:grid;place-items:center;font-size:20px;border:1px solid var(--border);transition:.15s}
-.profile-card .socs a:hover{background:var(--accent);transform:translateY(-2px)}
-.enter-screen{position:fixed;inset:0;background:#000;display:grid;place-items:center;z-index:5000;cursor:pointer}
-.enter-screen .t{font-size:32px;font-weight:700;text-shadow:0 0 30px rgba(255,255,255,.5);animation:p 2s infinite}
-@keyframes p{0%,100%{opacity:.6}50%{opacity:1}}
-canvas.fx{position:fixed;inset:0;pointer-events:none;z-index:1}
+  .field label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+  .btn{background:var(--primary);color:#fff;padding:12px;border-radius:10px;width:100%;font-weight:600;font-size:14px;transition:.2s}
+  .btn:hover{background:var(--primary2)}
+  .btn-ghost{background:var(--panel2);border:1px solid var(--border)}
+  .btn-ghost:hover{background:#222}
+  .switch-link{text-align:center;color:var(--muted);font-size:14px;margin-top:16px}
+  .switch-link a{color:var(--primary);cursor:pointer}
+  .err{color:var(--red);font-size:13px;margin-top:8px;text-align:center;min-height:18px}
+  /* APP LAYOUT */
+  .app{display:flex;min-height:100vh}
+  .sidebar{width:260px;background:var(--bg2);border-right:1px solid var(--border);padding:20px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh}
+  .nav-item{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;color:var(--muted);font-size:14px;cursor:pointer;transition:.15s}
+  .nav-item:hover{background:var(--panel)}
+  .nav-item.active{background:linear-gradient(90deg,rgba(168,85,247,.2),rgba(168,85,247,.05));color:var(--primary)}
+  .nav-item svg{width:18px;height:18px}
+  .sidebar-bottom{margin-top:auto;display:flex;flex-direction:column;gap:10px}
+  .user-chip{display:flex;align-items:center;gap:10px;padding:10px;background:var(--panel);border-radius:12px}
+  .avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary2));display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;overflow:hidden}
+  .avatar img{width:100%;height:100%;object-fit:cover}
+  .user-chip .meta{font-size:13px;min-width:0}
+  .user-chip .meta .name{font-weight:600;truncate}
+  .user-chip .meta .uid{color:var(--muted);font-size:11px}
+  .main{flex:1;padding:32px;overflow-x:hidden}
+  .page-title{font-size:24px;font-weight:300;margin-bottom:20px;color:#ddd}
+  /* CARDS */
+  .grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+  .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+  .stat-card{background:linear-gradient(135deg,rgba(168,85,247,.12),rgba(168,85,247,.03));border:1px solid rgba(168,85,247,.2);padding:20px;border-radius:16px}
+  .stat-card.dark{background:var(--panel);border:1px solid var(--border)}
+  .stat-head{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:14px;margin-bottom:10px}
+  .stat-val{font-size:24px;font-weight:700;margin-bottom:4px}
+  .stat-sub{font-size:12px;color:var(--muted)}
+  .section{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:24px;margin-top:20px}
+  .section h2{font-size:18px;margin-bottom:16px;font-weight:600}
+  .progress{height:10px;background:var(--panel2);border-radius:99px;overflow:hidden}
+  .progress > div{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary2));transition:.3s}
+  .task-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:16px}
+  .task{display:flex;align-items:center;gap:10px;padding:12px;background:var(--panel2);border-radius:10px;font-size:14px}
+  .task.done{color:var(--green)}
+  .task .dot{width:18px;height:18px;border-radius:50%;background:var(--panel);display:grid;place-items:center;flex-shrink:0}
+  .task.done .dot{background:rgba(34,197,94,.2);color:var(--green)}
+  /* MANAGE BUTTONS */
+  .manage-list{display:flex;flex-direction:column;gap:10px}
+  .manage-btn{display:flex;align-items:center;gap:10px;background:var(--panel2);padding:12px 14px;border-radius:10px;font-size:14px;text-align:left;width:100%}
+  .manage-btn:hover{background:#222}
+  .manage-btn svg{width:16px;height:16px;color:var(--muted)}
+  /* BADGES */
+  .badge-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
+  .badge-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;align-items:center;gap:14px}
+  .badge-icon{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:20px;flex-shrink:0}
+  .badge-info{flex:1;min-width:0}
+  .badge-info .t{font-weight:600;font-size:15px}
+  .badge-info .d{color:var(--muted);font-size:12px;margin-top:2px}
+  .badge-card .own{font-size:11px;color:var(--green);padding:4px 8px;background:rgba(34,197,94,.15);border-radius:99px}
+  /* LINKS */
+  .social-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:10px}
+  .social-icon{width:60px;height:60px;background:var(--panel2);border-radius:12px;display:grid;place-items:center;font-size:22px;cursor:pointer;transition:.15s}
+  .social-icon:hover{transform:translateY(-2px);background:#222}
+  .link-item{display:flex;align-items:center;gap:10px;background:var(--panel2);padding:12px;border-radius:10px;margin-top:8px}
+  .link-item .icon{width:30px;height:30px;border-radius:6px;background:var(--primary);display:grid;place-items:center;font-size:14px}
+  .link-item .info{flex:1;min-width:0}
+  .link-item .info .name{font-weight:600;font-size:14px}
+  .link-item .info .url{color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .link-item button{background:transparent;color:var(--red);padding:6px}
+  /* PROFILE PAGE */
+  .profile-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;background:#000}
+  .profile-card{background:rgba(20,20,22,.85);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:20px;padding:36px;max-width:440px;width:100%;text-align:center}
+  .profile-avatar{width:110px;height:110px;border-radius:50%;margin:0 auto 16px;background:linear-gradient(135deg,var(--primary),var(--primary2));display:grid;place-items:center;font-size:42px;font-weight:700;overflow:hidden;border:3px solid var(--primary)}
+  .profile-avatar img{width:100%;height:100%;object-fit:cover}
+  .profile-name{font-size:28px;font-weight:700;margin-bottom:4px}
+  .profile-uid{color:var(--muted);font-size:13px;margin-bottom:12px}
+  .profile-badges{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+  .pb{padding:4px 10px;border-radius:99px;font-size:11px;font-weight:600;background:var(--panel2);border:1px solid var(--border)}
+  .profile-bio{color:#d0d0d8;margin-bottom:20px;font-size:14px}
+  .profile-views{color:var(--muted);font-size:12px;margin-top:18px}
+  .profile-socials{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:20px}
+  /* ADMIN */
+  table{width:100%;border-collapse:collapse;margin-top:12px}
+  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--border);font-size:13px}
+  th{color:var(--muted);font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+  td .row-btns{display:flex;gap:6px;flex-wrap:wrap}
+  td button{padding:6px 10px;background:var(--panel2);border-radius:6px;font-size:12px;color:#ddd}
+  td button:hover{background:#222}
+  td button.danger{color:var(--red)}
+  /* MODAL */
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);display:grid;place-items:center;z-index:50;padding:20px}
+  .modal{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto}
+  .modal h3{margin-bottom:16px;font-size:18px}
+  .modal-actions{display:flex;gap:10px;margin-top:16px;justify-content:flex-end}
+  /* TOAST */
+  .toast{position:fixed;bottom:24px;right:24px;background:var(--panel);border:1px solid var(--border);padding:12px 18px;border-radius:10px;z-index:100;animation:slideIn .3s}
+  @keyframes slideIn{from{transform:translateX(20px);opacity:0}to{transform:translateX(0);opacity:1}}
+  /* PREMIUM BADGE */
+  .premium-tag{display:inline-block;background:linear-gradient(135deg,#a855f7,#ec4899);color:#fff;font-size:10px;padding:2px 8px;border-radius:99px;font-weight:700;margin-left:6px;vertical-align:middle}
+  @media(max-width:768px){
+    .sidebar{width:70px;padding:12px}
+    .sidebar .nav-item span,.sidebar .logo-text,.user-chip .meta,.sidebar-bottom .full{display:none}
+    .main{padding:18px}
+  }
 </style>
 </head>
 <body>
-<canvas id="particles"></canvas>
-<nav class="nav" id="nav">
-  <div class="brand" onclick="go('landing')" style="cursor:pointer">⚡ biolnk</div>
-  <div class="nav-links" id="navLinks"></div>
-</nav>
-<!-- LANDING -->
-<div id="view-landing" class="view active">
-  <div class="container">
-    <div class="hero">
-      <h1>Your <span>link in bio</span><br/>but actually <span>cool</span>.</h1>
-      <p>Build a stunning profile page with custom backgrounds, music, effects and unlimited links. Free forever.</p>
-      <div class="hero-cta">
-        <button class="btn btn-primary" onclick="go('register')">Get started — it's free</button>
-        <button class="btn btn-ghost" onclick="go('login')">Sign in</button>
-      </div>
 <div id="root"></div>
-<canvas class="fx" id="fx"></canvas>
 <script>
-/* ================== STATE ================== */
-const DB_KEY='biolnk_db_v2', SESSION_KEY='biolnk_session_v2';
-const SOCIALS=[
- {k:'twitter',n:'Twitter / X',i:'𝕏',c:'#fff'},
- {k:'instagram',n:'Instagram',i:'📷',c:'#e1306c'},
- {k:'tiktok',n:'TikTok',i:'🎵',c:'#fff'},
- {k:'youtube',n:'YouTube',i:'▶️',c:'#ff0000'},
- {k:'discord',n:'Discord',i:'💬',c:'#5865f2'},
- {k:'spotify',n:'Spotify',i:'🎧',c:'#1db954'},
- {k:'github',n:'GitHub',i:'🐙',c:'#fff'},
- {k:'twitch',n:'Twitch',i:'🎮',c:'#9146ff'},
- {k:'snapchat',n:'Snapchat',i:'👻',c:'#fffc00'},
- {k:'telegram',n:'Telegram',i:'✈️',c:'#0088cc'},
- {k:'reddit',n:'Reddit',i:'🤖',c:'#ff4500'},
- {k:'facebook',n:'Facebook',i:'📘',c:'#1877f2'},
- {k:'steam',n:'Steam',i:'🎯',c:'#fff'},
- {k:'pinterest',n:'Pinterest',i:'📌',c:'#e60023'},
- {k:'soundcloud',n:'SoundCloud',i:'☁️',c:'#ff5500'},
- {k:'patreon',n:'Patreon',i:'❤️',c:'#f96854'},
- {k:'paypal',n:'PayPal',i:'💰',c:'#00457c'},
- {k:'kick',n:'Kick',i:'🟢',c:'#53fc18'},
- {k:'linkedin',n:'LinkedIn',i:'💼',c:'#0a66c2'},
- {k:'email',n:'E-Mail',i:'✉️',c:'#fff'},
- {k:'website',n:'Website',i:'🌐',c:'#a855f7'},
+/* ============================================================
+   guns.lol Clone - Single HTML File
+   Storage: localStorage
+   Admin: k / k@gmail.com / Hallopelo112
+============================================================ */
+const DB_KEY = 'gunslol_db_v1';
+const SESSION_KEY = 'gunslol_session_v1';
+const ALL_BADGES = [
+  {id:'staff',name:'Staff',desc:'Sei Teil des Staff-Teams.',icon:'🛠️',color:'#3b82f6'},
+  {id:'helper',name:'Helper',desc:'Sei aktiv und hilf Nutzern.',icon:'💡',color:'#fbbf24'},
+  {id:'premium',name:'Premium',desc:'Kaufe das Premium-Paket.',icon:'💎',color:'#a855f7'},
+  {id:'verified',name:'Verified',desc:'Bekannter Creator.',icon:'✓',color:'#3b82f6'},
+  {id:'donor',name:'Donor',desc:'Spende mindestens 10€.',icon:'💰',color:'#22c55e'},
+  {id:'gifter',name:'Gifter',desc:'Verschenke ein Produkt.',icon:'🎁',color:'#fbbf24'},
+  {id:'imagehost',name:'Image Host',desc:'Kaufe den Image Host.',icon:'⭐',color:'#22c55e'},
+  {id:'domainlegend',name:'Domain Legend',desc:'Custom Domain hinzu.',icon:'🚀',color:'#ec4899'},
+  {id:'og',name:'OG',desc:'Sei ein früher Unterstützer.',icon:'⭐',color:'#fbbf24'},
+  {id:'booster',name:'Server Booster',desc:'Booste den Discord-Server.',icon:'🔥',color:'#f97316'},
+  {id:'bughunter',name:'Bug Hunter',desc:'Melde einen Bug.',icon:'🐛',color:'#22c55e'},
+  {id:'owner',name:'Owner',desc:'Eigentümer von guns.lol.',icon:'👑',color:'#fbbf24'},
+  {id:'admin',name:'Admin',desc:'Administrator.',icon:'🛡️',color:'#ef4444'},
+  {id:'million',name:'The Million',desc:'Feier-Badge für 1 Mio. Nutzer.',icon:'🎉',color:'#06b6d4'},
+  {id:'winner',name:'Winner',desc:'Gewinne ein Event.',icon:'🏆',color:'#fbbf24'},
 ];
-const EFFECTS=[
- {k:'none',n:'Keiner'},{k:'snow',n:'Schnee'},{k:'rain',n:'Regen'},
- {k:'sparkles',n:'Funken'},{k:'hearts',n:'Herzen'},{k:'stars',n:'Sterne'},
- {k:'night',n:'Nacht'},
+const SOCIALS = [
+  {id:'youtube',name:'YouTube',icon:'▶',color:'#ff0000'},
+  {id:'discord',name:'Discord',icon:'🎮',color:'#5865f2'},
+  {id:'spotify',name:'Spotify',icon:'🎵',color:'#1db954'},
+  {id:'instagram',name:'Instagram',icon:'📷',color:'#e4405f'},
+  {id:'x',name:'X',icon:'𝕏',color:'#000'},
+  {id:'tiktok',name:'TikTok',icon:'♪',color:'#000'},
+  {id:'twitch',name:'Twitch',icon:'📺',color:'#9146ff'},
+  {id:'github',name:'GitHub',icon:'⌨',color:'#333'},
+  {id:'steam',name:'Steam',icon:'🎮',color:'#1b2838'},
+  {id:'reddit',name:'Reddit',icon:'👽',color:'#ff4500'},
+  {id:'snapchat',name:'Snapchat',icon:'👻',color:'#fffc00'},
+  {id:'telegram',name:'Telegram',icon:'✈',color:'#0088cc'},
+  {id:'facebook',name:'Facebook',icon:'f',color:'#1877f2'},
+  {id:'email',name:'Email',icon:'✉',color:'#888'},
+  {id:'website',name:'Website',icon:'🌐',color:'#666'},
 ];
-const BADGES=[
- {k:'staff',i:'🛠',n:'Staff',d:'Teil des Staff-Teams.'},
- {k:'helper',i:'💡',n:'Helper',d:'Hilft anderen Nutzern aktiv.'},
- {k:'premium',i:'💎',n:'Premium',d:'Premium-Nutzer.'},
- {k:'verified',i:'✅',n:'Verifiziert',d:'Bekannter Creator oder Käufer.'},
- {k:'donor',i:'💵',n:'Donor',d:'Spendet mindestens 10€.'},
- {k:'gifter',i:'🎁',n:'Gifter',d:'Verschenkt ein Produkt.'},
- {k:'og',i:'⭐',n:'OG',d:'Früher Unterstützer.'},
- {k:'booster',i:'🔥',n:'Server Booster',d:'Boostet den Discord-Server.'},
- {k:'bug',i:'🐛',n:'Bug Hunter',d:'Hat einen Bug gemeldet.'},
- {k:'winner',i:'🏆',n:'Winner',d:'Hat ein Event gewonnen.'},
- {k:'million',i:'🎉',n:'The Million',d:'Feier-Badge.'},
- {k:'easter',i:'🐰',n:'Easter 2026',d:'Easter-Sale 2026.'},
- {k:'xmas',i:'❄️',n:'Christmas 2025',d:'Wintersale 2025.'},
-];
-const $=(s,p=document)=>p.querySelector(s);
-const $$=(s,p=document)=>[...p.querySelectorAll(s)];
-const uid=()=>Math.random().toString(36).slice(2,10);
-const toast=(m)=>{const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2400)};
-function loadDB(){try{return JSON.parse(localStorage.getItem(DB_KEY))||{users:{}}}catch{return{users:{}}}}
-function saveDB(d){localStorage.setItem(DB_KEY,JSON.stringify(d))}
-function getSession(){return localStorage.getItem(SESSION_KEY)}
-function setSession(u){localStorage.setItem(SESSION_KEY,u)}
-function clearSession(){localStorage.removeItem(SESSION_KEY)}
-function currentUser(){const s=getSession();if(!s)return null;const db=loadDB();return db.users[s]||null}
-function updateUser(p){const db=loadDB();const s=getSession();if(!s||!db.users[s])return;Object.assign(db.users[s],p);saveDB(db)}
-function newUser(username,password){
- return {
-  username,password,
-  displayName:username, bio:'', location:'', avatar:'',
-  background:'', backgroundType:'', audio:'', audioName:'',
-  accent:'#a855f7', bgColor:'#080808', textColor:'#ffffff',
-  effect:'none', views:0,
-  socials:{}, links:[], badges:['og'],
-  createdAt:Date.now(),
- };
+/* ---------- DB ---------- */
+function loadDB(){
+  let db = localStorage.getItem(DB_KEY);
+  if(!db){
+    db = {users:[], nextUid: 1};
+    // Seed admin
+    db.users.push({
+      uid:1, username:'k', email:'k@gmail.com', password:'Hallopelo112',
+      displayName:'k', bio:'Owner von guns.lol', avatar:'',
+      views:805159, badges:['owner','admin','staff','premium','verified'],
+      customBadges:[], socials:[], premium:true, role:'admin',
+      aliases:[], usernameChanges:0, createdAt:Date.now()
+    });
+    db.nextUid = 2;
+    localStorage.setItem(DB_KEY, JSON.stringify(db));
+    return db;
+  }
+  return JSON.parse(db);
 }
-/* ============= ROUTER ============= */
-function route(){
- const h=location.hash.slice(1)||'';
- if(h.startsWith('u/'))return renderProfile(h.slice(2));
- if(h==='login')return renderAuth('login');
- if(h==='register')return renderAuth('register');
- if(h==='dashboard'){if(!currentUser())return location.hash='login';return renderDashboard()}
- return renderLanding();
+function saveDB(db){ localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+function getSession(){ const s = localStorage.getItem(SESSION_KEY); return s? JSON.parse(s):null; }
+function setSession(uid){ localStorage.setItem(SESSION_KEY, JSON.stringify({uid})); }
+function clearSession(){ localStorage.removeItem(SESSION_KEY); }
+function currentUser(){
+  const s = getSession(); if(!s) return null;
+  const db = loadDB(); return db.users.find(u=>u.uid===s.uid) || null;
 }
-window.addEventListener('hashchange',route);
-/* ============= LANDING ============= */
-function renderLanding(){
- stopFx();
- $('#root').innerHTML=`
- <div class="landing">
-  <div class="nav">
-   <div class="brand"><div class="dot"></div>bio.link</div>
-   <div class="row">
-    ${currentUser()?`<a class="btn" href="#dashboard">Dashboard</a>`:`<a class="btn ghost" href="#login">Anmelden</a><a class="btn primary" href="#register">Registrieren</a>`}
-   </div>
-  </div>
-  <div class="hero">
-   <h1>Ein Link. <span>Dein ganzes Profil.</span></h1>
-   <p>Erstelle eine personalisierte Bio-Seite mit Effekten, Audio und allen deinen Socials. Kostenlos.</p>
-   <form class="claim" onsubmit="claim(event)">
-    <div class="pfx">bio.link/</div>
-    <input id="claimu" placeholder="dein-name" autocomplete="off"/>
-    <button class="btn primary" type="submit">Sichern</button>
-   </form>
-  </div>
-  <div class="features">
-   <div class="card"><h3>🎨 Voll anpassbar</h3><p class="muted">Farben, Hintergrund, Audio, Effekte — alles dein Style.</p></div>
-   <div class="card"><h3>🔗 Alle Socials</h3><p class="muted">Über 20 Plattformen + custom Links.</p></div>
-   <div class="card"><h3>📊 Statistiken</h3><p class="muted">Sieh deine Aufrufe & Klicks live.</p></div>
-   <div class="card"><h3>🏆 Badges</h3><p class="muted">Sammle exklusive Auszeichnungen.</p></div>
-  </div>
- </div>`;
+function updateUser(uid, patch){
+  const db = loadDB();
+  const u = db.users.find(x=>x.uid===uid);
+  if(u){ Object.assign(u, patch); saveDB(db); }
 }
-window.claim=(e)=>{e.preventDefault();const v=$('#claimu').value.trim();if(v){sessionStorage.setItem('claim',v);location.hash='register'}};
-/* ============= AUTH ============= */
-function renderAuth(mode){
- stopFx();
- const isReg=mode==='register';
- const pre=sessionStorage.getItem('claim')||'';
- sessionStorage.removeItem('claim');
- $('#root').innerHTML=`
- <div class="auth-wrap">
-  <div class="auth-card">
-   <a href="#" class="brand" style="margin-bottom:20px;display:inline-flex"><div class="dot"></div>bio.link</a>
-   <h1>${isReg?'Konto erstellen':'Willkommen zurück'}</h1>
-   <p class="sub">${isReg?'Sichere dir deinen Bio-Link.':'Melde dich in deinem Konto an.'}</p>
-   <form onsubmit="doAuth(event,'${mode}')">
-    <div class="field"><label class="label">Benutzername</label><input id="u" required pattern="[a-zA-Z0-9_]{2,20}" value="${pre}" placeholder="dein-name"/></div>
-    <div class="field"><label class="label">Passwort</label><input id="p" type="password" required minlength="4"/></div>
-    <button class="btn primary" style="width:100%;margin-top:8px" type="submit">${isReg?'Registrieren':'Anmelden'}</button>
-   </form>
-   <p class="muted" style="text-align:center;margin-top:18px;font-size:13px">
-    ${isReg?'Schon ein Konto? <a href="#login" style="color:var(--accent)">Anmelden</a>':'Noch kein Konto? <a href="#register" style="color:var(--accent)">Registrieren</a>'}
-   </p>
-  </div>
- </div>`;
+/* ---------- UI helpers ---------- */
+const $ = id => document.getElementById(id);
+function toast(msg){
+  const t = document.createElement('div');
+  t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 2500);
 }
-window.doAuth=(e,mode)=>{
- e.preventDefault();
- const u=$('#u').value.trim().toLowerCase(), p=$('#p').value;
- const db=loadDB();
- if(mode==='register'){
-  if(db.users[u])return toast('Benutzername vergeben');
-  db.users[u]=newUser(u,p);saveDB(db);setSession(u);toast('Willkommen!');location.hash='dashboard';
- }else{
-  if(!db.users[u]||db.users[u].password!==p)return toast('Falsche Daten');
-  setSession(u);location.hash='dashboard';
- }
-};
-/* ============= DASHBOARD ============= */
-let currentTab='overview';
-function renderDashboard(){
- stopFx();
- const u=currentUser();if(!u)return location.hash='login';
- const av=u.avatar?`<img src="${u.avatar}"/>`:u.username[0].toUpperCase();
- $('#root').innerHTML=`
- <div class="app">
-  <aside class="sidebar">
-   <div class="brand"><div class="dot"></div>bio.link</div>
-   <div class="search">🔍 Funktionen suchen…</div>
-   <div class="navgroup">
-    <div class="navitem ${['overview','stats','badges','settings'].includes(currentTab)?'active':''}" onclick="go('overview')">
-     <span class="ico">👤</span>Konto<span style="margin-left:auto">▾</span>
-    </div>
-    <div class="features">
-      <div class="feature"><div class="ico">🎨</div><h3>Full customization</h3><p>Backgrounds, colors, fonts, effects — make it yours.</p></div>
-      <div class="feature"><div class="ico">🎵</div><h3>Background music</h3><p>Add a song that plays when someone visits.</p></div>
-      <div class="feature"><div class="ico">✨</div><h3>Visual effects</h3><p>Snow, rain, sparkles, particle systems.</p></div>
-      <div class="feature"><div class="ico">📊</div><h3>Analytics</h3><p>Track profile views and link clicks in real time.</p></div>
-      <div class="feature"><div class="ico">🔗</div><h3>Unlimited links</h3><p>Add as many social or custom links as you want.</p></div>
-      <div class="feature"><div class="ico">⚡</div><h3>Lightning fast</h3><p>Profiles load instantly on any device.</p></div>
-    <div class="subnav">
-     <a class="${currentTab==='overview'?'active':''}" onclick="go('overview')">Übersicht</a>
-     <a class="${currentTab==='stats'?'active':''}" onclick="go('stats')">Statistiken</a>
-     <a class="${currentTab==='badges'?'active':''}" onclick="go('badges')">Badges</a>
-     <a class="${currentTab==='settings'?'active':''}" onclick="go('settings')">Einstellungen</a>
-    </div>
-  </div>
-</div>
-<!-- LOGIN -->
-<div id="view-login" class="view">
-  <div class="auth-wrap">
-    <h2>Welcome back</h2>
-    <div class="sub">Sign in to your biolnk account</div>
-    <form onsubmit="login(event)">
-      <div class="field"><label>Username or Email</label><input class="input" id="loginUser" required></div>
-      <div class="field"><label>Password</label><input class="input" type="password" id="loginPass" required></div>
-      <button class="btn btn-primary" style="width:100%;justify-content:center" type="submit">Sign in</button>
-      <div class="err" id="loginErr"></div>
-    </form>
-    <div class="auth-switch">No account? <a onclick="go('register')">Create one</a></div>
-  </div>
-</div>
-<!-- REGISTER -->
-<div id="view-register" class="view">
-  <div class="auth-wrap">
-    <h2>Create account</h2>
-    <div class="sub">Claim your username — it's free</div>
-    <form onsubmit="register(event)">
-      <div class="field"><label>Username (your profile URL)</label><input class="input" id="regUser" required placeholder="e.g. neon" pattern="[a-zA-Z0-9_]{3,20}"></div>
-      <div class="field"><label>Email</label><input class="input" type="email" id="regEmail" required></div>
-      <div class="field"><label>Password</label><input class="input" type="password" id="regPass" required minlength="6"></div>
-      <button class="btn btn-primary" style="width:100%;justify-content:center" type="submit">Create account</button>
-      <div class="err" id="regErr"></div>
-    </form>
-    <div class="auth-switch">Already have one? <a onclick="go('login')">Sign in</a></div>
-  </div>
-</div>
-<!-- DASHBOARD -->
-<div id="view-dashboard" class="view">
-  <div class="container">
-    <div class="dash">
-      <aside class="sidebar">
-        <div class="me">
-          <div class="avatar" id="meAv"></div>
-          <div class="me-info"><div class="name" id="meName"></div><div class="uname" id="meUname"></div></div>
+function modal(title, html, onOk, okText='Speichern'){
+  const bg = document.createElement('div');
+  bg.className='modal-bg';
+  bg.innerHTML = `<div class="modal"><h3>${title}</h3><div id="mc">${html}</div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="mcancel">Abbrechen</button>
+      <button class="btn" id="mok">${okText}</button>
+    </div></div>`;
+  document.body.appendChild(bg);
+  bg.querySelector('#mcancel').onclick = ()=>bg.remove();
+  bg.querySelector('#mok').onclick = ()=>{ if(onOk(bg)!==false) bg.remove(); };
+  bg.onclick = e=>{ if(e.target===bg) bg.remove(); };
+}
+/* ---------- ROUTER ---------- */
+let currentPage = 'overview';
+function render(){
+  // Check route: profile page?
+  const hash = location.hash.slice(1);
+  if(hash.startsWith('/u/')){
+    renderProfilePage(hash.slice(3));
+    return;
+  }
+  const user = currentUser();
+  if(!user){ renderAuth(); return; }
+  renderApp(user);
+}
+window.addEventListener('hashchange', render);
+/* ---------- AUTH ---------- */
+let authMode = 'login';
+function renderAuth(){
+  $('root').innerHTML = `
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <div class="logo">🔫 guns.lol</div>
+        <h1>${authMode==='login'?'Willkommen zurück':'Konto erstellen'}</h1>
+        <p class="sub">${authMode==='login'?'Melde dich bei deinem Konto an':'Erstelle dein guns.lol Profil'}</p>
+        ${authMode==='register'?`
+          <div class="field"><label>Benutzername</label><input id="a-user" placeholder="dein_name"/></div>
+        `:''}
+        <div class="field"><label>${authMode==='login'?'Email oder Benutzername':'Email'}</label><input id="a-email" placeholder="email@example.com"/></div>
+        <div class="field"><label>Passwort</label><input id="a-pw" type="password" placeholder="••••••••"/></div>
+        <button class="btn" id="a-submit">${authMode==='login'?'Anmelden':'Registrieren'}</button>
+        <div class="err" id="a-err"></div>
+        <div class="switch-link">
+          ${authMode==='login'?'Noch kein Konto?':'Bereits ein Konto?'}
+          <a id="a-switch">${authMode==='login'?'Registrieren':'Anmelden'}</a>
         </div>
-        <div class="menu">
-          <a class="active" data-tab="overview" onclick="tab('overview')">📊 Overview</a>
-          <a data-tab="profile" onclick="tab('profile')">👤 Profile</a>
-          <a data-tab="links" onclick="tab('links')">🔗 Links</a>
-          <a data-tab="customize" onclick="tab('customize')">🎨 Customize</a>
-          <a data-tab="audio" onclick="tab('audio')">🎵 Audio</a>
-          <a data-tab="effects" onclick="tab('effects')">✨ Effects</a>
-          <a onclick="viewProfile()">🚀 View profile</a>
-          <a onclick="logout()">🚪 Logout</a>
+      </div>
+    </div>`;
+  $('a-switch').onclick=()=>{ authMode = authMode==='login'?'register':'login'; renderAuth(); };
+  $('a-submit').onclick = doAuth;
+  ['a-email','a-pw'].forEach(id=>$(id).addEventListener('keydown',e=>{if(e.key==='Enter')doAuth();}));
+}
+function doAuth(){
+  const db = loadDB();
+  const err = $('a-err'); err.textContent='';
+  if(authMode==='login'){
+    const id = $('a-email').value.trim();
+    const pw = $('a-pw').value;
+    const u = db.users.find(x=>(x.email.toLowerCase()===id.toLowerCase()||x.username.toLowerCase()===id.toLowerCase()) && x.password===pw);
+    if(!u){ err.textContent='Falsche Anmeldedaten'; return; }
+    setSession(u.uid); render();
+  } else {
+    const user = $('a-user').value.trim();
+    const email = $('a-email').value.trim();
+    const pw = $('a-pw').value;
+    if(!user||!email||!pw){ err.textContent='Alle Felder ausfüllen'; return; }
+    if(!/^[a-zA-Z0-9_]{3,20}$/.test(user)){ err.textContent='Benutzername: 3-20 Zeichen, nur a-z, 0-9, _'; return; }
+    if(pw.length<6){ err.textContent='Passwort min. 6 Zeichen'; return; }
+    if(db.users.some(x=>x.username.toLowerCase()===user.toLowerCase())){ err.textContent='Benutzername vergeben'; return; }
+    if(db.users.some(x=>x.email.toLowerCase()===email.toLowerCase())){ err.textContent='Email schon registriert'; return; }
+    const uid = db.nextUid++;
+    db.users.push({
+      uid, username:user, email, password:pw, displayName:user,
+      bio:'', avatar:'', views:0, badges:[], customBadges:[],
+      socials:[], premium:false, role:'user', aliases:[],
+      usernameChanges:0, createdAt:Date.now()
+    });
+    saveDB(db); setSession(uid); render();
+  }
+}
+/* ---------- APP SHELL ---------- */
+function renderApp(user){
+  const isAdmin = user.role==='admin';
+  $('root').innerHTML = `
+    <div class="app">
+      <aside class="sidebar">
+        <div class="logo"><span>🔫</span><span class="logo-text">guns.lol</span></div>
+        <div class="nav-item ${currentPage==='overview'?'active':''}" data-p="overview">📊 <span>Übersicht</span></div>
+        <div class="nav-item ${currentPage==='customize'?'active':''}" data-p="customize">🎨 <span>Anpassen</span></div>
+        <div class="nav-item ${currentPage==='links'?'active':''}" data-p="links">🔗 <span>Links</span></div>
+        <div class="nav-item ${currentPage==='badges'?'active':''}" data-p="badges">🏅 <span>Badges</span></div>
+        <div class="nav-item ${currentPage==='premium'?'active':''}" data-p="premium">💎 <span>Premium</span></div>
+        <div class="nav-item ${currentPage==='settings'?'active':''}" data-p="settings">⚙️ <span>Einstellungen</span></div>
+        ${isAdmin?`<div class="nav-item ${currentPage==='admin'?'active':''}" data-p="admin" style="color:#ef4444">🛡️ <span>Admin Panel</span></div>`:''}
+        <div class="sidebar-bottom">
+          <button class="btn btn-ghost full" onclick="window.open('#/u/${user.username}','_blank')">👁 <span>Meine Seite</span></button>
+          <div class="user-chip">
+            <div class="avatar">${user.avatar?`<img src="${user.avatar}"/>`:user.username[0].toUpperCase()}</div>
+            <div class="meta"><div class="name">${user.displayName||user.username}</div><div class="uid">UID ${user.uid}</div></div>
+          </div>
+          <button class="btn btn-ghost full" id="logout">Abmelden</button>
         </div>
       </aside>
-      <main>
-        <!-- overview -->
-        <section data-pane="overview">
-          <div class="grid-stats">
-            <div class="stat"><div class="lbl">Profile views</div><div class="val" id="sViews">0</div></div>
-            <div class="stat"><div class="lbl">Link clicks</div><div class="val" id="sClicks">0</div></div>
-            <div class="stat"><div class="lbl">Links</div><div class="val" id="sLinks">0</div></div>
-            <div class="stat"><div class="lbl">Member since</div><div class="val" id="sSince" style="font-size:16px;padding-top:8px">—</div></div>
-          </div>
-          <div class="panel">
-            <h3>Your link</h3>
-            <p style="color:var(--muted);font-size:14px">Share this URL anywhere:</p>
-            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-              <code id="profUrl" style="padding:10px 14px;background:rgba(10,8,20,.6);border-radius:8px;font-size:14px;flex:1;min-width:200px"></code>
-              <button class="copy-btn" onclick="copyLink()">Copy</button>
-              <button class="btn" onclick="viewProfile()">Open</button>
-            </div>
-          </div>
-        </section>
-        <!-- profile -->
-        <section data-pane="profile" style="display:none">
-          <div class="panel">
-            <h3>Profile info</h3>
-            <div class="row">
-              <div class="field"><label>Display name</label><input class="input" id="fName"></div>
-              <div class="field"><label>Username</label><input class="input" id="fUname" disabled></div>
-            </div>
-            <div class="field"><label>Avatar URL (image link)</label><input class="input" id="fAvatar" placeholder="https://..."></div>
-            <div class="field"><label>Bio</label><textarea class="input" id="fBio" maxlength="160"></textarea></div>
-            <button class="btn btn-primary" onclick="saveProfile()">Save changes</button>
-          </div>
-        </section>
-        <!-- links -->
-        <section data-pane="links" style="display:none">
-          <div class="panel">
-            <h3>Your links</h3>
-            <div id="linksList"></div>
-            <button class="btn" onclick="addLink()">+ Add link</button>
-            <button class="btn btn-primary" style="margin-left:8px" onclick="saveLinks()">Save</button>
-          </div>
-        </section>
-        <!-- customize -->
-        <section data-pane="customize" style="display:none">
-          <div class="panel">
-            <h3>Background</h3>
-            <div class="field"><label>Background image/video URL (optional)</label><input class="input" id="fBg" placeholder="https://..."></div>
-            <label>Accent color</label>
-            <div class="swatch-row" id="swatches"></div>
-            <div class="field" style="margin-top:14px"><label>Custom color</label><input class="input" type="color" id="fColor" style="width:80px;height:42px;padding:4px"></div>
-            <button class="btn btn-primary" onclick="saveCustom()">Save</button>
-          </div>
-        </section>
-        <!-- audio -->
-        <section data-pane="audio" style="display:none">
-          <div class="panel">
-            <h3>Background music</h3>
-            <p style="color:var(--muted);font-size:14px">Paste a direct MP3/audio URL. Plays when someone enters your profile.</p>
-            <div class="field"><label>Audio URL</label><input class="input" id="fAudio" placeholder="https://example.com/song.mp3"></div>
-            <button class="btn btn-primary" onclick="saveAudio()">Save</button>
-          </div>
-        </section>
-        <!-- effects -->
-        <section data-pane="effects" style="display:none">
-          <div class="panel">
-            <h3>Visual effects</h3>
-            <p style="color:var(--muted);font-size:14px">Particle effects displayed on your profile.</p>
-            <div class="field"><label>Effect</label>
-              <select class="input" id="fEffect">
-                <option value="none">None</option>
-                <option value="snow">❄️ Snow</option>
-                <option value="rain">🌧️ Rain</option>
-                <option value="sparkles">✨ Sparkles</option>
-                <option value="hearts">💜 Hearts</option>
-                <option value="stars">⭐ Stars</option>
-              </select>
-            </div>
-            <button class="btn btn-primary" onclick="saveEffect()">Save</button>
-          </div>
-        </section>
-      </main>
-    <div class="navitem ${currentTab==='customize'?'active':''}" onclick="go('customize')"><span class="ico">🎨</span>Anpassen</div>
-    <div class="navitem ${currentTab==='links'?'active':''}" onclick="go('links')"><span class="ico">🔗</span>Links</div>
-    <div class="navitem" onclick="openPremium()"><span class="ico">💎</span>Premium</div>
-    <div class="navitem"><span class="ico">🖼</span>Image Host</div>
-    <div class="navitem"><span class="ico">📋</span>Vorlagen</div>
-   </div>
-   <div class="spacer"></div>
-   <a class="btn" style="background:var(--accent-soft);border-color:var(--accent);color:var(--accent);justify-content:center" href="#u/${u.username}" target="_blank">↗ Meine Seite</a>
-   <button class="btn" onclick="share()">‹ Teile dein Profil</button>
-   <div class="usercard">
-    <div class="av">${av}</div>
-    <div style="flex:1;min-width:0">
-     <div style="font-weight:700;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u.displayName||u.username}</div>
-     <small>UID ${Math.abs(hash(u.username))}</small>
-    </div>
-  </div>
-</div>
-<!-- PROFILE (public) -->
-<div id="view-profile" class="view">
-  <div class="profile" id="profileBg">
-    <div class="pcard" id="pcard">
-      <div class="av" id="pAv"></div>
-      <h1 id="pName"></h1>
-      <div class="uname" id="pUname"></div>
-      <div class="bio" id="pBio"></div>
-      <div id="pLinks"></div>
-      <div class="views" id="pViews"></div>
-    <button class="icon-btn" onclick="doLogout()" title="Abmelden">⎋</button>
-   </div>
-  </aside>
-  <main class="main" id="pane"></main>
- </div>`;
- renderPane();
+      <main class="main" id="main"></main>
+    </div>`;
+  document.querySelectorAll('.nav-item').forEach(el=>{
+    el.onclick=()=>{ currentPage = el.dataset.p; render(); };
+  });
+  $('logout').onclick=()=>{ clearSession(); currentPage='overview'; render(); };
+  renderPage(user);
 }
-function hash(s){let h=0;for(let i=0;i<s.length;i++)h=((h<<5)-h+s.charCodeAt(i))|0;return h}
-window.go=(t)=>{currentTab=t;renderDashboard()};
-window.doLogout=()=>{clearSession();location.hash=''};
-window.share=()=>{const u=currentUser();navigator.clipboard?.writeText(location.origin+location.pathname+'#u/'+u.username);toast('Link kopiert!')};
-function renderPane(){
- const u=currentUser();const p=$('#pane');
- if(currentTab==='overview')p.innerHTML=paneOverview(u);
- else if(currentTab==='stats')p.innerHTML=paneStats(u);
- else if(currentTab==='badges')p.innerHTML=paneBadges(u);
- else if(currentTab==='settings')p.innerHTML=paneSettings(u);
- else if(currentTab==='customize')p.innerHTML=paneCustomize(u);
- else if(currentTab==='links')p.innerHTML=paneLinks(u);
- bindPane();
-}
-/* ====== PANES ====== */
-function paneOverview(u){
- const completion=Math.round(((u.avatar?1:0)+(u.bio?1:0)+(u.background?1:0)+(u.links.length?1:0)+(Object.keys(u.socials).length?1:0))/5*100);
- return `
- <h1 class="page-title">Kontoübersicht</h1>
- <div class="stats">
-  <div class="stat"><div class="h">Benutzername ✏️</div><div class="v">${u.username}</div><div class="s">Jederzeit änderbar</div></div>
-  <div class="stat"><div class="h">Anzeigename 👤</div><div class="v" style="font-size:20px">${u.displayName||'—'}</div><div class="s">Wird auf deiner Seite angezeigt</div></div>
-  <div class="stat"><div class="h">UID #</div><div class="v">${Math.abs(hash(u.username))}</div><div class="s">Deine eindeutige ID</div></div>
-  <div class="stat"><div class="h">Profilaufrufe 👁</div><div class="v">${u.views}</div><div class="s">Gesamt</div></div>
- </div>
- <h2 class="section-title">Profil-Vervollständigung</h2>
- <div class="card">
-  <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-weight:600"><span>Fortschritt</span><span>${completion}% abgeschlossen</span></div>
-  <div style="height:10px;background:var(--bg2);border-radius:99px;overflow:hidden"><div style="height:100%;width:${completion}%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px"></div></div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:16px">
-   ${[
-    ['Avatar hochladen',u.avatar,'customize'],
-    ['Beschreibung hinzufügen',u.bio,'customize'],
-    ['Hintergrund setzen',u.background,'customize'],
-    ['Links hinzufügen',u.links.length,'links'],
-    ['Socials hinzufügen',Object.keys(u.socials).length,'links'],
-   ].map(([n,d,t])=>`<div class="row" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;cursor:pointer" onclick="go('${t}')">
-    <span style="color:${d?'var(--ok)':'var(--warn)'}">${d?'✓':'!'}</span><span style="flex:1;font-size:14px">${n}</span><span class="muted">›</span></div>`).join('')}
-  </div>
- </div>
- <h2 class="section-title">Verwalte dein Konto</h2>
- <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
-  <button class="btn" onclick="promptEdit('username','Neuer Benutzername',event)">✏️ Benutzernamen ändern</button>
-  <button class="btn" onclick="promptEdit('displayName','Neuer Anzeigename',event)">👤 Anzeigenamen ändern</button>
-  <button class="btn" onclick="promptEdit('bio','Neue Biografie',event)">📝 Biografie ändern</button>
-  <button class="btn" onclick="go('settings')">⚙️ Kontoeinstellungen</button>
- </div>`;
-}
-function paneStats(u){
- return `<h1 class="page-title">Statistiken</h1>
- <div class="stats">
-  <div class="stat"><div class="h">Profilaufrufe</div><div class="v">${u.views}</div></div>
-  <div class="stat"><div class="h">Link-Klicks</div><div class="v">${u.links.reduce((a,l)=>a+(l.clicks||0),0)}</div></div>
-  <div class="stat"><div class="h">Aktive Links</div><div class="v">${u.links.length}</div></div>
-  <div class="stat"><div class="h">Socials</div><div class="v">${Object.keys(u.socials).length}</div></div>
- </div>
- <h2 class="section-title">Top-Links</h2>
- <div class="card">
-  ${u.links.length?u.links.map(l=>`<div class="link-item"><span class="ti">${l.title}</span><span class="ur">${l.url}</span><span class="ac">${l.clicks||0} Klicks</span></div>`).join(''):'<p class="muted">Noch keine Links.</p>'}
- </div>`;
-}
-function paneBadges(u){
- return `<h1 class="page-title">Alle Badges</h1>
- <div class="badge-grid">
-  ${BADGES.map(b=>{const has=u.badges.includes(b.k);return `
-   <div class="bd" style="opacity:${has?1:.55}">
-    <div class="ic">${b.i}</div>
-    <div style="flex:1"><div class="ti">${b.n}</div><div class="ds">${b.d}</div></div>
-    <button class="btn ${has?'':'primary'}" onclick="toggleBadge('${b.k}')">${has?'Entfernen':'Aktivieren'}</button>
-   </div>`}).join('')}
- </div>`;
-}
-window.toggleBadge=(k)=>{const u=currentUser();const i=u.badges.indexOf(k);if(i>-1)u.badges.splice(i,1);else u.badges.push(k);updateUser({badges:u.badges});renderPane()};
-function paneSettings(u){
- return `<h1 class="page-title">Kontoeinstellungen</h1>
- <div class="card grid">
-  <div><label class="label">Benutzername (URL)</label><input id="set-username" value="${u.username}"/></div>
-  <div><label class="label">Anzeigename</label><input id="set-display" value="${u.displayName||''}"/></div>
-  <div><label class="label">Biografie</label><textarea id="set-bio" rows="3">${u.bio||''}</textarea></div>
-  <div><label class="label">Ort</label><input id="set-loc" value="${u.location||''}" placeholder="z.B. Berlin"/></div>
-  <div><label class="label">Passwort ändern</label><input id="set-pw" type="password" placeholder="Neues Passwort (leer = unverändert)"/></div>
-  <div class="row" style="justify-content:flex-end;gap:8px">
-   <button class="btn danger" onclick="deleteAcc()">Konto löschen</button>
-   <button class="btn primary" onclick="saveSettings()">Speichern</button>
-  </div>
- </div>`;
-}
-window.saveSettings=()=>{
- const u=currentUser();
- const nu=$('#set-username').value.trim().toLowerCase();
- if(!/^[a-z0-9_]{2,20}$/.test(nu))return toast('Ungültiger Benutzername');
- const db=loadDB();
- if(nu!==u.username){
-  if(db.users[nu])return toast('Benutzername vergeben');
-  db.users[nu]=db.users[u.username];db.users[nu].username=nu;delete db.users[u.username];setSession(nu);
- }else db.users[u.username].username=nu;
- const user=db.users[nu];
- user.displayName=$('#set-display').value.trim();
- user.bio=$('#set-bio').value;
- user.location=$('#set-loc').value;
- const pw=$('#set-pw').value;if(pw)user.password=pw;
- saveDB(db);toast('Gespeichert');renderDashboard();
-};
-window.deleteAcc=()=>{if(!confirm('Wirklich Konto löschen?'))return;const db=loadDB();delete db.users[currentUser().username];saveDB(db);clearSession();location.hash=''};
-window.promptEdit=(field,label)=>{
- const u=currentUser();const v=prompt(label,u[field]||'');if(v===null)return;
- if(field==='username'){
-  const nu=v.trim().toLowerCase();if(!/^[a-z0-9_]{2,20}$/.test(nu))return toast('Ungültig');
-  const db=loadDB();if(db.users[nu]&&nu!==u.username)return toast('Vergeben');
-  db.users[nu]=db.users[u.username];db.users[nu].username=nu;if(nu!==u.username)delete db.users[u.username];setSession(nu);saveDB(db);
- }else updateUser({[field]:v});
- renderDashboard();
-};
-function paneCustomize(u){
- return `<h1 class="page-title">Anpassen</h1>
- <h2 class="section-title">Medien-Upload</h2>
- <div class="media-grid">
-  ${uploadBox('Hintergrund',u.background,u.backgroundType,'bg')}
-  ${uploadBox('Audio',u.audio,'audio','audio')}
-  ${uploadBox('Profil-Avatar',u.avatar,'image','avatar')}
- </div>
- <h2 class="section-title">Allgemein</h2>
- <div class="card two">
-  <div><label class="label">Anzeigename</label><input data-bind="displayName" value="${u.displayName||''}"/></div>
-  <div><label class="label">Beschreibung</label><input data-bind="bio" value="${u.bio||''}" placeholder="Welcome to my page ✨"/></div>
-  <div><label class="label">Ort</label><input data-bind="location" value="${u.location||''}" placeholder="Mein Ort"/></div>
-  <div><label class="label">Hintergrund-Effekt</label>
-   <select data-bind="effect">${EFFECTS.map(e=>`<option value="${e.k}" ${u.effect===e.k?'selected':''}>${e.n}</option>`).join('')}</select>
-  </div>
- </div>
- <h2 class="section-title">Farb-Anpassung</h2>
- <div class="card two">
-  ${colorRow('Akzentfarbe','accent',u.accent)}
-  ${colorRow('Hintergrundfarbe','bgColor',u.bgColor)}
-  ${colorRow('Textfarbe','textColor',u.textColor)}
- </div>`;
-}
-function uploadBox(label,val,type,kind){
- const has=!!val;
- return `<div>
-  <label class="label">${label}</label>
-  <div class="upload ${has?'has':''}" onclick="document.getElementById('f-${kind}').click()">
-   ${has?(kind==='audio'?`<div style="padding:30px 14px">🎵 ${currentUser().audioName||'audio'}</div>`:`<img src="${val}"/>`):`<div class="ic">🖼</div><div>Datei hochladen</div><small>Klick zum Auswählen</small>`}
-   ${has?`<button class="rm" onclick="event.stopPropagation();clearMedia('${kind}')">×</button>`:''}
-  </div>
-  <input id="f-${kind}" type="file" accept="${kind==='audio'?'audio/*':'image/*,video/*'}" style="display:none" onchange="handleFile(event,'${kind}')"/>
- </div>`;
-}
-function colorRow(lab,key,val){
- return `<div><label class="label">${lab}</label>
-  <div class="color-row">
-   <div class="sw" style="background:${val}" onclick="this.nextElementSibling.click()"></div>
-   <input type="color" value="${val}" onchange="updateUser({${key}:this.value});renderPane()"/>
-   <input type="text" value="${val}" onchange="updateUser({${key}:this.value});renderPane()"/>
-  </div></div>`;
-}
-window.handleFile=(e,kind)=>{
- const f=e.target.files[0];if(!f)return;
- if(f.size>5*1024*1024)return toast('Max 5MB');
- const r=new FileReader();r.onload=()=>{
-  if(kind==='bg')updateUser({background:r.result,backgroundType:f.type.startsWith('video')?'video':'image'});
-  else if(kind==='avatar')updateUser({avatar:r.result});
-  else if(kind==='audio')updateUser({audio:r.result,audioName:f.name});
-  renderPane();renderDashboard();
- };r.readAsDataURL(f);
-};
-window.clearMedia=(kind)=>{
- if(kind==='bg')updateUser({background:'',backgroundType:''});
- else if(kind==='avatar')updateUser({avatar:''});
- else if(kind==='audio')updateUser({audio:'',audioName:''});
- renderPane();renderDashboard();
-};
-function paneLinks(u){
- return `<h1 class="page-title">Links & Socials</h1>
- <div class="card">
-  <h3 style="margin:0 0 6px">🔗 Verknüpfe deine Social-Media-Profile</h3>
-  <p class="muted" style="margin:0 0 16px;font-size:14px">Klicke ein Netzwerk an, um es deinem Profil hinzuzufügen.</p>
-  <div class="socials">
-   ${SOCIALS.map(s=>`<div class="soc" title="${s.n}" style="${u.socials[s.k]?`border-color:${s.c};color:${s.c}`:''}" onclick="addSocial('${s.k}')">${s.i}</div>`).join('')}
-  </div>
-  <button class="btn" onclick="addCustomLink()">+ Benutzerdefinierten Link hinzufügen</button>
- </div>
- <h2 class="section-title">Deine Socials (${Object.keys(u.socials).length})</h2>
- <div class="card">
-  ${Object.keys(u.socials).length?Object.entries(u.socials).map(([k,v])=>{const s=SOCIALS.find(x=>x.k===k)||{i:'🔗',n:k};return `
-   <div class="link-item">
-    <span style="font-size:22px;color:${s.c||''}">${s.i}</span>
-    <div style="flex:1"><div class="ti">${s.n}</div><div class="ur">${v}</div></div>
-    <div class="ac">
-     <button class="icon-btn" onclick="editSocial('${k}')">✏️</button>
-     <button class="icon-btn danger" onclick="removeSocial('${k}')">🗑</button>
-    </div>
-  </div>
-</div>
-<!-- NOT FOUND -->
-<div id="view-404" class="view">
-  <div class="container" style="text-align:center">
-    <h1 style="font-size:80px;margin:0">404</h1>
-    <p style="color:var(--muted)">This profile doesn't exist.</p>
-    <button class="btn btn-primary" onclick="go('landing')">Go home</button>
-  </div>
-</div>
-<script>
-// ===== state =====
-const DB_KEY='biolnk_db_v1';
-const SESSION_KEY='biolnk_session';
-const COLORS=['#a855f7','#ec4899','#22d3ee','#10b981','#f59e0b','#ef4444','#3b82f6','#fff'];
-function db(){try{return JSON.parse(localStorage.getItem(DB_KEY))||{users:{}}}catch{return{users:{}}}}
-function saveDb(d){localStorage.setItem(DB_KEY,JSON.stringify(d))}
-function session(){return localStorage.getItem(SESSION_KEY)}
-function currentUser(){const u=session();return u?db().users[u]:null}
-// ===== router =====
-function go(view,arg){
-  location.hash = view==='landing'?'':view==='profile'?'/u/'+arg:'/'+view;
-}
-function render(){
-  const h=location.hash.replace(/^#\/?/,'');
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-  let view='landing';
-  if(h.startsWith('u/')){
-    const uname=h.slice(2);
-    if(renderProfile(uname)) view='profile'; else view='404';
-  } else if(['login','register','dashboard'].includes(h)){
-    if(h==='dashboard' && !session()){view='login'} else view=h;
-  }
-  document.getElementById('view-'+view).classList.add('active');
-  document.getElementById('nav').style.display = view==='profile'?'none':'flex';
-  document.getElementById('particles').style.display = view==='profile'?'block':'block';
-  if(view==='dashboard') initDash();
-  if(view!=='profile'){stopAudio();stopProfileEffect();initBgParticles()}
-  renderNav();
-  window.scrollTo(0,0);
-}
-window.addEventListener('hashchange',render);
-function renderNav(){
-  const el=document.getElementById('navLinks');
-  const u=currentUser();
-  if(u){
-    el.innerHTML=`<a onclick="go('dashboard')">Dashboard</a><a onclick="viewProfile()">My profile</a><button class="btn btn-ghost" onclick="logout()">Logout</button>`;
-  } else {
-    el.innerHTML=`<a onclick="go('login')">Sign in</a><button class="btn btn-primary" onclick="go('register')">Get started</button>`;
+function renderPage(user){
+  const m = $('main');
+  switch(currentPage){
+    case 'overview': return renderOverview(user, m);
+    case 'customize': return renderCustomize(user, m);
+    case 'links': return renderLinks(user, m);
+    case 'badges': return renderBadges(user, m);
+    case 'premium': return renderPremium(user, m);
+    case 'settings': return renderSettings(user, m);
+    case 'admin': return renderAdmin(user, m);
   }
 }
-// ===== auth =====
-function register(e){
-  e.preventDefault();
-  const u=regUser.value.trim().toLowerCase(), em=regEmail.value.trim(), p=regPass.value;
-  const d=db();
-  if(d.users[u]){regErr.textContent='Username taken';return}
-  if(Object.values(d.users).some(x=>x.email===em)){regErr.textContent='Email already used';return}
-  d.users[u]={username:u,email:em,password:p,name:u,bio:'Welcome to my page ✨',avatar:'',bg:'',color:'#a855f7',audio:'',effect:'sparkles',links:[{label:'Twitter',url:'https://twitter.com'},{label:'Instagram',url:'https://instagram.com'}],views:0,clicks:0,created:Date.now()};
-  saveDb(d);
-  localStorage.setItem(SESSION_KEY,u);
-  go('dashboard');
-}
-function login(e){
-  e.preventDefault();
-  const id=loginUser.value.trim().toLowerCase(), p=loginPass.value;
-  const d=db();
-  const user=d.users[id]||Object.values(d.users).find(x=>x.email===id);
-  if(!user||user.password!==p){loginErr.textContent='Invalid credentials';return}
-  localStorage.setItem(SESSION_KEY,user.username);
-  go('dashboard');
-}
-function logout(){localStorage.removeItem(SESSION_KEY);go('landing')}
-// ===== dashboard =====
-function tab(name){
-  document.querySelectorAll('.menu a[data-tab]').forEach(a=>a.classList.toggle('active',a.dataset.tab===name));
-  document.querySelectorAll('[data-pane]').forEach(p=>p.style.display=p.dataset.pane===name?'block':'none');
-}
-function initDash(){
-  const u=currentUser();if(!u){go('login');return}
-  meName.textContent=u.name;meUname.textContent='@'+u.username;
-  meAv.textContent=u.name[0].toUpperCase();
-  if(u.avatar)meAv.style.backgroundImage=`url(${u.avatar})`,meAv.textContent='';
-  sViews.textContent=u.views;sClicks.textContent=u.clicks;sLinks.textContent=u.links.length;
-  sSince.textContent=new Date(u.created).toLocaleDateString();
-  profUrl.textContent=location.origin+location.pathname+'#/u/'+u.username;
-  fName.value=u.name;fUname.value=u.username;fAvatar.value=u.avatar;fBio.value=u.bio;
-  fBg.value=u.bg;fColor.value=u.color;fAudio.value=u.audio;fEffect.value=u.effect;
-  renderSwatches(u.color);renderLinks(u.links);
-}
-function renderSwatches(active){
-  swatches.innerHTML='';
-  COLORS.forEach(c=>{
-    const s=document.createElement('div');s.className='swatch'+(c===active?' active':'');s.style.background=c;
-    s.onclick=()=>{fColor.value=c;document.querySelectorAll('.swatch').forEach(x=>x.classList.remove('active'));s.classList.add('active')};
-    swatches.appendChild(s);
-   </div>`}).join(''):'<p class="muted" style="margin:0">Noch keine Socials hinzugefügt. Klicke oben ein Icon an.</p>'}
- </div>
- <h2 class="section-title">Custom Links (${u.links.length})</h2>
- <div class="card">
-  ${u.links.length?u.links.map((l,i)=>`
-   <div class="link-item">
-    <span class="gr">⋮⋮</span>
-    <div style="flex:1"><div class="ti">${l.title}</div><div class="ur">${l.url}</div></div>
-    <div class="ac">
-     <button class="icon-btn" onclick="editLink(${i})">✏️</button>
-     <button class="icon-btn danger" onclick="removeLink(${i})">🗑</button>
+/* ---------- OVERVIEW ---------- */
+function renderOverview(user, m){
+  const completion = computeCompletion(user);
+  m.innerHTML = `
+    <h1 class="page-title">Kontoübersicht</h1>
+    <div class="grid-4">
+      <div class="stat-card"><div class="stat-head">Benutzername ✏️</div><div class="stat-val">${user.username}</div><div class="stat-sub">${user.usernameChanges} Änderungen</div></div>
+      <div class="stat-card"><div class="stat-head">Aliase 👤</div><div class="stat-val">${user.aliases.length} Aliase</div><div class="stat-sub">${user.premium?'∞':3-user.aliases.length} Slots übrig</div></div>
+      <div class="stat-card"><div class="stat-head">UID #</div><div class="stat-val">${user.uid.toLocaleString()}</div><div class="stat-sub">Mitglied seit ${new Date(user.createdAt).toLocaleDateString()}</div></div>
+      <div class="stat-card"><div class="stat-head">Profilaufrufe 👁</div><div class="stat-val">${user.views.toLocaleString()}</div><div class="stat-sub">Insgesamt</div></div>
     </div>
-   </div>`).join(''):'<p class="muted" style="margin:0">Noch keine Custom-Links.</p>'}
- </div>`;
+    <div class="grid-2" style="margin-top:20px">
+      <div class="section">
+        <h2>Profil-Vervollständigung</h2>
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:6px"><span>${completion.percent}% abgeschlossen</span></div>
+        <div class="progress"><div style="width:${completion.percent}%"></div></div>
+        <div class="task-grid">
+          ${completion.tasks.map(t=>`<div class="task ${t.done?'done':''}"><div class="dot">${t.done?'✓':'!'}</div>${t.label}</div>`).join('')}
+        </div>
+      </div>
+      <div class="section">
+        <h2>Verwalte dein Konto</h2>
+        <div class="manage-list">
+          <button class="manage-btn" onclick="changeUsername()">✏️ Benutzernamen ändern</button>
+          <button class="manage-btn" onclick="changeDisplayName()">💬 Anzeigenamen ändern</button>
+          <button class="manage-btn" onclick="manageAliases()">👤 Aliase verwalten</button>
+          <button class="manage-btn" onclick="currentPage='settings';render()">⚙️ Kontoeinstellungen</button>
+        </div>
+      </div>
+    </div>`;
 }
-window.addSocial=(k)=>{
- const u=currentUser();const s=SOCIALS.find(x=>x.k===k);
- const cur=u.socials[k]||'';
- const v=prompt(`${s.n} — URL oder Benutzername`,cur);
- if(v===null)return;
- if(!v.trim()){delete u.socials[k];}else{u.socials[k]=v.trim()}
- updateUser({socials:u.socials});renderPane();
+function computeCompletion(u){
+  const tasks=[
+    {label:'Avatar hochladen', done:!!u.avatar},
+    {label:'Beschreibung hinzufügen', done:!!u.bio},
+    {label:'Socials hinzufügen', done:u.socials.length>0},
+    {label:'10 Profilaufrufe erreichen', done:u.views>=10},
+    {label:'Premium freischalten', done:u.premium},
+  ];
+  const done = tasks.filter(t=>t.done).length;
+  return {percent: Math.round(done/tasks.length*100), tasks};
+}
+window.changeUsername = ()=>{
+  const u = currentUser();
+  modal('Benutzernamen ändern',
+    `<div class="field"><label>Neuer Benutzername</label><input id="nu" value="${u.username}"/></div>
+     <div class="err" id="nue"></div>`,
+    bg=>{
+      const v = bg.querySelector('#nu').value.trim();
+      const err = bg.querySelector('#nue');
+      if(!/^[a-zA-Z0-9_]{3,20}$/.test(v)){err.textContent='Ungültig';return false;}
+      const db = loadDB();
+      if(db.users.some(x=>x.uid!==u.uid && x.username.toLowerCase()===v.toLowerCase())){err.textContent='Vergeben';return false;}
+      updateUser(u.uid,{username:v, usernameChanges:u.usernameChanges+1});
+      toast('Benutzername geändert'); render();
+    });
 };
-window.editSocial=(k)=>addSocial(k);
-window.removeSocial=(k)=>{const u=currentUser();delete u.socials[k];updateUser({socials:u.socials});renderPane()};
-window.addCustomLink=()=>{
- const t=prompt('Titel');if(!t)return;
- const url=prompt('URL (https://…)');if(!url)return;
- const u=currentUser();u.links.push({id:uid(),title:t,url,clicks:0});updateUser({links:u.links});renderPane();
+window.changeDisplayName = ()=>{
+  const u = currentUser();
+  modal('Anzeigenamen ändern',
+    `<div class="field"><label>Anzeigename</label><input id="nd" value="${u.displayName||''}"/></div>`,
+    bg=>{ updateUser(u.uid,{displayName:bg.querySelector('#nd').value.trim()}); toast('Geändert'); render(); });
 };
-window.editLink=(i)=>{
- const u=currentUser();const l=u.links[i];
- const t=prompt('Titel',l.title);if(t===null)return;
- const url=prompt('URL',l.url);if(url===null)return;
- l.title=t;l.url=url;updateUser({links:u.links});renderPane();
+window.manageAliases = ()=>{
+  const u = currentUser();
+  modal('Aliase verwalten',
+    `<p style="color:var(--muted);font-size:13px;margin-bottom:12px">Aktuelle Aliase: ${u.aliases.join(', ')||'keine'}</p>
+     <div class="field"><label>Neuer Alias</label><input id="al"/></div>`,
+    bg=>{
+      const v = bg.querySelector('#al').value.trim();
+      if(!v) return false;
+      const limit = u.premium?999:3;
+      if(u.aliases.length>=limit){ toast('Limit erreicht'); return; }
+      updateUser(u.uid,{aliases:[...u.aliases, v]});
+      toast('Alias hinzugefügt'); render();
+    },'Hinzufügen');
 };
-window.removeLink=(i)=>{const u=currentUser();u.links.splice(i,1);updateUser({links:u.links});renderPane()};
-function bindPane(){
- $$('[data-bind]').forEach(el=>el.oninput=()=>{updateUser({[el.dataset.bind]:el.value})});
-}
-/* PREMIUM */
-window.openPremium=()=>{
- const m=document.createElement('div');m.className='modal-bg';m.onclick=(e)=>{if(e.target===m)m.remove()};
- m.innerHTML=`<div class="modal">
-  <button class="x" onclick="this.closest('.modal-bg').remove()">×</button>
-  <h2 style="margin:0 0 4px">💎 Upgrade auf Premium</h2>
-  <div style="font-size:36px;font-weight:800;margin:10px 0">7,99€ <span style="font-size:14px;color:var(--muted);font-weight:500">/Lebenslang</span></div>
-  <p style="color:var(--accent)">Einmal zahlen. Für immer behalten.</p>
-  <ul style="list-style:none;padding:0;margin:18px 0">
-   ${['Exklusives Badge','Profil-Layouts','Eigene Schriftarten','Typewriter-Animation','Besondere Profil-Effekte','Erweiterte Anpassungen','SEO-Anpassung'].map(x=>`<li style="padding:8px 0;display:flex;gap:10px;align-items:center"><span style="color:var(--accent)">✓</span>${x}</li>`).join('')}
-  </ul>
-  <button class="btn primary" style="width:100%" onclick="toast('Demo — nicht echt 🙂');this.closest('.modal-bg').remove()">Kaufen</button>
- </div>`;
- document.body.appendChild(m);
-};
-/* ============= PROFILE PAGE ============= */
-function renderProfile(username){
- const db=loadDB();const u=db.users[username];
- if(!u){$('#root').innerHTML=`<div class="auth-wrap"><div class="auth-card" style="text-align:center"><h1>404</h1><p class="muted">Nutzer "${username}" nicht gefunden</p><a class="btn primary" href="#">Zur Startseite</a></div></div>`;return}
- // bump views (only once per session per user)
- const seen='seen_'+username;if(!sessionStorage.getItem(seen)){u.views=(u.views||0)+1;db.users[username]=u;saveDB(db);sessionStorage.setItem(seen,'1')}
- const showEnter=!!u.audio;
- document.body.style.background=u.bgColor||'#000';
- const av=u.avatar?`<img src="${u.avatar}"/>`:(u.displayName||u.username)[0].toUpperCase();
- const bgStyle=u.background?(u.backgroundType==='video'?`<video autoplay loop muted playsinline src="${u.background}" style="position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1"></video>`:`<div style="position:fixed;inset:0;background:url('${u.background}') center/cover;z-index:-1"></div>`):'';
- const socsHtml=Object.entries(u.socials).map(([k,v])=>{const s=SOCIALS.find(x=>x.k===k)||{i:'🔗',n:k,c:'#fff'};const href=v.startsWith('http')||v.includes('@')?(v.includes('@')?'mailto:'+v:v):'https://'+v;return `<a href="${href}" target="_blank" title="${s.n}" style="color:${s.c}">${s.i}</a>`}).join('');
- const linksHtml=u.links.map(l=>`<a class="lnk" href="${l.url.startsWith('http')?l.url:'https://'+l.url}" target="_blank" onclick="clickLink('${username}','${l.id}')">${l.title}</a>`).join('');
- $('#root').innerHTML=`
-  ${bgStyle}
-  ${showEnter?`<div class="enter-screen" id="enter" onclick="enterProfile()"><div class="t" style="color:${u.textColor||'#fff'}">[ Klick um einzutreten ]</div></div>`:''}
-  <div class="profile-page" style="color:${u.textColor||'#fff'}">
-   <div class="profile-card" style="--accent:${u.accent};box-shadow:0 0 80px ${u.accent}33;border-color:${u.accent}44">
-    <div class="av" style="background:linear-gradient(135deg,${u.accent},${u.accent}88);border-color:${u.accent}">${av}</div>
-    <h2>${u.displayName||u.username}</h2>
-    <div class="un">@${u.username}</div>
-    ${u.bio?`<p class="bio">${escapeHtml(u.bio)}</p>`:''}
-    ${u.location?`<p class="muted" style="margin:-10px 0 16px">📍 ${escapeHtml(u.location)}</p>`:''}
-    ${u.badges.length?`<div style="margin-bottom:14px;font-size:20px">${u.badges.map(k=>{const b=BADGES.find(x=>x.k===k);return b?`<span title="${b.n}" style="margin:0 3px">${b.i}</span>`:''}).join('')}</div>`:''}
-    ${socsHtml?`<div class="socs">${socsHtml}</div>`:''}
-    ${linksHtml}
-    <div class="views">👁 ${u.views} Aufrufe</div>
-   </div>
-  </div>`;
- startFx(u.effect,u.accent);
- if(u.audio){window._audio=new Audio(u.audio);window._audio.loop=true;window._audio.volume=.5}
-}
-function escapeHtml(s){return (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-window.enterProfile=()=>{$('#enter')?.remove();if(window._audio)window._audio.play().catch(()=>{})};
-window.clickLink=(un,id)=>{const db=loadDB();const u=db.users[un];if(!u)return;const l=u.links.find(x=>x.id===id);if(l){l.clicks=(l.clicks||0)+1;saveDB(db)}};
-/* ============= FX ============= */
-let fxRAF, fxParticles=[];
-function startFx(kind,color){
- stopFx();if(!kind||kind==='none')return;
- const c=$('#fx');c.style.display='block';
- const ctx=c.getContext('2d');
- const resize=()=>{c.width=innerWidth;c.height=innerHeight};resize();window.onresize=resize;
- fxParticles=Array.from({length:80},()=>mkP(kind));
- const loop=()=>{
-  ctx.clearRect(0,0,c.width,c.height);
-  fxParticles.forEach(p=>{
-   p.y+=p.vy;p.x+=p.vx;p.life--;
-   if(p.y>c.height||p.life<0)Object.assign(p,mkP(kind));
-   ctx.fillStyle=p.color||color;ctx.globalAlpha=p.alpha||1;
-   if(kind==='hearts'){ctx.font=p.size+'px serif';ctx.fillText('❤',p.x,p.y)}
-   else if(kind==='stars'){ctx.font=p.size+'px serif';ctx.fillText('★',p.x,p.y)}
-   else if(kind==='sparkles'){ctx.font=p.size+'px serif';ctx.fillText('✦',p.x,p.y)}
-   else{ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill()}
-  });
-}
-function renderLinks(links){
-  linksList.innerHTML='';
-  links.forEach((l,i)=>{
-    const el=document.createElement('div');el.className='link-item';
-    el.innerHTML=`<span class="drag">⋮⋮</span><input placeholder="Label" value="${escapeHtml(l.label)}" data-k="label"><input placeholder="https://..." value="${escapeHtml(l.url)}" data-k="url"><button class="del" onclick="this.parentElement.remove()">×</button>`;
-    linksList.appendChild(el);
-  });
-}
-function addLink(){const u=currentUser();u.links.push({label:'',url:''});renderLinks(u.links)}
-function saveProfile(){
-  const d=db(),u=d.users[session()];
-  u.name=fName.value.trim()||u.username;u.avatar=fAvatar.value.trim();u.bio=fBio.value.trim();
-  saveDb(d);toast('Profile saved');initDash();
-}
-function saveLinks(){
-  const d=db(),u=d.users[session()],items=[];
-  linksList.querySelectorAll('.link-item').forEach(it=>{
-    const l=it.querySelector('[data-k=label]').value.trim(),url=it.querySelector('[data-k=url]').value.trim();
-    if(l||url)items.push({label:l,url:url});
-  });
-  u.links=items;saveDb(d);toast('Links saved');initDash();
-}
-function saveCustom(){
-  const d=db(),u=d.users[session()];u.bg=fBg.value.trim();u.color=fColor.value;saveDb(d);toast('Saved');
-}
-function saveAudio(){const d=db(),u=d.users[session()];u.audio=fAudio.value.trim();saveDb(d);toast('Saved')}
-function saveEffect(){const d=db(),u=d.users[session()];u.effect=fEffect.value;saveDb(d);toast('Saved')}
-function viewProfile(){const u=currentUser();if(u)go('profile',u.username)}
-function copyLink(){navigator.clipboard.writeText(profUrl.textContent);toast('Copied!')}
-// ===== public profile =====
-let enterEl=null,audioEl=null,profEffectRAF=null;
-function renderProfile(uname){
-  const d=db(),u=d.users[uname.toLowerCase()];
-  if(!u)return false;
-  u.views++;saveDb(d);
-  const card=document.getElementById('pcard');
-  card.style.borderColor=u.color+'66';card.style.boxShadow=`0 0 30px ${u.color}55, 0 0 70px ${u.color}33`;
-  document.getElementById('profileBg').style.background = u.bg?`url(${u.bg}) center/cover fixed`:'';
-  pAv.textContent=u.name[0].toUpperCase();pAv.style.background=`linear-gradient(135deg,${u.color},${u.color}88)`;
-  if(u.avatar){pAv.style.backgroundImage=`url(${u.avatar})`;pAv.textContent=''}
-  pName.textContent=u.name;pUname.textContent='@'+u.username;pBio.textContent=u.bio;
-  pLinks.innerHTML='';
-  u.links.forEach((l,i)=>{
-    const a=document.createElement('a');a.className='plink';a.textContent=l.label||l.url;
-    a.style.borderColor=u.color+'55';
-    a.onclick=()=>{const dd=db();dd.users[uname].clicks++;saveDb(dd);if(l.url)window.open(l.url,'_blank')};
-    pLinks.appendChild(a);
-  });
-  pViews.textContent=`${u.views} views`;
-  // enter screen for audio/effect
-  showEnter(u);
-  return true;
-}
-function showEnter(u){
-  if(enterEl)enterEl.remove();
-  enterEl=document.createElement('div');enterEl.className='enter';
-  enterEl.innerHTML=`<div style="text-align:center"><h2>click to enter</h2><p style="color:#888;font-size:14px">${u.audio?'🎵 audio will play':''}</p></div>`;
-  enterEl.onclick=()=>{
-    enterEl.remove();enterEl=null;
-    if(u.audio){try{audioEl=new Audio(u.audio);audioEl.loop=true;audioEl.volume=.5;audioEl.play().catch(()=>{});addAudioCtrl()}catch{}}
-    startProfileEffect(u.effect);
+/* ---------- CUSTOMIZE ---------- */
+function renderCustomize(user, m){
+  m.innerHTML = `
+    <h1 class="page-title">Anpassen</h1>
+    <div class="section">
+      <h2>Profil-Avatar</h2>
+      <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+        <div class="avatar" style="width:90px;height:90px;font-size:36px">${user.avatar?`<img src="${user.avatar}"/>`:user.username[0].toUpperCase()}</div>
+        <div style="flex:1;min-width:200px">
+          <input type="file" id="av-file" accept="image/*"/>
+          <p style="color:var(--muted);font-size:12px;margin-top:8px">Bild hochladen (wird lokal gespeichert)</p>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <h2>Allgemein</h2>
+      <div class="field"><label>Beschreibung / Bio</label><textarea id="bio" rows="3">${user.bio||''}</textarea></div>
+      <div class="field"><label>Anzeigename</label><input id="dn" value="${user.displayName||''}"/></div>
+      <button class="btn" id="save-cust" style="width:auto;padding:10px 24px">Speichern</button>
+    </div>`;
+  $('av-file').onchange = e=>{
+    const f = e.target.files[0]; if(!f) return;
+    const r = new FileReader();
+    r.onload = ev=>{ updateUser(user.uid,{avatar:ev.target.result}); toast('Avatar gespeichert'); render(); };
+    r.readAsDataURL(f);
   };
-  document.body.appendChild(enterEl);
+  $('save-cust').onclick=()=>{
+    updateUser(user.uid,{bio:$('bio').value, displayName:$('dn').value});
+    toast('Gespeichert');
+  };
 }
-function addAudioCtrl(){
-  const b=document.createElement('button');b.className='audio-ctrl';b.id='audioCtrl';b.textContent='🔊';
-  b.onclick=()=>{if(audioEl.paused){audioEl.play();b.textContent='🔊'}else{audioEl.pause();b.textContent='🔇'}};
-  document.body.appendChild(b);
-}
-function stopAudio(){if(audioEl){audioEl.pause();audioEl=null}const c=document.getElementById('audioCtrl');if(c)c.remove();if(enterEl){enterEl.remove();enterEl=null}}
-// ===== particles =====
-const cnv=document.getElementById('particles'),ctx=cnv.getContext('2d');
-let parts=[],mode='bg';
-function resize(){cnv.width=innerWidth;cnv.height=innerHeight}
-addEventListener('resize',resize);resize();
-function initBgParticles(){mode='bg';parts=[];for(let i=0;i<60;i++)parts.push({x:Math.random()*cnv.width,y:Math.random()*cnv.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5,c:Math.random()<.5?'#a855f7':'#ec4899'})}
-function startProfileEffect(eff){
-  mode=eff;parts=[];
-  if(eff==='none'){initBgParticles();return}
-  const n=eff==='rain'?120:eff==='snow'?80:60;
-  for(let i=0;i<n;i++)parts.push(mkPart(eff));
-}
-function mkPart(eff){
-  if(eff==='rain')return{x:Math.random()*cnv.width,y:Math.random()*cnv.height,vy:6+Math.random()*4,vx:-1,len:10+Math.random()*10,t:'rain'};
-  if(eff==='snow')return{x:Math.random()*cnv.width,y:Math.random()*cnv.height,vy:.5+Math.random(),vx:(Math.random()-.5)*.5,r:1+Math.random()*3,t:'snow'};
-  if(eff==='hearts')return{x:Math.random()*cnv.width,y:cnv.height+Math.random()*200,vy:-(.5+Math.random()),vx:(Math.random()-.5)*.4,s:14+Math.random()*14,ch:'💜',t:'em'};
-  if(eff==='stars')return{x:Math.random()*cnv.width,y:cnv.height+Math.random()*200,vy:-(.3+Math.random()),vx:(Math.random()-.5)*.3,s:12+Math.random()*12,ch:'⭐',t:'em'};
-  return{x:Math.random()*cnv.width,y:Math.random()*cnv.height,vx:(Math.random()-.5)*.6,vy:(Math.random()-.5)*.6,r:1+Math.random()*2,c:'#fff',a:Math.random(),t:'spark'};
-}
-function stopProfileEffect(){cancelAnimationFrame(profEffectRAF)}
-function loop(){
-  ctx.clearRect(0,0,cnv.width,cnv.height);
-  parts.forEach((p,i)=>{
-    p.x+=p.vx;p.y+=p.vy;
-    if(p.t==='rain'){ctx.strokeStyle='rgba(150,180,255,.5)';ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-1,p.y+p.len);ctx.stroke();if(p.y>cnv.height)Object.assign(p,mkPart('rain'),{y:-10})}
-    else if(p.t==='snow'){ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.fill();if(p.y>cnv.height)Object.assign(p,mkPart('snow'),{y:-10})}
-    else if(p.t==='em'){ctx.font=p.s+'px serif';ctx.fillText(p.ch,p.x,p.y);if(p.y<-30)Object.assign(p,mkPart(mode),{y:cnv.height+10})}
-    else if(p.t==='spark'){p.a+=.05;ctx.fillStyle=`rgba(255,255,255,${(Math.sin(p.a)+1)/2*.8})`;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.fill();if(p.x<0||p.x>cnv.width||p.y<0||p.y>cnv.height)Object.assign(p,mkPart(mode))}
-    else {ctx.fillStyle=p.c;ctx.globalAlpha=.6;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.fill();ctx.globalAlpha=1;if(p.x<0||p.x>cnv.width)p.vx*=-1;if(p.y<0||p.y>cnv.height)p.vy*=-1}
+/* ---------- LINKS ---------- */
+function renderLinks(user, m){
+  m.innerHTML = `
+    <h1 class="page-title">🔗 Verknüpfe deine Social-Media-Profile</h1>
+    <p style="color:var(--muted);margin-bottom:20px">Klicke auf ein Netzwerk, um einen Link hinzuzufügen.</p>
+    <div class="section">
+      <div class="social-grid">
+        ${SOCIALS.map(s=>`<div class="social-icon" style="color:${s.color}" data-s="${s.id}" title="${s.name}">${s.icon}</div>`).join('')}
+      </div>
+    </div>
+    <div class="section">
+      <h2>Deine Links (${user.socials.length})</h2>
+      ${user.socials.length===0?'<p style="color:var(--muted);font-size:14px">Noch keine Links.</p>':
+        user.socials.map((l,i)=>{
+          const s = SOCIALS.find(x=>x.id===l.type)||{name:l.type,icon:'🔗',color:'#666'};
+          return `<div class="link-item"><div class="icon" style="background:${s.color}">${s.icon}</div>
+            <div class="info"><div class="name">${s.name}</div><div class="url">${l.url}</div></div>
+            <button onclick="deleteLink(${i})">🗑</button></div>`;
+        }).join('')}
+    </div>`;
+  document.querySelectorAll('.social-icon').forEach(el=>{
+    el.onclick=()=>addLink(el.dataset.s);
   });
-  profEffectRAF=requestAnimationFrame(loop);
 }
-loop();
-// ===== util =====
-function escapeHtml(s){return(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),1800)}
-// init
-initBgParticles();render();
-  ctx.globalAlpha=1;
-  fxRAF=requestAnimationFrame(loop);
- };loop();
+window.addLink = type=>{
+  const u = currentUser();
+  const s = SOCIALS.find(x=>x.id===type);
+  modal(`${s.name} hinzufügen`,
+    `<div class="field"><label>URL oder Handle</label><input id="lurl" placeholder="https://..."/></div>`,
+    bg=>{
+      const v = bg.querySelector('#lurl').value.trim();
+      if(!v) return false;
+      updateUser(u.uid,{socials:[...u.socials, {type, url:v}]});
+      toast('Link hinzugefügt'); render();
+    }, 'Hinzufügen');
+};
+window.deleteLink = i=>{
+  const u = currentUser();
+  const s = [...u.socials]; s.splice(i,1);
+  updateUser(u.uid,{socials:s}); render();
+};
+/* ---------- BADGES ---------- */
+function renderBadges(user, m){
+  const all = [...ALL_BADGES, ...user.customBadges.map(c=>({...c, custom:true}))];
+  m.innerHTML = `
+    <h1 class="page-title">Alle Badges</h1>
+    <div class="badge-grid">
+      ${all.map(b=>{
+        const owned = user.badges.includes(b.id);
+        return `<div class="badge-card">
+          <div class="badge-icon" style="background:${b.color}22;color:${b.color}">${b.icon}</div>
+          <div class="badge-info"><div class="t">${b.name}${b.custom?' <span class="premium-tag">CUSTOM</span>':''}</div><div class="d">${b.desc}</div></div>
+          ${owned?'<span class="own">Im Besitz</span>':''}
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="section" style="margin-top:24px">
+      <h2>Custom Badges ✨ ${user.premium?'':'<span class="premium-tag">PREMIUM</span>'}</h2>
+      <p style="color:var(--muted);font-size:14px;margin-bottom:12px">Erstelle eigene Badges mit individuellem Icon und Namen.</p>
+      <button class="btn" style="width:auto;padding:10px 24px" onclick="addCustomBadge()" ${user.premium?'':'disabled style="opacity:.5;cursor:not-allowed;width:auto;padding:10px 24px"'}>Custom Badge erstellen</button>
+      ${user.customBadges.length>0?`<div style="margin-top:16px" class="badge-grid">
+        ${user.customBadges.map((b,i)=>`<div class="badge-card">
+          <div class="badge-icon" style="background:${b.color}22;color:${b.color}">${b.icon}</div>
+          <div class="badge-info"><div class="t">${b.name}</div><div class="d">${b.desc}</div></div>
+          <button onclick="deleteCustomBadge(${i})" style="background:transparent;color:var(--red)">🗑</button>
+        </div>`).join('')}
+      </div>`:''}
+    </div>
+    ${!user.premium?`<div class="section" style="background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(168,85,247,.05));border-color:rgba(168,85,247,.4)">
+      <h2>💎 Upgrade auf Premium</h2>
+      <p style="color:var(--muted);margin-bottom:12px">Mit Premium kannst du Custom Badges erstellen und Badges einfärben.</p>
+      <button class="btn" style="width:auto;padding:10px 24px" onclick="currentPage='premium';render()">Jetzt upgraden</button>
+    </div>`:''}
+  `;
 }
-function mkP(kind){
- const base={x:Math.random()*innerWidth,y:-20,vx:0,vy:1+Math.random()*2,size:2+Math.random()*4,life:300,alpha:.7+Math.random()*.3};
- if(kind==='snow')return{...base,color:'#fff',vy:.5+Math.random()*1.5};
- if(kind==='rain')return{...base,color:'#9bf',vy:4+Math.random()*4,size:1};
- if(kind==='night')return{...base,color:'#fff',vy:.2,size:1+Math.random()*2,alpha:.4};
- if(kind==='hearts')return{...base,color:'#ff5577',size:12+Math.random()*10};
- if(kind==='stars')return{...base,color:'#ffd700',size:10+Math.random()*8};
- if(kind==='sparkles')return{...base,color:'#fff',size:10+Math.random()*8};
- return base;
+window.addCustomBadge = ()=>{
+  const u = currentUser();
+  if(!u.premium){ toast('Premium erforderlich'); return; }
+  modal('Custom Badge erstellen',
+    `<div class="field"><label>Name</label><input id="cb-n" placeholder="Mein Badge"/></div>
+     <div class="field"><label>Icon (Emoji)</label><input id="cb-i" placeholder="🎯" maxlength="2"/></div>
+     <div class="field"><label>Beschreibung</label><input id="cb-d"/></div>
+     <div class="field"><label>Farbe</label><input id="cb-c" type="color" value="#a855f7"/></div>`,
+    bg=>{
+      const b = {
+        id:'custom_'+Date.now(),
+        name: bg.querySelector('#cb-n').value.trim()||'Badge',
+        icon: bg.querySelector('#cb-i').value||'✨',
+        desc: bg.querySelector('#cb-d').value.trim()||'Custom',
+        color: bg.querySelector('#cb-c').value
+      };
+      updateUser(u.uid,{customBadges:[...u.customBadges, b], badges:[...u.badges, b.id]});
+      toast('Custom Badge erstellt'); render();
+    },'Erstellen');
+};
+window.deleteCustomBadge = i=>{
+  const u = currentUser();
+  const cb = [...u.customBadges];
+  const removed = cb.splice(i,1)[0];
+  updateUser(u.uid,{customBadges:cb, badges:u.badges.filter(x=>x!==removed.id)});
+  render();
+};
+/* ---------- PREMIUM ---------- */
+function renderPremium(user, m){
+  m.innerHTML = `
+    <h1 class="page-title">Premium</h1>
+    <div style="max-width:520px;margin:0 auto;background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(168,85,247,.05));border:1px solid rgba(168,85,247,.4);border-radius:20px;padding:32px">
+      <h2 style="font-size:28px;margin-bottom:8px">💎 Premium</h2>
+      <div style="font-size:36px;font-weight:800;margin-bottom:4px">7,99€ <span style="font-size:16px;color:var(--muted);font-weight:400">/Lebenslang</span></div>
+      <p style="color:var(--primary);margin-bottom:20px">Einmal zahlen. Für immer behalten.</p>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:24px">
+        ${['Exklusives Badge','Custom Badges erstellen','Eigene Schriftarten','Typewriter-Animation','Besondere Profil-Effekte','Erweiterte Anpassungen','Unbegrenzte Aliase','SEO-Anpassung'].map(f=>`<li style="display:flex;gap:10px;align-items:center"><span style="color:var(--primary)">✓</span>${f}</li>`).join('')}
+      </ul>
+      ${user.premium?'<div style="text-align:center;padding:14px;background:rgba(34,197,94,.15);border-radius:10px;color:var(--green);font-weight:600">✓ Du hast bereits Premium</div>':
+      `<button class="btn" onclick="buyPremium()">Kaufen</button>`}
+    </div>`;
 }
-function stopFx(){cancelAnimationFrame(fxRAF);fxParticles=[];const c=$('#fx');if(c){c.getContext('2d').clearRect(0,0,c.width,c.height);c.style.display='none'}if(window._audio){window._audio.pause();window._audio=null}document.body.style.background=''}
-/* boot */
-route();
+window.buyPremium = ()=>{
+  const u = currentUser();
+  if(confirm('Premium für 7,99€ kaufen? (Demo - kein echter Kauf)')){
+    updateUser(u.uid,{premium:true, badges:[...new Set([...u.badges,'premium'])]});
+    toast('Premium aktiviert! 🎉'); render();
+  }
+};
+/* ---------- SETTINGS ---------- */
+function renderSettings(user, m){
+  m.innerHTML = `
+    <h1 class="page-title">Einstellungen</h1>
+    <div class="section">
+      <h2>Konto</h2>
+      <div class="field"><label>Email</label><input id="s-email" value="${user.email}"/></div>
+      <div class="field"><label>Neues Passwort (leer lassen für unverändert)</label><input id="s-pw" type="password"/></div>
+      <button class="btn" id="s-save" style="width:auto;padding:10px 24px">Speichern</button>
+    </div>
+    <div class="section">
+      <h2 style="color:var(--red)">Gefahrenzone</h2>
+      <button class="btn" style="background:var(--red);width:auto;padding:10px 24px" onclick="deleteAccount()">Konto löschen</button>
+    </div>`;
+  $('s-save').onclick=()=>{
+    const patch = {email:$('s-email').value};
+    if($('s-pw').value) patch.password = $('s-pw').value;
+    updateUser(user.uid, patch); toast('Gespeichert');
+  };
+}
+window.deleteAccount = ()=>{
+  if(!confirm('Konto wirklich löschen?')) return;
+  const u = currentUser();
+  const db = loadDB();
+  db.users = db.users.filter(x=>x.uid!==u.uid);
+  saveDB(db); clearSession(); render();
+};
+/* ---------- ADMIN ---------- */
+function renderAdmin(user, m){
+  if(user.role!=='admin'){ m.innerHTML='<h1 class="page-title">Kein Zugriff</h1>'; return; }
+  const db = loadDB();
+  m.innerHTML = `
+    <h1 class="page-title">🛡️ Admin Panel</h1>
+    <div class="section">
+      <h2>Benutzer (${db.users.length})</h2>
+      <div style="overflow-x:auto">
+      <table>
+        <thead><tr><th>UID</th><th>Benutzer</th><th>Email</th><th>Views</th><th>Badges</th><th>Premium</th><th>Aktionen</th></tr></thead>
+        <tbody>
+          ${db.users.map(u=>`<tr>
+            <td>${u.uid}</td>
+            <td><strong>${u.username}</strong><br><span style="color:var(--muted);font-size:11px">${u.displayName||''}</span></td>
+            <td>${u.email}</td>
+            <td>${u.views.toLocaleString()}</td>
+            <td>${u.badges.length}</td>
+            <td>${u.premium?'<span style="color:var(--green)">✓</span>':'<span style="color:var(--muted)">✗</span>'}</td>
+            <td><div class="row-btns">
+              <button onclick="adminAddViews(${u.uid})">+Views</button>
+              <button onclick="adminManageBadges(${u.uid})">Badges</button>
+              <button onclick="adminTogglePremium(${u.uid})">${u.premium?'-':'+'} Premium</button>
+              <button onclick="adminSetRole(${u.uid})">Rolle</button>
+              ${u.uid!==user.uid?`<button class="danger" onclick="adminDelete(${u.uid})">Löschen</button>`:''}
+            </div></td>
+          </tr>`).join('')}
+        </tbody>
+      </table></div>
+    </div>`;
+}
+window.adminAddViews = uid=>{
+  const v = prompt('Wie viele Views hinzufügen? (Negativ zum Abziehen)','100');
+  if(v===null) return;
+  const n = parseInt(v); if(isNaN(n)) return;
+  const db = loadDB(); const u = db.users.find(x=>x.uid===uid);
+  u.views = Math.max(0, u.views + n); saveDB(db); toast('Views aktualisiert'); render();
+};
+window.adminTogglePremium = uid=>{
+  const db = loadDB(); const u = db.users.find(x=>x.uid===uid);
+  u.premium = !u.premium;
+  if(u.premium) u.badges = [...new Set([...u.badges,'premium'])];
+  else u.badges = u.badges.filter(b=>b!=='premium');
+  saveDB(db); toast('Premium '+u.premium); render();
+};
+window.adminSetRole = uid=>{
+  const r = prompt('Rolle: user / admin / staff','user');
+  if(!r) return;
+  const db = loadDB(); const u = db.users.find(x=>x.uid===uid);
+  u.role = r;
+  if(r==='admin') u.badges = [...new Set([...u.badges,'admin'])];
+  if(r==='staff') u.badges = [...new Set([...u.badges,'staff'])];
+  saveDB(db); toast('Rolle gesetzt'); render();
+};
+window.adminDelete = uid=>{
+  if(!confirm('User löschen?')) return;
+  const db = loadDB();
+  db.users = db.users.filter(x=>x.uid!==uid);
+  saveDB(db); render();
+};
+window.adminManageBadges = uid=>{
+  const db = loadDB(); const u = db.users.find(x=>x.uid===uid);
+  const html = ALL_BADGES.map(b=>`<label style="display:flex;align-items:center;gap:8px;padding:6px;cursor:pointer">
+    <input type="checkbox" data-b="${b.id}" ${u.badges.includes(b.id)?'checked':''} style="width:auto"/>
+    <span style="color:${b.color}">${b.icon}</span> ${b.name}
+  </label>`).join('');
+  modal('Badges für '+u.username, html, bg=>{
+    const checked = [...bg.querySelectorAll('input[data-b]')].filter(c=>c.checked).map(c=>c.dataset.b);
+    // keep custom badges
+    const custom = u.badges.filter(b=>b.startsWith('custom_'));
+    updateUser(uid,{badges:[...checked, ...custom]});
+    toast('Badges aktualisiert'); render();
+  });
+};
+/* ---------- PUBLIC PROFILE ---------- */
+function renderProfilePage(username){
+  const db = loadDB();
+  const u = db.users.find(x=>x.username.toLowerCase()===username.toLowerCase());
+  if(!u){
+    $('root').innerHTML = `<div class="profile-page"><div class="profile-card"><h1>404</h1><p style="color:var(--muted)">Profil nicht gefunden.</p><a href="#" onclick="location.hash=''" class="btn" style="display:inline-block;margin-top:16px;text-decoration:none;padding:10px 20px">Zurück</a></div></div>`;
+    return;
+  }
+  // increment views (not for owner)
+  const viewer = currentUser();
+  if(!viewer || viewer.uid!==u.uid){
+    u.views++; saveDB(db);
+  }
+  const badges = u.badges.map(bid=>{
+    const b = ALL_BADGES.find(x=>x.id===bid) || u.customBadges.find(x=>x.id===bid);
+    return b?`<span class="pb" style="border-color:${b.color};color:${b.color}">${b.icon} ${b.name}</span>`:'';
+  }).join('');
+  const socials = u.socials.map(l=>{
+    const s = SOCIALS.find(x=>x.id===l.type)||{icon:'🔗',color:'#666',name:l.type};
+    return `<a href="${l.url}" target="_blank" class="social-icon" style="color:${s.color};text-decoration:none" title="${s.name}">${s.icon}</a>`;
+  }).join('');
+  $('root').innerHTML = `
+    <div class="profile-page">
+      <div class="profile-card">
+        <div class="profile-avatar">${u.avatar?`<img src="${u.avatar}"/>`:u.username[0].toUpperCase()}</div>
+        <div class="profile-name">${u.displayName||u.username}</div>
+        <div class="profile-uid">@${u.username} · UID ${u.uid}</div>
+        ${badges?`<div class="profile-badges">${badges}</div>`:''}
+        ${u.bio?`<div class="profile-bio">${u.bio.replace(/</g,'&lt;')}</div>`:''}
+        ${socials?`<div class="profile-socials">${socials}</div>`:''}
+        <div class="profile-views">👁 ${u.views.toLocaleString()} Aufrufe</div>
+        <a href="#" onclick="location.hash=''" style="display:block;margin-top:20px;color:var(--muted);font-size:12px">← Zum Dashboard</a>
+      </div>
+    </div>`;
+}
+render();
 </script>
 </body>
 </html>
