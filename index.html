@@ -13,6 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Instrument+Serif&family=Bebas+Neue&family=Press+Start+2P&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{
     --bg:#070708;--bg2:#0d0d10;--panel:#131318;--panel2:#1a1a20;
@@ -107,18 +108,18 @@
   .link-item .info .url{color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .link-item button{color:var(--red);padding:6px;font-size:16px}
   /* enter screen */
-  .enter-screen{position:fixed;inset:0;background:rgba(0,0,0,.48);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);color:#fff;display:grid;place-items:center;z-index:1000;cursor:pointer;text-align:center}
+  .enter-screen{position:fixed;inset:0;background:#000;color:#fff;display:grid;place-items:center;z-index:1000;cursor:pointer;text-align:center}
   .enter-screen .es-inner{animation:pulse 2s ease-in-out infinite}
   .enter-screen h2{font-size:28px;font-weight:300;letter-spacing:.1em}
   .enter-screen p{color:#888;margin-top:8px;font-size:13px;letter-spacing:.2em;text-transform:uppercase}
   @keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
   /* profile */
-  .profile-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;position:relative;overflow:hidden;z-index:1}
-  .profile-bg{position:fixed;inset:0;z-index:0;background:#000;pointer-events:none}
+  .profile-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;position:relative;overflow:hidden}
+  .profile-bg{position:fixed;inset:0;z-index:-2;background:#000}
   .profile-banner{width:calc(100% + 72px);margin:-36px -36px 16px;height:130px;background:#1a1a20 center/cover no-repeat;border-radius:var(--border-r,20px) var(--border-r,20px) 0 0;position:relative;overflow:hidden}
   .profile-banner img,.profile-banner video{width:100%;height:100%;object-fit:cover;display:block}
   .profile-card.has-banner .profile-avatar{margin-top:-66px;position:relative;z-index:2}
-  .profile-bg img,.profile-bg video{width:100%;height:100%;object-fit:cover;display:block;transform:scale(1.04)}
+  .profile-bg img,.profile-bg video{width:100%;height:100%;object-fit:cover}
   .profile-bg.blurred img,.profile-bg.blurred video{filter:blur(var(--bg-blur,8px))}
   .profile-card{background:rgba(20,20,22,var(--card-opacity,.72));backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:var(--border-w,1px) solid var(--border-c,#26262e);border-radius:var(--border-r,20px);padding:36px;max-width:440px;width:100%;text-align:center;box-shadow:0 0 var(--border-glow,0) var(--border-c,transparent);position:relative;z-index:2}
   .profile-card.frost{background:rgba(255,255,255,.06)}
@@ -197,48 +198,13 @@
    Storage: localStorage. Admin: k / k@gmail.com / Hallopelo112
    Premium is FREE for everyone.
 ===================================================== */
-const DB_KEY='kioo_db_v2';
 const SESSION_KEY='kioo_session_v2';
-const IDB_NAME='kioo_media';
-const IDB_STORE='blobs';
 
-/* ---------- IndexedDB (~1GB+) für große Dateien ---------- */
-let _idb=null;
-function idbOpen(){
-  if(_idb)return Promise.resolve(_idb);
-  return new Promise((res,rej)=>{
-    const r=indexedDB.open(IDB_NAME,1);
-    r.onupgradeneeded=()=>r.result.createObjectStore(IDB_STORE);
-    r.onsuccess=()=>{_idb=r.result;res(_idb);};
-    r.onerror=()=>rej(r.error);
-  });
-}
-function idbPut(id,blob){return idbOpen().then(db=>new Promise((res,rej)=>{const t=db.transaction(IDB_STORE,'readwrite');t.objectStore(IDB_STORE).put(blob,id);t.oncomplete=()=>res();t.onerror=()=>rej(t.error);}));}
-function idbGet(id){return idbOpen().then(db=>new Promise((res,rej)=>{const t=db.transaction(IDB_STORE,'readonly');const rq=t.objectStore(IDB_STORE).get(id);rq.onsuccess=()=>res(rq.result||null);rq.onerror=()=>rej(rq.error);}));}
-function idbDel(id){return idbOpen().then(db=>new Promise((res)=>{const t=db.transaction(IDB_STORE,'readwrite');t.objectStore(IDB_STORE).delete(id);t.oncomplete=()=>res();t.onerror=()=>res();}));}
-
-const blobCache=new Map();    // 'idb:xxx' -> blob:url
-const blobReverse=new Map();  // blob:url   -> 'idb:xxx'
-const MEDIA_FIELDS_PROFILE=['bgUrl','bannerUrl','musicUrl','cursorUrl','favicon'];
-const MEDIA_FIELDS_USER=['avatar'];
-
-async function hydrateToken(tok){
-  if(typeof tok!=='string'||!tok.startsWith('idb:'))return tok;
-  if(blobCache.has(tok))return blobCache.get(tok);
-  const id=tok.slice(4);
-  const blob=await idbGet(id);
-  if(!blob)return '';
-  const url=URL.createObjectURL(blob);
-  blobCache.set(tok,url);blobReverse.set(url,tok);
-  return url;
-}
-function deHydrate(v){return (typeof v==='string'&&blobReverse.has(v))?blobReverse.get(v):v;}
-async function hydrateDB(db){
-  for(const u of db.users){
-    for(const k of MEDIA_FIELDS_USER) u[k]=await hydrateToken(u[k]);
-    for(const k of MEDIA_FIELDS_PROFILE) u.profile[k]=await hydrateToken(u.profile[k]);
-  }
-}
+/* ---------- Lovable Cloud (shared state across all devices) ---------- */
+const SUPABASE_URL='https://telkwubppafnptuguhmt.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlbGt3dWJwcGFmbnB0dWd1aG10Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0NzkzMjksImV4cCI6MjA5ODA1NTMyOX0.eNETlQwGV5EBZyuy8kJeYq8M7SWQi0o8esYb81A9z8A';
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:false}});
+const BUCKET='kioo-media';
 
 const ALL_BADGES=[
   {id:'staff',name:'Staff',desc:'Teil des Staff-Teams.',icon:'🛠️',color:'#3b82f6'},
@@ -323,37 +289,45 @@ function _migrate(db){
   });
   return db;
 }
+async function _fetchCloud(){
+  const {data,error}=await sb.from('kioo_state').select('data').eq('id',1).maybeSingle();
+  if(error){console.error('kioo_state load failed',error);return _newDB();}
+  if(!data||!data.data)return _newDB();
+  return _migrate(data.data);
+}
+let _saving=false,_pendingSave=false,_saveTimer=null;
+async function _flushSave(){
+  if(_saving){_pendingSave=true;return;}
+  _saving=true;_pendingSave=false;
+  try{
+    const {error}=await sb.from('kioo_state').update({data:_db,updated_at:new Date().toISOString()}).eq('id',1);
+    if(error)console.error('save failed',error);
+  }finally{
+    _saving=false;
+    if(_pendingSave)_flushSave();
+  }
+}
 async function initDB(){
-  let raw=localStorage.getItem(DB_KEY);
-  if(!raw){_db=_newDB();localStorage.setItem(DB_KEY,JSON.stringify(_db));}
-  else { try{_db=_migrate(JSON.parse(raw));}catch(e){_db=_newDB();} }
-  await hydrateDB(_db);
-  // hydrate templates too
-  for(const t of _db.templates){
-    for(const k of MEDIA_FIELDS_PROFILE) t.profile[k]=await hydrateToken(t.profile[k]);
-    t.avatar=await hydrateToken(t.avatar);
-  }
+  _db=await _fetchCloud();
+  // realtime: re-render on remote changes (e.g. profile updates from other devices)
+  sb.channel('kioo-state-ch').on('postgres_changes',{event:'UPDATE',schema:'public',table:'kioo_state'},(payload)=>{
+    if(!payload||!payload.new||!payload.new.data)return;
+    if(_saving||_pendingSave)return; // skip own echo while writing
+    _db=_migrate(payload.new.data);
+    try{render();}catch(e){console.error(e);}
+  }).subscribe();
 }
-function loadDB(){
-  if(_db)return _db;
-  // Sync fallback (sollte nach initDB nicht passieren)
-  const raw=localStorage.getItem(DB_KEY);
-  if(!raw){
-    _db=_newDB();localStorage.setItem(DB_KEY,JSON.stringify(_db));return _db;
-  }
-  _db=_migrate(JSON.parse(raw));return _db;
-}
-function saveDB(db){
-  // tokens (idb:xxx) statt blob: URLs persistieren
-  const copy=JSON.parse(JSON.stringify(db,(k,v)=>typeof v==='string'?deHydrate(v):v));
-  localStorage.setItem(DB_KEY,JSON.stringify(copy));
+function loadDB(){return _db||(_db=_newDB());}
+function saveDB(){
+  if(_saveTimer)clearTimeout(_saveTimer);
+  _saveTimer=setTimeout(_flushSave,250);
 }
 function getSession(){const s=localStorage.getItem(SESSION_KEY);return s?JSON.parse(s):null;}
 function setSession(uid){localStorage.setItem(SESSION_KEY,JSON.stringify({uid}));}
 function clearSession(){localStorage.removeItem(SESSION_KEY);}
 function currentUser(){const s=getSession();if(!s)return null;const db=loadDB();return db.users.find(u=>u.uid===s.uid)||null;}
-function updateUser(uid,patch){const db=loadDB();const u=db.users.find(x=>x.uid===uid);if(u){Object.assign(u,patch);saveDB(db);}}
-function updateProfile(uid,patch){const db=loadDB();const u=db.users.find(x=>x.uid===uid);if(u){Object.assign(u.profile,patch);saveDB(db);}}
+function updateUser(uid,patch){const db=loadDB();const u=db.users.find(x=>x.uid===uid);if(u){Object.assign(u,patch);saveDB();}}
+function updateProfile(uid,patch){const db=loadDB();const u=db.users.find(x=>x.uid===uid);if(u){Object.assign(u.profile,patch);saveDB();}}
 
 /* ---------- UI helpers ---------- */
 const $=id=>document.getElementById(id);
@@ -371,14 +345,15 @@ function modal(title,html,onOk,okText='Speichern'){
 }
 async function readFile(input,cb){
   const f=input.files&&input.files[0];if(!f)return;
-  if(f.size>500*1024*1024){toast('Datei zu groß (max 500MB)');return;}
+  if(f.size>50*1024*1024){toast('Datei zu groß (max 50MB)');return;}
   try{
-    const id='b'+Date.now().toString(36)+Math.random().toString(36).slice(2,10);
-    await idbPut(id,f);
-    const url=URL.createObjectURL(f);
-    const tok='idb:'+id;
-    blobCache.set(tok,url);blobReverse.set(url,tok);
-    cb(url,f);
+    toast('Lade hoch...');
+    const ext=(f.name.split('.').pop()||'bin').toLowerCase().replace(/[^a-z0-9]/g,'');
+    const name='m_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,10)+(ext?'.'+ext:'');
+    const {error}=await sb.storage.from(BUCKET).upload(name,f,{contentType:f.type||'application/octet-stream',upsert:false});
+    if(error){toast('Upload fehlgeschlagen: '+error.message);return;}
+    const {data:pub}=sb.storage.from(BUCKET).getPublicUrl(name);
+    cb(pub.publicUrl,f);
   }catch(e){toast('Upload fehlgeschlagen: '+(e&&e.message||e));}
 }
 function safeUpdateProfile(uid,patch){try{updateProfile(uid,patch);return true;}catch(e){toast('Speicher voll – kleinere Datei wählen');return false;}}
@@ -627,13 +602,9 @@ function renderMediaPage(user,m){
     <p class="page-sub">Alles per Datei-Upload — keine URLs nötig.</p>
     <div class="section">
       <h2>Hintergrund (Bild / GIF / Video)</h2>
-      <p style="color:var(--muted);font-size:13px;margin:-6px 0 12px">ℹ️ Der Hintergrund erscheint auf deiner öffentlichen Profilseite <a href="#/u/${esc(user.username)}" style="color:var(--primary)">/u/${esc(user.username)}</a> — nicht im Dashboard.</p>
       <div style="margin-bottom:10px">${p.bgUrl?(p.bgType==='video'?`<video src="${esc(p.bgUrl)}" autoplay muted loop class="preview-thumb" style="width:100%;max-height:160px;object-fit:cover"></video>`:`<img src="${esc(p.bgUrl)}" class="preview-thumb" style="width:100%;max-height:160px;object-fit:cover"/>`):'<small>Kein Hintergrund</small>'}</div>
       <label class="file-pick">📁 Hintergrund-Datei auswählen<input type="file" id="bgf" accept="image/*,video/*"/></label>
-      <div class="row" style="gap:8px;margin-top:8px;flex-wrap:wrap">
-        <a class="btn btn-sm" href="#/u/${esc(user.username)}" style="flex:1;text-align:center">👁 Auf meiner Seite ansehen</a>
-        ${p.bgUrl?'<button class="btn btn-ghost btn-sm" id="bg-clear">Entfernen</button>':''}
-      </div>
+      ${p.bgUrl?'<button class="btn btn-ghost btn-sm" id="bg-clear" style="margin-top:8px">Entfernen</button>':''}
     </div>
     <div class="section">
       <h2>Hintergrundmusik</h2>
@@ -653,7 +624,7 @@ function renderMediaPage(user,m){
       <input id="fav" placeholder="Oder Emoji z.B. 🔫" value="${esc(p.favicon&&!(p.favicon.startsWith('data:')||p.favicon.startsWith('blob:'))?p.favicon:'')}" style="margin-top:8px"/>
     </div>
     <div style="margin-top:18px"><button class="btn" id="sm">Speichern</button></div>`;
-  $('bgf').onchange=e=>readFile(e.target,(d,f)=>{const t=f.type.startsWith('video')?'video':'image';if(safeUpdateProfile(user.uid,{bgUrl:d,bgType:t})){toast('Hintergrund hochgeladen – öffne deine Profil-Vorschau…');setTimeout(()=>{location.hash='#/u/'+user.username;},600);}});
+  $('bgf').onchange=e=>readFile(e.target,(d,f)=>{const t=f.type.startsWith('video')?'video':'image';if(safeUpdateProfile(user.uid,{bgUrl:d,bgType:t})){toast('Hintergrund hochgeladen');render();}});
   if($('bg-clear'))$('bg-clear').onclick=()=>{updateProfile(user.uid,{bgUrl:''});render();};
   $('muf').onchange=e=>readFile(e.target,d=>{if(safeUpdateProfile(user.uid,{musicUrl:d})){toast('Musik hochgeladen');render();}});
   if($('mu-clear'))$('mu-clear').onclick=()=>{updateProfile(user.uid,{musicUrl:''});render();};
