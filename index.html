@@ -107,18 +107,18 @@
   .link-item .info .url{color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .link-item button{color:var(--red);padding:6px;font-size:16px}
   /* enter screen */
-  .enter-screen{position:fixed;inset:0;background:#000;color:#fff;display:grid;place-items:center;z-index:1000;cursor:pointer;text-align:center}
+  .enter-screen{position:fixed;inset:0;background:rgba(0,0,0,.48);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);color:#fff;display:grid;place-items:center;z-index:1000;cursor:pointer;text-align:center}
   .enter-screen .es-inner{animation:pulse 2s ease-in-out infinite}
   .enter-screen h2{font-size:28px;font-weight:300;letter-spacing:.1em}
   .enter-screen p{color:#888;margin-top:8px;font-size:13px;letter-spacing:.2em;text-transform:uppercase}
   @keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
   /* profile */
-  .profile-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;position:relative;overflow:hidden}
-  .profile-bg{position:fixed;inset:0;z-index:-2;background:#000}
+  .profile-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;position:relative;overflow:hidden;z-index:1}
+  .profile-bg{position:fixed;inset:0;z-index:0;background:#000;pointer-events:none}
   .profile-banner{width:calc(100% + 72px);margin:-36px -36px 16px;height:130px;background:#1a1a20 center/cover no-repeat;border-radius:var(--border-r,20px) var(--border-r,20px) 0 0;position:relative;overflow:hidden}
   .profile-banner img,.profile-banner video{width:100%;height:100%;object-fit:cover;display:block}
   .profile-card.has-banner .profile-avatar{margin-top:-66px;position:relative;z-index:2}
-  .profile-bg img,.profile-bg video{width:100%;height:100%;object-fit:cover}
+  .profile-bg img,.profile-bg video{width:100%;height:100%;object-fit:cover;display:block;transform:scale(1.04)}
   .profile-bg.blurred img,.profile-bg.blurred video{filter:blur(var(--bg-blur,8px))}
   .profile-card{background:rgba(20,20,22,var(--card-opacity,.72));backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:var(--border-w,1px) solid var(--border-c,#26262e);border-radius:var(--border-r,20px);padding:36px;max-width:440px;width:100%;text-align:center;box-shadow:0 0 var(--border-glow,0) var(--border-c,transparent);position:relative;z-index:2}
   .profile-card.frost{background:rgba(255,255,255,.06)}
