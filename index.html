@@ -1,972 +1,1125 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>kioo.zeta</title>
-<meta name="description" content="kioo.zeta — your bio, your vibe."/>
-<meta property="og:title" content="kioo.zeta"/>
-<meta property="og:description" content="your bio, your vibe."/>
-<meta property="og:type" content="website"/>
-<meta name="theme-color" content="#a855f7"/>
-<link id="favicon" rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='52' font-size='52'%3E%E2%9C%A8%3C/text%3E%3C/svg%3E"/>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Instrument+Serif&family=Bebas+Neue&family=Press+Start+2P&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>linkforge — eigene Bio-Link Seite</title>
 <style>
-  :root{
-    --bg:#070708;--bg2:#0d0d10;--panel:#131318;--panel2:#1a1a20;
-    --border:#26262e;--text:#fff;--muted:#8b8b95;
-    --primary:#a855f7;--primary2:#7c3aed;
-    --green:#22c55e;--red:#ef4444;--orange:#f59e0b;--blue:#3b82f6;
-    --radius:14px;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;font-family:'Inter','Segoe UI',system-ui,sans-serif}
-  html,body{background:var(--bg);color:var(--text);min-height:100vh}
-  a{color:inherit;text-decoration:none}
-  button{cursor:pointer;border:none;font-family:inherit;color:inherit;background:none}
-  input,select,textarea{font-family:inherit;background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:10px;width:100%;outline:none;font-size:14px}
-  input:focus,select:focus,textarea:focus{border-color:var(--primary)}
-  textarea{resize:vertical;min-height:80px}
-  .hidden{display:none!important}
-  .row{display:flex;gap:10px;align-items:center}
-  .col{display:flex;flex-direction:column;gap:10px}
-  small{color:var(--muted);font-size:12px}
-  /* AUTH */
-  .auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse at 50% 0%,rgba(168,85,247,.18),transparent 60%),var(--bg)}
-  .auth-card{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:36px;width:100%;max-width:420px;box-shadow:0 30px 80px -20px rgba(168,85,247,.25)}
-  .brand{display:flex;align-items:center;gap:8px;font-size:26px;font-weight:800;color:var(--primary);margin-bottom:24px;justify-content:center;letter-spacing:-.02em}
-  .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--primary);box-shadow:0 0 14px var(--primary)}
-  .auth-card h1{font-size:22px;margin-bottom:6px;text-align:center;font-weight:600}
-  .auth-card p.sub{color:var(--muted);text-align:center;margin-bottom:24px;font-size:14px}
-  .field{margin-bottom:14px}
-  .field label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
-  .btn{background:var(--primary);color:#fff;padding:12px;border-radius:10px;width:100%;font-weight:600;font-size:14px;transition:.2s;display:inline-flex;align-items:center;justify-content:center;gap:6px}
-  .btn:hover{background:var(--primary2);transform:translateY(-1px)}
-  .btn-ghost{background:var(--panel2);border:1px solid var(--border);color:#ddd}
-  .btn-ghost:hover{background:#23232a}
-  .btn-sm{padding:8px 12px;font-size:13px;border-radius:8px}
-  .switch-link{text-align:center;color:var(--muted);font-size:14px;margin-top:16px}
-  .switch-link a{color:var(--primary);cursor:pointer}
-  .err{color:var(--red);font-size:13px;margin-top:8px;text-align:center;min-height:18px}
-  /* APP LAYOUT */
-  .app{display:flex;min-height:100vh}
-  .sidebar{width:240px;background:var(--bg2);border-right:1px solid var(--border);padding:18px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh}
-  .nav-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;color:var(--muted);font-size:14px;cursor:pointer;transition:.15s}
-  .nav-item:hover{background:var(--panel);color:#fff}
-  .nav-item.active{background:linear-gradient(90deg,rgba(168,85,247,.22),rgba(168,85,247,.05));color:#fff}
-  .nav-item .ic{width:18px;text-align:center}
-  .sidebar-bottom{margin-top:auto;display:flex;flex-direction:column;gap:8px}
-  .user-chip{display:flex;align-items:center;gap:10px;padding:10px;background:var(--panel);border-radius:12px}
-  .avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary2));display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;overflow:hidden}
-  .avatar img{width:100%;height:100%;object-fit:cover}
-  .user-chip .meta{font-size:13px;min-width:0;flex:1}
-  .user-chip .meta .name{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .user-chip .meta .uid{color:var(--muted);font-size:11px}
-  .main{flex:1;padding:30px;overflow-x:hidden;max-width:100%}
-  .page-title{font-size:24px;font-weight:600;margin-bottom:6px}
-  .page-sub{color:var(--muted);font-size:14px;margin-bottom:24px}
-  /* CARDS */
-  .grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-  .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
-  .stat-card{background:linear-gradient(135deg,rgba(168,85,247,.10),rgba(168,85,247,.02));border:1px solid rgba(168,85,247,.18);padding:18px;border-radius:var(--radius)}
-  .stat-card.dark{background:var(--panel);border:1px solid var(--border)}
-  .stat-head{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px;margin-bottom:8px}
-  .stat-val{font-size:22px;font-weight:700;margin-bottom:2px}
-  .stat-sub{font-size:12px;color:var(--muted)}
-  .section{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-top:18px}
-  .section h2{font-size:16px;margin-bottom:14px;font-weight:600}
-  .section h3{font-size:14px;margin:14px 0 8px;font-weight:600;color:#ccc}
-  .progress{height:8px;background:var(--panel2);border-radius:99px;overflow:hidden}
-  .progress > div{height:100%;background:linear-gradient(90deg,var(--primary),#ec4899);transition:.3s}
-  .task-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin-top:14px}
-  .task{display:flex;align-items:center;gap:10px;padding:10px;background:var(--panel2);border-radius:10px;font-size:13px}
-  .task.done{color:var(--green)}
-  .task .dot{width:18px;height:18px;border-radius:50%;background:var(--panel);display:grid;place-items:center;flex-shrink:0;font-size:11px}
-  .task.done .dot{background:rgba(34,197,94,.2);color:var(--green)}
-  /* manage */
-  .manage-list{display:flex;flex-direction:column;gap:8px}
-  .manage-btn{display:flex;align-items:center;gap:10px;background:var(--panel2);padding:11px 14px;border-radius:10px;font-size:14px;text-align:left;width:100%;color:#ddd}
-  .manage-btn:hover{background:#23232a}
-  /* badges */
-  .badge-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px}
-  .badge-card{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px}
-  .badge-icon{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-size:20px;flex-shrink:0}
-  .badge-info{flex:1;min-width:0}
-  .badge-info .t{font-weight:600;font-size:14px}
-  .badge-info .d{color:var(--muted);font-size:12px;margin-top:2px}
-  .badge-card .own{font-size:11px;color:var(--green);padding:3px 8px;background:rgba(34,197,94,.15);border-radius:99px}
-  /* socials */
-  .social-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:10px}
-  .social-icon{height:60px;background:var(--panel2);border-radius:12px;display:grid;place-items:center;font-size:22px;cursor:pointer;transition:.15s;border:1px solid var(--border)}
-  .social-icon:hover{transform:translateY(-2px);background:#23232a;border-color:var(--primary)}
-  .link-item{display:flex;align-items:center;gap:10px;background:var(--panel2);padding:10px;border-radius:10px;margin-top:8px}
-  .link-item .icon{width:30px;height:30px;border-radius:6px;background:var(--primary);display:grid;place-items:center;font-size:14px;flex-shrink:0}
-  .link-item .info{flex:1;min-width:0}
-  .link-item .info .name{font-weight:600;font-size:14px}
-  .link-item .info .url{color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .link-item button{color:var(--red);padding:6px;font-size:16px}
-  /* enter screen */
-  .enter-screen{position:fixed;inset:0;background:#000;color:#fff;display:grid;place-items:center;z-index:1000;cursor:pointer;text-align:center}
-  .enter-screen .es-inner{animation:pulse 2s ease-in-out infinite}
-  .enter-screen h2{font-size:28px;font-weight:300;letter-spacing:.1em}
-  .enter-screen p{color:#888;margin-top:8px;font-size:13px;letter-spacing:.2em;text-transform:uppercase}
-  @keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
-  /* profile */
-  .profile-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;position:relative;overflow:hidden}
-  .profile-bg{position:fixed;inset:0;z-index:-2;background:#000}
-  .profile-banner{width:calc(100% + 72px);margin:-36px -36px 16px;height:130px;background:#1a1a20 center/cover no-repeat;border-radius:var(--border-r,20px) var(--border-r,20px) 0 0;position:relative;overflow:hidden}
-  .profile-banner img,.profile-banner video{width:100%;height:100%;object-fit:cover;display:block}
-  .profile-card.has-banner .profile-avatar{margin-top:-66px;position:relative;z-index:2}
-  .profile-bg img,.profile-bg video{width:100%;height:100%;object-fit:cover}
-  .profile-bg.blurred img,.profile-bg.blurred video{filter:blur(var(--bg-blur,8px))}
-  .profile-card{background:rgba(20,20,22,var(--card-opacity,.72));backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:var(--border-w,1px) solid var(--border-c,#26262e);border-radius:var(--border-r,20px);padding:36px;max-width:440px;width:100%;text-align:center;box-shadow:0 0 var(--border-glow,0) var(--border-c,transparent);position:relative;z-index:2}
-  .profile-card.frost{background:rgba(255,255,255,.06)}
-  .profile-avatar{width:110px;height:110px;border-radius:50%;margin:0 auto 16px;background:linear-gradient(135deg,var(--accent,#a855f7),#ec4899);display:grid;place-items:center;font-size:42px;font-weight:700;overflow:hidden;border:3px solid var(--accent,#a855f7)}
-  .profile-avatar img{width:100%;height:100%;object-fit:cover}
-  .profile-name{font-size:28px;font-weight:700;margin-bottom:4px;color:var(--accent,#fff)}
-  .profile-uid{color:var(--muted);font-size:13px;margin-bottom:12px}
-  .profile-badges{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin-bottom:14px}
-  .pb{padding:4px 10px;border-radius:99px;font-size:11px;font-weight:600;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1)}
-  .profile-bio{color:#d6d6dc;margin-bottom:18px;font-size:14px;min-height:1.2em}
-  .profile-views{color:var(--muted);font-size:12px;margin-top:18px}
-  .profile-socials{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:18px}
-  .profile-socials a{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:18px;transition:.15s}
-  .profile-socials a:hover{transform:translateY(-3px) scale(1.08)}
-  /* username effects */
-  .fx-glow{text-shadow:0 0 10px var(--accent,#a855f7),0 0 22px var(--accent,#a855f7)}
-  .fx-rainbow{background:linear-gradient(90deg,#ff0000,#ff8c00,#ffd700,#22c55e,#3b82f6,#a855f7,#ec4899);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rainbow 4s linear infinite}
-  @keyframes rainbow{to{background-position:200% center}}
-  .fx-gradient{background:linear-gradient(135deg,var(--accent,#a855f7),#ec4899);-webkit-background-clip:text;background-clip:text;color:transparent}
-  .fx-sparkle{position:relative}
-  .fx-sparkle::after{content:'✨';position:absolute;right:-22px;top:-6px;animation:spark 1.5s ease-in-out infinite}
-  @keyframes spark{0%,100%{transform:scale(.6) rotate(0);opacity:.5}50%{transform:scale(1.2) rotate(180deg);opacity:1}}
-  .fx-animated{animation:nameBounce 2s ease-in-out infinite}
-  @keyframes nameBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-  /* music player */
-  .music-player{position:fixed;bottom:20px;left:20px;background:rgba(20,20,24,.85);backdrop-filter:blur(14px);border:1px solid var(--border);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px;z-index:50;min-width:220px}
-  .music-player button{font-size:18px;width:32px;height:32px;border-radius:50%;background:var(--primary);display:grid;place-items:center}
-  .music-player .mp-vol{width:70px}
-  /* effects layer removed */
-  /* spotify widget */
-  .spotify-now{display:inline-flex;align-items:center;gap:8px;background:rgba(29,185,84,.12);border:1px solid rgba(29,185,84,.3);color:#1db954;padding:6px 12px;border-radius:99px;font-size:12px;margin-top:8px}
-  .spotify-now .eq{display:inline-flex;gap:2px}
-  .spotify-now .eq i{width:2px;height:10px;background:#1db954;display:inline-block;animation:eq 1s ease-in-out infinite}
-  .spotify-now .eq i:nth-child(2){animation-delay:.2s}
-  .spotify-now .eq i:nth-child(3){animation-delay:.4s}
-  @keyframes eq{0%,100%{height:4px}50%{height:12px}}
-  /* discord status */
-  .ds-status{display:inline-flex;align-items:center;gap:8px;background:rgba(88,101,242,.12);border:1px solid rgba(88,101,242,.3);padding:6px 12px;border-radius:99px;font-size:12px;margin-top:8px;color:#cfd2ff}
-  .ds-status .indot{width:8px;height:8px;border-radius:50%;background:#43b581;box-shadow:0 0 8px #43b581}
-  /* admin */
-  table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}
-  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--border)}
-  th{color:var(--muted);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
-  td .row-btns{display:flex;gap:6px;flex-wrap:wrap}
-  td button{padding:5px 10px;background:var(--panel2);border-radius:6px;font-size:12px;color:#ddd}
-  td button:hover{background:#23232a}
-  td button.danger{color:var(--red)}
-  /* modal */
-  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);display:grid;place-items:center;z-index:200;padding:20px}
-  .modal{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto}
-  .modal h3{margin-bottom:16px;font-size:18px}
-  .modal-actions{display:flex;gap:10px;margin-top:18px;justify-content:flex-end}
-  /* toast */
-  .toast{position:fixed;bottom:24px;right:24px;background:var(--panel);border:1px solid var(--border);padding:12px 18px;border-radius:10px;z-index:300;animation:slideIn .3s;box-shadow:0 10px 30px rgba(0,0,0,.5)}
-  @keyframes slideIn{from{transform:translateX(20px);opacity:0}to{transform:translateX(0);opacity:1}}
-  .premium-tag{display:inline-block;background:linear-gradient(135deg,#a855f7,#ec4899);color:#fff;font-size:10px;padding:2px 8px;border-radius:99px;font-weight:700;margin-left:6px;vertical-align:middle}
-  .free-tag{display:inline-block;background:linear-gradient(135deg,#22c55e,#10b981);color:#fff;font-size:10px;padding:2px 8px;border-radius:99px;font-weight:700;margin-left:6px}
-  /* effect particles */
-  /* file picker label */
-  .file-pick{display:inline-flex;align-items:center;gap:8px;background:var(--panel2);border:1px dashed var(--border);color:#ccc;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:13px;width:100%;justify-content:center}
-  .file-pick:hover{border-color:var(--primary);color:#fff}
-  .file-pick input{display:none}
-  .preview-thumb{margin-top:8px;max-height:120px;border-radius:8px;display:block}
-  @media(max-width:768px){
-    .sidebar{width:62px;padding:10px}
-    .sidebar .nav-item span:not(.ic),.sidebar .brand .brand-text,.user-chip .meta,.sidebar-bottom .full{display:none}
-    .main{padding:18px}
-  }
+:root{
+  --bg-0:#0a0b10;
+  --bg-1:#11131c;
+  --panel:#161924;
+  --panel-2:#1d2130;
+  --line:#2a2f42;
+  --text:#eef0fa;
+  --text-dim:#9aa0bd;
+  --accent:#7c5cff;
+  --accent-2:#34e2c4;
+  --danger:#ff5c7a;
+  --font-display:'Space Grotesk', 'Segoe UI', sans-serif;
+  --font-body:'Inter', 'Segoe UI', sans-serif;
+  --font-mono:'JetBrains Mono', monospace;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;height:100%;}
+body{
+  background:var(--bg-0);
+  color:var(--text);
+  font-family:var(--font-body);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap');
+
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;}
+input,textarea,select{font-family:inherit;}
+
+#app{min-height:100vh;position:relative;}
+
+/* ---------- top nav ---------- */
+.nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 32px;border-bottom:1px solid var(--line);
+  background:rgba(10,11,16,0.7);backdrop-filter:blur(10px);
+  position:sticky;top:0;z-index:50;
+}
+.brand{font-family:var(--font-display);font-weight:700;font-size:19px;letter-spacing:-0.02em;display:flex;align-items:center;gap:8px;}
+.brand .dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 0 12px var(--accent);}
+.nav-right{display:flex;gap:10px;align-items:center;}
+.btn{
+  padding:9px 18px;border-radius:9px;border:1px solid var(--line);
+  background:var(--panel);color:var(--text);font-size:14px;font-weight:500;
+  transition:.15s;
+}
+.btn:hover{border-color:var(--accent);}
+.btn-primary{
+  background:linear-gradient(135deg,var(--accent),#5a3fd6);
+  border:none;color:#fff;font-weight:600;
+}
+.btn-primary:hover{filter:brightness(1.1);}
+.btn-ghost{background:transparent;border:1px solid transparent;color:var(--text-dim);}
+.btn-ghost:hover{color:var(--text);}
+.btn-danger{background:transparent;border:1px solid var(--danger);color:var(--danger);}
+
+/* ---------- landing ---------- */
+.landing-hero{
+  max-width:920px;margin:0 auto;padding:110px 24px 60px;text-align:center;
+  position:relative;
+}
+.landing-hero::before{
+  content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);
+  width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle, rgba(124,92,255,0.18), transparent 70%);
+  pointer-events:none;z-index:-1;
+}
+.eyebrow{
+  font-family:var(--font-mono);font-size:12px;color:var(--accent-2);
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:18px;
+  display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);
+  padding:6px 14px;border-radius:999px;background:var(--panel);
+}
+.landing-hero h1{
+  font-family:var(--font-display);font-size:clamp(34px,6vw,62px);
+  font-weight:700;line-height:1.05;letter-spacing:-0.03em;margin:0 0 18px;
+}
+.landing-hero h1 span{
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.landing-hero p{color:var(--text-dim);font-size:17px;max-width:560px;margin:0 auto 34px;line-height:1.6;}
+.landing-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.landing-cta .btn{padding:13px 26px;font-size:15px;}
+
+.feature-grid{
+  max-width:1000px;margin:70px auto;padding:0 24px;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;
+}
+.feature-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:14px;
+  padding:22px;text-align:left;
+}
+.feature-card .icon{font-size:22px;margin-bottom:10px;}
+.feature-card h3{font-family:var(--font-display);font-size:15px;margin:0 0 6px;}
+.feature-card p{color:var(--text-dim);font-size:13px;line-height:1.5;margin:0;}
+
+/* ---------- auth ---------- */
+.auth-wrap{max-width:380px;margin:90px auto;padding:0 20px;}
+.auth-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:32px;
+}
+.auth-card h2{font-family:var(--font-display);font-size:22px;margin:0 0 4px;}
+.auth-card .sub{color:var(--text-dim);font-size:13px;margin-bottom:24px;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:12px;color:var(--text-dim);margin-bottom:6px;font-weight:500;}
+.field input{
+  width:100%;padding:11px 13px;border-radius:9px;border:1px solid var(--line);
+  background:var(--bg-1);color:var(--text);font-size:14px;outline:none;transition:.15s;
+}
+.field input:focus{border-color:var(--accent);}
+.field-hint{font-size:11px;color:var(--text-dim);margin-top:5px;}
+.auth-err{color:var(--danger);font-size:13px;margin-bottom:12px;min-height:0;}
+.auth-switch{margin-top:18px;text-align:center;font-size:13px;color:var(--text-dim);}
+.auth-switch a{color:var(--accent-2);font-weight:600;}
+
+/* ---------- dashboard ---------- */
+.dash{max-width:1100px;margin:0 auto;padding:32px 24px 80px;display:grid;grid-template-columns:340px 1fr;gap:24px;}
+@media(max-width:860px){.dash{grid-template-columns:1fr;}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;margin-bottom:20px;}
+.panel h3{font-family:var(--font-display);font-size:15px;margin:0 0 16px;display:flex;align-items:center;gap:8px;}
+.panel h3 .tag{font-size:10px;background:var(--panel-2);color:var(--text-dim);padding:2px 8px;border-radius:6px;font-weight:500;font-family:var(--font-mono);}
+
+.editor-col .field textarea{
+  width:100%;padding:11px 13px;border-radius:9px;border:1px solid var(--line);
+  background:var(--bg-1);color:var(--text);font-size:14px;resize:vertical;min-height:70px;outline:none;
+}
+.editor-col .field textarea:focus{border-color:var(--accent);}
+
+.color-row{display:flex;gap:10px;align-items:center;}
+.color-row input[type=color]{width:42px;height:38px;border-radius:8px;border:1px solid var(--line);background:none;padding:0;cursor:pointer;}
+.color-row span{font-family:var(--font-mono);font-size:12px;color:var(--text-dim);}
+
+.swatches{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+.swatch{width:28px;height:28px;border-radius:8px;border:2px solid transparent;cursor:pointer;}
+.swatch.active{border-color:#fff;}
+
+.theme-presets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px;}
+.preset-btn{
+  border-radius:10px;border:1px solid var(--line);padding:10px 6px;text-align:center;font-size:11px;
+  color:var(--text-dim);background:var(--bg-1);
+}
+.preset-btn.active{border-color:var(--accent);color:var(--text);}
+.preset-swatch{width:100%;height:24px;border-radius:6px;margin-bottom:6px;}
+
+.links-list{display:flex;flex-direction:column;gap:10px;}
+.link-row{
+  display:flex;gap:8px;align-items:center;background:var(--bg-1);border:1px solid var(--line);
+  border-radius:10px;padding:10px;
+}
+.link-row select, .link-row input{
+  background:transparent;border:none;color:var(--text);font-size:13px;outline:none;
+}
+.link-row select{flex-shrink:0;width:110px;}
+.link-row input{flex:1;min-width:0;}
+.link-row .rm{color:var(--danger);background:none;border:none;font-size:16px;padding:2px 6px;flex-shrink:0;}
+.add-link-btn{
+  margin-top:10px;width:100%;padding:10px;border-radius:10px;border:1px dashed var(--line);
+  background:transparent;color:var(--text-dim);font-size:13px;
+}
+.add-link-btn:hover{border-color:var(--accent);color:var(--text);}
+
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);}
+.toggle-row:last-child{border-bottom:none;}
+.toggle-row .label{font-size:13px;}
+.toggle-row .label .d{display:block;font-size:11px;color:var(--text-dim);margin-top:2px;}
+.switch{width:40px;height:22px;border-radius:99px;background:var(--bg-1);border:1px solid var(--line);position:relative;flex-shrink:0;}
+.switch.on{background:var(--accent);border-color:var(--accent);}
+.switch::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.15s;}
+.switch.on::after{left:20px;}
+
+.save-bar{
+  position:sticky;bottom:18px;display:flex;justify-content:space-between;align-items:center;
+  background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-top:10px;
+}
+.save-msg{font-size:12px;color:var(--accent-2);}
+
+/* live preview phone */
+.preview-col{position:sticky;top:90px;align-self:start;}
+.phone{
+  width:100%;max-width:300px;margin:0 auto;border-radius:28px;border:6px solid #000;
+  background:#000;overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,0.5);
+}
+.phone-inner{height:560px;overflow:hidden;position:relative;}
+.preview-link{display:block;text-align:center;font-size:11px;color:var(--text-dim);margin-top:10px;}
+.preview-link b{color:var(--accent-2);}
+
+/* ---------- public profile ---------- */
+.profile-page{min-height:100vh;position:relative;display:flex;align-items:center;justify-content:center;padding:40px 16px;overflow:hidden;}
+.profile-bg-layer{position:absolute;inset:0;z-index:0;}
+.profile-card{
+  position:relative;z-index:2;width:100%;max-width:380px;
+  background:rgba(20,22,32,0.72);backdrop-filter:blur(18px);
+  border:1px solid rgba(255,255,255,0.08);border-radius:22px;
+  padding:34px 26px;text-align:center;
+  box-shadow:0 25px 60px rgba(0,0,0,0.5);
+}
+.p-avatar{
+  width:92px;height:92px;border-radius:50%;margin:0 auto 14px;object-fit:cover;
+  border:3px solid var(--p-accent,var(--accent));box-shadow:0 0 30px var(--p-accent,var(--accent));
+  background:var(--panel-2);display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:30px;font-weight:700;
+}
+.p-name{font-family:var(--font-display);font-size:21px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;}
+.p-badge{font-size:13px;}
+.p-username{font-size:13px;color:var(--text-dim);margin-top:2px;font-family:var(--font-mono);}
+.p-bio{font-size:13.5px;color:#d6d8ea;line-height:1.6;margin:14px 0 18px;white-space:pre-wrap;}
+.p-links{display:flex;flex-direction:column;gap:10px;}
+.p-link{
+  display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:12px;
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);
+  font-size:13.5px;font-weight:500;transition:.15s;justify-content:center;
+}
+.p-link:hover{background:var(--p-accent,var(--accent));border-color:var(--p-accent,var(--accent));color:#fff;transform:translateY(-2px);}
+.p-stats{margin-top:20px;display:flex;justify-content:center;gap:16px;font-family:var(--font-mono);font-size:11px;color:var(--text-dim);}
+.p-music{
+  margin-top:16px;display:flex;align-items:center;justify-content:center;gap:8px;
+  font-size:11px;color:var(--text-dim);font-family:var(--font-mono);
+}
+.p-music .bars{display:flex;gap:2px;align-items:flex-end;height:12px;}
+.p-music .bars span{width:2px;background:var(--p-accent,var(--accent));animation:eq 1s infinite ease-in-out;}
+.p-music .bars span:nth-child(2){animation-delay:.2s;}
+.p-music .bars span:nth-child(3){animation-delay:.4s;}
+@keyframes eq{0%,100%{height:3px;}50%{height:12px;}}
+.notfound{text-align:center;color:var(--text-dim);}
+.claim-strip{
+  margin-top:18px;text-align:center;font-size:11px;color:var(--text-dim);
+  position:relative;z-index:2;
+}
+.claim-strip a{color:var(--accent-2);font-weight:600;}
+
+/* particle bg canvas */
+canvas.bgcanvas{position:absolute;inset:0;width:100%;height:100%;}
+
+/* custom cursor */
+.cursor-dot{position:fixed;width:18px;height:18px;border-radius:50%;border:2px solid var(--p-accent,var(--accent));pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .15s,height .15s;mix-blend-mode:difference;}
+
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  background:var(--panel-2);border:1px solid var(--accent);color:var(--text);
+  padding:11px 20px;border-radius:10px;font-size:13px;z-index:999;box-shadow:0 10px 30px rgba(0,0,0,0.4);
+}
+
+.muted-link{color:var(--text-dim);font-size:12px;}
+
+/* ---------- splash / enter screen ---------- */
+.splash{
+  position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;
+  background:#05050a;cursor:pointer;flex-direction:column;gap:18px;
+  animation:splashIn .4s ease;
+}
+@keyframes splashIn{from{opacity:0;}to{opacity:1;}}
+.splash.hide{animation:splashOut .5s ease forwards;pointer-events:none;}
+@keyframes splashOut{to{opacity:0;}}
+.splash-ring{
+  width:64px;height:64px;border-radius:50%;border:2px solid var(--p-accent,var(--accent));
+  display:flex;align-items:center;justify-content:center;font-size:22px;
+  animation:pulseRing 1.8s infinite ease-in-out;box-shadow:0 0 30px var(--p-accent,var(--accent));
+}
+@keyframes pulseRing{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.08);opacity:.7;}}
+.splash-text{font-family:var(--font-mono);font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);}
+
+/* ---------- password gate ---------- */
+.gate-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:30px;
+  max-width:320px;width:100%;text-align:center;position:relative;z-index:2;
+}
+.gate-card h3{font-family:var(--font-display);margin:10px 0 4px;}
+.gate-card p{color:var(--text-dim);font-size:13px;margin-bottom:16px;}
+.gate-card input{
+  width:100%;padding:11px 13px;border-radius:9px;border:1px solid var(--line);
+  background:var(--bg-1);color:var(--text);font-size:14px;outline:none;margin-bottom:10px;text-align:center;
+}
+.gate-err{color:var(--danger);font-size:12px;min-height:16px;margin-bottom:6px;}
+
+/* ---------- avatar border styles ---------- */
+.p-avatar.style-glow{box-shadow:0 0 40px var(--p-accent,var(--accent)),0 0 10px var(--p-accent,var(--accent));}
+.p-avatar.style-square{border-radius:18px;}
+.p-avatar.style-rotating{position:relative;}
+.avatar-wrap{position:relative;width:92px;height:92px;margin:0 auto 14px;}
+.avatar-ring-spin{
+  position:absolute;inset:-6px;border-radius:50%;
+  border:2px dashed var(--p-accent,var(--accent));
+  animation:spin 6s linear infinite;
+}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+/* ---------- badges row ---------- */
+.p-badges-row{display:flex;gap:5px;justify-content:center;margin-top:4px;}
+.p-badges-row .b{
+  width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:12px;
+}
+
+/* ---------- typewriter ---------- */
+.p-bio.typewriter{white-space:pre-wrap;border-right:2px solid var(--p-accent,var(--accent));display:inline-block;overflow:hidden;}
+
+/* ---------- music player controls ---------- */
+.p-music-bar{
+  margin-top:16px;display:flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);
+  border-radius:12px;padding:9px 12px;
+}
+.p-music-bar .play-btn{
+  width:28px;height:28px;border-radius:50%;background:var(--p-accent,var(--accent));border:none;
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;flex-shrink:0;
+}
+.p-music-bar .meta{flex:1;text-align:left;min-width:0;}
+.p-music-bar .meta .t{font-size:11.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.p-music-bar .bars{display:flex;gap:2px;align-items:flex-end;height:12px;flex-shrink:0;}
+.p-music-bar .bars span{width:2px;background:var(--p-accent,var(--accent));animation:eq 1s infinite ease-in-out;}
+.p-music-bar .bars.paused span{animation-play-state:paused;height:3px;}
+.p-music-bar .bars span:nth-child(2){animation-delay:.2s;}
+.p-music-bar .bars span:nth-child(3){animation-delay:.4s;}
+
+/* ---------- cursor trail ---------- */
+.trail-dot{position:fixed;width:6px;height:6px;border-radius:50%;pointer-events:none;z-index:9998;}
+
+/* ---------- settings panel extra ---------- */
+.layout-toggle{display:flex;gap:8px;}
+.layout-opt{
+  flex:1;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--bg-1);
+  text-align:center;font-size:11px;color:var(--text-dim);
+}
+.layout-opt.active{border-color:var(--accent);color:var(--text);}
 </style>
 </head>
 <body>
-<div id="root"></div>
+<div id="app"></div>
+
 <script>
-/* =====================================================
-   kioo.zeta — single-file bio link app
-   Storage: localStorage. Admin: k / k@gmail.com / Hallopelo112
-   Premium is FREE for everyone.
-===================================================== */
-const SESSION_KEY='kioo_session_v2';
+(function(){
+"use strict";
 
-/* ---------- Lovable Cloud (shared state across all devices) ---------- */
-const SUPABASE_URL='https://telkwubppafnptuguhmt.supabase.co';
-const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlbGt3dWJwcGFmbnB0dWd1aG10Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0NzkzMjksImV4cCI6MjA5ODA1NTMyOX0.eNETlQwGV5EBZyuy8kJeYq8M7SWQi0o8esYb81A9z8A';
-const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:false}});
-const BUCKET='kioo-media';
+/* ============== STORAGE HELPERS ============== */
+async function sget(key){
+  try{ const r = await window.storage.get(key, true); return r ? JSON.parse(r.value) : null; }
+  catch(e){ return null; }
+}
+async function sset(key, val){
+  try{ await window.storage.set(key, JSON.stringify(val), true); return true; }
+  catch(e){ console.error(e); return false; }
+}
+async function slist(prefix){
+  try{ const r = await window.storage.list(prefix, true); return r ? r.keys : []; }
+  catch(e){ return []; }
+}
 
-const ALL_BADGES=[
-  {id:'staff',name:'Staff',desc:'Teil des Staff-Teams.',icon:'🛠️',color:'#3b82f6'},
-  {id:'helper',name:'Helper',desc:'Aktiver Helfer.',icon:'💡',color:'#fbbf24'},
-  {id:'premium',name:'Premium',desc:'Premium aktiv.',icon:'💎',color:'#a855f7'},
-  {id:'verified',name:'Verified',desc:'Bekannter Creator.',icon:'✓',color:'#3b82f6'},
-  {id:'donor',name:'Donor',desc:'Spender.',icon:'💰',color:'#22c55e'},
-  {id:'gifter',name:'Gifter',desc:'Hat etwas verschenkt.',icon:'🎁',color:'#fbbf24'},
-  {id:'imagehost',name:'Image Host',desc:'Image-Host User.',icon:'🖼️',color:'#22c55e'},
-  {id:'domainlegend',name:'Domain Legend',desc:'Custom Domain.',icon:'🚀',color:'#ec4899'},
-  {id:'og',name:'OG',desc:'Früher Unterstützer.',icon:'⭐',color:'#fbbf24'},
-  {id:'booster',name:'Booster',desc:'Discord-Booster.',icon:'🔥',color:'#f97316'},
-  {id:'bughunter',name:'Bug Hunter',desc:'Bug gemeldet.',icon:'🐛',color:'#22c55e'},
-  {id:'owner',name:'Owner',desc:'Owner von kioo.zeta.',icon:'👑',color:'#fbbf24'},
-  {id:'admin',name:'Admin',desc:'Administrator.',icon:'🛡️',color:'#ef4444'},
-  {id:'million',name:'The Million',desc:'1 Mio. Nutzer Event.',icon:'🎉',color:'#06b6d4'},
-  {id:'winner',name:'Winner',desc:'Event-Gewinner.',icon:'🏆',color:'#fbbf24'},
-  {id:'og_name',name:'OG Username',desc:'3L/4L/OG Username.',icon:'🅾️',color:'#ec4899'},
-];
-const SOCIALS=[
-  {id:'youtube',name:'YouTube',icon:'▶',color:'#ff0000'},
-  {id:'discord',name:'Discord',icon:'🎮',color:'#5865f2'},
-  {id:'spotify',name:'Spotify',icon:'🎵',color:'#1db954'},
-  {id:'instagram',name:'Instagram',icon:'📷',color:'#e4405f'},
-  {id:'x',name:'X',icon:'𝕏',color:'#000'},
-  {id:'tiktok',name:'TikTok',icon:'♪',color:'#000'},
-  {id:'twitch',name:'Twitch',icon:'📺',color:'#9146ff'},
-  {id:'github',name:'GitHub',icon:'⌨',color:'#333'},
-  {id:'steam',name:'Steam',icon:'🎮',color:'#1b2838'},
-  {id:'reddit',name:'Reddit',icon:'👽',color:'#ff4500'},
-  {id:'snapchat',name:'Snapchat',icon:'👻',color:'#fcd34d'},
-  {id:'telegram',name:'Telegram',icon:'✈',color:'#0088cc'},
-  {id:'facebook',name:'Facebook',icon:'f',color:'#1877f2'},
-  {id:'email',name:'Email',icon:'✉',color:'#888'},
-  {id:'website',name:'Website',icon:'🌐',color:'#666'},
-];
-const NAME_FX=['none','glow','rainbow','gradient','sparkle','animated'];
-const FONTS=[
-  {id:'inter',name:'Inter',css:"'Inter',system-ui,sans-serif"},
-  {id:'poppins',name:'Poppins',css:"'Poppins',sans-serif"},
-  {id:'space',name:'Space Grotesk',css:"'Space Grotesk',sans-serif"},
-  {id:'jakarta',name:'Plus Jakarta',css:"'Plus Jakarta Sans',sans-serif"},
-  {id:'mono',name:'JetBrains Mono',css:"'JetBrains Mono',monospace"},
-  {id:'serif',name:'Instrument Serif',css:"'Instrument Serif',serif"},
-  {id:'bebas',name:'Bebas Neue',css:"'Bebas Neue',sans-serif"},
-  {id:'pixel',name:'Press Start 2P',css:"'Press Start 2P',monospace"},
+const USERS_KEY = "lf:users"; // { username: {passHash, createdAt} }
+const PROFILE_PREFIX = "lf:profile:"; // lf:profile:username -> profile object
+const SESSION_KEY = "lf_session"; // sessionStorage style but we use in-memory + a storage personal key fallback
+
+let currentUser = null; // username currently logged in (client-side only, not persisted across reload by design choice -> we DO persist via personal storage)
+
+function simpleHash(str){
+  let h = 0;
+  for(let i=0;i<str.length;i++){ h = (Math.imul(31,h) + str.charCodeAt(i))|0; }
+  return 'h'+Math.abs(h)+str.length;
+}
+
+const THEME_PRESETS = [
+  {name:"Violet", accent:"#7c5cff", bg:"#0a0b10", bg2:"#1d1230"},
+  {name:"Mint", accent:"#34e2c4", bg:"#06120f", bg2:"#0d2a22"},
+  {name:"Crimson", accent:"#ff5c7a", bg:"#150508", bg2:"#2a0a12"},
+  {name:"Amber", accent:"#ffb648", bg:"#140d04", bg2:"#2a1a06"},
+  {name:"Sky", accent:"#4fb6ff", bg:"#04111c", bg2:"#0a2436"},
+  {name:"Mono", accent:"#e6e6e6", bg:"#0a0a0a", bg2:"#1a1a1a"},
 ];
 
-/* ---------- DB ---------- */
-function defaultProfile(){
+const LINK_TYPES = [
+  {k:"custom", label:"Custom", icon:"🔗"},
+  {k:"discord", label:"Discord", icon:"🎮"},
+  {k:"instagram", label:"Instagram", icon:"📸"},
+  {k:"twitter", label:"X / Twitter", icon:"𝕏"},
+  {k:"youtube", label:"YouTube", icon:"▶️"},
+  {k:"tiktok", label:"TikTok", icon:"🎵"},
+  {k:"twitch", label:"Twitch", icon:"🟣"},
+  {k:"github", label:"GitHub", icon:"💻"},
+  {k:"spotify", label:"Spotify", icon:"🎧"},
+  {k:"telegram", label:"Telegram", icon:"✈️"},
+  {k:"email", label:"E-Mail", icon:"✉️"},
+  {k:"website", label:"Website", icon:"🌐"},
+];
+
+function defaultProfile(username){
   return {
-    bgUrl:'', bgType:'image', // image|video|gif
-    bannerUrl:'', bannerType:'image',
-    musicUrl:'', musicAutoplay:true, musicVolume:.5,
-    enterScreen:true, enterText:'click anywhere to enter',
-    cursorUrl:'', // image or emoji
-    nameEffect:'glow',
-    typewriter:true,
-    font:'inter',
-    cardOpacity:.72, bgBlur:8, frosted:false,
-    borderWidth:1, borderColor:'#26262e', borderRadius:20, borderGlow:0, borderAnimated:false,
-    accent:'#a855f7',
-    discord:{enabled:false, id:''}, // Lanyard id
-    spotify:{enabled:false, track:'Lo-Fi Beats', artist:'Chillhop'},
-    titleAnim:['hi','there','welcome to kioo.zeta'],
-    favicon:'', // dataurl or emoji
-    seo:{title:'',desc:'',color:'#a855f7',image:''},
+    username,
+    displayName: username,
+    bio: "Willkommen auf meiner Seite ✦",
+    avatarUrl: "",
+    avatarEmoji: username.slice(0,1).toUpperCase(),
+    avatarStyle: "glow", // glow | square | rotating | plain
+    accent: "#7c5cff",
+    bg: "#0a0b10",
+    bg2: "#1d1230",
+    font: "Space Grotesk",
+    effect: "particles", // particles | grid | none
+    cursor: true,
+    cursorTrail: false,
+    musicUrl: "",
+    musicLabel: "",
+    badges: ["✦"],
+    typewriter: false,
+    splash: false,
+    pageTitle: "",
+    seoDescription: "",
+    profilePassword: "",
+    links: [
+      {type:"website", label:"Meine Seite", url:"https://example.com"}
+    ],
+    views: 0,
+    uniqueVisitors: 0,
+    createdAt: Date.now()
   };
 }
 
-let _db=null;
-function _newDB(){
-  const db={users:[],nextUid:2,templates:[]};
-  db.users.push({uid:1,username:'k',email:'k@gmail.com',password:'Hallopelo112',displayName:'k',bio:'Owner von kioo.zeta',avatar:'',views:0,badges:['owner','admin','staff','premium','verified','og_name'],customBadges:[],socials:[],premium:true,role:'admin',aliases:[],usernameChanges:0,createdAt:Date.now(),profile:defaultProfile()});
-  return db;
+/* ============== ROUTER ============== */
+function getRoute(){
+  const h = location.hash.replace(/^#\/?/, '');
+  if(!h) return {page:"landing"};
+  if(h.startsWith("u/")) return {page:"profile", username: decodeURIComponent(h.slice(2))};
+  if(h === "login") return {page:"login"};
+  if(h === "register") return {page:"register"};
+  if(h === "dashboard") return {page:"dashboard"};
+  return {page:"landing"};
 }
-function _migrate(db){
-  if(!Array.isArray(db.templates)) db.templates=[];
-  db.users.forEach(u=>{
-    if(!u.profile) u.profile=defaultProfile();
-    else { const d=defaultProfile(); for(const k in d) if(u.profile[k]===undefined) u.profile[k]=d[k]; }
-  });
-  return db;
+window.addEventListener("hashchange", render);
+
+/* ============== APP STATE ============== */
+let state = {
+  loading:true,
+  errorMsg:"",
+  toast:null,
+};
+
+function showToast(msg){
+  state.toast = msg;
+  renderToastOnly();
+  setTimeout(()=>{ state.toast=null; renderToastOnly(); }, 2400);
 }
-async function _fetchCloud(){
-  const {data,error}=await sb.from('kioo_state').select('data').eq('id',1).maybeSingle();
-  if(error){console.error('kioo_state load failed',error);return _newDB();}
-  if(!data||!data.data)return _newDB();
-  return _migrate(data.data);
-}
-let _saving=false,_pendingSave=false,_saveTimer=null;
-async function _flushSave(){
-  if(_saving){_pendingSave=true;return;}
-  _saving=true;_pendingSave=false;
-  try{
-    const {error}=await sb.from('kioo_state').update({data:_db,updated_at:new Date().toISOString()}).eq('id',1);
-    if(error)console.error('save failed',error);
-  }finally{
-    _saving=false;
-    if(_pendingSave)_flushSave();
+function renderToastOnly(){
+  let el = document.getElementById("toast-el");
+  if(el) el.remove();
+  if(state.toast){
+    const t = document.createElement("div");
+    t.id="toast-el"; t.className="toast"; t.textContent=state.toast;
+    document.body.appendChild(t);
   }
 }
-async function initDB(){
-  _db=await _fetchCloud();
-  // realtime: re-render on remote changes (e.g. profile updates from other devices)
-  sb.channel('kioo-state-ch').on('postgres_changes',{event:'UPDATE',schema:'public',table:'kioo_state'},(payload)=>{
-    if(!payload||!payload.new||!payload.new.data)return;
-    if(_saving||_pendingSave)return; // skip own echo while writing
-    _db=_migrate(payload.new.data);
-    try{render();}catch(e){console.error(e);}
-  }).subscribe();
-}
-function loadDB(){return _db||(_db=_newDB());}
-function saveDB(){
-  if(_saveTimer)clearTimeout(_saveTimer);
-  _saveTimer=setTimeout(_flushSave,250);
-}
-function getSession(){const s=localStorage.getItem(SESSION_KEY);return s?JSON.parse(s):null;}
-function setSession(uid){localStorage.setItem(SESSION_KEY,JSON.stringify({uid}));}
-function clearSession(){localStorage.removeItem(SESSION_KEY);}
-function currentUser(){const s=getSession();if(!s)return null;const db=loadDB();return db.users.find(u=>u.uid===s.uid)||null;}
-function updateUser(uid,patch){const db=loadDB();const u=db.users.find(x=>x.uid===uid);if(u){Object.assign(u,patch);saveDB();}}
-function updateProfile(uid,patch){const db=loadDB();const u=db.users.find(x=>x.uid===uid);if(u){Object.assign(u.profile,patch);saveDB();}}
 
-/* ---------- UI helpers ---------- */
-const $=id=>document.getElementById(id);
-const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2400);}
-function modal(title,html,onOk,okText='Speichern'){
-  const bg=document.createElement('div');
-  bg.className='modal-bg';
-  bg.innerHTML=`<div class="modal"><h3>${esc(title)}</h3><div>${html}</div><div class="modal-actions"><button class="btn btn-ghost btn-sm" id="mcancel">Abbrechen</button><button class="btn btn-sm" id="mok">${esc(okText)}</button></div></div>`;
-  document.body.appendChild(bg);
-  bg.querySelector('#mcancel').onclick=()=>bg.remove();
-  bg.querySelector('#mok').onclick=()=>{if(onOk(bg)!==false)bg.remove();};
-  bg.onclick=e=>{if(e.target===bg)bg.remove();};
-  return bg;
-}
-async function readFile(input,cb){
-  const f=input.files&&input.files[0];if(!f)return;
-  if(f.size>50*1024*1024){toast('Datei zu groß (max 50MB)');return;}
+/* session: try to remember logged-in user via personal (non-shared) storage */
+async function loadSession(){
   try{
-    toast('Lade hoch...');
-    const ext=(f.name.split('.').pop()||'bin').toLowerCase().replace(/[^a-z0-9]/g,'');
-    const name='m_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,10)+(ext?'.'+ext:'');
-    const {error}=await sb.storage.from(BUCKET).upload(name,f,{contentType:f.type||'application/octet-stream',upsert:false});
-    if(error){toast('Upload fehlgeschlagen: '+error.message);return;}
-    const {data:pub}=sb.storage.from(BUCKET).getPublicUrl(name);
-    cb(pub.publicUrl,f);
-  }catch(e){toast('Upload fehlgeschlagen: '+(e&&e.message||e));}
+    const r = await window.storage.get("lf_session_user", false);
+    if(r) currentUser = JSON.parse(r.value);
+  }catch(e){ currentUser = null; }
 }
-function safeUpdateProfile(uid,patch){try{updateProfile(uid,patch);return true;}catch(e){toast('Speicher voll – kleinere Datei wählen');return false;}}
-function safeUpdateUser(uid,patch){try{updateUser(uid,patch);return true;}catch(e){toast('Speicher voll – kleinere Datei wählen');return false;}}
+async function saveSession(username){
+  currentUser = username;
+  try{ await window.storage.set("lf_session_user", JSON.stringify(username), false); }catch(e){}
+}
+async function clearSession(){
+  currentUser = null;
+  try{ await window.storage.delete("lf_session_user", false); }catch(e){}
+}
 
-/* ---------- ROUTER ---------- */
-let currentPage='overview';
-let pageTitleTimer=null;
-function clearPageTitleAnim(){if(pageTitleTimer){clearInterval(pageTitleTimer);pageTitleTimer=null;}document.title='kioo.zeta';}
-function render(){
-  // cleanup
-  clearPageTitleAnim();
-  cleanupProfileFx();
-  document.body.style.cursor='';
-  const hash=location.hash.slice(1);
-  if(hash.startsWith('/u/')){renderProfilePage(decodeURIComponent(hash.slice(3)));return;}
-  const user=currentUser();
-  if(!user){renderAuth();return;}
-  renderApp(user);
+/* ============== AUTH ============== */
+async function registerUser(username, password){
+  username = username.trim().toLowerCase();
+  if(!/^[a-z0-9_]{3,20}$/.test(username)) return {ok:false, msg:"Nutzername: 3-20 Zeichen, nur a-z 0-9 _"};
+  if(password.length < 4) return {ok:false, msg:"Passwort braucht mind. 4 Zeichen"};
+  let users = await sget(USERS_KEY) || {};
+  if(users[username]) return {ok:false, msg:"Nutzername bereits vergeben"};
+  users[username] = {passHash: simpleHash(password), createdAt: Date.now()};
+  const ok = await sset(USERS_KEY, users);
+  if(!ok) return {ok:false, msg:"Speichern fehlgeschlagen, versuch's nochmal"};
+  await sset(PROFILE_PREFIX+username, defaultProfile(username));
+  await saveSession(username);
+  return {ok:true};
 }
-window.addEventListener('hashchange',render);
+async function loginUser(username, password){
+  username = username.trim().toLowerCase();
+  let users = await sget(USERS_KEY) || {};
+  const u = users[username];
+  if(!u || u.passHash !== simpleHash(password)) return {ok:false, msg:"Login falsch"};
+  await saveSession(username);
+  return {ok:true};
+}
+
+/* ============== RENDER ROOT ============== */
+async function render(){
+  const root = document.getElementById("app");
+  const route = getRoute();
+
+  if(route.page === "landing") return renderLanding(root);
+  if(route.page === "login") return renderAuth(root, "login");
+  if(route.page === "register") return renderAuth(root, "register");
+  if(route.page === "dashboard"){
+    if(!currentUser){ location.hash = "#/login"; return; }
+    return renderDashboard(root);
+  }
+  if(route.page === "profile") return renderProfile(root, route.username);
+}
+
+/* ---------- NAV BAR partial ---------- */
+function navHtml(){
+  return `
+  <div class="nav">
+    <a class="brand" href="#/"><span class="dot"></span>linkforge</a>
+    <div class="nav-right">
+      ${currentUser ? `
+        <a class="btn btn-ghost" href="#/u/${currentUser}" target="_self">Meine Seite ansehen</a>
+        <a class="btn" href="#/dashboard">Editor</a>
+        <button class="btn btn-ghost" id="logout-btn">Logout</button>
+      ` : `
+        <a class="btn btn-ghost" href="#/login">Login</a>
+        <a class="btn btn-primary" href="#/register">Kostenlos starten</a>
+      `}
+    </div>
+  </div>`;
+}
+function bindNav(){
+  const lb = document.getElementById("logout-btn");
+  if(lb) lb.onclick = async ()=>{ await clearSession(); location.hash="#/"; };
+}
+
+/* ---------- LANDING ---------- */
+function renderLanding(root){
+  root.innerHTML = `
+    ${navHtml()}
+    <div class="landing-hero">
+      <div class="eyebrow">● eigene bio-link seite in 2 minuten</div>
+      <h1>Eine Seite für <span>alles, was du bist.</span></h1>
+      <p>Erstelle deine persönliche Profilseite mit Links, Musik, eigenem Theme und Live-Vorschau. Kostenlos, sofort einsatzbereit, von jedem nutzbar.</p>
+      <div class="landing-cta">
+        <a class="btn btn-primary" href="#/register">Jetzt Seite erstellen</a>
+        <a class="btn" href="#/login">Ich habe schon einen Account</a>
+      </div>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-card"><div class="icon">🎨</div><h3>Eigenes Theme</h3><p>Farben, Hintergrundeffekt &amp; Schrift frei wählbar — Presets oder volle Kontrolle.</p></div>
+      <div class="feature-card"><div class="icon">🔗</div><h3>Alle Links an einem Ort</h3><p>Discord, Socials, Spotify und mehr — mit passenden Icons.</p></div>
+      <div class="feature-card"><div class="icon">🎵</div><h3>Hintergrundmusik</h3><p>Hinterlege einen Track, der beim Öffnen deiner Seite läuft.</p></div>
+      <div class="feature-card"><div class="icon">✨</div><h3>Partikel-Hintergrund</h3><p>Animierte Effekte, individueller Cursor, Glow-Avatar.</p></div>
+      <div class="feature-card"><div class="icon">📈</div><h3>View-Counter</h3><p>Sieh live, wie oft deine Seite besucht wurde.</p></div>
+      <div class="feature-card"><div class="icon">👁️</div><h3>Live-Vorschau</h3><p>Bearbeite und sieh sofort, wie Besucher deine Seite sehen.</p></div>
+    </div>
+  `;
+  bindNav();
+}
 
 /* ---------- AUTH ---------- */
-let authMode='login';
-function renderAuth(){
-  $('root').innerHTML=`
-  <div class="auth-wrap">
-    <div class="auth-card">
-      <div class="brand"><span class="dot"></span><span class="brand-text">kioo.zeta</span></div>
-      <h1>${authMode==='login'?'Willkommen zurück':'Konto erstellen'}</h1>
-      <p class="sub">${authMode==='login'?'Melde dich an':'Sichere dir deinen Username'} <span class="free-tag">PREMIUM GRATIS</span></p>
-      ${authMode==='register'?`<div class="field"><label>Benutzername</label><input id="a-user" placeholder="dein_name"/></div>`:''}
-      <div class="field"><label>${authMode==='login'?'Email oder Benutzername':'Email'}</label><input id="a-email" placeholder="you@example.com"/></div>
-      <div class="field"><label>Passwort</label><input id="a-pw" type="password" placeholder="••••••••"/></div>
-      <button class="btn" id="a-submit">${authMode==='login'?'Anmelden':'Registrieren'}</button>
-      <div class="err" id="a-err"></div>
-      <div class="switch-link">${authMode==='login'?'Noch kein Konto?':'Bereits ein Konto?'} <a id="a-switch">${authMode==='login'?'Registrieren':'Anmelden'}</a></div>
-    </div>
-  </div>`;
-  $('a-switch').onclick=()=>{authMode=authMode==='login'?'register':'login';renderAuth();};
-  $('a-submit').onclick=doAuth;
-  ['a-email','a-pw'].forEach(id=>$(id).addEventListener('keydown',e=>{if(e.key==='Enter')doAuth();}));
-}
-function doAuth(){
-  const db=loadDB();const err=$('a-err');err.textContent='';
-  if(authMode==='login'){
-    const id=$('a-email').value.trim();const pw=$('a-pw').value;
-    const u=db.users.find(x=>(x.email.toLowerCase()===id.toLowerCase()||x.username.toLowerCase()===id.toLowerCase())&&x.password===pw);
-    if(!u){err.textContent='Falsche Anmeldedaten';return;}
-    setSession(u.uid);render();
-  } else {
-    const user=$('a-user').value.trim();const email=$('a-email').value.trim();const pw=$('a-pw').value;
-    if(!user||!email||!pw){err.textContent='Alle Felder ausfüllen';return;}
-    if(!/^[a-zA-Z0-9_]{1,20}$/.test(user)){err.textContent='1-20 Zeichen, a-z 0-9 _';return;}
-    if(pw.length<6){err.textContent='Passwort min. 6 Zeichen';return;}
-    if(db.users.some(x=>x.username.toLowerCase()===user.toLowerCase())){err.textContent='Benutzername vergeben';return;}
-    if(db.users.some(x=>x.email.toLowerCase()===email.toLowerCase())){err.textContent='Email schon registriert';return;}
-    const uid=db.nextUid++;
-    const badges=['premium']; // premium gratis
-    if(user.length<=4) badges.push('og_name'); // 3L/4L/OG
-    db.users.push({uid,username:user,email,password:pw,displayName:user,bio:'',avatar:'',views:0,badges,customBadges:[],socials:[],premium:true,role:'user',aliases:[],usernameChanges:0,createdAt:Date.now(),profile:defaultProfile()});
-    saveDB(db);setSession(uid);render();
-  }
-}
-
-/* ---------- APP SHELL ---------- */
-function navItem(p,icon,label,extra=''){
-  return `<div class="nav-item ${currentPage===p?'active':''}" data-p="${p}"><span class="ic">${icon}</span><span>${label}</span>${extra}</div>`;
-}
-function renderApp(user){
-  const isAdmin=user.role==='admin';
-  $('root').innerHTML=`
-  <div class="app">
-    <aside class="sidebar">
-      <div class="brand" style="justify-content:flex-start;margin-bottom:18px;font-size:20px"><span class="dot"></span><span class="brand-text">kioo.zeta</span></div>
-      ${navItem('overview','📊','Übersicht')}
-      ${navItem('customize','🎨','Anpassen')}
-      ${navItem('media','🎵','Media & BG')}
-      ${navItem('templates','🎨','Templates')}
-      ${navItem('integrations','🔌','Integrationen')}
-      ${navItem('seo','🌐','SEO / Embed')}
-      ${navItem('links','🔗','Links')}
-      ${navItem('badges','🏅','Badges')}
-      ${navItem('premium','💎','Premium','<span class="free-tag">FREE</span>')}
-      ${navItem('settings','⚙️','Einstellungen')}
-      ${isAdmin?navItem('admin','🛡️','Admin'):''}
-      <div class="sidebar-bottom">
-        <a href="#/u/${esc(user.username)}" class="btn btn-ghost btn-sm full">👁 Meine Seite</a>
-        <div class="user-chip">
-          <div class="avatar">${user.avatar?`<img src="${esc(user.avatar)}"/>`:esc(user.username[0].toUpperCase())}</div>
-          <div class="meta"><div class="name">${esc(user.displayName||user.username)}</div><div class="uid">UID ${user.uid}</div></div>
+function renderAuth(root, mode){
+  root.innerHTML = `
+    ${navHtml()}
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <h2>${mode==="login" ? "Willkommen zurück" : "Account erstellen"}</h2>
+        <div class="sub">${mode==="login" ? "Logge dich ein, um deine Seite zu bearbeiten." : "In wenigen Sekunden ist deine Seite live."}</div>
+        <div class="auth-err" id="auth-err"></div>
+        <div class="field">
+          <label>Nutzername</label>
+          <input id="f-user" type="text" placeholder="z.B. nova" autocomplete="username">
+          ${mode==="register" ? '<div class="field-hint">3-20 Zeichen, a-z 0-9 _ — wird deine URL: #/u/nutzername</div>' : ''}
         </div>
-        <button class="btn btn-ghost btn-sm full" id="logout">Abmelden</button>
-      </div>
-    </aside>
-    <main class="main" id="main"></main>
-  </div>`;
-  document.querySelectorAll('.nav-item').forEach(el=>el.onclick=()=>{currentPage=el.dataset.p;render();});
-  $('logout').onclick=()=>{clearSession();currentPage='overview';render();};
-  renderPage(user);
-}
-function renderPage(user){
-  const m=$('main');
-  switch(currentPage){
-    case 'overview':return renderOverview(user,m);
-    case 'customize':return renderCustomize(user,m);
-    case 'media':return renderMediaPage(user,m);
-    case 'templates':return renderTemplates(user,m);
-    case 'integrations':return renderIntegrations(user,m);
-    case 'seo':return renderSEO(user,m);
-    case 'links':return renderLinks(user,m);
-    case 'badges':return renderBadges(user,m);
-    case 'premium':return renderPremium(user,m);
-    case 'settings':return renderSettings(user,m);
-    case 'admin':return renderAdmin(user,m);
-  }
-}
-
-/* ---------- OVERVIEW ---------- */
-function renderOverview(user,m){
-  const c=computeCompletion(user);
-  m.innerHTML=`
-    <h1 class="page-title">Übersicht</h1>
-    <p class="page-sub">Willkommen zurück, ${esc(user.displayName||user.username)}.</p>
-    <div class="grid-4">
-      <div class="stat-card"><div class="stat-head">Benutzername<span>✏️</span></div><div class="stat-val">${esc(user.username)}</div><div class="stat-sub">${user.usernameChanges} Änderungen</div></div>
-      <div class="stat-card"><div class="stat-head">Aliase<span>👤</span></div><div class="stat-val">${user.aliases.length}</div><div class="stat-sub">unbegrenzt (Premium)</div></div>
-      <div class="stat-card"><div class="stat-head">UID<span>#</span></div><div class="stat-val">${user.uid}</div><div class="stat-sub">${new Date(user.createdAt).toLocaleDateString()}</div></div>
-      <div class="stat-card"><div class="stat-head">Profilaufrufe<span>👁</span></div><div class="stat-val">${user.views.toLocaleString()}</div><div class="stat-sub">insgesamt</div></div>
-    </div>
-    <div class="grid-2">
-      <div class="section"><h2>Profil-Vervollständigung</h2><p style="color:var(--muted);font-size:13px;margin-bottom:10px">${c.percent}% abgeschlossen</p><div class="progress"><div style="width:${c.percent}%"></div></div><div class="task-grid">${c.tasks.map(t=>`<div class="task ${t.done?'done':''}"><span class="dot">${t.done?'✓':'!'}</span><span>${esc(t.label)}</span></div>`).join('')}</div></div>
-      <div class="section"><h2>Schnellzugriff</h2><div class="manage-list">
-        <button class="manage-btn" onclick="changeUsername()">✏️ Benutzernamen ändern</button>
-        <button class="manage-btn" onclick="changeDisplayName()">💬 Anzeigenamen ändern</button>
-        <button class="manage-btn" onclick="manageAliases()">👤 Aliase verwalten</button>
-        <button class="manage-btn" onclick="currentPage='customize';render()">🎨 Anpassen</button>
-        <button class="manage-btn" onclick="currentPage='media';render()">🎵 Media &amp; Banner</button>
-      </div></div>
-    </div>`;
-}
-function computeCompletion(u){
-  const t=[
-    {label:'Avatar hochladen',done:!!u.avatar},
-    {label:'Bio hinzufügen',done:!!u.bio},
-    {label:'Mind. 1 Social',done:u.socials.length>0},
-    {label:'Hintergrund setzen',done:!!u.profile.bgUrl},
-    {label:'Akzentfarbe gesetzt',done:u.profile.accent!=='#a855f7'},
-    {label:'Banner hochladen',done:!!u.profile.bannerUrl},
-  ];
-  const done=t.filter(x=>x.done).length;
-  return {percent:Math.round(done/t.length*100),tasks:t};
-}
-window.changeUsername=()=>{
-  const u=currentUser();
-  modal('Benutzernamen ändern',`<div class="field"><label>Neuer Benutzername</label><input id="nu" value="${esc(u.username)}"/><div class="err" id="nue"></div></div>`,bg=>{
-    const v=bg.querySelector('#nu').value.trim();const err=bg.querySelector('#nue');
-    if(!/^[a-zA-Z0-9_]{1,20}$/.test(v)){err.textContent='Ungültig';return false;}
-    const db=loadDB();
-    if(db.users.some(x=>x.uid!==u.uid&&x.username.toLowerCase()===v.toLowerCase())){err.textContent='Vergeben';return false;}
-    const badges=[...u.badges];if(v.length<=4&&!badges.includes('og_name'))badges.push('og_name');
-    updateUser(u.uid,{username:v,usernameChanges:u.usernameChanges+1,badges});
-    toast('Benutzername geändert');render();
-  });
-};
-window.changeDisplayName=()=>{const u=currentUser();modal('Anzeigename ändern',`<input id="nd" value="${esc(u.displayName||'')}"/>`,bg=>{updateUser(u.uid,{displayName:bg.querySelector('#nd').value.trim()});toast('Geändert');render();});};
-window.manageAliases=()=>{
-  const u=currentUser();
-  modal('Aliase',`<p style="color:var(--muted);margin-bottom:10px">Aktuell: ${esc(u.aliases.join(', ')||'keine')}</p><input id="al" placeholder="Neuer Alias"/>`,bg=>{const v=bg.querySelector('#al').value.trim();if(!v)return false;updateUser(u.uid,{aliases:[...u.aliases,v]});toast('Hinzugefügt');render();},'Hinzufügen');
-};
-
-/* ---------- CUSTOMIZE ---------- */
-function renderCustomize(user,m){
-  const p=user.profile;
-  m.innerHTML=`
-    <h1 class="page-title">Anpassen</h1>
-    <p class="page-sub">Profil-Look & Texte</p>
-    <div class="section">
-      <h2>Avatar</h2>
-      <div class="row" style="gap:18px">
-        <div class="avatar" style="width:80px;height:80px;font-size:32px">${user.avatar?`<img src="${esc(user.avatar)}"/>`:esc(user.username[0].toUpperCase())}</div>
-        <div style="flex:1"><label class="file-pick">📁 Avatar auswählen (Datei)<input type="file" id="av-file" accept="image/*"/></label>${user.avatar?'<button class="btn btn-ghost btn-sm" id="av-clear" style="margin-top:8px">Entfernen</button>':''}</div>
+        <div class="field">
+          <label>Passwort</label>
+          <input id="f-pass" type="password" placeholder="••••••••" autocomplete="${mode==='login'?'current-password':'new-password'}">
+        </div>
+        <button class="btn btn-primary" id="auth-submit" style="width:100%;padding:12px;margin-top:6px;">${mode==="login"?"Einloggen":"Account erstellen"}</button>
+        <div class="auth-switch">
+          ${mode==="login" ? `Noch kein Account? <a href="#/register">Registrieren</a>` : `Schon registriert? <a href="#/login">Login</a>`}
+        </div>
       </div>
     </div>
-    <div class="section">
-      <h2>Banner</h2>
-      <div style="margin-bottom:10px">${p.bannerUrl?(p.bannerType==='video'?`<video src="${esc(p.bannerUrl)}" autoplay muted loop class="preview-thumb" style="max-height:120px;width:100%;object-fit:cover;border-radius:10px"></video>`:`<img src="${esc(p.bannerUrl)}" class="preview-thumb" style="width:100%;max-height:120px;object-fit:cover;border-radius:10px"/>`):'<small>Kein Banner</small>'}</div>
-      <label class="file-pick">📁 Banner auswählen (Bild / GIF / Video)<input type="file" id="bn-file" accept="image/*,video/*"/></label>
-      ${p.bannerUrl?'<button class="btn btn-ghost btn-sm" id="bn-clear" style="margin-top:8px">Entfernen</button>':''}
-    </div>
-    <div class="section">
-      <h2>Allgemein</h2>
-      <div class="field"><label>Anzeigename</label><input id="dn" value="${esc(user.displayName||'')}"/></div>
-      <div class="field"><label>Bio</label><textarea id="bio">${esc(user.bio||'')}</textarea></div>
-      <h3>Schriftart</h3>
-      <select id="ft">${FONTS.map(f=>`<option value="${f.id}" ${p.font===f.id?'selected':''} style="font-family:${f.css}">${f.name}</option>`).join('')}</select>
-      <h3>Akzentfarbe</h3>
-      <div class="row"><input type="color" id="ac" value="${p.accent}" style="width:60px;height:42px;padding:2px"/><small>Username, Border, Icons</small></div>
-      <h3>Border</h3>
-      <div class="grid-2" style="gap:10px">
-        <div><label>Width: <span id="bw-v">${p.borderWidth}</span>px</label><input type="range" id="bw" min="0" max="6" value="${p.borderWidth}"/></div>
-        <div><label>Radius: <span id="br-v">${p.borderRadius}</span>px</label><input type="range" id="br" min="0" max="40" value="${p.borderRadius}"/></div>
-        <div><label>Border Farbe</label><input type="color" id="bc" value="${p.borderColor}"/></div>
-        <div><label>Glow: <span id="bg-v">${p.borderGlow}</span>px</label><input type="range" id="bg" min="0" max="60" value="${p.borderGlow}"/></div>
-      </div>
-      <h3>Card</h3>
-      <div class="grid-2">
-        <div><label>Opacity: <span id="co-v">${Math.round(p.cardOpacity*100)}</span>%</label><input type="range" id="co" min="0" max="100" value="${p.cardOpacity*100}"/></div>
-        <div><label>BG Blur: <span id="bb-v">${p.bgBlur}</span>px</label><input type="range" id="bb" min="0" max="30" value="${p.bgBlur}"/></div>
-        <div><label><input type="checkbox" id="fr" ${p.frosted?'checked':''}/> Frosted Glass</label></div>
-        <div><label><input type="checkbox" id="tw" ${p.typewriter?'checked':''}/> Bio Typewriter</label></div>
-      </div>
-      <h3>Username-Effekt</h3>
-      <select id="nf">${NAME_FX.map(f=>`<option value="${f}" ${p.nameEffect===f?'selected':''}>${f}</option>`).join('')}</select>
-      <h3 style="margin-top:14px">Page-Title Animation (Tab)</h3>
-      <input id="tit" value="${esc(p.titleAnim.join(', '))}" placeholder="hi, there, welcome"/>
-      <h3 style="margin-top:14px">Custom Cursor</h3>
-      <label class="file-pick">📁 Cursor-Bild auswählen<input type="file" id="cu-file" accept="image/*"/></label>
-      <input id="cu" placeholder="Oder Emoji z.B. ✨" value="${esc(p.cursorUrl&&!(p.cursorUrl.startsWith('data:')||p.cursorUrl.startsWith('blob:'))?p.cursorUrl:'')}" style="margin-top:8px"/>
-      <div style="margin-top:18px"><button class="btn" id="save-c">Speichern</button></div>
-    </div>`;
-  $('av-file').onchange=e=>readFile(e.target,d=>{if(safeUpdateUser(user.uid,{avatar:d})){toast('Avatar gespeichert');render();}});
-  if($('av-clear'))$('av-clear').onclick=()=>{updateUser(user.uid,{avatar:''});render();};
-  $('bn-file').onchange=e=>readFile(e.target,(d,f)=>{const t=f.type.startsWith('video')?'video':'image';if(safeUpdateProfile(user.uid,{bannerUrl:d,bannerType:t})){toast('Banner gespeichert');render();}});
-  if($('bn-clear'))$('bn-clear').onclick=()=>{updateProfile(user.uid,{bannerUrl:''});render();};
-  $('cu-file').onchange=e=>readFile(e.target,d=>{if(safeUpdateProfile(user.uid,{cursorUrl:d})){toast('Cursor gespeichert');}});
-  ['bw','br','bg','co','bb'].forEach(id=>$(id).oninput=e=>{const v=e.target.value;$(id+'-v').textContent=id==='co'?v:v;});
-  $('save-c').onclick=()=>{
-    updateUser(user.uid,{displayName:$('dn').value,bio:$('bio').value});
-    const curEmoji=$('cu').value.trim();
-    updateProfile(user.uid,{
-      accent:$('ac').value,borderWidth:+$('bw').value,borderRadius:+$('br').value,borderColor:$('bc').value,borderGlow:+$('bg').value,
-      cardOpacity:$('co').value/100,bgBlur:+$('bb').value,frosted:$('fr').checked,typewriter:$('tw').checked,nameEffect:$('nf').value,
-      font:$('ft').value,titleAnim:$('tit').value.split(',').map(s=>s.trim()).filter(Boolean),
-      ...(curEmoji?{cursorUrl:curEmoji}:{})
-    });
-    toast('Gespeichert');
-  };
-}
-
-/* ---------- MEDIA ---------- */
-function renderMediaPage(user,m){
-  const p=user.profile;
-  m.innerHTML=`
-    <h1 class="page-title">Media & Hintergrund</h1>
-    <p class="page-sub">Alles per Datei-Upload — keine URLs nötig.</p>
-    <div class="section">
-      <h2>Hintergrund (Bild / GIF / Video)</h2>
-      <div style="margin-bottom:10px">${p.bgUrl?(p.bgType==='video'?`<video src="${esc(p.bgUrl)}" autoplay muted loop class="preview-thumb" style="width:100%;max-height:160px;object-fit:cover"></video>`:`<img src="${esc(p.bgUrl)}" class="preview-thumb" style="width:100%;max-height:160px;object-fit:cover"/>`):'<small>Kein Hintergrund</small>'}</div>
-      <label class="file-pick">📁 Hintergrund-Datei auswählen<input type="file" id="bgf" accept="image/*,video/*"/></label>
-      ${p.bgUrl?'<button class="btn btn-ghost btn-sm" id="bg-clear" style="margin-top:8px">Entfernen</button>':''}
-    </div>
-    <div class="section">
-      <h2>Hintergrundmusik</h2>
-      <div style="margin-bottom:10px">${p.musicUrl?`<audio controls src="${esc(p.musicUrl)}" style="width:100%"></audio>`:'<small>Keine Musik</small>'}</div>
-      <label class="file-pick">📁 Audio-Datei auswählen<input type="file" id="muf" accept="audio/*"/></label>
-      ${p.musicUrl?'<button class="btn btn-ghost btn-sm" id="mu-clear" style="margin-top:8px">Entfernen</button>':''}
-      <div class="row" style="margin-top:10px"><label><input type="checkbox" id="map" ${p.musicAutoplay?'checked':''}/> Auto-Play</label><label>Volume <input type="range" id="mvo" min="0" max="100" value="${p.musicVolume*100}" style="width:120px"/></label></div>
-    </div>
-    <div class="section">
-      <h2>Enter Screen</h2>
-      <label><input type="checkbox" id="en" ${p.enterScreen?'checked':''}/> Enter-Screen anzeigen</label>
-      <div class="field" style="margin-top:10px"><label>Text</label><input id="ent" value="${esc(p.enterText)}"/></div>
-    </div>
-    <div class="section">
-      <h2>Favicon</h2>
-      <label class="file-pick">📁 Favicon-Bild auswählen<input type="file" id="fav-file" accept="image/*"/></label>
-      <input id="fav" placeholder="Oder Emoji z.B. 🔫" value="${esc(p.favicon&&!(p.favicon.startsWith('data:')||p.favicon.startsWith('blob:'))?p.favicon:'')}" style="margin-top:8px"/>
-    </div>
-    <div style="margin-top:18px"><button class="btn" id="sm">Speichern</button></div>`;
-  $('bgf').onchange=e=>readFile(e.target,(d,f)=>{const t=f.type.startsWith('video')?'video':'image';if(safeUpdateProfile(user.uid,{bgUrl:d,bgType:t})){toast('Hintergrund hochgeladen');render();}});
-  if($('bg-clear'))$('bg-clear').onclick=()=>{updateProfile(user.uid,{bgUrl:''});render();};
-  $('muf').onchange=e=>readFile(e.target,d=>{if(safeUpdateProfile(user.uid,{musicUrl:d})){toast('Musik hochgeladen');render();}});
-  if($('mu-clear'))$('mu-clear').onclick=()=>{updateProfile(user.uid,{musicUrl:''});render();};
-  $('fav-file').onchange=e=>readFile(e.target,d=>{if(safeUpdateProfile(user.uid,{favicon:d})){toast('Favicon gespeichert');}});
-  $('sm').onclick=()=>{
-    const favEmoji=$('fav').value.trim();
-    updateProfile(user.uid,{musicAutoplay:$('map').checked,musicVolume:$('mvo').value/100,enterScreen:$('en').checked,enterText:$('ent').value.trim(),...(favEmoji?{favicon:favEmoji}:{})});
-    toast('Gespeichert');
-  };
-}
-
-/* ---------- INTEGRATIONS ---------- */
-function renderTemplates(user,m){
-  const db=loadDB();
-  const tpls=db.templates||[];
-  m.innerHTML=`
-    <h1 class="page-title">Templates 🎨</h1>
-    <p class="page-sub">Profil-Vorlagen — speichere dein Setup oder übernimm eins von anderen.</p>
-    <div class="section">
-      <h2>Aktuelles Profil als Template speichern</h2>
-      <div class="row" style="gap:10px;align-items:flex-start;flex-wrap:wrap">
-        <input id="tpl-name" placeholder="Template-Name z.B. dark vibes" style="max-width:280px"/>
-        <button class="btn btn-sm" id="tpl-save">💾 Speichern</button>
-      </div>
-      <small>Speichert: Hintergrund, Banner, Musik, Cursor, Favicon, Fonts, Farben, Effekte.</small>
-    </div>
-    <div class="section">
-      <h2>Alle Templates (${tpls.length})</h2>
-      ${tpls.length===0?'<small>Noch keine Templates. Sei der/die Erste!</small>':`
-      <div class="grid-2" style="margin-top:10px">
-        ${tpls.map(t=>{
-          const tp=t.profile;
-          const thumb=tp.bgUrl?(tp.bgType==='video'?`<video src="${esc(tp.bgUrl)}" autoplay muted loop playsinline style="width:100%;height:120px;object-fit:cover"></video>`:`<img src="${esc(tp.bgUrl)}" style="width:100%;height:120px;object-fit:cover"/>`):'<div style="height:120px;background:linear-gradient(135deg,#1a1a20,#26262e);display:grid;place-items:center;color:var(--muted)">kein BG</div>';
-          return `<div class="stat-card dark" style="padding:0;overflow:hidden">
-            <div>${thumb}</div>
-            <div style="padding:14px">
-              <div style="font-weight:700;font-size:15px;margin-bottom:4px">${esc(t.name)}</div>
-              <small>von @${esc(t.ownerName)} · ${new Date(t.createdAt).toLocaleDateString()}</small>
-              <div class="row" style="margin-top:10px;gap:6px;flex-wrap:wrap">
-                <button class="btn btn-sm" data-apply="${t.id}">✓ Anwenden</button>
-                ${t.ownerUid===user.uid||user.role==='admin'?`<button class="btn btn-ghost btn-sm" data-del="${t.id}">🗑</button>`:''}
-              </div>
-            </div>
-          </div>`;
-        }).join('')}
-      </div>`}
-    </div>`;
-  $('tpl-save').onclick=()=>{
-    const name=($('tpl-name').value||'').trim();
-    if(!name){toast('Name?');return;}
-    const db2=loadDB();
-    db2.templates.unshift({
-      id:'t'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),
-      ownerUid:user.uid, ownerName:user.username,
-      name, createdAt:Date.now(),
-      profile: JSON.parse(JSON.stringify(user.profile))
-    });
-    saveDB(db2);toast('Template gespeichert');render();
-  };
-  m.querySelectorAll('[data-apply]').forEach(b=>b.onclick=()=>{
-    if(!confirm('Dein aktuelles Profil wird überschrieben. Sicher?'))return;
-    const t=db.templates.find(x=>x.id===b.dataset.apply);if(!t)return;
-    updateProfile(user.uid, JSON.parse(JSON.stringify(t.profile)));
-    toast('Template übernommen');render();
-  });
-  m.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{
-    const db2=loadDB();db2.templates=db2.templates.filter(x=>x.id!==b.dataset.del);
-    saveDB(db2);render();
-  });
-}
-function renderIntegrations(user,m){
-  const p=user.profile;
-  m.innerHTML=`
-    <h1 class="page-title">Integrationen 🔌</h1>
-    <p class="page-sub">Discord-Status (Lanyard) & Spotify Now-Playing.</p>
-    <div class="section">
-      <h2>Discord (Lanyard API)</h2>
-      <label><input type="checkbox" id="de" ${p.discord.enabled?'checked':''}/> Aktivieren</label>
-      <div class="field" style="margin-top:10px"><label>Discord User-ID</label><input id="did" value="${esc(p.discord.id)}" placeholder="123456789012345678"/></div>
-      <small>Du musst im <a style="color:var(--primary)" href="https://discord.gg/lanyard" target="_blank">Lanyard-Discord</a> sein, damit es live geht.</small>
-    </div>
-    <div class="section">
-      <h2>Spotify "Now Playing"</h2>
-      <label><input type="checkbox" id="se" ${p.spotify.enabled?'checked':''}/> Widget anzeigen</label>
-      <div class="field" style="margin-top:10px"><label>Track</label><input id="st" value="${esc(p.spotify.track)}"/></div>
-      <div class="field"><label>Artist</label><input id="sa" value="${esc(p.spotify.artist)}"/></div>
-      <small>Mit Discord-Integration wird das live aus deinem Discord-Status gezogen.</small>
-    </div>
-    <div style="margin-top:18px"><button class="btn" id="si">Speichern</button></div>`;
-  $('si').onclick=()=>{
-    updateProfile(user.uid,{discord:{enabled:$('de').checked,id:$('did').value.trim()},spotify:{enabled:$('se').checked,track:$('st').value,artist:$('sa').value}});
-    toast('Gespeichert');
-  };
-}
-
-/* ---------- SEO ---------- */
-function renderSEO(user,m){
-  const p=user.profile;
-  m.innerHTML=`
-    <h1 class="page-title">SEO / Embed 🌐</h1>
-    <p class="page-sub">Wie dein Profil bei Discord, Twitter & Co. aussieht.</p>
-    <div class="section">
-      <div class="field"><label>Title</label><input id="st" value="${esc(p.seo.title)}" placeholder="${esc(user.displayName||user.username)}"/></div>
-      <div class="field"><label>Description</label><textarea id="sd">${esc(p.seo.desc)}</textarea></div>
-      <div class="field"><label>Embed Farbe</label><input type="color" id="sc" value="${p.seo.color}"/></div>
-      <div class="field"><label>Embed Bild URL</label><input id="si" value="${esc(p.seo.image)}"/></div>
-      <button class="btn" id="sv">Speichern</button>
-    </div>`;
-  $('sv').onclick=()=>{updateProfile(user.uid,{seo:{title:$('st').value,desc:$('sd').value,color:$('sc').value,image:$('si').value}});toast('Gespeichert');};
-}
-
-/* ---------- LINKS ---------- */
-function renderLinks(user,m){
-  m.innerHTML=`
-    <h1 class="page-title">Links 🔗</h1>
-    <p class="page-sub">Verknüpfe deine Social-Media-Profile.</p>
-    <div class="section"><div class="social-grid">${SOCIALS.map(s=>`<button class="social-icon" data-s="${s.id}" title="${s.name}" style="color:${s.color}">${s.icon}</button>`).join('')}</div></div>
-    <div class="section"><h2>Deine Links (${user.socials.length})</h2>${user.socials.length===0?`<small>Noch keine Links</small>`:user.socials.map((l,i)=>{const s=SOCIALS.find(x=>x.id===l.type)||{name:l.type,icon:'🔗',color:'#666'};return `<div class="link-item"><div class="icon" style="background:${s.color}">${s.icon}</div><div class="info"><div class="name">${esc(s.name)}</div><div class="url">${esc(l.url)}</div></div><button onclick="deleteLink(${i})">🗑</button></div>`;}).join('')}</div>`;
-  document.querySelectorAll('.social-icon').forEach(b=>b.onclick=()=>addLink(b.dataset.s));
-}
-window.addLink=type=>{const u=currentUser();const s=SOCIALS.find(x=>x.id===type);modal(`${s.name} hinzufügen`,`<input id="lu" placeholder="URL oder Handle"/>`,bg=>{const v=bg.querySelector('#lu').value.trim();if(!v)return false;updateUser(u.uid,{socials:[...u.socials,{type,url:v}]});toast('Hinzugefügt');render();},'Hinzufügen');};
-window.deleteLink=i=>{const u=currentUser();const s=[...u.socials];s.splice(i,1);updateUser(u.uid,{socials:s});render();};
-
-/* ---------- BADGES ---------- */
-function renderBadges(user,m){
-  const all=[...ALL_BADGES,...user.customBadges.map(c=>({...c,custom:true}))];
-  m.innerHTML=`
-    <h1 class="page-title">Badges 🏅</h1>
-    <div class="badge-grid">${all.map(b=>{const owned=user.badges.includes(b.id);return `<div class="badge-card"><div class="badge-icon" style="background:${b.color}22;color:${b.color}">${b.icon}</div><div class="badge-info"><div class="t">${esc(b.name)}${b.custom?' <span class="premium-tag">CUSTOM</span>':''}</div><div class="d">${esc(b.desc)}</div></div>${owned?'<span class="own">✓</span>':''}</div>`;}).join('')}</div>
-    <div class="section"><h2>Custom Badges <span class="free-tag">FREE</span></h2><p style="color:var(--muted);font-size:13px;margin-bottom:10px">Erstelle eigene Badges.</p><button class="btn btn-sm" onclick="addCustomBadge()">+ Erstellen</button>${user.customBadges.length?`<div class="badge-grid" style="margin-top:14px">${user.customBadges.map((b,i)=>`<div class="badge-card"><div class="badge-icon" style="background:${b.color}22;color:${b.color}">${b.icon}</div><div class="badge-info"><div class="t">${esc(b.name)}</div><div class="d">${esc(b.desc)}</div></div><button onclick="deleteCustomBadge(${i})" style="color:var(--red)">🗑</button></div>`).join('')}</div>`:''}</div>`;
-}
-window.addCustomBadge=()=>{const u=currentUser();modal('Custom Badge',`<div class="field"><label>Name</label><input id="cn"/></div><div class="field"><label>Icon (Emoji)</label><input id="ci" value="✨"/></div><div class="field"><label>Beschreibung</label><input id="cd"/></div><div class="field"><label>Farbe</label><input type="color" id="cc" value="#a855f7"/></div>`,bg=>{const b={id:'custom_'+Date.now(),name:bg.querySelector('#cn').value.trim()||'Badge',icon:bg.querySelector('#ci').value||'✨',desc:bg.querySelector('#cd').value.trim()||'Custom',color:bg.querySelector('#cc').value};updateUser(u.uid,{customBadges:[...u.customBadges,b],badges:[...u.badges,b.id]});toast('Erstellt');render();},'Erstellen');};
-window.deleteCustomBadge=i=>{const u=currentUser();const cb=[...u.customBadges];const r=cb.splice(i,1)[0];updateUser(u.uid,{customBadges:cb,badges:u.badges.filter(x=>x!==r.id)});render();};
-
-/* ---------- PREMIUM ---------- */
-function renderPremium(user,m){
-  m.innerHTML=`
-    <h1 class="page-title">Premium 💎</h1>
-    <div class="section" style="text-align:center;background:linear-gradient(135deg,rgba(168,85,247,.18),rgba(236,72,153,.1));border-color:rgba(168,85,247,.3)">
-      <h2 style="font-size:30px;margin-bottom:6px">Premium <span class="free-tag" style="font-size:14px;padding:4px 14px">100% GRATIS</span></h2>
-      <p style="color:var(--muted);margin-bottom:18px">Alle Features für alle. Für immer.</p>
-      <div style="text-align:left;max-width:340px;margin:0 auto 20px">
-        ${['Custom Badges','Eigene Schriftarten','Typewriter','Alle Profil-Effekte','Audio-Visualizer','Custom Cursor','Background Video/GIF','Discord & Spotify','Unbegrenzte Aliase','SEO/OG Embed','3L/4L/OG Username Schutz'].map(f=>`<div style="padding:6px 0;color:#ccc">✓ ${f}</div>`).join('')}
-      </div>
-      ${user.premium?'<span class="own" style="font-size:14px;padding:8px 16px">✓ Premium aktiv</span>':`<button class="btn" style="max-width:240px;margin:0 auto" onclick="claimPremium()">Premium aktivieren</button>`}
-    </div>`;
-}
-window.claimPremium=()=>{const u=currentUser();updateUser(u.uid,{premium:true,badges:[...new Set([...u.badges,'premium'])]});toast('Premium aktiviert! 🎉');render();};
-
-/* ---------- SETTINGS ---------- */
-function renderSettings(user,m){
-  m.innerHTML=`
-    <h1 class="page-title">Einstellungen ⚙️</h1>
-    <div class="section">
-      <h2>Konto</h2>
-      <div class="field"><label>Email</label><input id="se" value="${esc(user.email)}"/></div>
-      <div class="field"><label>Neues Passwort</label><input id="sp" type="password" placeholder="leer lassen"/></div>
-      <button class="btn" id="ss">Speichern</button>
-    </div>
-    <div class="section" style="border-color:rgba(239,68,68,.3)">
-      <h2 style="color:var(--red)">Gefahrenzone</h2>
-      <button class="btn" style="background:var(--red)" onclick="deleteAccount()">Konto löschen</button>
-    </div>`;
-  $('ss').onclick=()=>{const p={email:$('se').value};if($('sp').value)p.password=$('sp').value;updateUser(user.uid,p);toast('Gespeichert');};
-}
-window.deleteAccount=()=>{if(!confirm('Wirklich löschen?'))return;const u=currentUser();const db=loadDB();db.users=db.users.filter(x=>x.uid!==u.uid);saveDB(db);clearSession();render();};
-
-/* ---------- ADMIN ---------- */
-function renderAdmin(user,m){
-  if(user.role!=='admin'){m.innerHTML='<p>Kein Zugriff</p>';return;}
-  const db=loadDB();
-  m.innerHTML=`
-    <h1 class="page-title">Admin 🛡️</h1>
-    <div class="grid-4">
-      <div class="stat-card"><div class="stat-head">Nutzer gesamt</div><div class="stat-val">${db.users.length}</div></div>
-      <div class="stat-card"><div class="stat-head">Premium</div><div class="stat-val">${db.users.filter(u=>u.premium).length}</div></div>
-      <div class="stat-card"><div class="stat-head">Admins</div><div class="stat-val">${db.users.filter(u=>u.role==='admin').length}</div></div>
-      <div class="stat-card"><div class="stat-head">Views gesamt</div><div class="stat-val">${db.users.reduce((s,u)=>s+(u.views||0),0).toLocaleString()}</div></div>
-    </div>
-    <div class="section"><h2>Alle Nutzer (${db.users.length})</h2>
-      <input id="adm-q" placeholder="Suche User/Email…" style="margin-bottom:10px"/>
-      <div style="overflow-x:auto"><table><thead><tr><th>UID</th><th>User</th><th>Email</th><th>Rolle</th><th>Erstellt</th><th>Views</th><th>Badges</th><th>Prem</th><th>Aktionen</th></tr></thead>
-      <tbody id="adm-tbody">${renderAdminRows(db.users,user.uid)}</tbody></table></div>
-    </div>`;
-  $('adm-q').oninput=e=>{const q=e.target.value.toLowerCase();const filtered=db.users.filter(u=>u.username.toLowerCase().includes(q)||u.email.toLowerCase().includes(q));$('adm-tbody').innerHTML=renderAdminRows(filtered,user.uid);};
-}
-function renderAdminRows(users,selfUid){
-  return users.map(u=>`<tr><td>${u.uid}</td><td><a href="#/u/${esc(u.username)}" style="color:var(--primary)">${esc(u.username)}</a><br><small>${esc(u.displayName||'')}</small></td><td>${esc(u.email)}</td><td>${esc(u.role||'user')}</td><td><small>${new Date(u.createdAt).toLocaleDateString()}</small></td><td>${u.views}</td><td>${u.badges.length}</td><td>${u.premium?'✓':'✗'}</td><td><div class="row-btns"><button onclick="adminAddViews(${u.uid})">+Views</button><button onclick="adminManageBadges(${u.uid})">Badges</button><button onclick="adminTogglePremium(${u.uid})">${u.premium?'-':'+'} Prem</button><button onclick="adminSetRole(${u.uid})">Rolle</button>${u.uid!==selfUid?`<button class="danger" onclick="adminDelete(${u.uid})">Del</button>`:''}</div></td></tr>`).join('');
-}
-window.adminAddViews=uid=>{const v=prompt('+/- Views','100');if(!v)return;const n=parseInt(v);if(isNaN(n))return;const db=loadDB();const u=db.users.find(x=>x.uid===uid);u.views=Math.max(0,u.views+n);saveDB(db);render();};
-window.adminTogglePremium=uid=>{const db=loadDB();const u=db.users.find(x=>x.uid===uid);u.premium=!u.premium;if(u.premium)u.badges=[...new Set([...u.badges,'premium'])];else u.badges=u.badges.filter(b=>b!=='premium');saveDB(db);render();};
-window.adminSetRole=uid=>{const r=prompt('user / admin / staff','user');if(!r)return;const db=loadDB();const u=db.users.find(x=>x.uid===uid);u.role=r;if(r==='admin')u.badges=[...new Set([...u.badges,'admin'])];if(r==='staff')u.badges=[...new Set([...u.badges,'staff'])];saveDB(db);render();};
-window.adminDelete=uid=>{if(!confirm('Löschen?'))return;const db=loadDB();db.users=db.users.filter(x=>x.uid!==uid);saveDB(db);render();};
-window.adminManageBadges=uid=>{const db=loadDB();const u=db.users.find(x=>x.uid===uid);const html=ALL_BADGES.map(b=>`<label style="display:block;padding:6px"><input type="checkbox" data-b="${b.id}" ${u.badges.includes(b.id)?'checked':''}/> ${b.icon} ${b.name}</label>`).join('');modal('Badges für '+u.username,html,bg=>{const checked=[...bg.querySelectorAll('input[data-b]')].filter(c=>c.checked).map(c=>c.dataset.b);const custom=u.badges.filter(b=>b.startsWith('custom_'));updateUser(uid,{badges:[...checked,...custom]});toast('OK');render();});};
-
-/* ============================================================
-   PUBLIC PROFILE — alle Effekte hier
-============================================================ */
-let _audioCtx=null,_analyser=null,_audioEl=null,_visTimer=null,_fxTimer=null,_lanyardTimer=null;
-function cleanupProfileFx(){
-  if(_visTimer){cancelAnimationFrame(_visTimer);_visTimer=null;}
-  if(_fxTimer){clearInterval(_fxTimer);_fxTimer=null;}
-  if(_lanyardTimer){clearInterval(_lanyardTimer);_lanyardTimer=null;}
-  if(_audioEl){try{_audioEl.pause();}catch(e){}_audioEl=null;}
-  _audioCtx=null;_analyser=null;
-}
-
-function renderProfilePage(username){
-  cleanupProfileFx();
-  const db=loadDB();
-  const u=db.users.find(x=>x.username.toLowerCase()===username.toLowerCase()||x.aliases.some(a=>a.toLowerCase()===username.toLowerCase()));
-  if(!u){$('root').innerHTML=`<div style="min-height:100vh;display:grid;place-items:center;text-align:center"><div><h1 style="font-size:60px">404</h1><p>Profil nicht gefunden</p><a href="#" class="btn btn-sm" style="margin-top:16px;display:inline-block">Zurück</a></div></div>`;return;}
-  const viewer=currentUser();
-  if(!viewer||viewer.uid!==u.uid){u.views++;saveDB(db);}
-
-  const p=u.profile;
-
-  // SEO + favicon
-  const seoTitle=p.seo.title||u.displayName||u.username;
-  document.title=seoTitle+' · kioo.zeta';
-  setFavicon(p.favicon||'✨');
-  setMeta('description',p.seo.desc||u.bio||'kioo.zeta profile');
-  setMeta('og:title',seoTitle,true);
-  setMeta('og:description',p.seo.desc||u.bio||'',true);
-  setMeta('og:image',p.seo.image||u.avatar||'',true);
-  setMeta('theme-color',p.seo.color||p.accent);
-
-  // build badges/socials
-  const badges=u.badges.map(bid=>{const b=ALL_BADGES.find(x=>x.id===bid)||u.customBadges.find(x=>x.id===bid);return b?`<span class="pb" style="color:${b.color}">${b.icon} ${esc(b.name)}</span>`:'';}).join('');
-  const socials=u.socials.map(l=>{const s=SOCIALS.find(x=>x.id===l.type)||{icon:'🔗',color:'#666',name:l.type};const href=l.url.startsWith('http')?l.url:`https://${l.url}`;return `<a href="${esc(href)}" target="_blank" rel="noopener" style="background:${s.color}22;color:${s.color}" title="${s.name}">${s.icon}</a>`;}).join('');
-
-  const cardStyle=`--card-opacity:${p.cardOpacity};--bg-blur:${p.bgBlur}px;--border-w:${p.borderWidth}px;--border-c:${p.borderColor};--border-r:${p.borderRadius}px;--border-glow:${p.borderGlow}px;--accent:${p.accent}`;
-  const nameClass=p.nameEffect&&p.nameEffect!=='none'?`fx-${p.nameEffect}`:'';
-
-  const bgHtml=p.bgUrl?(p.bgType==='video'?`<video src="${esc(p.bgUrl)}" autoplay muted loop playsinline></video>`:`<img src="${esc(p.bgUrl)}" alt=""/>`):'';
-  const bannerHtml=p.bannerUrl?(p.bannerType==='video'?`<video src="${esc(p.bannerUrl)}" autoplay muted loop playsinline></video>`:`<img src="${esc(p.bannerUrl)}" alt=""/>`):'';
-  const fontDef=FONTS.find(f=>f.id===p.font)||FONTS[0];
-
-  const ds=p.discord.enabled?`<div class="ds-status" id="ds-status"><span class="indot"></span><span>Discord lädt…</span></div>`:'';
-  const sp=p.spotify.enabled?`<div class="spotify-now"><span class="eq"><i></i><i></i><i></i></span><span>${esc(p.spotify.track)} — ${esc(p.spotify.artist)}</span></div>`:'';
-
-  $('root').innerHTML=`
-    ${p.enterScreen?`<div class="enter-screen" id="enterScreen"><div class="es-inner"><h2>${esc(p.enterText||'click anywhere to enter')}</h2><p>kioo.zeta</p></div></div>`:''}
-    <div class="profile-bg ${p.bgBlur>0?'blurred':''}">${bgHtml}</div>
-    <div class="profile-page" style="font-family:${fontDef.css}">
-      <div class="profile-card ${p.frosted?'frost':''} ${bannerHtml?'has-banner':''}" style="${cardStyle};font-family:${fontDef.css}">
-        ${bannerHtml?`<div class="profile-banner">${bannerHtml}</div>`:''}
-        <div class="profile-avatar">${u.avatar?`<img src="${esc(u.avatar)}"/>`:esc(u.username[0].toUpperCase())}</div>
-        <h1 class="profile-name ${nameClass}">${esc(u.displayName||u.username)}</h1>
-        <div class="profile-uid">@${esc(u.username)} · UID ${u.uid}</div>
-        ${badges?`<div class="profile-badges">${badges}</div>`:''}
-        <div class="profile-bio" id="bioOut"></div>
-        ${ds}${sp}
-        ${socials?`<div class="profile-socials">${socials}</div>`:''}
-        <div class="profile-views">👁 ${u.views.toLocaleString()} Aufrufe</div>
-      </div>
-    </div>
-    ${p.musicUrl?`<div class="music-player" id="mp"><button id="mpToggle">▶</button><div style="font-size:12px;flex:1"><div style="font-weight:600">Background Music</div><div style="color:var(--muted)">${esc(u.username)}</div></div><input type="range" class="mp-vol" id="mpVol" min="0" max="100" value="${p.musicVolume*100}"/></div>`:''}
   `;
+  bindNav();
+  document.getElementById("auth-submit").onclick = async ()=>{
+    const u = document.getElementById("f-user").value;
+    const p = document.getElementById("f-pass").value;
+    const errEl = document.getElementById("auth-err");
+    errEl.textContent = "";
+    const btn = document.getElementById("auth-submit");
+    btn.textContent = "Bitte warten...";
+    btn.disabled = true;
+    let res;
+    if(mode==="login") res = await loginUser(u,p);
+    else res = await registerUser(u,p);
+    btn.disabled = false;
+    btn.textContent = mode==="login"?"Einloggen":"Account erstellen";
+    if(!res.ok){ errEl.textContent = res.msg; return; }
+    showToast(mode==="login" ? "Eingeloggt!" : "Account erstellt!");
+    location.hash = "#/dashboard";
+  };
+}
 
-  // border animated
-  if(p.borderAnimated){
-    const card=document.querySelector('.profile-card');
-    if(card)card.style.animation='nameBounce 3s infinite';
+/* ---------- DASHBOARD ---------- */
+let dashProfile = null;
+let saveTimer = null;
+
+async function renderDashboard(root){
+  root.innerHTML = `${navHtml()}<div style="text-align:center;padding:60px;color:var(--text-dim);">Lade Editor...</div>`;
+  bindNav();
+  dashProfile = await sget(PROFILE_PREFIX + currentUser);
+  if(!dashProfile){ dashProfile = defaultProfile(currentUser); await sset(PROFILE_PREFIX+currentUser, dashProfile); }
+  drawDashboard(root);
+}
+
+function drawDashboard(root){
+  const p = dashProfile;
+  root.innerHTML = `
+    ${navHtml()}
+    <div class="dash">
+      <div class="editor-col">
+
+        <div class="panel">
+          <h3>Profil <span class="tag">basics</span></h3>
+          <div class="field"><label>Anzeigename</label><input id="d-name" value="${esc(p.displayName)}"></div>
+          <div class="field"><label>Bio</label><textarea id="d-bio">${esc(p.bio)}</textarea></div>
+          <div class="field"><label>Avatar-Bild URL (optional)</label><input id="d-avatar" placeholder="https://..." value="${esc(p.avatarUrl)}"></div>
+          <div class="field"><label>Avatar-Rahmen</label>
+            <select id="d-avatarstyle" style="width:100%;padding:10px;border-radius:9px;border:1px solid var(--line);background:var(--bg-1);color:var(--text);">
+              <option value="glow" ${p.avatarStyle==='glow'?'selected':''}>Glow</option>
+              <option value="square" ${p.avatarStyle==='square'?'selected':''}>Eckig</option>
+              <option value="rotating" ${p.avatarStyle==='rotating'?'selected':''}>Rotierender Ring</option>
+              <option value="plain" ${p.avatarStyle==='plain'?'selected':''}>Schlicht</option>
+            </select>
+          </div>
+          <div class="field"><label>Badges (bis zu 5, Emoji getrennt mit Leerzeichen)</label><input id="d-badge" value="${esc((p.badges||[]).join(' '))}"></div>
+        </div>
+
+        <div class="panel">
+          <h3>Theme <span class="tag">design</span></h3>
+          <div class="theme-presets" id="presets"></div>
+          <div class="field" style="margin-top:16px;">
+            <label>Akzentfarbe</label>
+            <div class="color-row"><input type="color" id="d-accent" value="${p.accent}"><span>${p.accent}</span></div>
+          </div>
+          <div class="field">
+            <label>Hintergrund (Farbe 1)</label>
+            <div class="color-row"><input type="color" id="d-bg" value="${p.bg}"><span>${p.bg}</span></div>
+          </div>
+          <div class="field">
+            <label>Hintergrund (Farbe 2)</label>
+            <div class="color-row"><input type="color" id="d-bg2" value="${p.bg2}"><span>${p.bg2}</span></div>
+          </div>
+          <div class="field">
+            <label>Hintergrund-Effekt</label>
+            <select id="d-effect" style="width:100%;padding:10px;border-radius:9px;border:1px solid var(--line);background:var(--bg-1);color:var(--text);">
+              <option value="particles" ${p.effect==='particles'?'selected':''}>Partikel</option>
+              <option value="grid" ${p.effect==='grid'?'selected':''}>Animiertes Gitter</option>
+              <option value="none" ${p.effect==='none'?'selected':''}>Kein Effekt</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Links <span class="tag">${p.links.length}</span></h3>
+          <div class="links-list" id="links-list"></div>
+          <button class="add-link-btn" id="add-link">+ Link hinzufügen</button>
+        </div>
+
+        <div class="panel">
+          <h3>Extras <span class="tag">pro</span></h3>
+          <div class="field"><label>Musik-URL (mp3 link)</label><input id="d-music" placeholder="https://.../song.mp3" value="${esc(p.musicUrl)}"></div>
+          <div class="field"><label>Musik-Label</label><input id="d-musiclabel" placeholder="Songname – Artist" value="${esc(p.musicLabel)}"></div>
+          <div class="toggle-row">
+            <div class="label">Custom Cursor<span class="d">Ring-Cursor in Akzentfarbe</span></div>
+            <div class="switch ${p.cursor?'on':''}" id="d-cursor"></div>
+          </div>
+          <div class="toggle-row">
+            <div class="label">Cursor-Trail<span class="d">Partikel-Spur folgt der Maus</span></div>
+            <div class="switch ${p.cursorTrail?'on':''}" id="d-trail"></div>
+          </div>
+          <div class="toggle-row">
+            <div class="label">Typewriter-Bio<span class="d">Bio wird beim Laden eingetippt</span></div>
+            <div class="switch ${p.typewriter?'on':''}" id="d-typewriter"></div>
+          </div>
+          <div class="toggle-row">
+            <div class="label">Enter-Splashscreen<span class="d">"Klicken zum Betreten" vor dem Profil</span></div>
+            <div class="switch ${p.splash?'on':''}" id="d-splash"></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Sicherheit <span class="tag">optional</span></h3>
+          <div class="field"><label>Passwortschutz (leer = aus)</label><input id="d-pwgate" type="text" placeholder="z.B. geheim123" value="${esc(p.profilePassword)}"></div>
+          <div class="field-hint">Wenn gesetzt, müssen Besucher dieses Passwort eingeben, bevor sie deine Seite sehen.</div>
+        </div>
+
+        <div class="panel">
+          <h3>SEO &amp; Tab <span class="tag">meta</span></h3>
+          <div class="field"><label>Browser-Tab-Titel</label><input id="d-pagetitle" placeholder="z.B. nova ✦" value="${esc(p.pageTitle)}"></div>
+          <div class="field"><label>Beschreibung (für Vorschau-Karten)</label><input id="d-seo" placeholder="Kurze Beschreibung deiner Seite" value="${esc(p.seoDescription)}"></div>
+        </div>
+
+        <div class="save-bar">
+          <span class="save-msg" id="save-msg">Änderungen werden automatisch gespeichert</span>
+          <button class="btn btn-primary" id="save-now">Jetzt speichern</button>
+        </div>
+        <div style="text-align:center;margin-top:14px;" class="muted-link">
+          Deine öffentliche URL: <b style="color:var(--accent-2)">#/u/${p.username}</b>
+        </div>
+      </div>
+
+      <div class="preview-col">
+        <div class="panel" style="padding:16px;">
+          <h3 style="margin-bottom:10px;">Live-Vorschau</h3>
+          <div class="phone"><div class="phone-inner" id="phone-preview"></div></div>
+          <a class="preview-link" href="#/u/${p.username}" target="_blank">Öffentliche Seite öffnen → <b>#/u/${p.username}</b></a>
+        </div>
+      </div>
+    </div>
+  `;
+  bindNav();
+  renderPresets();
+  renderLinksList();
+  renderPhonePreview();
+  bindDashEvents();
+}
+
+function renderPresets(){
+  const el = document.getElementById("presets");
+  el.innerHTML = THEME_PRESETS.map(pr => `
+    <button class="preset-btn ${dashProfile.accent===pr.accent?'active':''}" data-accent="${pr.accent}" data-bg="${pr.bg}" data-bg2="${pr.bg2}">
+      <div class="preset-swatch" style="background:linear-gradient(135deg, ${pr.bg}, ${pr.accent})"></div>
+      ${pr.name}
+    </button>
+  `).join("");
+  el.querySelectorAll(".preset-btn").forEach(btn=>{
+    btn.onclick = ()=>{
+      dashProfile.accent = btn.dataset.accent;
+      dashProfile.bg = btn.dataset.bg;
+      dashProfile.bg2 = btn.dataset.bg2;
+      scheduleSave();
+      drawDashboard(document.getElementById("app"));
+    };
+  });
+}
+
+function renderLinksList(){
+  const el = document.getElementById("links-list");
+  el.innerHTML = dashProfile.links.map((lk, i) => `
+    <div class="link-row" data-i="${i}">
+      <select class="lk-type">
+        ${LINK_TYPES.map(t=>`<option value="${t.k}" ${t.k===lk.type?'selected':''}>${t.icon} ${t.label}</option>`).join("")}
+      </select>
+      <input class="lk-label" placeholder="Label" value="${esc(lk.label)}">
+      <input class="lk-url" placeholder="https://..." value="${esc(lk.url)}">
+      <button class="rm">✕</button>
+    </div>
+  `).join("") || `<div class="muted-link">Noch keine Links — füg welche hinzu.</div>`;
+
+  el.querySelectorAll(".link-row").forEach(row=>{
+    const i = parseInt(row.dataset.i);
+    row.querySelector(".lk-type").onchange = e=>{ dashProfile.links[i].type = e.target.value; scheduleSave(); renderPhonePreview(); };
+    row.querySelector(".lk-label").oninput = e=>{ dashProfile.links[i].label = e.target.value; scheduleSave(); renderPhonePreview(); };
+    row.querySelector(".lk-url").oninput = e=>{ dashProfile.links[i].url = e.target.value; scheduleSave(); renderPhonePreview(); };
+    row.querySelector(".rm").onclick = ()=>{ dashProfile.links.splice(i,1); scheduleSave(); renderLinksList(); renderPhonePreview(); };
+  });
+}
+
+function bindDashEvents(){
+  document.getElementById("d-name").oninput = e=>{ dashProfile.displayName = e.target.value; scheduleSave(); renderPhonePreview(); };
+  document.getElementById("d-bio").oninput = e=>{ dashProfile.bio = e.target.value; scheduleSave(); renderPhonePreview(); };
+  document.getElementById("d-avatar").oninput = e=>{ dashProfile.avatarUrl = e.target.value; scheduleSave(); renderPhonePreview(); };
+  document.getElementById("d-avatarstyle").onchange = e=>{ dashProfile.avatarStyle = e.target.value; scheduleSave(); renderPhonePreview(); };
+  document.getElementById("d-badge").oninput = e=>{ dashProfile.badges = e.target.value.split(/\s+/).filter(Boolean).slice(0,5); scheduleSave(); renderPhonePreview(); };
+
+  const accentInput = document.getElementById("d-accent");
+  accentInput.oninput = e=>{ dashProfile.accent = e.target.value; e.target.nextElementSibling.textContent = e.target.value; scheduleSave(); renderPhonePreview(); };
+  const bgInput = document.getElementById("d-bg");
+  bgInput.oninput = e=>{ dashProfile.bg = e.target.value; e.target.nextElementSibling.textContent = e.target.value; scheduleSave(); renderPhonePreview(); };
+  const bg2Input = document.getElementById("d-bg2");
+  bg2Input.oninput = e=>{ dashProfile.bg2 = e.target.value; e.target.nextElementSibling.textContent = e.target.value; scheduleSave(); renderPhonePreview(); };
+
+  document.getElementById("d-effect").onchange = e=>{ dashProfile.effect = e.target.value; scheduleSave(); renderPhonePreview(); };
+  document.getElementById("d-music").oninput = e=>{ dashProfile.musicUrl = e.target.value; scheduleSave(); };
+  document.getElementById("d-musiclabel").oninput = e=>{ dashProfile.musicLabel = e.target.value; scheduleSave(); renderPhonePreview(); };
+
+  document.getElementById("d-cursor").onclick = (e)=>{
+    dashProfile.cursor = !dashProfile.cursor;
+    e.target.classList.toggle("on", dashProfile.cursor);
+    scheduleSave();
+  };
+  document.getElementById("d-trail").onclick = (e)=>{
+    dashProfile.cursorTrail = !dashProfile.cursorTrail;
+    e.target.classList.toggle("on", dashProfile.cursorTrail);
+    scheduleSave();
+  };
+  document.getElementById("d-typewriter").onclick = (e)=>{
+    dashProfile.typewriter = !dashProfile.typewriter;
+    e.target.classList.toggle("on", dashProfile.typewriter);
+    scheduleSave(); renderPhonePreview();
+  };
+  document.getElementById("d-splash").onclick = (e)=>{
+    dashProfile.splash = !dashProfile.splash;
+    e.target.classList.toggle("on", dashProfile.splash);
+    scheduleSave();
+  };
+  document.getElementById("d-pwgate").oninput = e=>{ dashProfile.profilePassword = e.target.value; scheduleSave(); };
+  document.getElementById("d-pagetitle").oninput = e=>{ dashProfile.pageTitle = e.target.value; scheduleSave(); };
+  document.getElementById("d-seo").oninput = e=>{ dashProfile.seoDescription = e.target.value; scheduleSave(); };
+
+  document.getElementById("add-link").onclick = ()=>{
+    dashProfile.links.push({type:"custom", label:"Neuer Link", url:"https://"});
+    scheduleSave(); renderLinksList(); renderPhonePreview();
+  };
+
+  document.getElementById("save-now").onclick = ()=> doSave(true);
+}
+
+function scheduleSave(){
+  const msg = document.getElementById("save-msg");
+  if(msg) msg.textContent = "Speichert...";
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(()=> doSave(false), 700);
+}
+async function doSave(manual){
+  const ok = await sset(PROFILE_PREFIX + currentUser, dashProfile);
+  const msg = document.getElementById("save-msg");
+  if(msg) msg.textContent = ok ? "Gespeichert ✓" : "Fehler beim Speichern";
+  if(manual) showToast(ok ? "Gespeichert!" : "Fehler beim Speichern");
+}
+
+function renderPhonePreview(){
+  const el = document.getElementById("phone-preview");
+  if(!el) return;
+  el.innerHTML = profileInnerHtml(dashProfile, true);
+  mountProfileEffects(el, dashProfile, true);
+  mountTypewriter(el, dashProfile);
+  mountMusicPlayer(el);
+}
+
+/* ---------- PUBLIC PROFILE ---------- */
+async function renderProfile(root, username){
+  username = (username||"").trim().toLowerCase();
+  root.innerHTML = `<div class="profile-page"><div class="notfound">Lade...</div></div>`;
+  const profile = await sget(PROFILE_PREFIX + username);
+  if(!profile){
+    root.innerHTML = `
+      <div class="profile-page">
+        <div class="notfound">
+          <h2 style="font-family:var(--font-display);">Seite nicht gefunden</h2>
+          <p>@${esc(username)} existiert nicht.</p>
+          <a class="btn btn-primary" href="#/">Zur Startseite</a>
+        </div>
+      </div>`;
+    return;
   }
-  // border glow continuous
-  if(p.borderGlow>0){const card=document.querySelector('.profile-card');if(card)card.style.boxShadow=`0 0 ${p.borderGlow}px ${p.borderColor}`;}
 
-  // cursor
-  if(p.cursorUrl){
-    if(p.cursorUrl.startsWith('http')||p.cursorUrl.startsWith('data:')||p.cursorUrl.startsWith('blob:')){document.body.style.cursor=`url("${p.cursorUrl}") 16 16, auto`;}
-    else {
-      const svg=`data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='52' font-size='52'%3E${encodeURIComponent(p.cursorUrl)}%3C/text%3E%3C/svg%3E`;
-      document.body.style.cursor=`url("${svg}") 16 16, auto`;
+  document.title = profile.pageTitle || (profile.displayName + " — linkforge");
+  let metaDesc = document.querySelector('meta[name="description"]');
+  if(!metaDesc){ metaDesc = document.createElement("meta"); metaDesc.name="description"; document.head.appendChild(metaDesc); }
+  metaDesc.content = profile.seoDescription || profile.bio || "";
+
+  // password gate
+  if(profile.profilePassword){
+    root.innerHTML = `
+      <div class="profile-page" style="background:radial-gradient(circle at 30% 20%, ${profile.bg2}, ${profile.bg} 60%)">
+        <div class="gate-card" style="--p-accent:${profile.accent}">
+          <div style="font-size:26px;">🔒</div>
+          <h3>Geschützte Seite</h3>
+          <p>@${esc(username)} hat diese Seite mit einem Passwort geschützt.</p>
+          <input id="gate-pw" type="password" placeholder="Passwort eingeben">
+          <div class="gate-err" id="gate-err"></div>
+          <button class="btn btn-primary" id="gate-submit" style="width:100%;padding:11px;">Seite betreten</button>
+        </div>
+      </div>`;
+    document.getElementById("gate-submit").onclick = ()=>{
+      const val = document.getElementById("gate-pw").value;
+      if(val === profile.profilePassword){ showProfileContent(root, profile, username); }
+      else document.getElementById("gate-err").textContent = "Falsches Passwort";
+    };
+    document.getElementById("gate-pw").onkeydown = (e)=>{ if(e.key==="Enter") document.getElementById("gate-submit").click(); };
+    return;
+  }
+
+  showProfileContent(root, profile, username);
+}
+
+function showProfileContent(root, profile, username){
+  profile.views = (profile.views||0) + 1;
+  sset(PROFILE_PREFIX + username, profile); // fire and forget view count
+
+  const buildPage = ()=>{
+    root.innerHTML = `
+      <div class="profile-page" id="profile-page-root">
+        <div class="profile-bg-layer" id="bg-layer"></div>
+        <div style="position:relative;z-index:2;width:100%;display:flex;flex-direction:column;align-items:center;">
+          <div class="profile-card">${profileInnerHtml(profile,false)}</div>
+          <div class="claim-strip">erstellt mit <a href="#/">linkforge</a></div>
+        </div>
+      </div>
+    `;
+    const pageRoot = document.getElementById("profile-page-root");
+    mountProfileEffects(pageRoot, profile, false, document.getElementById("bg-layer"));
+    mountTypewriter(pageRoot, profile);
+    mountMusicPlayer(pageRoot);
+    if(profile.cursorTrail) mountCursorTrail(profile.accent);
+  };
+
+  if(profile.splash){
+    root.innerHTML = `
+      <div class="splash" id="splash-el" style="--p-accent:${profile.accent}">
+        <div class="splash-ring">✦</div>
+        <div class="splash-text">klicken zum betreten</div>
+      </div>
+    `;
+    document.getElementById("splash-el").onclick = ()=>{
+      const s = document.getElementById("splash-el");
+      s.classList.add("hide");
+      setTimeout(buildPage, 350);
+    };
+  } else {
+    buildPage();
+  }
+}
+
+function mountCursorTrail(color){
+  let last = 0;
+  const move = (e)=>{
+    const now = Date.now();
+    if(now - last < 35) return;
+    last = now;
+    const dot = document.createElement("div");
+    dot.className = "trail-dot";
+    dot.style.background = color;
+    dot.style.left = e.clientX + "px";
+    dot.style.top = e.clientY + "px";
+    document.body.appendChild(dot);
+    let op = 0.8, sz = 6;
+    const fade = setInterval(()=>{
+      op -= 0.08; sz += 0.6;
+      dot.style.opacity = op;
+      dot.style.width = sz+"px"; dot.style.height = sz+"px";
+      if(op <= 0){ clearInterval(fade); dot.remove(); }
+    }, 30);
+  };
+  document.addEventListener("mousemove", move);
+}
+
+function profileInnerHtml(p, isPreview){
+  const style = p.avatarStyle || "glow";
+  let avatarInner = p.avatarUrl
+    ? `<img class="p-avatar style-${style==='rotating'?'plain':style}" src="${esc(p.avatarUrl)}" style="--p-accent:${p.accent};width:100%;height:100%;" onerror="this.style.display='none'">`
+    : `<div class="p-avatar style-${style==='rotating'?'plain':style}" style="--p-accent:${p.accent};width:100%;height:100%;">${esc(p.avatarEmoji||p.username.slice(0,1).toUpperCase())}</div>`;
+  const avatarHtml = style === "rotating"
+    ? `<div class="avatar-wrap"><div class="avatar-ring-spin" style="--p-accent:${p.accent}"></div>${avatarInner}</div>`
+    : `<div class="avatar-wrap">${avatarInner}</div>`;
+
+  const linksHtml = (p.links||[]).map(lk=>{
+    const t = LINK_TYPES.find(t=>t.k===lk.type) || LINK_TYPES[0];
+    return `<a class="p-link" style="--p-accent:${p.accent}" href="${esc(lk.url||'#')}" target="${isPreview?'_self':'_blank'}" rel="noopener">${t.icon} ${esc(lk.label||t.label)}</a>`;
+  }).join("");
+
+  const badgesHtml = (p.badges && p.badges.length)
+    ? `<div class="p-badges-row">${p.badges.slice(0,5).map(b=>`<span class="b">${esc(b)}</span>`).join("")}</div>` : "";
+
+  const bioId = "bio-" + Math.random().toString(36).slice(2,8);
+  const bioHtml = `<div class="p-bio ${p.typewriter?'typewriter':''}" id="${bioId}" data-full="${esc(p.bio||'')}">${p.typewriter ? '' : esc(p.bio||'')}</div>`;
+
+  const musicHtml = p.musicUrl ? `
+    <div class="p-music-bar" style="--p-accent:${p.accent}">
+      <button class="play-btn" id="music-toggle-btn">▶</button>
+      <div class="meta"><div class="t">${esc(p.musicLabel || "Hintergrundmusik")}</div></div>
+      <div class="bars paused" id="music-bars"><span></span><span></span><span></span></div>
+    </div>
+    <audio id="bg-audio" loop style="display:none">
+      <source src="${esc(p.musicUrl)}">
+    </audio>
+  ` : "";
+
+  return `
+    <div style="font-family:'${p.font||'Space Grotesk'}', sans-serif;">
+      ${avatarHtml}
+      <div class="p-name">${esc(p.displayName||p.username)}</div>
+      ${badgesHtml}
+      <div class="p-username">@${esc(p.username)}</div>
+      ${bioHtml}
+      <div class="p-links">${linksHtml}</div>
+      <div class="p-stats"><span>👁 ${p.views||0} aufrufe</span><span>· seit ${new Date(p.createdAt||Date.now()).getFullYear()}</span></div>
+      ${musicHtml}
+    </div>
+  `;
+}
+
+function mountTypewriter(containerEl, p){
+  if(!p.typewriter) return;
+  const el = containerEl.querySelector(".p-bio.typewriter");
+  if(!el) return;
+  const full = el.dataset.full || "";
+  let i = 0;
+  el.textContent = "";
+  clearInterval(el._twTimer);
+  el._twTimer = setInterval(()=>{
+    i++;
+    el.textContent = full.slice(0,i);
+    if(i >= full.length) clearInterval(el._twTimer);
+  }, 35);
+}
+
+function mountMusicPlayer(containerEl){
+  const audio = containerEl.querySelector("#bg-audio");
+  const btn = containerEl.querySelector("#music-toggle-btn");
+  const bars = containerEl.querySelector("#music-bars");
+  if(!audio || !btn) return;
+  let playing = false;
+  btn.onclick = ()=>{
+    if(playing){ audio.pause(); btn.textContent="▶"; bars.classList.add("paused"); }
+    else { audio.play().catch(()=>{}); btn.textContent="❚❚"; bars.classList.remove("paused"); }
+    playing = !playing;
+  };
+}
+
+function mountProfileEffects(containerEl, p, isPreview, bgLayerEl){
+  // set CSS background gradient on the page/preview container
+  const target = isPreview ? containerEl : containerEl;
+  target.style.background = `radial-gradient(circle at 30% 20%, ${p.bg2}, ${p.bg} 60%)`;
+
+  // particles / grid canvas
+  const layer = bgLayerEl || (()=>{
+    let l = containerEl.querySelector(".profile-bg-layer");
+    if(!l){ l = document.createElement("div"); l.className="profile-bg-layer"; containerEl.prepend(l); }
+    return l;
+  })();
+  layer.innerHTML = "";
+  if(p.effect === "particles"){
+    mountParticles(layer, p.accent, isPreview);
+  } else if(p.effect === "grid"){
+    mountGrid(layer, p.accent);
+  }
+
+  // custom cursor (skip in small preview to avoid weirdness)
+  if(!isPreview && p.cursor){
+    let dot = document.getElementById("custom-cursor-dot");
+    if(!dot){ dot = document.createElement("div"); dot.id="custom-cursor-dot"; dot.className="cursor-dot"; document.body.appendChild(dot); }
+    dot.style.setProperty("--p-accent", p.accent);
+    dot.style.borderColor = p.accent;
+    const move = (e)=>{ dot.style.left = e.clientX+"px"; dot.style.top = e.clientY+"px"; };
+    document.addEventListener("mousemove", move);
+    containerEl._cursorCleanup = ()=> document.removeEventListener("mousemove", move);
+  } else {
+    const existing = document.getElementById("custom-cursor-dot");
+    if(existing) existing.remove();
+  }
+}
+
+function mountParticles(layer, color, isPreview){
+  const canvas = document.createElement("canvas");
+  canvas.className = "bgcanvas";
+  layer.appendChild(canvas);
+  const ctx = canvas.getContext("2d");
+  function resize(){ canvas.width = layer.clientWidth; canvas.height = layer.clientHeight; }
+  resize();
+  window.addEventListener("resize", resize);
+  const count = isPreview ? 24 : 55;
+  const pts = Array.from({length:count}, ()=>({
+    x: Math.random()*canvas.width, y: Math.random()*canvas.height,
+    vx:(Math.random()-0.5)*0.3, vy:(Math.random()-0.5)*0.3, r: Math.random()*1.8+0.6
+  }));
+  let raf;
+  function tick(){
+    if(!layer.isConnected){ cancelAnimationFrame(raf); return; }
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = color;
+    pts.forEach(pt=>{
+      pt.x+=pt.vx; pt.y+=pt.vy;
+      if(pt.x<0||pt.x>canvas.width) pt.vx*=-1;
+      if(pt.y<0||pt.y>canvas.height) pt.vy*=-1;
+      ctx.globalAlpha = 0.55;
+      ctx.beginPath(); ctx.arc(pt.x,pt.y,pt.r,0,7); ctx.fill();
+    });
+    raf = requestAnimationFrame(tick);
+  }
+  tick();
+}
+function mountGrid(layer, color){
+  const canvas = document.createElement("canvas");
+  canvas.className = "bgcanvas";
+  layer.appendChild(canvas);
+  const ctx = canvas.getContext("2d");
+  function resize(){ canvas.width = layer.clientWidth; canvas.height = layer.clientHeight; }
+  resize();
+  window.addEventListener("resize", resize);
+  let offset = 0, raf;
+  function tick(){
+    if(!layer.isConnected){ cancelAnimationFrame(raf); return; }
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.strokeStyle = color; ctx.globalAlpha = 0.18; ctx.lineWidth = 1;
+    const gap = 36;
+    offset = (offset+0.15) % gap;
+    for(let x = -gap+offset; x<canvas.width; x+=gap){
+      ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke();
     }
+    for(let y = -gap+offset; y<canvas.height; y+=gap){
+      ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke();
+    }
+    raf = requestAnimationFrame(tick);
   }
-
-  // typewriter
-  const bioOut=$('bioOut');
-  if(bioOut){
-    const text=u.bio||'';
-    if(p.typewriter&&text){
-      let i=0;const t=setInterval(()=>{bioOut.textContent=text.slice(0,++i);if(i>=text.length)clearInterval(t);},40);
-    } else bioOut.textContent=text;
-  }
-
-  // music + visualizer
-  if(p.musicUrl){
-    const audio=new Audio(p.musicUrl);audio.loop=true;audio.volume=p.musicVolume;_audioEl=audio;
-    const btn=$('mpToggle');
-    const tryPlay=()=>{audio.play().then(()=>btn.textContent='⏸').catch(()=>{btn.textContent='▶';});};
-    btn.onclick=()=>{if(audio.paused)tryPlay();else{audio.pause();btn.textContent='▶';}};
-    $('mpVol').oninput=e=>{audio.volume=e.target.value/100;};
-    if(p.musicAutoplay)setTimeout(tryPlay,300);
-  }
-
-  // page title animation
-  if(p.titleAnim&&p.titleAnim.length>1){
-    let i=0;pageTitleTimer=setInterval(()=>{document.title=p.titleAnim[i%p.titleAnim.length]+' · kioo.zeta';i++;},1500);
-  }
-
-  // enter screen
-  const es=$('enterScreen');
-  if(es){es.onclick=()=>{es.style.transition='opacity .5s';es.style.opacity=0;setTimeout(()=>es.remove(),500);if(_audioEl&&_audioEl.paused)_audioEl.play().catch(()=>{});if(_audioCtx&&_audioCtx.state==='suspended')_audioCtx.resume();};}
-
-  // discord lanyard
-  if(p.discord.enabled&&p.discord.id){loadLanyard(p.discord.id);_lanyardTimer=setInterval(()=>loadLanyard(p.discord.id),20000);}
+  tick();
 }
 
-function setMeta(name,content,prop=false){
-  const sel=prop?`meta[property="${name}"]`:`meta[name="${name}"]`;
-  let el=document.querySelector(sel);
-  if(!el){el=document.createElement('meta');if(prop)el.setAttribute('property',name);else el.setAttribute('name',name);document.head.appendChild(el);}
-  el.setAttribute('content',content);
-}
-function setFavicon(v){
-  let href=v;
-  if(!v.startsWith('http')&&!v.startsWith('data:')){
-    href=`data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='52' font-size='52'%3E${encodeURIComponent(v)}%3C/text%3E%3C/svg%3E`;
-  }
-  let link=document.getElementById('favicon');
-  if(!link){link=document.createElement('link');link.id='favicon';link.rel='icon';document.head.appendChild(link);}
-  link.href=href;
+function esc(s){
+  return (s||"").toString().replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 }
 
-async function loadLanyard(id){
-  try{
-    const r=await fetch(`https://api.lanyard.rest/v1/users/${id}`);
-    const j=await r.json();
-    if(!j.success)return;
-    const d=j.data;
-    const el=$('ds-status');if(!el)return;
-    const status=d.discord_status;
-    const colors={online:'#43b581',idle:'#faa61a',dnd:'#f04747',offline:'#747f8d'};
-    let txt=`${d.discord_user.username} — ${status}`;
-    const game=d.activities&&d.activities.find(a=>a.type===0);
-    if(game)txt+=` · spielt ${game.name}`;
-    el.innerHTML=`<span class="indot" style="background:${colors[status]||'#888'};box-shadow:0 0 8px ${colors[status]||'#888'}"></span><span>${esc(txt)}</span>`;
-  }catch(e){}
-}
+/* ============== INIT ============== */
+(async function init(){
+  await loadSession();
+  await render();
+})();
 
-initDB().then(render).catch(e=>{console.error(e);render();});
+})();
 </script>
 </body>
 </html>
