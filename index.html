@@ -3,261 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sleepcallen Discord Clone</title>
+    <title>Void - Access</title>
     <style>
-        /* DISCORD FARBEN & BASICS */
         :root {
-            --bg-darker: #1e1f22;
-            --bg-sidebar: #2b2d31;
-            --bg-chat: #313338;
-            --bg-user: #232428;
-            --text-main: #dbdee1;
-            --text-muted: #949ba4;
+            --bg-dark: #1e1f22;
+            --bg-main: #313338;
+            --bg-secondary: #2b2d31;
             --blurple: #5865f2;
-            --green: #23a559;
+            --text-white: #ffffff;
+            --text-grey: #b5bac1;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-white); overflow: hidden; }
 
-        body { display: flex; height: 100vh; overflow: hidden; background-color: var(--bg-chat); color: var(--text-main); }
-
-        /* SERVER LISTE (GANZ LINKS) */
-        .server-list {
-            width: 72px;
-            background-color: var(--bg-darker);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 12px;
-            gap: 8px;
+        /* AUTH SEKTION */
+        #auth-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://images.alphacoders.com/941/941493.jpg') center/cover;
+            display: flex; align-items: center; justify-content: center; z-index: 100;
         }
 
-        .server-icon {
-            width: 48px;
-            height: 48px;
-            background-color: var(--bg-chat);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.2s;
-            color: var(--green);
+        .auth-card {
+            background: #313338; padding: 32px; border-radius: 8px; width: 480px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2); text-align: center;
         }
 
-        .server-icon:hover {
-            border-radius: 15px;
-            background-color: var(--blurple);
-            color: white;
+        .auth-card h2 { margin-bottom: 8px; font-size: 24px; }
+        .auth-card p { color: var(--text-grey); margin-bottom: 20px; }
+
+        .input-group { text-align: left; margin-bottom: 20px; }
+        .input-group label { display: block; color: var(--text-grey); font-size: 12px; font-weight: bold; margin-bottom: 8px; text-transform: uppercase; }
+        .input-group input {
+            width: 100%; padding: 10px; background: #1e1f22; border: none; border-radius: 3px; color: white; outline: none;
         }
 
-        .divider {
-            width: 32px;
-            height: 2px;
-            background-color: #35363c;
-            margin: 4px 0;
+        .auth-btn {
+            width: 100%; padding: 12px; background: var(--blurple); border: none; border-radius: 3px;
+            color: white; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.2s;
         }
+        .auth-btn:hover { background: #4752c4; }
 
-        /* CHANNELS SIDEBAR */
-        .channels {
-            width: 240px;
-            background-color: var(--bg-sidebar);
-            display: flex;
-            flex-direction: column;
-        }
+        .toggle-auth { margin-top: 15px; font-size: 14px; color: #00a8fc; cursor: pointer; }
 
-        .server-header {
-            height: 48px;
-            padding: 0 16px;
-            display: flex;
-            align-items: center;
-            font-weight: bold;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.5);
-            color: white;
-        }
+        /* MAIN DISCORD INTERFACE (HIDDEN BY DEFAULT) */
+        #main-app { display: none; height: 100vh; flex-direction: row; }
 
-        .channel-list {
-            flex: 1;
-            padding: 16px 8px;
-            overflow-y: auto;
-        }
+        /* SIDEBARS WIE ZUVOR */
+        .server-sidebar { width: 72px; background: #1e1f22; display: flex; flex-direction: column; align-items: center; padding-top: 12px; }
+        .channel-sidebar { width: 240px; background: #2b2d31; display: flex; flex-direction: column; }
+        
+        .chat-area { flex: 1; display: flex; flex-direction: column; background: #313338; }
+        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; }
+        .msg { display: flex; gap: 15px; margin-bottom: 15px; }
+        .msg img { width: 40px; height: 40px; border-radius: 50%; background: #5865f2; }
+        .msg-content b { color: white; margin-right: 8px; }
+        .msg-content span { font-size: 12px; color: var(--text-grey); }
 
-        .channel-category {
-            font-size: 12px;
-            text-transform: uppercase;
-            font-weight: bold;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-            padding-left: 8px;
-        }
+        .chat-input { padding: 20px; }
+        .input-box { background: #383a40; padding: 12px; border-radius: 8px; width: 100%; border: none; color: white; outline: none; }
 
-        .channel-item {
-            padding: 6px 8px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            color: var(--text-muted);
-            margin-bottom: 2px;
-        }
-
-        .channel-item:hover {
-            background-color: #35373c;
-            color: var(--text-main);
-        }
-
-        .channel-item span { margin-left: 6px; font-size: 15px; }
-
-        /* USER PROFILE BAR */
-        .user-bar {
-            height: 52px;
-            background-color: var(--bg-user);
-            display: flex;
-            align-items: center;
-            padding: 0 8px;
-            gap: 8px;
-        }
-
-        .avatar {
-            width: 32px;
-            height: 32px;
-            background-color: var(--blurple);
-            border-radius: 50%;
-        }
-
-        .user-info { flex: 1; }
-        .user-name { font-size: 13px; font-weight: bold; color: white; }
-        .user-tag { font-size: 11px; color: var(--text-muted); }
-
-        /* CHAT BEREICH */
-        .chat-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background-color: var(--bg-chat);
-        }
-
-        .chat-header {
-            height: 48px;
-            padding: 0 16px;
-            display: flex;
-            align-items: center;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.5);
-            font-weight: bold;
-        }
-
-        .chat-messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .message { display: flex; gap: 16px; }
-        .msg-avatar { width: 40px; height: 40px; background-color: #444; border-radius: 50%; flex-shrink: 0; }
-        .msg-content { display: flex; flex-direction: column; }
-        .msg-user { font-weight: bold; color: white; font-size: 15px; margin-right: 8px; }
-        .msg-time { font-size: 11px; color: var(--text-muted); }
-        .msg-text { margin-top: 4px; line-height: 1.4; }
-
-        /* INPUT AREA */
-        .chat-input-area { padding: 0 16px 24px 16px; }
-        .chat-input-wrapper {
-            background-color: #383a40;
-            border-radius: 8px;
-            padding: 10px 16px;
-            display: flex;
-            align-items: center;
-        }
-
-        .chat-input-wrapper input {
-            background: none;
-            border: none;
-            color: var(--text-main);
-            width: 100%;
-            outline: none;
-            font-size: 15px;
-        }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <!-- SIDEBAR 1: SERVERS -->
-    <div class="server-list">
-        <div class="server-icon" style="background-color: var(--blurple); color: white; border-radius: 15px;">SC</div>
-        <div class="divider"></div>
-        <div class="server-icon">A</div>
-        <div class="server-icon">B</div>
-        <div class="server-icon">+</div>
-    </div>
-
-    <!-- SIDEBAR 2: CHANNELS -->
-    <div class="channels">
-        <div class="server-header">Sleepcallen Server</div>
-        
-        <div class="channel-list">
-            <div class="channel-category">Text-Kanäle</div>
-            <div class="channel-item"># <span>allgemein</span></div>
-            <div class="channel-item" style="background-color: #35373c; color: white;"># <span>og-hunter</span></div>
-            <div class="channel-item"># <span>pc-optimizer</span></div>
-            
-            <div class="channel-category" style="margin-top: 20px;">Sprach-Kanäle</div>
-            <div class="channel-item">🔊 <span>Lounge</span></div>
-            <div class="channel-item">🔊 <span>Gaming</span></div>
-        </div>
-
-        <div class="user-bar">
-            <div class="avatar"></div>
-            <div class="user-info">
-                <div class="user-name">Sleepcallen</div>
-                <div class="user-tag">#0001</div>
+    <!-- AUTHENTICATION SCREEN -->
+    <div id="auth-overlay">
+        <div class="auth-card" id="login-form">
+            <h2>Willkommen zurück!</h2>
+            <p>Wir freuen uns, dich wiederzusehen!</p>
+            <div class="input-group">
+                <label>Benutzername</label>
+                <input type="text" id="login-user">
             </div>
-            <div style="font-size: 18px; cursor: pointer; color: var(--text-muted);">⚙️</div>
+            <div class="input-group">
+                <label>Passwort</label>
+                <input type="password" id="login-pass">
+            </div>
+            <button class="auth-btn" onclick="login()">Anmelden</button>
+            <div class="toggle-auth" onclick="toggleAuth()">Brauchst du einen Account? Registrieren</div>
+        </div>
+
+        <div class="auth-card hidden" id="register-form">
+            <h2>Account erstellen</h2>
+            <div class="input-group">
+                <label>Benutzername</label>
+                <input type="text" id="reg-user">
+            </div>
+            <div class="input-group">
+                <label>Passwort</label>
+                <input type="password" id="reg-pass">
+            </div>
+            <button class="auth-btn" onclick="register()">Fortfahren</button>
+            <div class="toggle-auth" onclick="toggleAuth()">Hast du bereits einen Account?</div>
         </div>
     </div>
 
-    <!-- MAIN CHAT AREA -->
-    <div class="chat-container">
-        <div class="chat-header"># og-hunter</div>
-        
-        <div class="chat-messages" id="chatLines">
-            <div class="message">
-                <div class="msg-avatar" style="background-color: #ff4500;"></div>
-                <div class="msg-content">
-                    <div><span class="msg-user">System</span><span class="msg-time">Heute um 14:00</span></div>
-                    <div class="msg-text">Willkommen in der Void-Edition. Nutze den Generator um 3L Namen zu finden.</div>
+    <!-- MAIN APP SCREEN -->
+    <div id="main-app">
+        <div class="server-sidebar">
+            <div style="width: 48px; height: 48px; background: #5865f2; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-weight: bold;">V</div>
+        </div>
+        <div class="channel-sidebar">
+            <div style="padding: 15px; font-weight: bold; border-bottom: 1px solid #222;">VOID SERVER</div>
+            <div style="padding: 15px; color: #b5bac1; font-size: 14px;"># allgemein</div>
+            <div style="padding: 15px; color: #b5bac1; font-size: 14px;"># og-hunter</div>
+            <div style="margin-top: auto; padding: 10px; background: #232428; display: flex; align-items: center; gap: 10px;">
+                <div style="width: 32px; height: 32px; background: #5865f2; border-radius: 50%;"></div>
+                <div id="display-name" style="font-weight: bold; font-size: 14px;">Username</div>
+            </div>
+        </div>
+        <div class="chat-area">
+            <div style="padding: 15px; border-bottom: 1px solid #28292e; font-weight: bold;"># allgemein</div>
+            <div class="chat-messages" id="messages">
+                <div class="msg">
+                    <img src="" alt="">
+                    <div class="msg-content">
+                        <b>Void-Bot</b> <span>Heute um 10:00</span>
+                        <p>Willkommen im System. Deine Login-Session ist aktiv.</p>
+                    </div>
                 </div>
             </div>
-            <!-- Hier kommen neue Nachrichten rein -->
-        </div>
-
-        <div class="chat-input-area">
-            <div class="chat-input-wrapper">
-                <input type="text" id="chatInput" placeholder="Nachricht an #og-hunter">
+            <div class="chat-input">
+                <input type="text" class="input-box" id="msg-input" placeholder="Nachricht an #allgemein">
             </div>
         </div>
     </div>
 
     <script>
-        const input = document.getElementById('chatInput');
-        const chatLines = document.getElementById('chatLines');
+        // AUTH LOGIK
+        function toggleAuth() {
+            document.getElementById('login-form').classList.toggle('hidden');
+            document.getElementById('register-form').classList.toggle('hidden');
+        }
 
-        input.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter' && input.value !== "") {
-                const newMsg = `
-                    <div class="message">
-                        <div class="msg-avatar" style="background-color: #5865f2;"></div>
+        function register() {
+            const u = document.getElementById('reg-user').value;
+            const p = document.getElementById('reg-pass').value;
+            if(u && p) {
+                localStorage.setItem(u, p);
+                alert("Account erstellt! Du kannst dich jetzt einloggen.");
+                toggleAuth();
+            }
+        }
+
+        function login() {
+            const u = document.getElementById('login-user').value;
+            const p = document.getElementById('login-pass').value;
+            
+            if(localStorage.getItem(u) === p) {
+                document.getElementById('auth-overlay').style.display = 'none';
+                document.getElementById('main-app').style.display = 'flex';
+                document.getElementById('display-name').innerText = u;
+            } else {
+                alert("Falsche Zugangsdaten!");
+            }
+        }
+
+        // CHAT LOGIK
+        const msgInput = document.getElementById('msg-input');
+        const msgContainer = document.getElementById('messages');
+
+        msgInput.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter' && msgInput.value) {
+                const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                const user = document.getElementById('display-name').innerText;
+                const html = `
+                    <div class="msg">
+                        <img src="" alt="">
                         <div class="msg-content">
-                            <div><span class="msg-user">Sleepcallen</span><span class="msg-time">Gerade eben</span></div>
-                            <div class="msg-text">${input.value}</div>
+                            <b>${user}</b> <span>Heute um ${time}</span>
+                            <p>${msgInput.value}</p>
                         </div>
                     </div>
                 `;
-                chatLines.innerHTML += newMsg;
-                input.value = "";
-                chatLines.scrollTop = chatLines.scrollHeight;
+                msgContainer.innerHTML += html;
+                msgInput.value = '';
+                msgContainer.scrollTop = msgContainer.scrollHeight;
             }
         });
     </script>
