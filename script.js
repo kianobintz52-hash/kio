@@ -153,3 +153,81 @@ h1{
     background:rgba(59,130,246,.18);
     border:1px solid rgba(59,130,246,.35);
 }
+.links{
+    margin-top:35px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.link{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    text-decoration:none;
+    color:white;
+    padding:22px;
+    border-radius:20px;
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.08);
+    transition:.35s;
+}
+
+.link:hover{
+    transform:translateY(-6px) scale(1.02);
+    border-color:#3b82f6;
+    box-shadow:
+    0 0 35px rgba(59,130,246,.4);
+}
+
+.left{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    font-size:28px;
+}
+
+.left h3{
+    font-size:20px;
+}
+
+.left p{
+    opacity:.6;
+    font-size:14px;
+}
+
+.arrow{
+    font-size:30px;
+    transition:.3s;
+}
+
+.link:hover .arrow{
+    transform:translateX(10px);
+}
+
+@media(max-width:700px){
+
+.top{
+padding:20px;
+flex-direction:column;
+gap:20px;
+}
+
+.clock span{
+font-size:30px;
+}
+
+.card{
+padding:30px;
+}
+
+.avatar{
+width:120px;
+height:120px;
+}
+
+h1{
+font-size:32px;
+}
+
+}
