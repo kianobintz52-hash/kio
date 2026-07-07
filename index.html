@@ -1,208 +1,225 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Void - Secure Access</title>
-    <style>
-        :root {
-            --bg-dark: #1e1f22;
-            --bg-main: #313338;
-            --bg-secondary: #2b2d31;
-            --blurple: #5865f2;
-            --green: #23a559;
-            --text-white: #ffffff;
-            --text-grey: #b5bac1;
-        }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-        body { background-color: var(--bg-main); color: var(--text-white); overflow: hidden; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        /* AUTH SEKTION */
-        #auth-overlay { position: fixed; inset: 0; background: #000; display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .auth-card { background: #313338; padding: 32px; border-radius: 8px; width: 400px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        .input-group { margin-bottom: 20px; text-align: left; }
-        .input-group label { color: var(--text-grey); font-size: 12px; font-weight: bold; text-transform: uppercase; }
-        .input-group input { width: 100%; padding: 10px; background: #1e1f22; border: none; color: white; border-radius: 3px; margin-top: 5px; }
+<title>kio</title>
 
-        /* MAIN APP */
-        #main-app { display: none; height: 100vh; flex-direction: row; }
-        .sidebar-servers { width: 72px; background: #1e1f22; display: flex; flex-direction: column; align-items: center; padding: 12px 0; }
-        .sidebar-channels { width: 240px; background: #2b2d31; display: flex; flex-direction: column; }
-        .chat-area { flex: 1; display: flex; flex-direction: column; }
-        .messages { flex: 1; padding: 20px; overflow-y: auto; }
-        
-        /* USER BAR BEREICH */
-        .user-bar { height: 52px; background: #232428; display: flex; align-items: center; padding: 0 8px; cursor: pointer; transition: 0.2s; }
-        .user-bar:hover { background: #35373c; }
-        .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--blurple); background-size: cover; }
-        
-        /* MODALS (PROFIL & ADMIN) */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; }
-        .modal-content { background: #232428; border-radius: 8px; width: 450px; overflow: hidden; position: relative; }
-        .profile-banner { height: 100px; background: var(--blurple); background-size: cover; }
-        .profile-body { padding: 16px; position: relative; }
-        .profile-avatar-large { width: 80px; height: 80px; border-radius: 50%; border: 6px solid #232428; position: absolute; top: -40px; left: 16px; background: var(--blurple); background-size: cover; }
-        .close-btn { position: absolute; top: 10px; right: 10px; cursor: pointer; color: white; border: none; background: none; font-size: 20px; }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-        .admin-panel { padding: 20px; color: white; }
-        .btn-action { padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer; margin: 5px; font-weight: bold; }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-        .hidden { display: none !important; }
-    </style>
+<link rel="stylesheet" href="style.css">
+
+<script src="script.js" defer></script>
+
 </head>
+
 <body>
 
-    <!-- LOGIN / REGISTER -->
-    <div id="auth-overlay">
-        <div class="auth-card" id="login-box">
-            <h2 style="margin-bottom: 20px;">VOID ACCESS</h2>
-            <div class="input-group"><label>USER</label><input type="text" id="l-user"></div>
-            <div class="input-group"><label>PASSWORD</label><input type="password" id="l-pass"></div>
-            <button onclick="handleLogin()" style="width: 100%; padding: 10px; background: var(--blurple); border: none; color: white; cursor: pointer;">LOGIN</button>
-            <p onclick="toggleAuth()" style="font-size: 12px; color: #00aff4; margin-top: 15px; cursor: pointer;">Registrieren</p>
-        </div>
-        <div class="auth-card hidden" id="reg-box">
-            <h2 style="margin-bottom: 20px;">CREATE IDENTITY</h2>
-            <div class="input-group"><label>NEW USER</label><input type="text" id="r-user"></div>
-            <div class="input-group"><label>PASSWORD</label><input type="password" id="r-pass"></div>
-            <button onclick="handleRegister()" style="width: 100%; padding: 10px; background: var(--green); border: none; color: white; cursor: pointer;">REGISTER</button>
-            <p onclick="toggleAuth()" style="font-size: 12px; color: #00aff4; margin-top: 15px; cursor: pointer;">Zurück zum Login</p>
-        </div>
-    </div>
+<div id="particles"></div>
 
-    <!-- MAIN APP -->
-    <div id="main-app">
-        <div class="sidebar-servers"><div style="width: 48px; height: 48px; background: #5865f2; border-radius: 15px; display: flex; align-items: center; justify-content: center;">SC</div></div>
-        <div class="sidebar-channels">
-            <div style="padding: 15px; font-weight: bold; border-bottom: 1px solid #111;">VOIDCALLY AI</div>
-            <div style="flex: 1; padding: 10px;">
-                <div style="padding: 8px; color: var(--text-grey);"># allgemein</div>
-                <div style="padding: 8px; color: var(--text-grey);"># admin-chat</div>
-            </div>
-            <div class="user-bar" onclick="openProfile()">
-                <div class="avatar" id="small-avatar"></div>
-                <div style="margin-left: 10px;">
-                    <div id="u-display" style="font-weight: bold; font-size: 13px;">User</div>
-                    <div style="font-size: 11px; color: var(--text-grey);">Online</div>
-                </div>
-            </div>
-        </div>
-        <div class="chat-area">
-            <div class="messages" id="chat-msgs"></div>
-            <div style="padding: 20px;"><input type="text" id="msg-in" placeholder="Nachricht..." style="width:100%; padding:12px; border-radius:8px; border:none; background:#383a40; color:white;"></div>
-        </div>
-    </div>
+<div class="background"></div>
 
-    <!-- PROFILE MODAL -->
-    <div class="modal" id="profile-modal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closeModals()">X</button>
-            <div class="profile-banner" id="p-banner-display"></div>
-            <div class="profile-body">
-                <div class="profile-avatar-large" id="p-avatar-display"></div>
-                <div style="margin-top: 50px;">
-                    <h2 id="p-name">Username</h2>
-                    <p id="p-bio" style="color: var(--text-grey); margin-top: 10px;">Keine Bio vorhanden.</p>
-                </div>
-                <div style="margin-top: 20px; border-top: 1px solid #444; pt: 10px;">
-                    <h4 style="margin-bottom: 10px;">Profil bearbeiten</h4>
-                    <input type="text" id="avatar-url" placeholder="Avatar URL" style="width: 48%; padding: 5px;">
-                    <input type="text" id="banner-url" placeholder="Banner URL" style="width: 48%; padding: 5px;">
-                    <textarea id="bio-text" placeholder="Über mich..." style="width: 100%; margin-top: 5px;"></textarea>
-                    <button onclick="saveProfile()" style="background: var(--green); color: white; border: none; padding: 5px 10px; margin-top: 5px;">Speichern</button>
-                    <button id="admin-entrance" onclick="openAdmin()" style="display: none; background: orange;">ADMIN PANEL</button>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="top">
 
-    <!-- ADMIN PANEL -->
-    <div class="modal" id="admin-modal">
-        <div class="modal-content admin-panel">
-            <button class="close-btn" onclick="closeModals()">X</button>
-            <h2>ADMIN OVERRIDE</h2>
-            <div id="user-list" style="margin-top: 15px;"></div>
-            <button class="btn-action" style="background: red;" onclick="clearAllData()">KOMPLETT-WIPE</button>
-        </div>
-    </div>
+<div class="clock">
+<span id="time">00:00</span>
+<p id="greeting">Good Evening</p>
+</div>
 
-    <script>
-        let currentUser = "";
+<div class="music">
 
-        function toggleAuth() {
-            document.getElementById('login-box').classList.toggle('hidden');
-            document.getElementById('reg-box').classList.toggle('hidden');
-        }
+<button id="musicButton">
+🔊
+</button>
 
-        function handleRegister() {
-            const u = document.getElementById('r-user').value;
-            const p = document.getElementById('r-pass').value;
-            if(!u) return;
-            const userData = { pass: p, bio: "Neu hier!", avatar: "", banner: "", isAdmin: (u.toLowerCase() === "admin") };
-            localStorage.setItem("user_" + u, JSON.stringify(userData));
-            alert("Registriert!"); toggleAuth();
-        }
+<input
+type="range"
+min="0"
+max="100"
+value="50"
+id="volume">
 
-        function handleLogin() {
-            const u = document.getElementById('l-user').value;
-            const p = document.getElementById('l-pass').value;
-            const data = JSON.parse(localStorage.getItem("user_" + u));
-            if(data && data.pass === p) {
-                currentUser = u;
-                document.getElementById('auth-overlay').style.display = 'none';
-                document.getElementById('main-app').style.display = 'flex';
-                document.getElementById('u-display').innerText = u;
-                updateUI();
-            } else { alert("Error!"); }
-        }
+</div>
 
-        function updateUI() {
-            const data = JSON.parse(localStorage.getItem("user_" + currentUser));
-            document.getElementById('small-avatar').style.backgroundImage = `url(${data.avatar})`;
-            if(data.isAdmin) document.getElementById('admin-entrance').style.display = "block";
-        }
+</div>
 
-        function openProfile() {
-            const data = JSON.parse(localStorage.getItem("user_" + currentUser));
-            document.getElementById('p-name').innerText = currentUser;
-            document.getElementById('p-bio').innerText = data.bio;
-            document.getElementById('p-avatar-display').style.backgroundImage = `url(${data.avatar})`;
-            document.getElementById('p-banner-display').style.backgroundImage = `url(${data.banner})`;
-            document.getElementById('profile-modal').style.display = "flex";
-        }
+<main>
 
-        function saveProfile() {
-            const data = JSON.parse(localStorage.getItem("user_" + currentUser));
-            data.avatar = document.getElementById('avatar-url').value || data.avatar;
-            data.banner = document.getElementById('banner-url').value || data.banner;
-            data.bio = document.getElementById('bio-text').value || data.bio;
-            localStorage.setItem("user_" + currentUser, JSON.stringify(data));
-            openProfile(); updateUI();
-        }
+<div class="card">
 
-        function openAdmin() {
-            document.getElementById('admin-modal').style.display = "flex";
-            const list = document.getElementById('user-list');
-            list.innerHTML = "";
-            for(let i=0; i<localStorage.length; i++) {
-                let key = localStorage.key(i);
-                if(key.startsWith("user_")) list.innerHTML += `<div>👤 ${key.replace("user_","")} <button onclick="deleteUser('${key}')">Bannen</button></div>`;
-            }
-        }
+<div class="avatar">
 
-        function deleteUser(key) { localStorage.removeItem(key); openAdmin(); }
-        function closeModals() { 
-            document.getElementById('profile-modal').style.display = "none"; 
-            document.getElementById('admin-modal').style.display = "none"; 
-        }
+<img src="assets/avatar.png">
 
-        document.getElementById('msg-in').addEventListener('keypress', (e) => {
-            if(e.key === 'Enter' && e.target.value) {
-                document.getElementById('chat-msgs').innerHTML += `<div><b>${currentUser}:</b> ${e.target.value}</div>`;
-                e.target.value = "";
-            }
-        });
-    </script>
+<div class="glow"></div>
+
+</div>
+
+<h1>
+
+kio
+
+<span class="badge">
+
+✔
+
+</span>
+
+</h1>
+
+<p class="bio">
+
+Developer • Designer • Editor
+
+</p>
+
+<div class="status">
+
+💙 welcome to my page
+
+</div>
+
+<div class="links">
+
+<a href="#" class="link">
+
+<div class="left">
+
+🎮
+
+<div>
+
+<h3>Discord</h3>
+
+<p>discord.gg/kio</p>
+
+</div>
+
+</div>
+
+<div class="arrow">
+
+→
+
+</div>
+
+</a>
+
+<a href="#" class="link">
+
+<div class="left">
+
+🐙
+
+<div>
+
+<h3>GitHub</h3>
+
+<p>github.com/kio</p>
+
+</div>
+
+</div>
+
+<div class="arrow">
+
+→
+
+</div>
+
+</a>
+
+<a href="#" class="link">
+
+<div class="left">
+
+🎵
+
+<div>
+
+<h3>Spotify</h3>
+
+<p>@kio</p>
+
+</div>
+
+</div>
+
+<div class="arrow">
+
+→
+
+</div>
+
+</a>
+
+<a href="#" class="link">
+
+<div class="left">
+
+📺
+
+<div>
+
+<h3>Twitch</h3>
+
+<p>@kio</p>
+
+</div>
+
+</div>
+
+<div class="arrow">
+
+→
+
+</div>
+
+</a>
+
+<a href="#" class="link">
+
+<div class="left">
+
+🎬
+
+<div>
+
+<h3>TikTok</h3>
+
+<p>@kio</p>
+
+</div>
+
+</div>
+
+<div class="arrow">
+
+→
+
+</div>
+
+</a>
+
+</div>
+
+</div>
+
+</main>
+
+<audio
+id="audio"
+loop>
+
+<source src="assets/music.mp3">
+
+</audio>
+
 </body>
+
 </html>
