@@ -1,225 +1,384 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@deinusername · guns.lol</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+        }
 
-<title>kio</title>
+        /* Animated Background */
+        .background-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+            opacity: 0.4;
+        }
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.7) 100%);
+            z-index: -1;
+        }
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+        /* Main Container */
+        .container {
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            padding: 40px 20px;
+            animation: fadeIn 1s ease;
+        }
 
-<link rel="stylesheet" href="style.css">
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-<script src="script.js" defer></script>
+        /* Profile Picture */
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.3);
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
 
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Username & Title */
+        .username {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(109, 76, 255, 0.5);
+        }
+
+        .tagline {
+            font-size: 14px;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        /* Stats Row */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-number {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            margin-top: 5px;
+        }
+
+        /* Links Container */
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .link-btn {
+            display: flex;
+            align-items: center;
+            padding: 18px 25px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .link-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .link-btn:hover::before {
+            left: 100%;
+        }
+
+        .link-btn:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateY(-3px);
+            border-color: rgba(109, 76, 255, 0.5);
+            box-shadow: 0 10px 30px rgba(109, 76, 255, 0.3);
+        }
+
+        .link-icon {
+            font-size: 24px;
+            margin-right: 15px;
+            width: 30px;
+            text-align: center;
+        }
+
+        .link-text {
+            flex: 1;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .link-badge {
+            background: rgba(109, 76, 255, 0.3);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 40px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.4);
+        }
+
+        /* Glitch Effect Option */
+        .glitch {
+            position: relative;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            animation: glitch-anim-1 0.3s infinite;
+            clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+            transform: translate(-2px, 0);
+            color: #ff00ff;
+        }
+
+        .glitch::after {
+            animation: glitch-anim-2 0.3s infinite;
+            clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+            transform: translate(2px, 0);
+            color: #00ffff;
+        }
+
+        @keyframes glitch-anim-1 {
+            0% { clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%); }
+            100% { clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%); }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%); }
+            100% { clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%); }
+        }
+
+        /* Typing Effect */
+        .typing {
+            overflow: hidden;
+            border-right: 2px solid #6d4aff;
+            white-space: nowrap;
+            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: #6d4aff; }
+        }
+    </style>
 </head>
-
 <body>
-
-<div id="particles"></div>
-
-<div class="background"></div>
-
-<div class="top">
-
-<div class="clock">
-<span id="time">00:00</span>
-<p id="greeting">Good Evening</p>
-</div>
-
-<div class="music">
-
-<button id="musicButton">
-🔊
-</button>
-
-<input
-type="range"
-min="0"
-max="100"
-value="50"
-id="volume">
-
-</div>
-
-</div>
-
-<main>
-
-<div class="card">
-
-<div class="avatar">
-
-<img src="assets/avatar.png">
-
-<div class="glow"></div>
-
-</div>
-
-<h1>
-
-kio
-
-<span class="badge">
-
-✔
-
-</span>
-
-</h1>
-
-<p class="bio">
-
-Developer • Designer • Editor
-
-</p>
-
-<div class="status">
-
-💙 welcome to my page
-
-</div>
-
-<div class="links">
-
-<a href="#" class="link">
-
-<div class="left">
-
-🎮
-
-<div>
-
-<h3>Discord</h3>
-
-<p>discord.gg/kio</p>
-
-</div>
-
-</div>
-
-<div class="arrow">
-
-→
-
-</div>
-
-</a>
-
-<a href="#" class="link">
-
-<div class="left">
-
-🐙
-
-<div>
-
-<h3>GitHub</h3>
-
-<p>github.com/kio</p>
-
-</div>
-
-</div>
-
-<div class="arrow">
-
-→
-
-</div>
-
-</a>
-
-<a href="#" class="link">
-
-<div class="left">
-
-🎵
-
-<div>
-
-<h3>Spotify</h3>
-
-<p>@kio</p>
-
-</div>
-
-</div>
-
-<div class="arrow">
-
-→
-
-</div>
-
-</a>
-
-<a href="#" class="link">
-
-<div class="left">
-
-📺
-
-<div>
-
-<h3>Twitch</h3>
-
-<p>@kio</p>
-
-</div>
-
-</div>
-
-<div class="arrow">
-
-→
-
-</div>
-
-</a>
-
-<a href="#" class="link">
-
-<div class="left">
-
-🎬
-
-<div>
-
-<h3>TikTok</h3>
-
-<p>@kio</p>
-
-</div>
-
-</div>
-
-<div class="arrow">
-
-→
-
-</div>
-
-</a>
-
-</div>
-
-</div>
-
-</main>
-
-<audio
-id="audio"
-loop>
-
-<source src="assets/music.mp3">
-
-</audio>
-
+    <!-- Optional Background Video/Image -->
+    <!-- <video class="background-video" autoplay loop muted playsinline>
+        <source src="your-background.mp4" type="video/mp4">
+    </video> -->
+    
+    <div class="overlay"></div>
+
+    <div class="container">
+        <!-- Profile Picture -->
+        <img src="https://i.imgur.com/placeholder.jpg" alt="Profile" class="profile-pic">
+
+        <!-- Username with Glitch Effect -->
+        <h1 class="username glitch" data-text="@deinusername">@deinusername</h1>
+
+        <!-- Tagline with Typing Effect -->
+        <p class="tagline typing">Full Stack Developer · Content Creator · Gamer</p>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-number">1.2K</span>
+                <span class="stat-label">Follower</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">450</span>
+                <span class="stat-label">Following</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">89</span>
+                <span class="stat-label">Projekte</span>
+            </div>
+        </div>
+
+        <!-- Links -->
+        <div class="links">
+            <a href="https://discord.gg/yourserver" class="link-btn">
+                <i class="fab fa-discord link-icon"></i>
+                <span class="link-text">Discord Community</span>
+                <span class="link-badge">NEW</span>
+            </a>
+
+            <a href="https://youtube.com/yourchannel" class="link-btn">
+                <i class="fab fa-youtube link-icon"></i>
+                <span class="link-text">YouTube Channel</span>
+            </a>
+
+            <a href="https://twitter.com/yourhandle" class="link-btn">
+                <i class="fab fa-twitter link-icon"></i>
+                <span class="link-text">Twitter / X</span>
+            </a>
+
+            <a href="https://instagram.com/yourhandle" class="link-btn">
+                <i class="fab fa-instagram link-icon"></i>
+                <span class="link-text">Instagram</span>
+            </a>
+
+            <a href="https://twitch.tv/yourchannel" class="link-btn">
+                <i class="fab fa-twitch link-icon"></i>
+                <span class="link-text">Twitch Stream</span>
+                <span class="link-badge">LIVE</span>
+            </a>
+
+            <a href="https://github.com/yourusername" class="link-btn">
+                <i class="fab fa-github link-icon"></i>
+                <span class="link-text">GitHub Projects</span>
+            </a>
+
+            <a href="mailto:your@email.com" class="link-btn">
+                <i class="fas fa-envelope link-icon"></i>
+                <span class="link-text">Kontaktieren</span>
+            </a>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            © 2026 Made with 💜 | guns.lol Clone
+        </div>
+    </div>
+
+    <!-- Optional Audio -->
+    <!-- <audio id="bg-music" autoplay loop>
+        <source src="your-music.mp3" type="audio/mpeg">
+    </audio> -->
+
+    <script>
+        // Click to play audio (browsers require interaction)
+        document.addEventListener('click', function() {
+            const audio = document.getElementById('bg-music');
+            if (audio && audio.paused) {
+                audio.play();
+            }
+        }, { once: true });
+
+        // Add particle effects
+        function createParticles() {
+            const particle = document.createElement('div');
+            particle.style.position = 'fixed';
+            particle.style.width = Math.random() * 3 + 'px';
+            particle.style.height = particle.style.width;
+            particle.style.background = 'rgba(255,255,255,0.5)';
+            particle.style.borderRadius = '50%';
+            particle.style.left = Math.random() * window.innerWidth + 'px';
+            particle.style.top = window.innerHeight + 'px';
+            particle.style.zIndex = '-1';
+            document.body.appendChild(particle);
+
+            animateParticle(particle);
+        }
+
+        function animateParticle(particle) {
+            let position = window.innerHeight;
+            const speed = Math.random() * 2 + 1;
+
+            function move() {
+                position -= speed;
+                particle.style.top = position + 'px';
+
+                if (position > -10) {
+                    requestAnimationFrame(move);
+                } else {
+                    particle.remove();
+                }
+            }
+
+            move();
+        }
+
+        // Create particles periodically
+        setInterval(createParticles, 200);
+    </script>
 </body>
-
 </html>
