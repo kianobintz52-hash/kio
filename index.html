@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>guns.lol Clone - Vollständig</title>
+    <title>guns.lol Clone - Voll Funktionsfähig</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* ===== ROOT VARIABLES ===== */
@@ -30,7 +30,7 @@
 
         /* ===== RESET ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; overflow-x: hidden; }
         a { text-decoration: none; color: inherit; transition: var(--transition); }
         button { cursor: pointer; border: none; outline: none; font-family: inherit; }
         input, textarea, select { font-family: inherit; outline: none; }
@@ -39,7 +39,7 @@
         .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
         .hidden { display: none !important; }
         .gradient { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        
+
         /* ===== BUTTONS ===== */
         .btn { padding: 12px 24px; border-radius: var(--radius-sm); font-weight: 600; font-size: 14px; transition: var(--transition); display: inline-flex; align-items: center; gap: 8px; border: 1px solid transparent; }
         .btn-primary { background: var(--primary); color: white; }
@@ -57,14 +57,15 @@
         /* ===== NAVBAR ===== */
         .navbar { background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 16px 0; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
         .navbar .container { display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 24px; font-weight: 800; color: var(--primary); }
+        .logo { font-size: 24px; font-weight: 800; color: var(--primary); cursor: pointer; }
         .nav-links { display: flex; align-items: center; gap: 32px; }
-        .nav-links a:not(.btn) { color: var(--text-secondary); font-weight: 500; }
+        .nav-links a:not(.btn) { color: var(--text-secondary); font-weight: 500; cursor: pointer; }
         .nav-links a:not(.btn):hover { color: var(--primary); }
 
-        /* ===== VIEW CONTAINERS ===== */
-        .view { min-height: 100vh; }
-        
+        /* ===== VIEWS ===== */
+        .view { min-height: 100vh; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
         /* ===== LANDING PAGE ===== */
         .hero { padding: 120px 0; text-align: center; background: radial-gradient(ellipse at top, rgba(109, 76, 255, 0.15), transparent 70%); }
         .hero h1 { font-size: 64px; font-weight: 800; margin-bottom: 24px; line-height: 1.1; }
@@ -77,8 +78,6 @@
         .feature-card { background: var(--bg-primary); padding: 32px; border-radius: var(--radius-lg); border: 1px solid var(--border); transition: var(--transition); }
         .feature-card:hover { transform: translateY(-8px); border-color: var(--primary); box-shadow: 0 20px 40px rgba(109, 76, 255, 0.15); }
         .feature-icon { font-size: 32px; color: var(--primary); margin-bottom: 20px; }
-        .feature-card h3 { font-size: 20px; margin-bottom: 12px; }
-        .feature-card p { color: var(--text-secondary); }
 
         .pricing { padding: 100px 0; }
         .pricing h2 { font-size: 40px; text-align: center; margin-bottom: 60px; }
@@ -96,17 +95,16 @@
         .features-list .fa-check { color: var(--success); }
         .features-list .fa-times { color: var(--text-muted); }
         .features-list li.disabled { opacity: 0.5; }
-        .pricing-card .btn { width: 100%; justify-content: center; }
 
         /* ===== AUTH PAGES ===== */
-        .auth-view { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+        .auth-view { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); }
         .auth-container { display: grid; grid-template-columns: 1fr 1fr; max-width: 1000px; width: 100%; background: var(--bg-secondary); border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
         .auth-left { padding: 60px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; display: flex; flex-direction: column; justify-content: space-between; }
         .auth-left h1 { font-size: 48px; font-weight: 800; margin-bottom: 16px; }
         .auth-right { padding: 60px; overflow-y: auto; max-height: 90vh; }
         .auth-form h2 { font-size: 28px; margin-bottom: 8px; }
         .subtitle { color: var(--text-secondary); margin-bottom: 32px; }
-        .subtitle a { color: var(--primary); }
+        .subtitle a { color: var(--primary); cursor: pointer; }
         .social-login { display: grid; gap: 12px; margin-bottom: 24px; }
         .social-btn { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 14px; border-radius: var(--radius-sm); font-weight: 600; background: var(--bg-tertiary); color: white; border: 1px solid var(--border); }
         .social-btn:hover { background: var(--border); }
@@ -115,31 +113,42 @@
         .divider span { padding: 0 16px; }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text-secondary); }
-        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 14px 16px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 14px; transition: var(--transition); }
-        .form-group input:focus, .form-group textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(109, 76, 255, 0.1); }
+        .form-group input { width: 100%; padding: 14px 16px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 14px; transition: var(--transition); }
+        .form-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(109, 76, 255, 0.1); }
         .form-group small { display: block; margin-top: 6px; color: var(--text-muted); font-size: 12px; }
         .password-input { position: relative; }
         .password-input input { padding-right: 48px; }
         .toggle-password { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; color: var(--text-muted); font-size: 16px; }
         .form-options { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
         .checkbox-label { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; color: var(--text-secondary); }
-        .forgot-password { color: var(--primary); font-size: 14px; }
+        .forgot-password { color: var(--primary); font-size: 14px; cursor: pointer; }
         .auth-switch { text-align: center; margin-top: 24px; color: var(--text-secondary); }
-        .auth-switch a { color: var(--primary); }
+        .auth-switch a { color: var(--primary); cursor: pointer; }
+        .input-with-addon { display: flex; align-items: center; }
+        .addon { padding: 0 12px; background: var(--bg-primary); border: 1px solid var(--border); border-right: none; border-radius: var(--radius-sm) 0 0 var(--radius-sm); color: var(--text-muted); }
+        .input-with-addon input { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+        .availability { padding: 0 12px; font-size: 12px; }
+        .availability.available { color: var(--success); }
+        .availability.taken { color: var(--danger); }
+        .availability.checking { color: var(--warning); }
+        .password-strength { height: 4px; background: var(--bg-tertiary); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+        .strength-bar { height: 100%; width: 0%; transition: var(--transition); border-radius: 2px; }
+        .strength-bar.weak { width: 33%; background: var(--danger); }
+        .strength-bar.medium { width: 66%; background: var(--warning); }
+        .strength-bar.strong { width: 100%; background: var(--success); }
 
         /* ===== DASHBOARD ===== */
         .dashboard-view { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
         .sidebar { background: var(--bg-secondary); border-right: 1px solid var(--border); padding: 24px 0; display: flex; flex-direction: column; }
         .sidebar-header { padding: 0 24px 24px; border-bottom: 1px solid var(--border); }
         .sidebar-nav { flex: 1; padding: 24px 16px; }
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: var(--radius-sm); color: var(--text-secondary); font-weight: 500; transition: var(--transition); margin-bottom: 4px; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: var(--radius-sm); color: var(--text-secondary); font-weight: 500; transition: var(--transition); margin-bottom: 4px; cursor: pointer; }
         .nav-item:hover { background: var(--bg-tertiary); color: var(--text-primary); }
         .nav-item.active { background: rgba(109, 76, 255, 0.15); color: var(--primary); }
         .nav-item i { width: 20px; font-size: 16px; }
         .sidebar-footer { padding: 24px; border-top: 1px solid var(--border); }
         .upgrade-banner { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); padding: 16px; border-radius: var(--radius-md); text-align: center; margin-bottom: 16px; font-size: 14px; }
-        .upgrade-banner i { font-size: 24px; margin-bottom: 8px; }
-        .logout-btn { width: 100%; padding: 12px; background: transparent; border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .logout-btn { width: 100%; padding: 12px; background: transparent; border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; }
         .logout-btn:hover { background: var(--danger); color: white; border-color: var(--danger); }
         .main-content { flex: 1; overflow-y: auto; }
         .top-bar { background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; }
@@ -147,61 +156,48 @@
         .search-box i { color: var(--text-muted); }
         .search-box input { flex: 1; background: transparent; border: none; color: var(--text-primary); font-size: 14px; }
         .top-actions { display: flex; align-items: center; gap: 16px; }
-        .icon-btn { background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-secondary); padding: 10px; border-radius: var(--radius-sm); position: relative; }
-        .icon-btn:hover { background: var(--bg-primary); color: var(--text-primary); }
+        .icon-btn { background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-secondary); padding: 10px; border-radius: var(--radius-sm); position: relative; cursor: pointer; }
         .notification-badge { position: absolute; top: -4px; right: -4px; background: var(--danger); color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: 700; }
         .user-menu { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 8px 12px; border-radius: var(--radius-md); }
         .user-avatar { width: 36px; height: 36px; border-radius: 50%; }
         .user-name { font-weight: 600; font-size: 14px; }
-
         .dashboard-content { padding: 32px; }
         .welcome-banner { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); padding: 32px; border-radius: var(--radius-lg); display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
         .welcome-text h1 { font-size: 32px; margin-bottom: 8px; }
         .welcome-text p { color: rgba(255,255,255,0.8); }
-        
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 32px; }
         .stat-card { background: var(--bg-secondary); padding: 24px; border-radius: var(--radius-lg); border: 1px solid var(--border); display: flex; align-items: center; gap: 20px; }
         .stat-icon { width: 56px; height: 56px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 24px; }
         .stat-icon.visits { background: rgba(109, 76, 255, 0.15); color: var(--primary); }
         .stat-icon.clicks { background: rgba(74, 222, 128, 0.15); color: var(--success); }
-        .stat-icon.followers { background: rgba(233, 69, 96, 0.15); color: var(--accent); }
-        .stat-icon.conversion { background: rgba(251, 191, 36, 0.15); color: var(--warning); }
         .stat-value { font-size: 28px; font-weight: 700; }
         .stat-label { color: var(--text-secondary); font-size: 14px; }
-        .stat-change { font-size: 12px; margin-top: 8px; display: flex; align-items: center; gap: 4px; }
-        .stat-change.positive { color: var(--success); }
-
         .quick-actions { background: var(--bg-secondary); padding: 24px; border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 32px; }
         .quick-actions h3 { margin-bottom: 20px; }
         .actions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
-        .action-btn { background: var(--bg-tertiary); padding: 20px; border-radius: var(--radius-sm); display: flex; flex-direction: column; align-items: center; gap: 12px; color: var(--text-secondary); transition: var(--transition); border: 1px solid var(--border); }
+        .action-btn { background: var(--bg-tertiary); padding: 20px; border-radius: var(--radius-sm); display: flex; flex-direction: column; align-items: center; gap: 12px; color: var(--text-secondary); transition: var(--transition); border: 1px solid var(--border); cursor: pointer; }
         .action-btn:hover { background: var(--bg-primary); border-color: var(--primary); color: var(--text-primary); }
         .action-btn i { font-size: 28px; color: var(--primary); }
 
         /* ===== EDITOR ===== */
         .editor-view { display: grid; grid-template-columns: 400px 1fr; min-height: 100vh; }
         .editor-header { background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; }
-        .back-btn { color: var(--text-secondary); }
+        .back-btn { color: var(--text-secondary); cursor: pointer; }
         .back-btn:hover { color: var(--primary); }
         .editor-header h1 { font-size: 20px; }
-        
         .editor-sidebar { background: var(--bg-secondary); border-right: 1px solid var(--border); padding: 24px 0; overflow-y: auto; max-height: calc(100vh - 72px); }
         .editor-tabs { display: flex; padding: 0 16px 16px; border-bottom: 1px solid var(--border); }
         .editor-tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px; border-radius: var(--radius-sm); color: var(--text-secondary); background: none; border: none; cursor: pointer; transition: var(--transition); font-size: 12px; }
         .editor-tab i { font-size: 18px; }
         .editor-tab.active { background: rgba(109, 76, 255, 0.15); color: var(--primary); }
         .editor-tab:hover:not(.active) { background: var(--bg-tertiary); color: var(--text-primary); }
-        
         .editor-panel { padding: 24px; display: none; }
         .editor-panel.active { display: block; }
         .editor-panel h3 { margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
-
         .avatar-upload { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; }
         .avatar-preview { width: 80px; height: 80px; border-radius: 50%; overflow: hidden; }
         .avatar-preview img { width: 100%; height: 100%; object-fit: cover; }
-        
         .char-counter { text-align: right; font-size: 12px; color: var(--text-muted); margin-top: 4px; }
-        
         .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .links-editor { display: flex; flex-direction: column; gap: 12px; }
         .link-item { background: var(--bg-primary); padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
@@ -210,22 +206,18 @@
         .link-details { flex: 1; display: flex; flex-direction: column; gap: 8px; }
         .link-details input { padding: 10px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); }
         .link-actions { display: flex; flex-direction: column; gap: 8px; }
-        .link-delete { background: none; color: var(--danger); font-size: 16px; padding: 8px; }
+        .link-delete { background: none; color: var(--danger); font-size: 16px; padding: 8px; cursor: pointer; }
         .link-delete:hover { color: var(--text-primary); }
-
         .bg-type-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .bg-type { padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg-tertiary); color: var(--text-primary); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; }
         .bg-type.active { border-color: var(--primary); background: rgba(109, 76, 255, 0.15); }
-        .bg-type i { font-size: 18px; }
         .premium-tag { background: var(--accent); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
-        
         .color-picker { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
         .color-picker input[type="color"] { width: 60px; height: 40px; border: none; cursor: pointer; border-radius: var(--radius-sm); }
         .color-picker input[type="text"] { flex: 1; padding: 10px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); }
         .preset-colors { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
         .preset-color { width: 100%; aspect-ratio: 1; border-radius: 50%; border: 2px solid var(--border); cursor: pointer; transition: var(--transition); }
         .preset-color:hover { transform: scale(1.1); border-color: var(--text-primary); }
-
         .animation-options { display: flex; flex-direction: column; gap: 12px; }
 
         /* ===== PREVIEW PANEL ===== */
@@ -234,7 +226,6 @@
         .device-toggle { display: flex; gap: 8px; }
         .device-btn { padding: 8px 12px; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-secondary); border-radius: var(--radius-sm); cursor: pointer; }
         .device-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-        
         .preview-frame { background: var(--bg-secondary); border-radius: var(--radius-lg); border: 1px solid var(--border); overflow: hidden; margin-bottom: 20px; }
         .profile-preview { min-height: 600px; background: linear-gradient(135deg, #1a1a2e 0%, #0a0a0a 100%); position: relative; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; }
         .preview-avatar { width: 120px; height: 120px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.3); margin-bottom: 20px; }
@@ -245,13 +236,12 @@
         .stat-num { font-size: 18px; font-weight: 700; display: block; }
         .stat-label { font-size: 12px; color: var(--text-muted); }
         .preview-links { width: 100%; max-width: 350px; display: flex; flex-direction: column; gap: 12px; }
-        .preview-link-btn { padding: 16px 20px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm); color: white; text-decoration: none; display: flex; align-items: center; gap: 12px; transition: var(--transition); }
+        .preview-link-btn { padding: 16px 20px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm); color: white; text-decoration: none; display: flex; align-items: center; gap: 12px; transition: var(--transition); cursor: pointer; }
         .preview-link-btn:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); }
         .preview-link-icon { width: 24px; text-align: center; color: var(--primary); }
-        
         .preview-actions { display: flex; gap: 12px; }
 
-        /* ===== PUBLIC PROFILE VIEW ===== */
+        /* ===== PUBLIC PROFILE ===== */
         .public-view { min-height: 100vh; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); padding: 24px; }
         .public-profile { background: rgba(255,255,255,0.02); backdrop-filter: blur(10px); border-radius: var(--radius-lg); border: 1px solid var(--border); padding: 48px 32px; max-width: 450px; width: 100%; text-align: center; }
         .public-avatar { width: 140px; height: 140px; border-radius: 50%; border: 4px solid rgba(109, 76, 255, 0.3); margin-bottom: 24px; animation: pulse 2s infinite; }
@@ -259,7 +249,6 @@
         .public-username { font-size: 32px; font-weight: 800; margin-bottom: 8px; text-shadow: 0 0 30px rgba(109, 76, 255, 0.5); }
         .public-bio { color: var(--text-secondary); margin-bottom: 32px; font-size: 16px; }
         .public-stats { display: flex; justify-content: center; gap: 40px; margin-bottom: 32px; }
-        .public-stat { text-align: center; }
         .public-stat-value { font-size: 24px; font-weight: 700; display: block; }
         .public-stat-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
         .public-links { display: flex; flex-direction: column; gap: 16px; }
@@ -277,12 +266,19 @@
         .footer-section h3 { font-size: 18px; margin-bottom: 20px; color: var(--secondary); }
         .footer-section ul { list-style: none; }
         .footer-section li { margin-bottom: 12px; }
-        .footer-section a { color: var(--text-secondary); font-size: 14px; }
+        .footer-section a { color: var(--text-secondary); font-size: 14px; cursor: pointer; }
         .footer-section a:hover { color: var(--primary); }
         .social-links { display: flex; gap: 12px; margin-top: 16px; }
-        .social-links a { width: 40px; height: 40px; background: var(--bg-tertiary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); transition: var(--transition); }
+        .social-links a { width: 40px; height: 40px; background: var(--bg-tertiary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); transition: var(--transition); cursor: pointer; }
         .social-links a:hover { background: var(--primary); color: white; }
         .footer-bottom { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 12px; }
+
+        /* ===== ALERTS ===== */
+        .alert { padding: 16px; border-radius: var(--radius-sm); margin-bottom: 16px; display: flex; align-items: center; gap: 12px; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+        .alert-success { background: rgba(74, 222, 128, 0.15); border: 1px solid var(--success); color: var(--success); }
+        .alert-error { background: rgba(239, 68, 68, 0.15); border: 1px solid var(--danger); color: var(--danger); }
+        .alert-warning { background: rgba(251, 191, 36, 0.15); border: 1px solid var(--warning); color: var(--warning); }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
@@ -291,29 +287,23 @@
             .auth-left { display: none; }
             .dashboard-view, .editor-view { grid-template-columns: 1fr; }
             .sidebar { display: none; }
-            .editor-sidebar { width: 100%; max-height: none; }
             .preview-panel { display: none; }
-            .top-bar { flex-direction: column; gap: 16px; }
-            .search-box { width: 100%; }
         }
     </style>
 </head>
 <body>
     <!-- NAVIGATION -->
-    <nav class="navbar" id="mainNav">
+    <nav class="navbar hidden" id="mainNav">
         <div class="container">
-            <a href="#" class="logo" onclick="navigateTo('landing')">guns.lol</a>
-            <div class="nav-links">
-                <a href="#features" onclick="scrollToSection('features')">Features</a>
-                <a href="#pricing" onclick="scrollToSection('pricing')">Preise</a>
-                <a href="#" onclick="navigateTo('login')" id="navLogin">Login</a>
-                <a href="#" onclick="navigateTo('register')" class="btn btn-primary">Registrieren</a>
+            <span class="logo" onclick="goHome()">guns.lol</span>
+            <div class="nav-links" id="navLinks">
+                <!-- Wird per JS dynamisch gefüllt -->
             </div>
         </div>
     </nav>
 
     <!-- VIEW: LANDING PAGE -->
-    <div id="landingView" class="view landing-view">
+    <div id="landingView" class="view">
         <section class="hero">
             <div class="container">
                 <h1>Create Your <span class="gradient">Link-in-Bio</span> Page</h1>
@@ -325,7 +315,7 @@
             </div>
         </section>
 
-        <section id="features" class="features">
+        <section class="features">
             <div class="container">
                 <h2>Warum guns.lol?</h2>
                 <div class="feature-grid">
@@ -349,21 +339,11 @@
                         <h3>Custom Audio</h3>
                         <p>Spiel deinen Lieblings-Song auf deiner Page ab.</p>
                     </div>
-                    <div class="feature-card">
-                        <i class="fas fa-video feature-icon"></i>
-                        <h3>Video Backgrounds</h3>
-                        <p>Animierte Hintergründe für maximale Ästhetik.</p>
-                    </div>
-                    <div class="feature-card">
-                        <i class="fas fa-users feature-icon"></i>
-                        <h3>Discord Integration</h3>
-                        <p>Zeige deinen Discord-Status auf deiner Seite.</p>
-                    </div>
                 </div>
             </div>
         </section>
 
-        <section id="pricing" class="pricing">
+        <section class="pricing">
             <div class="container">
                 <h2>Wähle deinen Plan</h2>
                 <div class="pricing-grid">
@@ -372,12 +352,10 @@
                         <h3>Free</h3>
                         <div class="price">€0<span>/monat</span></div>
                         <ul class="features-list">
-                            <li><i class="fas fa-check"></i> Grundlegende Templates</li>
                             <li><i class="fas fa-check"></i> Bis zu 10 Links</li>
                             <li><i class="fas fa-check"></i> Basis Analytics</li>
                             <li><i class="fas fa-check"></i> Custom Avatar</li>
                             <li class="disabled"><i class="fas fa-times"></i> Video Backgrounds</li>
-                            <li class="disabled"><i class="fas fa-times"></i> Custom Audio</li>
                         </ul>
                         <button onclick="navigateTo('register')" class="btn btn-outline">Jetzt Starten</button>
                     </div>
@@ -386,30 +364,14 @@
                         <h3>Plus</h3>
                         <div class="price">€4.99<span>/monat</span></div>
                         <ul class="features-list">
-                            <li><i class="fas fa-check"></i> Alle Templates</li>
                             <li><i class="fas fa-check"></i> Unlimited Links</li>
                             <li><i class="fas fa-check"></i> Advanced Analytics</li>
                             <li><i class="fas fa-check"></i> Custom Cursor</li>
                             <li><i class="fas fa-check"></i> Video Backgrounds</li>
                             <li><i class="fas fa-check"></i> Custom Audio</li>
                             <li><i class="fas fa-check"></i> Keine Werbung</li>
-                            <li><i class="fas fa-check"></i> Prioritäts-Support</li>
                         </ul>
                         <button onclick="navigateTo('register')" class="btn btn-primary">Upgrade</button>
-                    </div>
-                    <div class="pricing-card">
-                        <div class="plan-badge" style="background: var(--accent); color: white;">Team</div>
-                        <h3>Pro</h3>
-                        <div class="price">€19.99<span>/monat</span></div>
-                        <ul class="features-list">
-                            <li><i class="fas fa-check"></i> Alles aus Plus</li>
-                            <li><i class="fas fa-check"></i> Bis zu 5 Benutzer</li>
-                            <li><i class="fas fa-check"></i> Team Analytics</li>
-                            <li><i class="fas fa-check"></i> API Zugriff</li>
-                            <li><i class="fas fa-check"></i> White Label</li>
-                            <li><i class="fas fa-check"></i> Dedicated Support</li>
-                        </ul>
-                        <button onclick="navigateTo('register')" class="btn btn-outline">Kontaktieren</button>
                     </div>
                 </div>
             </div>
@@ -420,36 +382,6 @@
                 <div class="footer-section">
                     <h3>guns.lol Clone</h3>
                     <p>Dein ästhetischer Link-in-Bio Service für Creator.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-discord"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-                <div class="footer-section">
-                    <h3>Produkt</h3>
-                    <ul>
-                        <li><a href="#">Features</a></li>
-                        <li><a href="#">Templates</a></li>
-                        <li><a href="#">Preise</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Support</h3>
-                    <ul>
-                        <li><a href="#">Hilfe Center</a></li>
-                        <li><a href="#">Dokumentation</a></li>
-                        <li><a href="#">Kontakt</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Rechtliches</h3>
-                    <ul>
-                        <li><a href="#">AGB</a></li>
-                        <li><a href="#">Datenschutz</a></li>
-                        <li><a href="#">Impressum</a></li>
-                    </ul>
                 </div>
             </div>
             <div class="footer-bottom">
@@ -468,31 +400,22 @@
                 </div>
             </div>
             <div class="auth-right">
+                <div id="loginAlerts"></div>
                 <form class="auth-form" onsubmit="handleLogin(event)">
                     <h2>Melde dich an</h2>
-                    <p class="subtitle">oder <a href="#" onclick="navigateTo('register')">neues Konto erstellen</a></p>
-                    <div class="social-login">
-                        <button type="button" class="social-btn"><i class="fab fa-google"></i> Mit Google fortfahren</button>
-                        <button type="button" class="social-btn"><i class="fab fa-discord"></i> Mit Discord fortfahren</button>
-                    </div>
-                    <div class="divider"><span>oder mit Email</span></div>
+                    <p class="subtitle">oder <span onclick="navigateTo('register')">neues Konto erstellen</span></p>
                     <div class="form-group">
                         <label>Email Adresse</label>
-                        <input type="email" placeholder="deine@email.com" required>
+                        <input type="email" id="loginEmail" placeholder="deine@email.com" required>
                     </div>
                     <div class="form-group">
                         <label>Passwort</label>
                         <div class="password-input">
-                            <input type="password" placeholder="••••••••" required>
-                            <button type="button" class="toggle-password" onclick="togglePassword('login')"><i class="fas fa-eye"></i></button>
+                            <input type="password" id="loginPassword" placeholder="••••••••" required>
+                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('loginPassword')"><i class="fas fa-eye"></i></button>
                         </div>
                     </div>
-                    <div class="form-options">
-                        <label class="checkbox-label"><input type="checkbox"><span>Angemeldet bleiben</span></label>
-                        <a href="#" class="forgot-password">Passwort vergessen?</a>
-                    </div>
                     <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-sign-in-alt"></i> Anmelden</button>
-                    <div class="terms"><p>Durch das Fortfahren stimmst du unseren AGB zu.</p></div>
                 </form>
             </div>
         </div>
@@ -506,45 +429,50 @@
                     <h1>guns.lol</h1>
                     <p>Erstelle dein kostenloses Konto in weniger als 2 Minuten!</p>
                 </div>
-                <div style="display: flex; gap: 30px;">
-                    <div><span class="stat-number" style="font-size: 32px; font-weight: 700;">150K+</span><br><span class="stat-label">Aktive Nutzer</span></div>
-                    <div><span class="stat-number" style="font-size: 32px; font-weight: 700;">5M+</span><br><span class="stat-label">Geteilte Links</span></div>
-                </div>
             </div>
             <div class="auth-right">
+                <div id="registerAlerts"></div>
                 <form class="auth-form" onsubmit="handleRegister(event)">
                     <h2>Konto erstellen</h2>
                     <p class="subtitle">Bereit? Gib deine Infos ein.</p>
+                    
                     <div class="form-group">
                         <label>Benutzername *</label>
                         <div class="input-with-addon">
                             <span class="addon">@</span>
-                            <input type="text" id="regUsername" placeholder="deinname" required>
+                            <input type="text" id="regUsername" placeholder="deinname" required oninput="checkUsernameAvailability()">
+                            <span class="availability" id="usernameCheck"></span>
                         </div>
-                        <small>Deine Profil-URL wird sein: guns.lol/@deinname</small>
+                        <small id="usernameHint">Deine Profil-URL wird sein: guns.lol/@deinname</small>
                     </div>
+
                     <div class="form-group">
                         <label>Anzeigename</label>
-                        <input type="text" placeholder="Dein Name">
+                        <input type="text" id="regDisplayName" placeholder="Dein Name">
                     </div>
+
                     <div class="form-group">
                         <label>Email Adresse *</label>
-                        <input type="email" placeholder="deine@email.com" required>
+                        <input type="email" id="regEmail" placeholder="deine@email.com" required>
                     </div>
+
                     <div class="form-group">
                         <label>Passwort *</label>
                         <div class="password-input">
                             <input type="password" id="regPassword" placeholder="Mindestens 8 Zeichen" required oninput="checkPasswordStrength()">
-                            <button type="button" class="toggle-password" onclick="togglePassword('reg')"><i class="fas fa-eye"></i></button>
+                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('regPassword')"><i class="fas fa-eye"></i></button>
                         </div>
                         <div class="password-strength"><div class="strength-bar" id="strengthBar"></div></div>
-                        <small>Mindestens 8 Zeichen</small>
+                        <small>Mindestens 8 Zeichen, Buchstaben und Zahlen</small>
                     </div>
+
                     <div class="form-group">
-                        <label class="checkbox-label"><input type="checkbox" required><span>Ich stimme den <a href="#">AGB</a> zu *</span></label>
+                        <label class="checkbox-label"><input type="checkbox" id="regTerms" required><span>Ich stimme den AGB zu *</span></label>
                     </div>
+
                     <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-user-plus"></i> Konto erstellen</button>
-                    <div class="auth-switch"><p>Bereits ein Konto? <a href="#" onclick="navigateTo('login')">Hier anmelden</a></p></div>
+
+                    <div class="auth-switch"><p>Bereits ein Konto? <span onclick="navigateTo('login')">Hier anmelden</span></p></div>
                 </form>
             </div>
         </div>
@@ -553,16 +481,14 @@
     <!-- VIEW: DASHBOARD -->
     <div id="dashboardView" class="view dashboard-view hidden">
         <aside class="sidebar">
-            <div class="sidebar-header"><a href="#" class="logo" onclick="navigateTo('dashboard')">guns.lol</a></div>
+            <div class="sidebar-header"><span class="logo" onclick="navigateTo('dashboard')">guns.lol</span></div>
             <nav class="sidebar-nav">
-                <a href="#" class="nav-item active" onclick="switchDashTab('overview')"><i class="fas fa-home"></i><span>Übersicht</span></a>
-                <a href="#" class="nav-item" onclick="switchDashTab('editor')"><i class="fas fa-edit"></i><span>Profil bearbeiten</span></a>
-                <a href="#" class="nav-item"><i class="fas fa-link"></i><span>Links verwalten</span></a>
-                <a href="#" class="nav-item"><i class="fas fa-chart-bar"></i><span>Analytics</span></a>
-                <a href="#" class="nav-item"><i class="fas fa-cog"></i><span>Einstellungen</span></a>
+                <div class="nav-item active" onclick="switchDashTab('overview')"><i class="fas fa-home"></i><span>Übersicht</span></div>
+                <div class="nav-item" onclick="navigateTo('editor')"><i class="fas fa-edit"></i><span>Profil bearbeiten</span></div>
+                <div class="nav-item" onclick="navigateTo('public')"><i class="fas fa-eye"></i><span>Öffentliche Seite</span></div>
             </nav>
             <div class="sidebar-footer">
-                <div class="upgrade-banner"><i class="fas fa-crown"></i><span>Upgraden auf <strong>Plus</strong></span><button class="btn btn-small" style="margin-top:8px; background:white; color:var(--primary);">Jetzt</button></div>
+                <div class="upgrade-banner"><i class="fas fa-crown"></i><span>Upgraden auf <strong>Plus</strong></span></div>
                 <button class="logout-btn" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Abmelden</button>
             </div>
         </aside>
@@ -570,35 +496,46 @@
             <header class="top-bar">
                 <div class="search-box"><i class="fas fa-search"></i><input type="text" placeholder="Suche..."></div>
                 <div class="top-actions">
-                    <button class="icon-btn"><i class="fas fa-bell"></i><span class="notification-badge">3</span></button>
-                    <div class="user-menu"><img src="https://ui-avatars.com/api/?name=User&background=6d4aff&color=fff" class="user-avatar"><span class="user-name">@deinusername</span><i class="fas fa-chevron-down"></i></div>
+                    <div class="user-menu"><img id="dashAvatar" src="" class="user-avatar"><span id="dashUsername" class="user-name"></span></div>
                 </div>
             </header>
-            <div class="dashboard-content">
+            <div class="dashboard-content" id="dashOverview">
                 <div class="welcome-banner">
-                    <div class="welcome-text"><h1>Willkommen zurück, @deinusername! 👋</h1><p>Verwalte deine Profile, tracke Besucher und optimiere deine Links.</p></div>
-                    <button onclick="switchDashTab('editor')" class="btn"><i class="fas fa-paint-brush"></i> Profil bearbeiten</button>
+                    <div class="welcome-text">
+                        <h1 id="dashWelcome">Willkommen!</h1>
+                        <p>Verwalte deine Profile, tracke Besucher und optimiere deine Links.</p>
+                    </div>
+                    <button onclick="navigateTo('editor')" class="btn"><i class="fas fa-paint-brush"></i> Profil bearbeiten</button>
                 </div>
                 <div class="stats-grid">
-                    <div class="stat-card"><div class="stat-icon visits"><i class="fas fa-eye"></i></div><div class="stat-info"><div class="stat-value">12,456</div><div class="stat-label">Gesamtbesuche</div><div class="stat-change positive"><i class="fas fa-arrow-up"></i> 23% diese Woche</div></div></div>
-                    <div class="stat-card"><div class="stat-icon clicks"><i class="fas fa-hand-pointer"></i></div><div class="stat-info"><div class="stat-value">8,934</div><div class="stat-label">Link Klicks</div><div class="stat-change positive"><i class="fas fa-arrow-up"></i> 18% diese Woche</div></div></div>
-                    <div class="stat-card"><div class="stat-icon followers"><i class="fas fa-user-plus"></i></div><div class="stat-info"><div class="stat-value">1,847</div><div class="stat-label">Follower</div><div class="stat-change positive"><i class="fas fa-arrow-up"></i> 45 neue diese Woche</div></div></div>
-                    <div class="stat-card"><div class="stat-icon conversion"><i class="fas fa-percentage"></i></div><div class="stat-info"><div class="stat-value">71.7%</div><div class="stat-label">Klickraten</div><div class="stat-change positive"><i class="fas fa-arrow-up"></i> 5.2% Verbesserung</div></div></div>
+                    <div class="stat-card">
+                        <div class="stat-icon visits"><i class="fas fa-eye"></i></div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="statVisits">0</div>
+                            <div class="stat-label">Gesamtbesuche</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon clicks"><i class="fas fa-hand-pointer"></i></div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="statClicks">0</div>
+                            <div class="stat-label">Link Klicks</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon clicks"><i class="fas fa-link"></i></div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="statLinks">0</div>
+                            <div class="stat-label">Aktive Links</div>
+                        </div>
+                    </div>
                 </div>
                 <div class="quick-actions">
                     <h3>Schnellaktionen</h3>
                     <div class="actions-grid">
-                        <button class="action-btn"><i class="fas fa-plus-circle"></i><span>Neuer Link</span></button>
-                        <button class="action-btn"><i class="fas fa-magic"></i><span>Template wählen</span></button>
-                        <button class="action-btn"><i class="fas fa-image"></i><span>Hintergrund</span></button>
-                        <button class="action-btn"><i class="fas fa-music"></i><span>Audio hochladen</span></button>
-                    </div>
-                </div>
-                <div class="quick-actions">
-                    <h3>Aktuelle Aktivitäten</h3>
-                    <div style="display:flex; flex-direction:column; gap:12px;">
-                        <div style="padding:12px; background:var(--bg-tertiary); border-radius:8px; display:flex; gap:12px; align-items:center;"><div style="color:var(--primary);"><i class="fas fa-link"></i></div><div><p style="margin-bottom:4px;"><strong>Discord Link</strong> geklickt</p><span style="font-size:12px; color:var(--text-muted);">Vor 2 Minuten • 🇩🇪</span></div></div>
-                        <div style="padding:12px; background:var(--bg-tertiary); border-radius:8px; display:flex; gap:12px; align-items:center;"><div style="color:var(--success);"><i class="fas fa-user-plus"></i></div><div><p style="margin-bottom:4px;"><strong>Neuer Follower @gamer123</strong></p><span style="font-size:12px; color:var(--text-muted);">Vor 15 Minuten • 🇺🇸</span></div></div>
+                        <button class="action-btn" onclick="navigateTo('editor')"><i class="fas fa-edit"></i><span>Profil bearbeiten</span></button>
+                        <button class="action-btn" onclick="navigateTo('public')"><i class="fas fa-eye"></i><span>Seite ansehen</span></button>
+                        <button class="action-btn" onclick="shareProfile()"><i class="fas fa-share-alt"></i><span>Profil teilen</span></button>
                     </div>
                 </div>
             </div>
@@ -611,7 +548,6 @@
             <div class="back-btn" onclick="navigateTo('dashboard')"><i class="fas fa-arrow-left"></i> Zurück</div>
             <h1>Profil bearbeiten</h1>
             <div style="display:flex; gap:12px;">
-                <button class="btn btn-small btn-secondary" onclick="alert('Zurückgesetzt!')">Zurücksetzen</button>
                 <button class="btn btn-small btn-success" onclick="saveProfile()"><i class="fas fa-save"></i> Speichern</button>
             </div>
         </header>
@@ -620,130 +556,65 @@
                 <button class="editor-tab active" onclick="switchEditorTab('basics')"><i class="fas fa-user"></i><span>Allgemein</span></button>
                 <button class="editor-tab" onclick="switchEditorTab('links')"><i class="fas fa-link"></i><span>Links</span></button>
                 <button class="editor-tab" onclick="switchEditorTab('design')"><i class="fas fa-palette"></i><span>Design</span></button>
-                <button class="editor-tab" onclick="switchEditorTab('advanced')"><i class="fas fa-sliders-h"></i><span>Erweitert</span></button>
             </div>
             
             <div class="editor-panel active" id="panel-basics">
                 <h3>Profil Basics</h3>
                 <div class="form-group">
-                    <label>Profilbild</label>
+                    <label>Profilbild URL</label>
                     <div class="avatar-upload">
-                        <div class="avatar-preview"><img src="https://ui-avatars.com/api/?name=User&background=6d4aff&color=fff&size=80"></div>
-                        <button class="btn btn-small btn-outline" onclick="document.getElementById('avatarInput').click()"><i class="fas fa-upload"></i> Ändern</button>
-                        <input type="file" id="avatarInput" hidden accept="image/*">
+                        <div class="avatar-preview"><img id="editAvatarPreview" src=""></div>
+                        <input type="text" id="editAvatarUrl" placeholder="Bild-URL eingeben" onchange="updateAvatarPreview()">
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Benutzername</label>
-                    <div class="input-with-addon"><span class="addon">@</span><input type="text" value="deinusername" disabled></div>
-                    <small style="color:var(--warning)">Nur alle 30 Tage änderbar</small>
+                    <div class="input-with-addon"><span class="addon">@</span><input type="text" id="editUsername" disabled></div>
                 </div>
                 <div class="form-group">
                     <label>Anzeigename</label>
-                    <input type="text" id="displayNameInput" value="Dein Name">
+                    <input type="text" id="editDisplayName" onchange="updatePreviewData()">
                 </div>
                 <div class="form-group">
                     <label>Bio / Tagline</label>
-                    <textarea id="bioInput" rows="3" maxlength="140" oninput="updateCharCounter()">Content Creator · Gamer · Developer 💜</textarea>
-                    <div class="char-counter"><span id="bioCount">42</span>/140</div>
+                    <textarea id="editBio" rows="3" maxlength="140" oninput="updateCharCounter(); updatePreviewData()">Placeholder Bio</textarea>
+                    <div class="char-counter"><span id="bioCount">0</span>/140</div>
                 </div>
             </div>
 
             <div class="editor-panel" id="panel-links">
                 <div class="panel-header"><h3>Links verwalten</h3><button class="btn btn-small btn-primary" onclick="addLink()"><i class="fas fa-plus"></i> Neuer Link</button></div>
-                <div class="links-editor" id="linksContainer">
-                    <div class="link-item">
-                        <div class="link-drag"><i class="fas fa-grip-vertical"></i></div>
-                        <div class="link-icon-select"><select><option value="discord" selected>Discord</option><option value="youtube">YouTube</option><option value="instagram">Instagram</option><option value="twitter">Twitter</option></select></div>
-                        <div class="link-details"><input type="text" class="link-title" value="Discord Community"><input type="url" class="link-url" value="https://discord.gg/xyz"></div>
-                        <div class="link-actions"><label class="checkbox-label"><input type="checkbox" checked><span>Active</span></label><button class="link-delete" onclick="this.parentElement.parentElement.remove()"><i class="fas fa-trash"></i></button></div>
-                    </div>
-                    <div class="link-item">
-                        <div class="link-drag"><i class="fas fa-grip-vertical"></i></div>
-                        <div class="link-icon-select"><select><option value="youtube" selected>YouTube</option><option value="discord">Discord</option></select></div>
-                        <div class="link-details"><input type="text" class="link-title" value="YouTube Kanal"><input type="url" class="link-url" value="https://youtube.com/@channel"></div>
-                        <div class="link-actions"><label class="checkbox-label"><input type="checkbox" checked><span>Active</span></label><button class="link-delete" onclick="this.parentElement.parentElement.remove()"><i class="fas fa-trash"></i></button></div>
-                    </div>
-                </div>
+                <div class="links-editor" id="linksContainer"></div>
             </div>
 
             <div class="editor-panel" id="panel-design">
                 <h3>Design anpassen</h3>
                 <div class="form-group">
-                    <label>Hintergrund-Typ</label>
-                    <div class="bg-type-selector">
-                        <button class="bg-type active"><i class="fas fa-fill-drip"></i> Farbe</button>
-                        <button class="bg-type"><i class="fas fa-image"></i> Bild</button>
-                        <button class="bg-type"><i class="fas fa-video"></i> Video <span class="premium-tag">PRO</span></button>
+                    <label>Hintergrundfarbe</label>
+                    <div class="color-picker">
+                        <input type="color" id="bgColor" value="#0a0a0a" oninput="updatePreviewBg(); document.getElementById('bgColorHex').value=this.value">
+                        <input type="text" id="bgColorHex" value="#0a0a0a" oninput="document.getElementById('bgColor').value=this.value; updatePreviewBg()">
                     </div>
-                </div>
-                <div class="form-group">
-                    <label>Farbe wählen</label>
-                    <div class="color-picker"><input type="color" id="bgColor" value="#0a0a0a" oninput="updatePreviewBg()"><input type="text" value="#0a0a0a" id="bgColorHex"></div>
-                    <div class="preset-colors">
-                        <button class="preset-color" style="background:#0a0a0a" onclick="setBgColor('#0a0a0a')"></button>
-                        <button class="preset-color" style="background:#1a1a2e" onclick="setBgColor('#1a1a2e')"></button>
-                        <button class="preset-color" style="background:#16213e" onclick="setBgColor('#16213e')"></button>
-                        <button class="preset-color" style="background:#533483" onclick="setBgColor('#533483')"></button>
-                        <button class="preset-color" style="background:#e94560" onclick="setBgColor('#e94560')"></button>
-                        <button class="preset-color" style="background:#fbbf24" onclick="setBgColor('#fbbf24')"></button>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Blur-Effekt</label>
-                    <input type="range" id="blurAmount" min="0" max="20" value="5" oninput="updateBlur(this.value)"><span id="blurValue">5px</span>
-                </div>
-                <div class="form-group">
-                    <label>Animationen</label>
-                    <div class="animation-options">
-                        <label class="checkbox-label"><input type="checkbox" id="fadeIn" checked><span>Einblend-Effekt</span></label>
-                        <label class="checkbox-label"><input type="checkbox" id="hoverEffect" checked><span>Hover-Effekte</span></label>
-                        <label class="checkbox-label"><input type="checkbox" id="particles"><span>Partikel Effekt <span class="premium-tag">PRO</span></span></label>
-                        <label class="checkbox-label"><input type="checkbox" id="glitch"><span>Glitch Text <span class="premium-tag">PRO</span></span></label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="editor-panel" id="panel-advanced">
-                <h3>Erweiterte Einstellungen</h3>
-                <div class="form-group">
-                    <label>Custom CSS</label>
-                    <textarea rows="6" placeholder="/* Dein benutzerdefinierter CSS Code */">.link-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba(109, 76, 255, 0.3);
-}</textarea>
-                </div>
-                <div class="form-group">
-                    <label>Privatsphäre</label>
-                    <select><option value="public">Öffentlich</option><option value="unlisted">Unlisted</option><option value="private">Privat</option></select>
-                </div>
-                <div class="form-group" style="margin-top:32px; padding-top:24px; border-top:1px solid var(--border);">
-                    <h4 style="color:var(--danger); margin-bottom:16px;">Gefahrenzone</h4>
-                    <button class="btn btn-small btn-danger" onclick="if(confirm('Profil wirklich löschen?')) alert('Profil gelöscht!')"><i class="fas fa-trash"></i> Profil löschen</button>
                 </div>
             </div>
         </aside>
 
         <aside class="preview-panel">
-            <div class="preview-header"><h3>Live Vorschau</h3><div class="device-toggle"><button class="device-btn active" onclick="switchDevice('desktop')"><i class="fas fa-desktop"></i></button><button class="device-btn" onclick="switchDevice('mobile')"><i class="fas fa-mobile-alt"></i></button></div></div>
-            <div class="preview-frame" id="previewFrame">
+            <div class="preview-header"><h3>Live Vorschau</h3></div>
+            <div class="preview-frame">
                 <div class="profile-preview" id="livePreview">
-                    <img src="https://ui-avatars.com/api/?name=User&background=6d4aff&color=fff" class="preview-avatar" id="previewAvatar">
-                    <h2 class="preview-username" id="previewUsername">@deinusername</h2>
-                    <p class="preview-bio" id="previewBio">Content Creator · Gamer · Developer 💜</p>
+                    <img id="previewAvatar" class="preview-avatar">
+                    <h2 class="preview-username" id="previewUsername"></h2>
+                    <p class="preview-bio" id="previewBio"></p>
                     <div class="preview-stats">
-                        <div class="preview-stat"><span class="stat-num">12.4K</span><span class="stat-label">Besuche</span></div>
-                        <div class="preview-stat"><span class="stat-num">1.8K</span><span class="stat-label">Follower</span></div>
+                        <div class="preview-stat"><span class="stat-num" id="prevVisits">0</span><span class="stat-label">Besuche</span></div>
+                        <div class="preview-stat"><span class="stat-num" id="prevLinks">0</span><span class="stat-label">Links</span></div>
                     </div>
-                    <div class="preview-links" id="previewLinks">
-                        <a href="#" class="preview-link-btn"><i class="fab fa-discord preview-link-icon"></i><span class="preview-link-text">Discord Community</span></a>
-                        <a href="#" class="preview-link-btn"><i class="fab fa-youtube preview-link-icon"></i><span class="preview-link-text">YouTube Kanal</span></a>
-                    </div>
+                    <div class="preview-links" id="previewLinks"></div>
                 </div>
             </div>
             <div class="preview-actions">
-                <button class="btn btn-small btn-outline" onclick="alert('Link kopiert!')"><i class="fas fa-share-alt"></i> Teilen</button>
-                <button class="btn btn-small btn-primary" onclick="openPublicProfile()"><i class="fas fa-external-link-alt"></i> Öffnen</button>
+                <button class="btn btn-small btn-primary" onclick="navigateTo('public')"><i class="fas fa-external-link-alt"></i> Öffnen</button>
             </div>
         </aside>
     </div>
@@ -751,20 +622,348 @@
     <!-- VIEW: PUBLIC PROFILE -->
     <div id="publicView" class="view public-view hidden">
         <div class="public-profile" id="publicProfileDisplay">
-            <img src="https://ui-avatars.com/api/?name=User&background=6d4aff&color=fff&size=140" class="public-avatar" id="publicAvatar">
-            <h1 class="public-username" id="publicUsername">@deinusername</h1>
-            <p class="public-bio" id="publicBio">Content Creator · Gamer · Developer 💜</p>
+            <button onclick="closePublic()" style="position:absolute; top:20px; right:20px; background:none; border:none; color:white; font-size:20px; cursor:pointer;"><i class="fas fa-times"></i></button>
+            <img id="publicAvatar" class="public-avatar">
+            <h1 class="public-username" id="publicUsername"></h1>
+            <p class="public-bio" id="publicBio"></p>
             <div class="public-stats">
-                <div class="public-stat"><span class="public-stat-value">12.4K</span><span class="public-stat-label">Besuche</span></div>
-                <div class="public-stat"><span class="public-stat-value">1.8K</span><span class="public-stat-label">Follower</span></div>
+                <div class="public-stat"><span class="public-stat-value" id="pubVisits">0</span><span class="public-stat-label">Besuche</span></div>
+                <div class="public-stat"><span class="public-stat-value" id="pubLinks">0</span><span class="public-stat-label">Links</span></div>
             </div>
-            <div class="public-links" id="publicLinks">
-                <a href="https://discord.gg/xyz" target="_blank" class="public-link-btn"><i class="fab fa-discord public-link-icon"></i><span class="public-link-text">Discord Community</span><span class="public-link-badge">NEW</span></a>
-                <a href="https://youtube.com/@channel" target="_blank" class="public-link-btn"><i class="fab fa-youtube public-link-icon"></i><span class="public-link-text">YouTube Kanal</span></a>
-                <a href="https://instagram.com/handle" target="_blank" class="public-link-btn"><i class="fab fa-instagram public-link-icon"></i><span class="public-link-text">Instagram</span></a>
-                <a href="https://twitter.com/handle" target="_blank" class="public-link-btn"><i class="fab fa-twitter public-link-icon"></i><span class="public-link-text">Twitter / X</span><span class="public-link-badge">LIVE</span></a>
-            </div>
+            <div class="public-links" id="publicLinks"></div>
         </div>
     </div>
 
     <script>
+        // ==================== APP STATE ====================
+        let currentUser = null;
+        let users = JSON.parse(localStorage.getItem('guns_users') || '{}');
+        let session = JSON.parse(localStorage.getItem('guns_session') || 'null');
+
+        // ==================== INIT ====================
+        function init() {
+            if (session && users[session]) {
+                currentUser = users[session];
+                showNav(true);
+                navigateTo('dashboard');
+            } else {
+                navigateTo('landing');
+            }
+            loadUserFromSession();
+        }
+
+        function loadUserFromSession() {
+            const saved = localStorage.getItem('guns_currentUser');
+            if (saved) {
+                currentUser = JSON.parse(saved);
+                if(currentUser) {
+                    showNav(true);
+                    navigateTo('dashboard');
+                }
+            }
+        }
+
+        // ==================== NAVIGATION ====================
+        function navigateTo(view) {
+            document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            switch(view) {
+                case 'landing':
+                    document.getElementById('landingView').classList.remove('hidden');
+                    showNav(false);
+                    break;
+                case 'login':
+                    document.getElementById('loginView').classList.remove('hidden');
+                    showNav(false);
+                    break;
+                case 'register':
+                    document.getElementById('registerView').classList.remove('hidden');
+                    showNav(false);
+                    break;
+                case 'dashboard':
+                    if (!currentUser) return navigateTo('login');
+                    document.getElementById('dashboardView').classList.remove('hidden');
+                    updateDashboard();
+                    break;
+                case 'editor':
+                    if (!currentUser) return navigateTo('login');
+                    document.getElementById('editorView').classList.remove('hidden');
+                    loadEditor();
+                    break;
+                case 'public':
+                    if (!currentUser) return navigateTo('login');
+                    document.getElementById('publicView').classList.remove('hidden');
+                    renderPublicProfile();
+                    break;
+            }
+        }
+
+        function goHome() {
+            navigateTo(currentUser ? 'dashboard' : 'landing');
+        }
+
+        function showNav(show) {
+            const nav = document.getElementById('mainNav');
+            const links = document.getElementById('navLinks');
+            
+            if (show) {
+                nav.classList.remove('hidden');
+                links.innerHTML = `
+                    <a onclick="navigateTo('dashboard')">Dashboard</a>
+                    <button class="btn btn-small btn-outline" onclick="handleLogout()">Abmelden</button>
+                `;
+            } else {
+                nav.classList.add('hidden');
+                links.innerHTML = `
+                    <a onclick="navigateTo('landing')">Start</a>
+                    <a onclick="navigateTo('features')">Features</a>
+                    <a onclick="navigateTo('pricing')">Preise</a>
+                    <a onclick="navigateTo('login')">Login</a>
+                    <button class="btn btn-small btn-primary" onclick="navigateTo('register')">Registrieren</button>
+                `;
+            }
+        }
+
+        function scrollToSection(id) {
+            document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ==================== AUTH ====================
+        function showAlert(containerId, message, type) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => container.innerHTML = '', 5000);
+        }
+
+        function checkUsernameAvailability() {
+            const username = document.getElementById('regUsername')?.value.toLowerCase().trim();
+            const checkEl = document.getElementById('usernameCheck');
+            
+            if (!username) {
+                checkEl.className = 'availability';
+                checkEl.textContent = '';
+                return;
+            }
+            
+            checkEl.className = 'availability checking';
+            checkEl.textContent = 'Prüfe...';
+            
+            setTimeout(() => {
+                if (users['@' + username]) {
+                    checkEl.className = 'availability taken';
+                    checkEl.innerHTML = '<i class="fas fa-times-circle"></i> Bereits vergeben';
+                } else {
+                    checkEl.className = 'availability available';
+                    checkEl.innerHTML = '<i class="fas fa-check-circle"></i> Verfügbar';
+                }
+            }, 500);
+        }
+
+        function checkPasswordStrength() {
+            const password = document.getElementById('regPassword')?.value || '';
+            const bar = document.getElementById('strengthBar');
+            
+            if (password.length === 0) {
+                bar.className = 'strength-bar';
+                bar.style.width = '0%';
+                return;
+            }
+            
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+            if (/\d/.test(password)) strength++;
+            if (/[^a-zA-Z0-9]/.test(password)) strength++;
+            
+            if (strength <= 1) {
+                bar.className = 'strength-bar weak';
+            } else if (strength <= 3) {
+                bar.className = 'strength-bar medium';
+            } else {
+                bar.className = 'strength-bar strong';
+            }
+        }
+
+        function togglePasswordVisibility(inputId) {
+            const input = document.getElementById(inputId);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            
+            const username = '@' + document.getElementById('regUsername').value.toLowerCase().trim();
+            const displayName = document.getElementById('regDisplayName').value || username.slice(1);
+            const email = document.getElementById('regEmail').value.toLowerCase().trim();
+            const password = document.getElementById('regPassword').value;
+            const terms = document.getElementById('regTerms').checked;
+            
+            if (!terms) return showAlert('registerAlerts', 'Bitte AGB akzeptieren', 'error');
+            if (users[username]) return showAlert('registerAlerts', 'Benutzername bereits vergeben!', 'error');
+            if (Object.values(users).some(u => u.email === email)) return showAlert('registerAlerts', 'Email bereits registriert!', 'error');
+            if (password.length < 8) return showAlert('registerAlerts', 'Passwort muss mindestens 8 Zeichen haben!', 'error');
+            
+            users[username] = {
+                username,
+                displayName,
+                email,
+                password,
+                bio: 'Content Creator · Gamer · Developer 💜',
+                avatar: 'https://ui-avatars.com/api/?name=' + encodeURIComponent(displayName) + '&background=6d4aff&color=fff&size=140',
+                links: [
+                    { icon: 'discord', title: 'Discord Community', url: 'https://discord.gg/example', active: true }
+                ],
+                stats: { visits: 0, clicks: 0 },
+                design: { bgColor: '#0a0a0a' },
+                createdAt: Date.now()
+            };
+            
+            localStorage.setItem('guns_users', JSON.stringify(users));
+            
+            currentUser = users[username];
+            localStorage.setItem('guns_currentUser', JSON.stringify(currentUser));
+            
+            showAlert('registerAlerts', 'Konto erstellt! Weiterleitung...', 'success');
+            setTimeout(() => {
+                navigateTo('dashboard');
+            }, 1500);
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value.toLowerCase().trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            const user = Object.values(users).find(u => u.email === email && u.password === password);
+            
+            if (!user) return showAlert('loginAlerts', 'Email oder Passwort falsch!', 'error');
+            
+            currentUser = user;
+            localStorage.setItem('guns_currentUser', JSON.stringify(currentUser));
+            
+            showAlert('loginAlerts', 'Erfolgreich angemeldet!', 'success');
+            setTimeout(() => {
+                navigateTo('dashboard');
+            }, 1000);
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            localStorage.removeItem('guns_currentUser');
+            navigateTo('landing');
+        }
+
+        // ==================== DASHBOARD ====================
+        function updateDashboard() {
+            if (!currentUser) return;
+            
+            document.getElementById('dashUsername').textContent = currentUser.username;
+            document.getElementById('dashAvatar').src = currentUser.avatar;
+            document.getElementById('dashWelcome').textContent = `Willkommen, ${currentUser.displayName}!`;
+            document.getElementById('statVisits').textContent = currentUser.stats?.visits?.toLocaleString() || '0';
+            document.getElementById('statClicks').textContent = currentUser.stats?.clicks?.toLocaleString() || '0';
+            document.getElementById('statLinks').textContent = currentUser.links?.filter(l => l.active).length || '0';
+        }
+
+        // ==================== EDITOR ====================
+        function switchEditorTab(tab) {
+            document.querySelectorAll('.editor-tab').forEach(t => t.classList.remove('active'));
+            event.target.closest('.editor-tab').classList.add('active');
+            
+            document.querySelectorAll('.editor-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('panel-' + tab).classList.add('active');
+        }
+
+        function loadEditor() {
+            if (!currentUser) return;
+            
+            document.getElementById('editUsername').value = currentUser.username;
+            document.getElementById('editDisplayName').value = currentUser.displayName;
+            document.getElementById('editBio').value = currentUser.bio || 'Placeholder Bio';
+            document.getElementById('editAvatarUrl').value = currentUser.avatar;
+            document.getElementById('editAvatarPreview').src = currentUser.avatar;
+            document.getElementById('bgColor').value = currentUser.design?.bgColor || '#0a0a0a';
+            
+            updateCharCounter();
+            updatePreviewData();
+            renderLinksEditor();
+        }
+
+        function updateCharCounter() {
+            const count = document.getElementById('editBio').value.length;
+            document.getElementById('bioCount').textContent = count;
+        }
+
+        function updateAvatarPreview() {
+            const url = document.getElementById('editAvatarUrl').value;
+            if (url) document.getElementById('editAvatarPreview').src = url;
+            updatePreviewData();
+        }
+
+        function updatePreviewData() {
+            if (!currentUser) return;
+            
+            const displayName = document.getElementById('editDisplayName').value;
+            const bio = document.getElementById('editBio').value;
+            
+            currentUser.displayName = displayName || currentUser.username.slice(1);
+            currentUser.bio = bio;
+            
+            document.getElementById('previewUsername').textContent = currentUser.username;
+            document.getElementById('previewBio').textContent = bio || 'Bio hinzufügen';
+            document.getElementById('previewAvatar').src = document.getElementById('editAvatarUrl').value || currentUser.avatar;
+            
+            const linksHtml = currentUser.links.filter(l => l.active).map(link => 
+                `<div class="preview-link-btn" onclick="trackLink('${link.url}')">
+                    <i class="fab fa-${link.icon === 'twitter' ? 'twitter' : link.icon === 'twitch' ? 'twitch' : link.icon === 'tiktok' ? 'tiktok' : link.icon}-square preview-link-icon"></i>
+                    <span class="preview-link-text">${link.title}</span>
+                </div>`
+            ).join('');
+            
+            document.getElementById('previewLinks').innerHTML = linksHtml || '<p style="color:var(--text-muted)">Keine Links hinzugefügt</p>';
+            document.getElementById('prevLinks').textContent = currentUser.links.filter(l => l.active).length;
+        }
+
+        function updatePreviewBg() {
+            const color = document.getElementById('bgColor').value;
+            currentUser.design.bgColor = color;
+            document.getElementById('livePreview').style.background = color;
+        }
+
+        function addLink() {
+            currentUser.links.push({
+                icon: 'discord',
+                title: 'Neuer Link',
+                url: 'https://',
+                active: true
+            });
+            renderLinksEditor();
+            updatePreviewData();
+        }
+
+        function removeLink(index) {
+            currentUser.links.splice(index, 1);
+            renderLinksEditor();
+            updatePreviewData();
+        }
+
+        function renderLinksEditor() {
+            const container = document.getElementById('linksContainer');
+            container.innerHTML = currentUser.links.map((link, index) => `
+                <div class="link-item">
+                    <div class="link-drag"><i class="fas fa-grip-vertical"></i></div>
+                    <div class="link-icon-select">
+                        <select onchange="currentUser.links[${index}].icon=this.value; updatePreviewData()">
+                            <option value="discord" ${link.icon==='discord'?'selected':''}>Discord</option>
+                            <option value="youtube" ${link.icon==='youtube'?'selected':''}>YouTube</option>
+                            <option value="instagram" ${link.icon==='instagram'?'selected':''}>Instagram</option>
+                            <option value="twitter" ${link.icon==='twitter'?'selected':''}>Twitter</option>
+                            <option value="tiktok" ${link.icon==='tiktok'?'selected':''}>TikTok</option>
+                            <option value="twitch" ${link.icon==='twitch'?'selected':''}>Twitch</option>
+                            <option value="github" ${link.icon==='github'?'selected':''}>GitHub</option>
+                            <option value="spotify" ${link.icon==='spotify'?'selected':''}>Spotify</option>
+                        </select>
+                    </div>
+                    
