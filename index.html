@@ -3,382 +3,768 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@deinusername · guns.lol</title>
+    <title>guns.lol Clone - Vollständig</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* ===== ROOT VARIABLES ===== */
+        :root {
+            --primary: #6d4aff;
+            --primary-dark: #5a40cc;
+            --secondary: #9b7cff;
+            --accent: #e94560;
+            --success: #4ade80;
+            --warning: #fbbf24;
+            --danger: #ef4444;
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #252525;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255,255,255,0.7);
+            --text-muted: rgba(255,255,255,0.5);
+            --border: rgba(255,255,255,0.1);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
-            color: white;
-            overflow-x: hidden;
-            position: relative;
-        }
+        /* ===== RESET ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; }
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
+        button { cursor: pointer; border: none; outline: none; font-family: inherit; }
+        input, textarea, select { font-family: inherit; outline: none; }
 
-        /* Animated Background */
-        .background-video {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -2;
-            opacity: 0.4;
-        }
+        /* ===== UTILITIES ===== */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .hidden { display: none !important; }
+        .gradient { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        
+        /* ===== BUTTONS ===== */
+        .btn { padding: 12px 24px; border-radius: var(--radius-sm); font-weight: 600; font-size: 14px; transition: var(--transition); display: inline-flex; align-items: center; gap: 8px; border: 1px solid transparent; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(109, 76, 255, 0.3); }
+        .btn-secondary { background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border); }
+        .btn-secondary:hover { background: var(--border); }
+        .btn-outline { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
+        .btn-outline:hover { background: var(--primary); color: white; }
+        .btn-small { padding: 8px 16px; font-size: 12px; }
+        .btn-large { padding: 16px 32px; font-size: 16px; }
+        .btn-block { width: 100%; justify-content: center; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-success { background: var(--success); color: var(--bg-primary); }
 
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.7) 100%);
-            z-index: -1;
-        }
+        /* ===== NAVBAR ===== */
+        .navbar { background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 16px 0; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .navbar .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 24px; font-weight: 800; color: var(--primary); }
+        .nav-links { display: flex; align-items: center; gap: 32px; }
+        .nav-links a:not(.btn) { color: var(--text-secondary); font-weight: 500; }
+        .nav-links a:not(.btn):hover { color: var(--primary); }
 
-        /* Main Container */
-        .container {
-            text-align: center;
-            max-width: 500px;
-            width: 90%;
-            padding: 40px 20px;
-            animation: fadeIn 1s ease;
-        }
+        /* ===== VIEW CONTAINERS ===== */
+        .view { min-height: 100vh; }
+        
+        /* ===== LANDING PAGE ===== */
+        .hero { padding: 120px 0; text-align: center; background: radial-gradient(ellipse at top, rgba(109, 76, 255, 0.15), transparent 70%); }
+        .hero h1 { font-size: 64px; font-weight: 800; margin-bottom: 24px; line-height: 1.1; }
+        .hero p { font-size: 20px; color: var(--text-secondary); max-width: 600px; margin: 0 auto 40px; }
+        .hero-buttons { display: flex; gap: 16px; justify-content: center; margin-bottom: 60px; flex-wrap: wrap; }
+        
+        .features { padding: 100px 0; background: var(--bg-secondary); }
+        .features h2 { font-size: 40px; text-align: center; margin-bottom: 60px; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; }
+        .feature-card { background: var(--bg-primary); padding: 32px; border-radius: var(--radius-lg); border: 1px solid var(--border); transition: var(--transition); }
+        .feature-card:hover { transform: translateY(-8px); border-color: var(--primary); box-shadow: 0 20px 40px rgba(109, 76, 255, 0.15); }
+        .feature-icon { font-size: 32px; color: var(--primary); margin-bottom: 20px; }
+        .feature-card h3 { font-size: 20px; margin-bottom: 12px; }
+        .feature-card p { color: var(--text-secondary); }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .pricing { padding: 100px 0; }
+        .pricing h2 { font-size: 40px; text-align: center; margin-bottom: 60px; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; max-width: 1000px; margin: 0 auto; }
+        .pricing-card { background: var(--bg-secondary); padding: 40px; border-radius: var(--radius-lg); border: 1px solid var(--border); text-align: center; position: relative; }
+        .pricing-card.popular { border-color: var(--primary); box-shadow: 0 0 40px rgba(109, 76, 255, 0.2); transform: scale(1.05); }
+        .plan-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+        .plan-badge.free { background: var(--bg-tertiary); }
+        .plan-badge.premium { background: var(--primary); color: white; }
+        .price { font-size: 48px; font-weight: 800; margin-bottom: 32px; }
+        .price span { font-size: 16px; color: var(--text-secondary); font-weight: 400; }
+        .features-list { list-style: none; text-align: left; margin-bottom: 32px; }
+        .features-list li { padding: 12px 0; border-bottom: 1px solid var(--border); display: flex; gap: 12px; align-items: center; }
+        .features-list i { width: 20px; }
+        .features-list .fa-check { color: var(--success); }
+        .features-list .fa-times { color: var(--text-muted); }
+        .features-list li.disabled { opacity: 0.5; }
+        .pricing-card .btn { width: 100%; justify-content: center; }
 
-        /* Profile Picture */
-        .profile-pic {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 3px solid rgba(255,255,255,0.3);
-            margin-bottom: 20px;
-            animation: pulse 2s infinite;
-        }
+        /* ===== AUTH PAGES ===== */
+        .auth-view { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+        .auth-container { display: grid; grid-template-columns: 1fr 1fr; max-width: 1000px; width: 100%; background: var(--bg-secondary); border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .auth-left { padding: 60px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; display: flex; flex-direction: column; justify-content: space-between; }
+        .auth-left h1 { font-size: 48px; font-weight: 800; margin-bottom: 16px; }
+        .auth-right { padding: 60px; overflow-y: auto; max-height: 90vh; }
+        .auth-form h2 { font-size: 28px; margin-bottom: 8px; }
+        .subtitle { color: var(--text-secondary); margin-bottom: 32px; }
+        .subtitle a { color: var(--primary); }
+        .social-login { display: grid; gap: 12px; margin-bottom: 24px; }
+        .social-btn { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 14px; border-radius: var(--radius-sm); font-weight: 600; background: var(--bg-tertiary); color: white; border: 1px solid var(--border); }
+        .social-btn:hover { background: var(--border); }
+        .divider { display: flex; align-items: center; margin: 24px 0; color: var(--text-muted); font-size: 14px; }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+        .divider span { padding: 0 16px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text-secondary); }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 14px 16px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 14px; transition: var(--transition); }
+        .form-group input:focus, .form-group textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(109, 76, 255, 0.1); }
+        .form-group small { display: block; margin-top: 6px; color: var(--text-muted); font-size: 12px; }
+        .password-input { position: relative; }
+        .password-input input { padding-right: 48px; }
+        .toggle-password { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; color: var(--text-muted); font-size: 16px; }
+        .form-options { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .checkbox-label { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; color: var(--text-secondary); }
+        .forgot-password { color: var(--primary); font-size: 14px; }
+        .auth-switch { text-align: center; margin-top: 24px; color: var(--text-secondary); }
+        .auth-switch a { color: var(--primary); }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
+        /* ===== DASHBOARD ===== */
+        .dashboard-view { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+        .sidebar { background: var(--bg-secondary); border-right: 1px solid var(--border); padding: 24px 0; display: flex; flex-direction: column; }
+        .sidebar-header { padding: 0 24px 24px; border-bottom: 1px solid var(--border); }
+        .sidebar-nav { flex: 1; padding: 24px 16px; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: var(--radius-sm); color: var(--text-secondary); font-weight: 500; transition: var(--transition); margin-bottom: 4px; }
+        .nav-item:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+        .nav-item.active { background: rgba(109, 76, 255, 0.15); color: var(--primary); }
+        .nav-item i { width: 20px; font-size: 16px; }
+        .sidebar-footer { padding: 24px; border-top: 1px solid var(--border); }
+        .upgrade-banner { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); padding: 16px; border-radius: var(--radius-md); text-align: center; margin-bottom: 16px; font-size: 14px; }
+        .upgrade-banner i { font-size: 24px; margin-bottom: 8px; }
+        .logout-btn { width: 100%; padding: 12px; background: transparent; border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .logout-btn:hover { background: var(--danger); color: white; border-color: var(--danger); }
+        .main-content { flex: 1; overflow-y: auto; }
+        .top-bar { background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; }
+        .search-box { display: flex; align-items: center; gap: 12px; background: var(--bg-tertiary); padding: 10px 16px; border-radius: var(--radius-md); width: 400px; }
+        .search-box i { color: var(--text-muted); }
+        .search-box input { flex: 1; background: transparent; border: none; color: var(--text-primary); font-size: 14px; }
+        .top-actions { display: flex; align-items: center; gap: 16px; }
+        .icon-btn { background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-secondary); padding: 10px; border-radius: var(--radius-sm); position: relative; }
+        .icon-btn:hover { background: var(--bg-primary); color: var(--text-primary); }
+        .notification-badge { position: absolute; top: -4px; right: -4px; background: var(--danger); color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: 700; }
+        .user-menu { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 8px 12px; border-radius: var(--radius-md); }
+        .user-avatar { width: 36px; height: 36px; border-radius: 50%; }
+        .user-name { font-weight: 600; font-size: 14px; }
 
-        /* Username & Title */
-        .username {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 5px;
-            text-shadow: 0 0 20px rgba(109, 76, 255, 0.5);
-        }
+        .dashboard-content { padding: 32px; }
+        .welcome-banner { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); padding: 32px; border-radius: var(--radius-lg); display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+        .welcome-text h1 { font-size: 32px; margin-bottom: 8px; }
+        .welcome-text p { color: rgba(255,255,255,0.8); }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 32px; }
+        .stat-card { background: var(--bg-secondary); padding: 24px; border-radius: var(--radius-lg); border: 1px solid var(--border); display: flex; align-items: center; gap: 20px; }
+        .stat-icon { width: 56px; height: 56px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .stat-icon.visits { background: rgba(109, 76, 255, 0.15); color: var(--primary); }
+        .stat-icon.clicks { background: rgba(74, 222, 128, 0.15); color: var(--success); }
+        .stat-icon.followers { background: rgba(233, 69, 96, 0.15); color: var(--accent); }
+        .stat-icon.conversion { background: rgba(251, 191, 36, 0.15); color: var(--warning); }
+        .stat-value { font-size: 28px; font-weight: 700; }
+        .stat-label { color: var(--text-secondary); font-size: 14px; }
+        .stat-change { font-size: 12px; margin-top: 8px; display: flex; align-items: center; gap: 4px; }
+        .stat-change.positive { color: var(--success); }
 
-        .tagline {
-            font-size: 14px;
-            color: rgba(255,255,255,0.7);
-            margin-bottom: 30px;
-            letter-spacing: 1px;
-        }
+        .quick-actions { background: var(--bg-secondary); padding: 24px; border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 32px; }
+        .quick-actions h3 { margin-bottom: 20px; }
+        .actions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+        .action-btn { background: var(--bg-tertiary); padding: 20px; border-radius: var(--radius-sm); display: flex; flex-direction: column; align-items: center; gap: 12px; color: var(--text-secondary); transition: var(--transition); border: 1px solid var(--border); }
+        .action-btn:hover { background: var(--bg-primary); border-color: var(--primary); color: var(--text-primary); }
+        .action-btn i { font-size: 28px; color: var(--primary); }
 
-        /* Stats Row */
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-bottom: 30px;
-            padding: 15px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-        }
+        /* ===== EDITOR ===== */
+        .editor-view { display: grid; grid-template-columns: 400px 1fr; min-height: 100vh; }
+        .editor-header { background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; }
+        .back-btn { color: var(--text-secondary); }
+        .back-btn:hover { color: var(--primary); }
+        .editor-header h1 { font-size: 20px; }
+        
+        .editor-sidebar { background: var(--bg-secondary); border-right: 1px solid var(--border); padding: 24px 0; overflow-y: auto; max-height: calc(100vh - 72px); }
+        .editor-tabs { display: flex; padding: 0 16px 16px; border-bottom: 1px solid var(--border); }
+        .editor-tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px; border-radius: var(--radius-sm); color: var(--text-secondary); background: none; border: none; cursor: pointer; transition: var(--transition); font-size: 12px; }
+        .editor-tab i { font-size: 18px; }
+        .editor-tab.active { background: rgba(109, 76, 255, 0.15); color: var(--primary); }
+        .editor-tab:hover:not(.active) { background: var(--bg-tertiary); color: var(--text-primary); }
+        
+        .editor-panel { padding: 24px; display: none; }
+        .editor-panel.active { display: block; }
+        .editor-panel h3 { margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
 
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+        .avatar-upload { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; }
+        .avatar-preview { width: 80px; height: 80px; border-radius: 50%; overflow: hidden; }
+        .avatar-preview img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .char-counter { text-align: right; font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+        
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .links-editor { display: flex; flex-direction: column; gap: 12px; }
+        .link-item { background: var(--bg-primary); padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+        .link-drag { cursor: grab; color: var(--text-muted); }
+        .link-icon-select select { background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary); padding: 8px; border-radius: var(--radius-sm); }
+        .link-details { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        .link-details input { padding: 10px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); }
+        .link-actions { display: flex; flex-direction: column; gap: 8px; }
+        .link-delete { background: none; color: var(--danger); font-size: 16px; padding: 8px; }
+        .link-delete:hover { color: var(--text-primary); }
 
-        .stat-number {
-            font-size: 20px;
-            font-weight: 700;
-        }
+        .bg-type-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .bg-type { padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg-tertiary); color: var(--text-primary); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; }
+        .bg-type.active { border-color: var(--primary); background: rgba(109, 76, 255, 0.15); }
+        .bg-type i { font-size: 18px; }
+        .premium-tag { background: var(--accent); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
+        
+        .color-picker { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
+        .color-picker input[type="color"] { width: 60px; height: 40px; border: none; cursor: pointer; border-radius: var(--radius-sm); }
+        .color-picker input[type="text"] { flex: 1; padding: 10px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); }
+        .preset-colors { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+        .preset-color { width: 100%; aspect-ratio: 1; border-radius: 50%; border: 2px solid var(--border); cursor: pointer; transition: var(--transition); }
+        .preset-color:hover { transform: scale(1.1); border-color: var(--text-primary); }
 
-        .stat-label {
-            font-size: 12px;
-            color: rgba(255,255,255,0.5);
-            margin-top: 5px;
-        }
+        .animation-options { display: flex; flex-direction: column; gap: 12px; }
 
-        /* Links Container */
-        .links {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
+        /* ===== PREVIEW PANEL ===== */
+        .preview-panel { padding: 24px; overflow-y: auto; max-height: calc(100vh - 72px); }
+        .preview-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .device-toggle { display: flex; gap: 8px; }
+        .device-btn { padding: 8px 12px; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-secondary); border-radius: var(--radius-sm); cursor: pointer; }
+        .device-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        
+        .preview-frame { background: var(--bg-secondary); border-radius: var(--radius-lg); border: 1px solid var(--border); overflow: hidden; margin-bottom: 20px; }
+        .profile-preview { min-height: 600px; background: linear-gradient(135deg, #1a1a2e 0%, #0a0a0a 100%); position: relative; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; }
+        .preview-avatar { width: 120px; height: 120px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.3); margin-bottom: 20px; }
+        .preview-username { font-size: 24px; margin-bottom: 8px; }
+        .preview-bio { color: var(--text-secondary); margin-bottom: 20px; font-size: 14px; }
+        .preview-stats { display: flex; gap: 30px; margin-bottom: 24px; padding: 16px; background: rgba(255,255,255,0.05); border-radius: var(--radius-md); }
+        .preview-stat { text-align: center; }
+        .stat-num { font-size: 18px; font-weight: 700; display: block; }
+        .stat-label { font-size: 12px; color: var(--text-muted); }
+        .preview-links { width: 100%; max-width: 350px; display: flex; flex-direction: column; gap: 12px; }
+        .preview-link-btn { padding: 16px 20px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm); color: white; text-decoration: none; display: flex; align-items: center; gap: 12px; transition: var(--transition); }
+        .preview-link-btn:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); }
+        .preview-link-icon { width: 24px; text-align: center; color: var(--primary); }
+        
+        .preview-actions { display: flex; gap: 12px; }
 
-        .link-btn {
-            display: flex;
-            align-items: center;
-            padding: 18px 25px;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            color: white;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-            position: relative;
-            overflow: hidden;
-        }
+        /* ===== PUBLIC PROFILE VIEW ===== */
+        .public-view { min-height: 100vh; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); padding: 24px; }
+        .public-profile { background: rgba(255,255,255,0.02); backdrop-filter: blur(10px); border-radius: var(--radius-lg); border: 1px solid var(--border); padding: 48px 32px; max-width: 450px; width: 100%; text-align: center; }
+        .public-avatar { width: 140px; height: 140px; border-radius: 50%; border: 4px solid rgba(109, 76, 255, 0.3); margin-bottom: 24px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .public-username { font-size: 32px; font-weight: 800; margin-bottom: 8px; text-shadow: 0 0 30px rgba(109, 76, 255, 0.5); }
+        .public-bio { color: var(--text-secondary); margin-bottom: 32px; font-size: 16px; }
+        .public-stats { display: flex; justify-content: center; gap: 40px; margin-bottom: 32px; }
+        .public-stat { text-align: center; }
+        .public-stat-value { font-size: 24px; font-weight: 700; display: block; }
+        .public-stat-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+        .public-links { display: flex; flex-direction: column; gap: 16px; }
+        .public-link-btn { padding: 18px 24px; background: rgba(109, 76, 255, 0.15); border: 1px solid rgba(109, 76, 255, 0.3); border-radius: var(--radius-md); color: white; text-decoration: none; display: flex; align-items: center; gap: 16px; transition: var(--transition); position: relative; overflow: hidden; }
+        .public-link-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); transition: left 0.5s; }
+        .public-link-btn:hover::before { left: 100%; }
+        .public-link-btn:hover { background: rgba(109, 76, 255, 0.25); transform: translateY(-3px); box-shadow: 0 10px 30px rgba(109, 76, 255, 0.3); }
+        .public-link-icon { width: 28px; font-size: 24px; color: var(--primary); }
+        .public-link-text { flex: 1; text-align: left; font-weight: 500; }
+        .public-link-badge { background: rgba(109, 76, 255, 0.3); padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; }
 
-        .link-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            transition: left 0.5s;
-        }
+        /* ===== FOOTER ===== */
+        .footer { background: var(--bg-secondary); padding: 60px 0 30px; margin-top: 80px; border-top: 1px solid var(--border); }
+        .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .footer-section h3 { font-size: 18px; margin-bottom: 20px; color: var(--secondary); }
+        .footer-section ul { list-style: none; }
+        .footer-section li { margin-bottom: 12px; }
+        .footer-section a { color: var(--text-secondary); font-size: 14px; }
+        .footer-section a:hover { color: var(--primary); }
+        .social-links { display: flex; gap: 12px; margin-top: 16px; }
+        .social-links a { width: 40px; height: 40px; background: var(--bg-tertiary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); transition: var(--transition); }
+        .social-links a:hover { background: var(--primary); color: white; }
+        .footer-bottom { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 12px; }
 
-        .link-btn:hover::before {
-            left: 100%;
-        }
-
-        .link-btn:hover {
-            background: rgba(255,255,255,0.15);
-            transform: translateY(-3px);
-            border-color: rgba(109, 76, 255, 0.5);
-            box-shadow: 0 10px 30px rgba(109, 76, 255, 0.3);
-        }
-
-        .link-icon {
-            font-size: 24px;
-            margin-right: 15px;
-            width: 30px;
-            text-align: center;
-        }
-
-        .link-text {
-            flex: 1;
-            text-align: left;
-            font-weight: 500;
-        }
-
-        .link-badge {
-            background: rgba(109, 76, 255, 0.3);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        /* Footer */
-        .footer {
-            margin-top: 40px;
-            font-size: 12px;
-            color: rgba(255,255,255,0.4);
-        }
-
-        /* Glitch Effect Option */
-        .glitch {
-            position: relative;
-        }
-
-        .glitch::before,
-        .glitch::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .glitch::before {
-            animation: glitch-anim-1 0.3s infinite;
-            clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
-            transform: translate(-2px, 0);
-            color: #ff00ff;
-        }
-
-        .glitch::after {
-            animation: glitch-anim-2 0.3s infinite;
-            clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
-            transform: translate(2px, 0);
-            color: #00ffff;
-        }
-
-        @keyframes glitch-anim-1 {
-            0% { clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%); }
-            100% { clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%); }
-        }
-
-        @keyframes glitch-anim-2 {
-            0% { clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%); }
-            100% { clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%); }
-        }
-
-        /* Typing Effect */
-        .typing {
-            overflow: hidden;
-            border-right: 2px solid #6d4aff;
-            white-space: nowrap;
-            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
-        }
-
-        @keyframes typing {
-            from { width: 0; }
-            to { width: 100%; }
-        }
-
-        @keyframes blink-caret {
-            from, to { border-color: transparent; }
-            50% { border-color: #6d4aff; }
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 40px; }
+            .auth-container { grid-template-columns: 1fr; }
+            .auth-left { display: none; }
+            .dashboard-view, .editor-view { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+            .editor-sidebar { width: 100%; max-height: none; }
+            .preview-panel { display: none; }
+            .top-bar { flex-direction: column; gap: 16px; }
+            .search-box { width: 100%; }
         }
     </style>
 </head>
 <body>
-    <!-- Optional Background Video/Image -->
-    <!-- <video class="background-video" autoplay loop muted playsinline>
-        <source src="your-background.mp4" type="video/mp4">
-    </video> -->
-    
-    <div class="overlay"></div>
-
-    <div class="container">
-        <!-- Profile Picture -->
-        <img src="https://i.imgur.com/placeholder.jpg" alt="Profile" class="profile-pic">
-
-        <!-- Username with Glitch Effect -->
-        <h1 class="username glitch" data-text="@deinusername">@deinusername</h1>
-
-        <!-- Tagline with Typing Effect -->
-        <p class="tagline typing">Full Stack Developer · Content Creator · Gamer</p>
-
-        <!-- Stats -->
-        <div class="stats">
-            <div class="stat-item">
-                <span class="stat-number">1.2K</span>
-                <span class="stat-label">Follower</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number">450</span>
-                <span class="stat-label">Following</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number">89</span>
-                <span class="stat-label">Projekte</span>
+    <!-- NAVIGATION -->
+    <nav class="navbar" id="mainNav">
+        <div class="container">
+            <a href="#" class="logo" onclick="navigateTo('landing')">guns.lol</a>
+            <div class="nav-links">
+                <a href="#features" onclick="scrollToSection('features')">Features</a>
+                <a href="#pricing" onclick="scrollToSection('pricing')">Preise</a>
+                <a href="#" onclick="navigateTo('login')" id="navLogin">Login</a>
+                <a href="#" onclick="navigateTo('register')" class="btn btn-primary">Registrieren</a>
             </div>
         </div>
+    </nav>
 
-        <!-- Links -->
-        <div class="links">
-            <a href="https://discord.gg/yourserver" class="link-btn">
-                <i class="fab fa-discord link-icon"></i>
-                <span class="link-text">Discord Community</span>
-                <span class="link-badge">NEW</span>
-            </a>
+    <!-- VIEW: LANDING PAGE -->
+    <div id="landingView" class="view landing-view">
+        <section class="hero">
+            <div class="container">
+                <h1>Create Your <span class="gradient">Link-in-Bio</span> Page</h1>
+                <p>Teile alle deine wichtigsten Links auf einer ästhetischen, voll-anpassbaren Seite. Kostenlos für immer.</p>
+                <div class="hero-buttons">
+                    <button onclick="navigateTo('register')" class="btn btn-large btn-primary">Kostenlos Starten</button>
+                    <button onclick="showDemo()" class="btn btn-large btn-secondary"><i class="fas fa-play"></i> Demo Sehen</button>
+                </div>
+            </div>
+        </section>
 
-            <a href="https://youtube.com/yourchannel" class="link-btn">
-                <i class="fab fa-youtube link-icon"></i>
-                <span class="link-text">YouTube Channel</span>
-            </a>
+        <section id="features" class="features">
+            <div class="container">
+                <h2>Warum guns.lol?</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-palette feature-icon"></i>
+                        <h3>Voll Anpassbar</h3>
+                        <p>Hintergründe, Farben, Animationen - mach es zu deinem eigenen!</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-link feature-icon"></i>
+                        <h3>Unlimited Links</h3>
+                        <p>Füge so viele Links wie du willst zu deiner Page hinzu.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-chart-line feature-icon"></i>
+                        <h3>Analytics</h3>
+                        <p>Verfolge Besucher, Klicks und mehr in Echtzeit.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-music feature-icon"></i>
+                        <h3>Custom Audio</h3>
+                        <p>Spiel deinen Lieblings-Song auf deiner Page ab.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-video feature-icon"></i>
+                        <h3>Video Backgrounds</h3>
+                        <p>Animierte Hintergründe für maximale Ästhetik.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-users feature-icon"></i>
+                        <h3>Discord Integration</h3>
+                        <p>Zeige deinen Discord-Status auf deiner Seite.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-            <a href="https://twitter.com/yourhandle" class="link-btn">
-                <i class="fab fa-twitter link-icon"></i>
-                <span class="link-text">Twitter / X</span>
-            </a>
+        <section id="pricing" class="pricing">
+            <div class="container">
+                <h2>Wähle deinen Plan</h2>
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <div class="plan-badge free">Kostenlos</div>
+                        <h3>Free</h3>
+                        <div class="price">€0<span>/monat</span></div>
+                        <ul class="features-list">
+                            <li><i class="fas fa-check"></i> Grundlegende Templates</li>
+                            <li><i class="fas fa-check"></i> Bis zu 10 Links</li>
+                            <li><i class="fas fa-check"></i> Basis Analytics</li>
+                            <li><i class="fas fa-check"></i> Custom Avatar</li>
+                            <li class="disabled"><i class="fas fa-times"></i> Video Backgrounds</li>
+                            <li class="disabled"><i class="fas fa-times"></i> Custom Audio</li>
+                        </ul>
+                        <button onclick="navigateTo('register')" class="btn btn-outline">Jetzt Starten</button>
+                    </div>
+                    <div class="pricing-card popular">
+                        <div class="plan-badge premium">Premium</div>
+                        <h3>Plus</h3>
+                        <div class="price">€4.99<span>/monat</span></div>
+                        <ul class="features-list">
+                            <li><i class="fas fa-check"></i> Alle Templates</li>
+                            <li><i class="fas fa-check"></i> Unlimited Links</li>
+                            <li><i class="fas fa-check"></i> Advanced Analytics</li>
+                            <li><i class="fas fa-check"></i> Custom Cursor</li>
+                            <li><i class="fas fa-check"></i> Video Backgrounds</li>
+                            <li><i class="fas fa-check"></i> Custom Audio</li>
+                            <li><i class="fas fa-check"></i> Keine Werbung</li>
+                            <li><i class="fas fa-check"></i> Prioritäts-Support</li>
+                        </ul>
+                        <button onclick="navigateTo('register')" class="btn btn-primary">Upgrade</button>
+                    </div>
+                    <div class="pricing-card">
+                        <div class="plan-badge" style="background: var(--accent); color: white;">Team</div>
+                        <h3>Pro</h3>
+                        <div class="price">€19.99<span>/monat</span></div>
+                        <ul class="features-list">
+                            <li><i class="fas fa-check"></i> Alles aus Plus</li>
+                            <li><i class="fas fa-check"></i> Bis zu 5 Benutzer</li>
+                            <li><i class="fas fa-check"></i> Team Analytics</li>
+                            <li><i class="fas fa-check"></i> API Zugriff</li>
+                            <li><i class="fas fa-check"></i> White Label</li>
+                            <li><i class="fas fa-check"></i> Dedicated Support</li>
+                        </ul>
+                        <button onclick="navigateTo('register')" class="btn btn-outline">Kontaktieren</button>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-            <a href="https://instagram.com/yourhandle" class="link-btn">
-                <i class="fab fa-instagram link-icon"></i>
-                <span class="link-text">Instagram</span>
-            </a>
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>guns.lol Clone</h3>
+                    <p>Dein ästhetischer Link-in-Bio Service für Creator.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Produkt</h3>
+                    <ul>
+                        <li><a href="#">Features</a></li>
+                        <li><a href="#">Templates</a></li>
+                        <li><a href="#">Preise</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">Hilfe Center</a></li>
+                        <li><a href="#">Dokumentation</a></li>
+                        <li><a href="#">Kontakt</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Rechtliches</h3>
+                    <ul>
+                        <li><a href="#">AGB</a></li>
+                        <li><a href="#">Datenschutz</a></li>
+                        <li><a href="#">Impressum</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 guns.lol Clone. Made by Lumo 🐱</p>
+            </div>
+        </footer>
+    </div>
 
-            <a href="https://twitch.tv/yourchannel" class="link-btn">
-                <i class="fab fa-twitch link-icon"></i>
-                <span class="link-text">Twitch Stream</span>
-                <span class="link-badge">LIVE</span>
-            </a>
-
-            <a href="https://github.com/yourusername" class="link-btn">
-                <i class="fab fa-github link-icon"></i>
-                <span class="link-text">GitHub Projects</span>
-            </a>
-
-            <a href="mailto:your@email.com" class="link-btn">
-                <i class="fas fa-envelope link-icon"></i>
-                <span class="link-text">Kontaktieren</span>
-            </a>
-        </div>
-
-        <!-- Footer -->
-        <div class="footer">
-            © 2026 Made with 💜 | guns.lol Clone
+    <!-- VIEW: LOGIN -->
+    <div id="loginView" class="view auth-view hidden">
+        <div class="auth-container">
+            <div class="auth-left">
+                <div>
+                    <h1>guns.lol</h1>
+                    <p>Willkommen zurück! Melde dich an, um dein Profil zu verwalten.</p>
+                </div>
+            </div>
+            <div class="auth-right">
+                <form class="auth-form" onsubmit="handleLogin(event)">
+                    <h2>Melde dich an</h2>
+                    <p class="subtitle">oder <a href="#" onclick="navigateTo('register')">neues Konto erstellen</a></p>
+                    <div class="social-login">
+                        <button type="button" class="social-btn"><i class="fab fa-google"></i> Mit Google fortfahren</button>
+                        <button type="button" class="social-btn"><i class="fab fa-discord"></i> Mit Discord fortfahren</button>
+                    </div>
+                    <div class="divider"><span>oder mit Email</span></div>
+                    <div class="form-group">
+                        <label>Email Adresse</label>
+                        <input type="email" placeholder="deine@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Passwort</label>
+                        <div class="password-input">
+                            <input type="password" placeholder="••••••••" required>
+                            <button type="button" class="toggle-password" onclick="togglePassword('login')"><i class="fas fa-eye"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-options">
+                        <label class="checkbox-label"><input type="checkbox"><span>Angemeldet bleiben</span></label>
+                        <a href="#" class="forgot-password">Passwort vergessen?</a>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-sign-in-alt"></i> Anmelden</button>
+                    <div class="terms"><p>Durch das Fortfahren stimmst du unseren AGB zu.</p></div>
+                </form>
+            </div>
         </div>
     </div>
 
-    <!-- Optional Audio -->
-    <!-- <audio id="bg-music" autoplay loop>
-        <source src="your-music.mp3" type="audio/mpeg">
-    </audio> -->
+    <!-- VIEW: REGISTER -->
+    <div id="registerView" class="view auth-view hidden">
+        <div class="auth-container">
+            <div class="auth-left">
+                <div>
+                    <h1>guns.lol</h1>
+                    <p>Erstelle dein kostenloses Konto in weniger als 2 Minuten!</p>
+                </div>
+                <div style="display: flex; gap: 30px;">
+                    <div><span class="stat-number" style="font-size: 32px; font-weight: 700;">150K+</span><br><span class="stat-label">Aktive Nutzer</span></div>
+                    <div><span class="stat-number" style="font-size: 32px; font-weight: 700;">5M+</span><br><span class="stat-label">Geteilte Links</span></div>
+                </div>
+            </div>
+            <div class="auth-right">
+                <form class="auth-form" onsubmit="handleRegister(event)">
+                    <h2>Konto erstellen</h2>
+                    <p class="subtitle">Bereit? Gib deine Infos ein.</p>
+                    <div class="form-group">
+                        <label>Benutzername *</label>
+                        <div class="input-with-addon">
+                            <span class="addon">@</span>
+                            <input type="text" id="regUsername" placeholder="deinname" required>
+                        </div>
+                        <small>Deine Profil-URL wird sein: guns.lol/@deinname</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Anzeigename</label>
+                        <input type="text" placeholder="Dein Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Adresse *</label>
+                        <input type="email" placeholder="deine@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Passwort *</label>
+                        <div class="password-input">
+                            <input type="password" id="regPassword" placeholder="Mindestens 8 Zeichen" required oninput="checkPasswordStrength()">
+                            <button type="button" class="toggle-password" onclick="togglePassword('reg')"><i class="fas fa-eye"></i></button>
+                        </div>
+                        <div class="password-strength"><div class="strength-bar" id="strengthBar"></div></div>
+                        <small>Mindestens 8 Zeichen</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label"><input type="checkbox" required><span>Ich stimme den <a href="#">AGB</a> zu *</span></label>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-user-plus"></i> Konto erstellen</button>
+                    <div class="auth-switch"><p>Bereits ein Konto? <a href="#" onclick="navigateTo('login')">Hier anmelden</a></p></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW: DASHBOARD -->
+    <div id="dashboardView" class="view dashboard-view hidden">
+        <aside class="sidebar">
+            <div class="sidebar-header"><a href="#" class="logo" onclick="navigateTo('dashboard')">guns.lol</a></div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" onclick="switchDashTab('overview')"><i class="fas fa-home"></i><span>Übersicht</span></a>
+                <a href="#" class="nav-item" onclick="switchDashTab('editor')"><i class="fas fa-edit"></i><span>Profil bearbeiten</span></a>
+                <a href="#" class="nav-item"><i class="fas fa-link"></i><span>Links verwalten</span></a>
+                <a href="#" class="nav-item"><i class="fas fa-chart-bar"></i><span>Analytics</span></a>
+                <a href="#" class="nav-item"><i class="fas fa-cog"></i><span>Einstellungen</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="upgrade-banner"><i class="fas fa-crown"></i><span>Upgraden auf <strong>Plus</strong></span><button class="btn btn-small" style="margin-top:8px; background:white; color:var(--primary);">Jetzt</button></div>
+                <button class="logout-btn" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Abmelden</button>
+            </div>
+        </aside>
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="search-box"><i class="fas fa-search"></i><input type="text" placeholder="Suche..."></div>
+                <div class="top-actions">
+                    <button class="icon-btn"><i class="fas fa-bell"></i><span class="notification-badge">3</span></button>
+                    <div class="user-menu"><img src="https://ui-avatars.com/api/?name=User&background=6d4aff&color=fff" class="user-avatar"><span class="user-name">@deinusername</span><i class="fas fa-chevron-down"></i></div>
+                </div>
+            </header>
+            <div class="dashboard-content">
+                <div class="welcome-banner">
+                    <div class="welcome-text"><h1>Willkommen zurück, @deinusername! 👋</h1><p>Verwalte deine Profile, tracke Besucher und optimiere deine Links.</p></div>
+                    <button onclick="switchDashTab('editor')" class="btn"><i class="fas fa-paint-brush"></i> Profil bearbeiten</button>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-icon visits"><i class="fas fa-eye"></i></div><div class="stat-info"><div class="stat-value">12,456</div><div class="stat-label">Gesamtbesuche</div><div class="stat-change positive"><i class="fas fa-arrow-up"></i> 23% diese Woche</div></div></div>
+                    <div class="stat-card"><div class="stat-icon clicks"><i class="fas fa-hand-pointer"></i></div><div class="stat-info"><div class="stat-value">8,934</div><div class="stat-label">Link Klicks</div><div class="stat-change positive"><i class="fas fa-arrow-up"></i> 18% diese Woche</div></div></div>
+                    <div class="stat-card"><div class="stat-icon followers"><i class="fas fa-user-plus"></i></div><div class="stat-info"><div class="stat-value">1,847</div><div class="stat-label">Follower</div><div class="stat-change positive"><i class="fas fa-arrow-up"></i> 45 neue diese Woche</div></div></div>
+                    <div class="stat-card"><div class="stat-icon conversion"><i class="fas fa-percentage"></i></div><div class="stat-info"><div class="stat-value">71.7%</div><div class="stat-label">Klickraten</div><div class="stat-change positive"><i class="fas fa-arrow-up"></i> 5.2% Verbesserung</div></div></div>
+                </div>
+                <div class="quick-actions">
+                    <h3>Schnellaktionen</h3>
+                    <div class="actions-grid">
+                        <button class="action-btn"><i class="fas fa-plus-circle"></i><span>Neuer Link</span></button>
+                        <button class="action-btn"><i class="fas fa-magic"></i><span>Template wählen</span></button>
+                        <button class="action-btn"><i class="fas fa-image"></i><span>Hintergrund</span></button>
+                        <button class="action-btn"><i class="fas fa-music"></i><span>Audio hochladen</span></button>
+                    </div>
+                </div>
+                <div class="quick-actions">
+                    <h3>Aktuelle Aktivitäten</h3>
+                    <div style="display:flex; flex-direction:column; gap:12px;">
+                        <div style="padding:12px; background:var(--bg-tertiary); border-radius:8px; display:flex; gap:12px; align-items:center;"><div style="color:var(--primary);"><i class="fas fa-link"></i></div><div><p style="margin-bottom:4px;"><strong>Discord Link</strong> geklickt</p><span style="font-size:12px; color:var(--text-muted);">Vor 2 Minuten • 🇩🇪</span></div></div>
+                        <div style="padding:12px; background:var(--bg-tertiary); border-radius:8px; display:flex; gap:12px; align-items:center;"><div style="color:var(--success);"><i class="fas fa-user-plus"></i></div><div><p style="margin-bottom:4px;"><strong>Neuer Follower @gamer123</strong></p><span style="font-size:12px; color:var(--text-muted);">Vor 15 Minuten • 🇺🇸</span></div></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- VIEW: EDITOR -->
+    <div id="editorView" class="view editor-view hidden">
+        <header class="editor-header">
+            <div class="back-btn" onclick="navigateTo('dashboard')"><i class="fas fa-arrow-left"></i> Zurück</div>
+            <h1>Profil bearbeiten</h1>
+            <div style="display:flex; gap:12px;">
+                <button class="btn btn-small btn-secondary" onclick="alert('Zurückgesetzt!')">Zurücksetzen</button>
+                <button class="btn btn-small btn-success" onclick="saveProfile()"><i class="fas fa-save"></i> Speichern</button>
+            </div>
+        </header>
+        <aside class="editor-sidebar">
+            <div class="editor-tabs">
+                <button class="editor-tab active" onclick="switchEditorTab('basics')"><i class="fas fa-user"></i><span>Allgemein</span></button>
+                <button class="editor-tab" onclick="switchEditorTab('links')"><i class="fas fa-link"></i><span>Links</span></button>
+                <button class="editor-tab" onclick="switchEditorTab('design')"><i class="fas fa-palette"></i><span>Design</span></button>
+                <button class="editor-tab" onclick="switchEditorTab('advanced')"><i class="fas fa-sliders-h"></i><span>Erweitert</span></button>
+            </div>
+            
+            <div class="editor-panel active" id="panel-basics">
+                <h3>Profil Basics</h3>
+                <div class="form-group">
+                    <label>Profilbild</label>
+                    <div class="avatar-upload">
+                        <div class="avatar-preview"><img src="https://ui-avatars.com/api/?name=User&background=6d4aff&color=fff&size=80"></div>
+                        <button class="btn btn-small btn-outline" onclick="document.getElementById('avatarInput').click()"><i class="fas fa-upload"></i> Ändern</button>
+                        <input type="file" id="avatarInput" hidden accept="image/*">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Benutzername</label>
+                    <div class="input-with-addon"><span class="addon">@</span><input type="text" value="deinusername" disabled></div>
+                    <small style="color:var(--warning)">Nur alle 30 Tage änderbar</small>
+                </div>
+                <div class="form-group">
+                    <label>Anzeigename</label>
+                    <input type="text" id="displayNameInput" value="Dein Name">
+                </div>
+                <div class="form-group">
+                    <label>Bio / Tagline</label>
+                    <textarea id="bioInput" rows="3" maxlength="140" oninput="updateCharCounter()">Content Creator · Gamer · Developer 💜</textarea>
+                    <div class="char-counter"><span id="bioCount">42</span>/140</div>
+                </div>
+            </div>
+
+            <div class="editor-panel" id="panel-links">
+                <div class="panel-header"><h3>Links verwalten</h3><button class="btn btn-small btn-primary" onclick="addLink()"><i class="fas fa-plus"></i> Neuer Link</button></div>
+                <div class="links-editor" id="linksContainer">
+                    <div class="link-item">
+                        <div class="link-drag"><i class="fas fa-grip-vertical"></i></div>
+                        <div class="link-icon-select"><select><option value="discord" selected>Discord</option><option value="youtube">YouTube</option><option value="instagram">Instagram</option><option value="twitter">Twitter</option></select></div>
+                        <div class="link-details"><input type="text" class="link-title" value="Discord Community"><input type="url" class="link-url" value="https://discord.gg/xyz"></div>
+                        <div class="link-actions"><label class="checkbox-label"><input type="checkbox" checked><span>Active</span></label><button class="link-delete" onclick="this.parentElement.parentElement.remove()"><i class="fas fa-trash"></i></button></div>
+                    </div>
+                    <div class="link-item">
+                        <div class="link-drag"><i class="fas fa-grip-vertical"></i></div>
+                        <div class="link-icon-select"><select><option value="youtube" selected>YouTube</option><option value="discord">Discord</option></select></div>
+                        <div class="link-details"><input type="text" class="link-title" value="YouTube Kanal"><input type="url" class="link-url" value="https://youtube.com/@channel"></div>
+                        <div class="link-actions"><label class="checkbox-label"><input type="checkbox" checked><span>Active</span></label><button class="link-delete" onclick="this.parentElement.parentElement.remove()"><i class="fas fa-trash"></i></button></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="editor-panel" id="panel-design">
+                <h3>Design anpassen</h3>
+                <div class="form-group">
+                    <label>Hintergrund-Typ</label>
+                    <div class="bg-type-selector">
+                        <button class="bg-type active"><i class="fas fa-fill-drip"></i> Farbe</button>
+                        <button class="bg-type"><i class="fas fa-image"></i> Bild</button>
+                        <button class="bg-type"><i class="fas fa-video"></i> Video <span class="premium-tag">PRO</span></button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Farbe wählen</label>
+                    <div class="color-picker"><input type="color" id="bgColor" value="#0a0a0a" oninput="updatePreviewBg()"><input type="text" value="#0a0a0a" id="bgColorHex"></div>
+                    <div class="preset-colors">
+                        <button class="preset-color" style="background:#0a0a0a" onclick="setBgColor('#0a0a0a')"></button>
+                        <button class="preset-color" style="background:#1a1a2e" onclick="setBgColor('#1a1a2e')"></button>
+                        <button class="preset-color" style="background:#16213e" onclick="setBgColor('#16213e')"></button>
+                        <button class="preset-color" style="background:#533483" onclick="setBgColor('#533483')"></button>
+                        <button class="preset-color" style="background:#e94560" onclick="setBgColor('#e94560')"></button>
+                        <button class="preset-color" style="background:#fbbf24" onclick="setBgColor('#fbbf24')"></button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Blur-Effekt</label>
+                    <input type="range" id="blurAmount" min="0" max="20" value="5" oninput="updateBlur(this.value)"><span id="blurValue">5px</span>
+                </div>
+                <div class="form-group">
+                    <label>Animationen</label>
+                    <div class="animation-options">
+                        <label class="checkbox-label"><input type="checkbox" id="fadeIn" checked><span>Einblend-Effekt</span></label>
+                        <label class="checkbox-label"><input type="checkbox" id="hoverEffect" checked><span>Hover-Effekte</span></label>
+                        <label class="checkbox-label"><input type="checkbox" id="particles"><span>Partikel Effekt <span class="premium-tag">PRO</span></span></label>
+                        <label class="checkbox-label"><input type="checkbox" id="glitch"><span>Glitch Text <span class="premium-tag">PRO</span></span></label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="editor-panel" id="panel-advanced">
+                <h3>Erweiterte Einstellungen</h3>
+                <div class="form-group">
+                    <label>Custom CSS</label>
+                    <textarea rows="6" placeholder="/* Dein benutzerdefinierter CSS Code */">.link-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(109, 76, 255, 0.3);
+}</textarea>
+                </div>
+                <div class="form-group">
+                    <label>Privatsphäre</label>
+                    <select><option value="public">Öffentlich</option><option value="unlisted">Unlisted</option><option value="private">Privat</option></select>
+                </div>
+                <div class="form-group" style="margin-top:32px; padding-top:24px; border-top:1px solid var(--border);">
+                    <h4 style="color:var(--danger); margin-bottom:16px;">Gefahrenzone</h4>
+                    <button class="btn btn-small btn-danger" onclick="if(confirm('Profil wirklich löschen?')) alert('Profil gelöscht!')"><i class="fas fa-trash"></i> Profil löschen</button>
+                </div>
+            </div>
+        </aside>
+
+        <aside class="preview-panel">
+            <div class="preview-header"><h3>Live Vorschau</h3><div class="device-toggle"><button class="device-btn active" onclick="switchDevice('desktop')"><i class="fas fa-desktop"></i></button><button class="device-btn" onclick="switchDevice('mobile')"><i class="fas fa-mobile-alt"></i></button></div></div>
+            <div class="preview-frame" id="previewFrame">
+                <div class="profile-preview" id="livePreview">
+                    <img src="https://ui-avatars.com/api/?name=User&background=6d4aff&color=fff" class="preview-avatar" id="previewAvatar">
+                    <h2 class="preview-username" id="previewUsername">@deinusername</h2>
+                    <p class="preview-bio" id="previewBio">Content Creator · Gamer · Developer 💜</p>
+                    <div class="preview-stats">
+                        <div class="preview-stat"><span class="stat-num">12.4K</span><span class="stat-label">Besuche</span></div>
+                        <div class="preview-stat"><span class="stat-num">1.8K</span><span class="stat-label">Follower</span></div>
+                    </div>
+                    <div class="preview-links" id="previewLinks">
+                        <a href="#" class="preview-link-btn"><i class="fab fa-discord preview-link-icon"></i><span class="preview-link-text">Discord Community</span></a>
+                        <a href="#" class="preview-link-btn"><i class="fab fa-youtube preview-link-icon"></i><span class="preview-link-text">YouTube Kanal</span></a>
+                    </div>
+                </div>
+            </div>
+            <div class="preview-actions">
+                <button class="btn btn-small btn-outline" onclick="alert('Link kopiert!')"><i class="fas fa-share-alt"></i> Teilen</button>
+                <button class="btn btn-small btn-primary" onclick="openPublicProfile()"><i class="fas fa-external-link-alt"></i> Öffnen</button>
+            </div>
+        </aside>
+    </div>
+
+    <!-- VIEW: PUBLIC PROFILE -->
+    <div id="publicView" class="view public-view hidden">
+        <div class="public-profile" id="publicProfileDisplay">
+            <img src="https://ui-avatars.com/api/?name=User&background=6d4aff&color=fff&size=140" class="public-avatar" id="publicAvatar">
+            <h1 class="public-username" id="publicUsername">@deinusername</h1>
+            <p class="public-bio" id="publicBio">Content Creator · Gamer · Developer 💜</p>
+            <div class="public-stats">
+                <div class="public-stat"><span class="public-stat-value">12.4K</span><span class="public-stat-label">Besuche</span></div>
+                <div class="public-stat"><span class="public-stat-value">1.8K</span><span class="public-stat-label">Follower</span></div>
+            </div>
+            <div class="public-links" id="publicLinks">
+                <a href="https://discord.gg/xyz" target="_blank" class="public-link-btn"><i class="fab fa-discord public-link-icon"></i><span class="public-link-text">Discord Community</span><span class="public-link-badge">NEW</span></a>
+                <a href="https://youtube.com/@channel" target="_blank" class="public-link-btn"><i class="fab fa-youtube public-link-icon"></i><span class="public-link-text">YouTube Kanal</span></a>
+                <a href="https://instagram.com/handle" target="_blank" class="public-link-btn"><i class="fab fa-instagram public-link-icon"></i><span class="public-link-text">Instagram</span></a>
+                <a href="https://twitter.com/handle" target="_blank" class="public-link-btn"><i class="fab fa-twitter public-link-icon"></i><span class="public-link-text">Twitter / X</span><span class="public-link-badge">LIVE</span></a>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // Click to play audio (browsers require interaction)
-        document.addEventListener('click', function() {
-            const audio = document.getElementById('bg-music');
-            if (audio && audio.paused) {
-                audio.play();
-            }
-        }, { once: true });
-
-        // Add particle effects
-        function createParticles() {
-            const particle = document.createElement('div');
-            particle.style.position = 'fixed';
-            particle.style.width = Math.random() * 3 + 'px';
-            particle.style.height = particle.style.width;
-            particle.style.background = 'rgba(255,255,255,0.5)';
-            particle.style.borderRadius = '50%';
-            particle.style.left = Math.random() * window.innerWidth + 'px';
-            particle.style.top = window.innerHeight + 'px';
-            particle.style.zIndex = '-1';
-            document.body.appendChild(particle);
-
-            animateParticle(particle);
-        }
-
-        function animateParticle(particle) {
-            let position = window.innerHeight;
-            const speed = Math.random() * 2 + 1;
-
-            function move() {
-                position -= speed;
-                particle.style.top = position + 'px';
-
-                if (position > -10) {
-                    requestAnimationFrame(move);
-                } else {
-                    particle.remove();
-                }
-            }
-
-            move();
-        }
-
-        // Create particles periodically
-        setInterval(createParticles, 200);
-    </script>
-</body>
-</html>
