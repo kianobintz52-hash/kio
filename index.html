@@ -1,398 +1,271 @@
-#<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>guns.lol - Voll Funktionsfähig</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>@deinname</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* ===== CSS Reset & Variables ===== */
-        :root { --primary:#6d4aff; --primary-dark:#5a40cc; --secondary:#9b7cff; --accent:#e94560; --success:#4ade80; --warning:#fbbf24; --danger:#ef4444; --bg-primary:#0a0a0a; --bg-secondary:#1a1a1a; --bg-tertiary:#252525; --text-primary:#fff; --text-secondary:rgba(255,255,255,0.7); --text-muted:rgba(255,255,255,0.5); --border:rgba(255,255,255,0.1); --radius-sm:8px; --radius-md:12px; --radius-lg:16px; --transition:all 0.3s ease; }
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6;overflow-x:hidden}
-        a{text-decoration:none;color:inherit;cursor:pointer}
-        button{cursor:pointer;border:none;outline:none;font-family:inherit}
-        input,textarea,select{font-family:inherit;outline:none}
-        .hidden{display:none!important}
-        .container{max-width:1200px;margin:0 auto;padding:0 24px}
-        
-        /* ===== Alerts ===== */
-        .alert{padding:16px;border-radius:var(--radius-sm);margin-bottom:16px;display:flex;align-items:center;gap:12px;animation:slideIn 0.3s ease}
-        @keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
-        .alert-success{background:rgba(74,222,128,0.15);border:1px solid var(--success);color:var(--success)}
-        .alert-error{background:rgba(239,68,68,0.15);border:1px solid var(--danger);color:var(--danger)}
-        
-        /* ===== Navigation ===== */
-        .navbar{background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:16px 0;position:sticky;top:0;z-index:100}
-        .navbar .container{display:flex;justify-content:space-between;align-items:center}
-        .logo{font-size:24px;font-weight:800;color:var(--primary)}
-        .nav-links{display:flex;align-items:center;gap:32px}
-        .nav-links a{color:var(--text-secondary);font-weight:500}
-        .nav-links a:hover{color:var(--primary)}
-        .btn{padding:12px 24px;border-radius:var(--radius-sm);font-weight:600;font-size:14px;transition:var(--transition);display:inline-flex;align-items:center;gap:8px}
-        .btn-primary{background:var(--primary);color:white}
-        .btn-primary:hover{background:var(--primary-dark);transform:translateY(-2px)}
-        .btn-secondary{background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border)}
-        .btn-small{padding:8px 16px;font-size:12px}
-        .btn-block{width:100%;justify-content:center}
-        
-        /* ===== Landing Page ===== */
-        .hero{padding:100px 0;text-align:center;background:radial-gradient(ellipse at top,rgba(109,76,255,0.15),transparent 70%)}
-        .hero h1{font-size:56px;font-weight:800;margin-bottom:24px}
-        .hero p{font-size:20px;color:var(--text-secondary);max-width:600px;margin:0 auto 40px}
-        .hero-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
-        .features{padding:80px 0;background:var(--bg-secondary)}
-        .features h2{text-align:center;margin-bottom:40px;font-size:36px}
-        .feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
-        .feature-card{background:var(--bg-primary);padding:24px;border-radius:var(--radius-lg);border:1px solid var(--border)}
-        .feature-icon{font-size:28px;color:var(--primary);margin-bottom:16px}
-        
-        /* ===== Auth Pages ===== */
-        .auth-view{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(135deg,#0a0a0a 0%,#1a1a2e 100%)}
-        .auth-container{display:grid;grid-template-columns:1fr 1fr;max-width:900px;width:100%;background:var(--bg-secondary);border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
-        .auth-left{padding:40px;background:linear-gradient(135deg,var(--primary) 0%,var(--secondary) 100%);color:white;display:flex;flex-direction:column;justify-content:center}
-        .auth-left h1{font-size:42px;font-weight:800;margin-bottom:12px}
-        .auth-right{padding:40px;overflow-y:auto;max-height:90vh}
-        .auth-form h2{font-size:24px;margin-bottom:8px}
-        .subtitle{color:var(--text-secondary);margin-bottom:24px}
-        .subtitle span{color:var(--primary)}
-        .form-group{margin-bottom:16px}
-        .form-group label{display:block;font-size:14px;font-weight:600;margin-bottom:6px;color:var(--text-secondary)}
-        .form-group input, .form-group textarea{width:100%;padding:12px 14px;background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-size:14px}
-        .form-group input:focus{border-color:var(--primary)}
-        .password-input{position:relative}
-        .password-input input{padding-right:44px}
-        .toggle-password{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;color:var(--text-muted);font-size:14px}
-        .input-with-addon{display:flex;align-items:center}
-        .addon{padding:0 12px;background:var(--bg-primary);border:1px solid var(--border);border-right:none;border-radius:var(--radius-sm) 0 0 var(--radius-sm);color:var(--text-muted)}
-        .input-with-addon input{border-radius:0 var(--radius-sm) var(--radius-sm) 0}
-        .availability{padding:0 10px;font-size:12px}
-        .availability.available{color:var(--success)}
-        .availability.taken{color:var(--danger)}
-        .checkbox-label{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--text-secondary)}
-        .auth-switch{text-align:center;margin-top:16px;color:var(--text-secondary);font-size:14px}
-        .auth-switch span{color:var(--primary)}
-        
-        /* ===== Dashboard ===== */
-        .dashboard-view{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
-        .sidebar{background:var(--bg-secondary);border-right:1px solid var(--border);padding:20px 0;display:flex;flex-direction:column}
-        .sidebar-header{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:10px}
-        .sidebar-nav{flex:1;padding:10px 16px}
-        .nav-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--radius-sm);color:var(--text-secondary);font-weight:500;transition:var(--transition);margin-bottom:4px}
-        .nav-item:hover{background:var(--bg-tertiary);color:var(--text-primary)}
-        .nav-item.active{background:rgba(109,76,255,0.15);color:var(--primary)}
-        .nav-item i{width:18px}
-        .sidebar-footer{padding:20px;border-top:1px solid var(--border)}
-        .logout-btn{width:100%;padding:12px;background:transparent;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-secondary);display:flex;align-items:center;justify-content:center;gap:8px}
-        .logout-btn:hover{background:var(--danger);color:white}
-        .main-content{flex:1;overflow-y:auto}
-        .top-bar{background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;justify-content:space-between;align-items:center}
-        .user-menu{display:flex;align-items:center;gap:12px;cursor:pointer;padding:8px 12px;border-radius:var(--radius-md)}
-        .user-avatar{width:32px;height:32px;border-radius:50%}
-        .dashboard-content{padding:24px}
-        .welcome-banner{background:linear-gradient(135deg,var(--primary) 0%,var(--secondary) 100%);padding:24px;border-radius:var(--radius-lg);margin-bottom:24px}
-        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:24px}
-        .stat-card{background:var(--bg-secondary);padding:20px;border-radius:var(--radius-lg);border:1px solid var(--border);display:flex;align-items:center;gap:16px}
-        .stat-icon{width:48px;height:48px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:20px}
-        .stat-icon.visits{background:rgba(109,76,255,0.15);color:var(--primary)}
-        .stat-value{font-size:24px;font-weight:700}
-        .stat-label{color:var(--text-secondary);font-size:13px}
-        .quick-actions{background:var(--bg-secondary);padding:20px;border-radius:var(--radius-lg);border:1px solid var(--border)}
-        .quick-actions h3{margin-bottom:16px;font-size:16px}
-        .actions-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
-        .action-btn{background:var(--bg-tertiary);padding:16px;border-radius:var(--radius-sm);display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--text-secondary);border:1px solid var(--border)}
-        .action-btn:hover{background:var(--bg-primary);border-color:var(--primary);color:var(--text-primary)}
-        .action-btn i{font-size:24px;color:var(--primary)}
-        
-        /* ===== Editor ===== */
-        .editor-view{display:grid;grid-template-columns:360px 1fr;min-height:100vh}
-        .editor-header{background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;justify-content:space-between;align-items:center}
-        .back-btn{color:var(--text-secondary)}
-        .editor-header h1{font-size:18px}
-        .editor-sidebar{background:var(--bg-secondary);border-right:1px solid var(--border);padding:20px 0;overflow-y:auto;max-height:calc(100vh - 62px)}
-        .editor-tabs{display:flex;padding:0 16px 16px;border-bottom:1px solid var(--border)}
-        .editor-tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px;border-radius:var(--radius-sm);background:none;border:none;cursor:pointer;color:var(--text-secondary);font-size:11px}
-        .editor-tab i{font-size:16px}
-        .editor-tab.active{background:rgba(109,76,255,0.15);color:var(--primary)}
-        .editor-panel{padding:20px;display:none}
-        .editor-panel.active{display:block}
-        .editor-panel h3{margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);font-size:15px}
-        .avatar-upload{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-        .avatar-preview{width:70px;height:70px;border-radius:50%;overflow:hidden;background:var(--bg-tertiary);display:flex;align-items:center;justify-content:center}
-        .avatar-preview img{width:100%;height:100%;object-fit:cover}
-        .file-input-wrapper{position:relative}
-        .file-input-wrapper input[type=file]{position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer}
-        .links-editor{display:flex;flex-direction:column;gap:10px}
-        .link-item{background:var(--bg-primary);padding:12px;border-radius:var(--radius-sm);border:1px solid var(--border);display:flex;align-items:center;gap:10px}
-        .link-icon-select select{background:var(--bg-tertiary);border:1px solid var(--border);color:var(--text-primary);padding:6px;border-radius:var(--radius-sm);font-size:12px}
-        .link-details{flex:1;display:flex;flex-direction:column;gap:6px}
-        .link-details input{padding:8px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px}
-        .link-actions{display:flex;flex-direction:column;gap:6px}
-        .link-delete{background:none;color:var(--danger);font-size:14px;padding:4px}
-        .preview-panel{padding:20px;overflow-y:auto}
-        .preview-frame{background:var(--bg-secondary);border-radius:var(--radius-lg);border:1px solid var(--border);overflow:hidden;margin-bottom:16px}
-        .profile-preview{min-height:500px;background:linear-gradient(135deg,#1a1a2e 0%,#0a0a0a 100%);padding:30px 20px;display:flex;flex-direction:column;align-items:center}
-        .preview-avatar{width:100px;height:100px;border-radius:50%;border:3px solid rgba(255,255,255,0.3);margin-bottom:16px}
-        .preview-username{font-size:22px;margin-bottom:6px}
-        .preview-bio{color:var(--text-secondary);margin-bottom:16px;font-size:13px;text-align:center}
-        .preview-stats{display:flex;gap:24px;margin-bottom:16px;padding:12px;background:rgba(255,255,255,0.05);border-radius:var(--radius-sm)}
-        .preview-stat{text-align:center}
-        .stat-num{font-size:16px;font-weight:700;display:block}
-        .stat-label{font-size:11px;color:var(--text-muted)}
-        .preview-links{width:100%;max-width:320px;display:flex;flex-direction:column;gap:10px}
-        .preview-link-btn{padding:14px 18px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-sm);color:white;display:flex;align-items:center;gap:10px}
-        .preview-link-btn:hover{background:rgba(255,255,255,0.15)}
-        .preview-link-icon{width:20px;text-align:center;color:var(--primary)}
-        
-        /* ===== Public Profile ===== */
-        .public-view{min-height:100vh;display:flex;justify-content:center;align-items:center;background:linear-gradient(135deg,#0a0a0a 0%,#1a1a2e 100%);padding:20px}
-        .public-profile{background:rgba(255,255,255,0.02);backdrop-filter:blur(10px);border-radius:var(--radius-lg);border:1px solid var(--border);padding:40px 28px;max-width:420px;width:100%;text-align:center;position:relative}
-        .public-close{position:absolute;top:16px;right:16px;background:none;border:none;color:white;font-size:18px;cursor:pointer}
-        .public-avatar{width:120px;height:120px;border-radius:50%;border:4px solid rgba(109,76,255,0.3);margin:0 auto 20px}
-        .public-username{font-size:28px;font-weight:800;margin-bottom:6px}
-        .public-bio{color:var(--text-secondary);margin-bottom:24px;font-size:14px}
-        .public-stats{display:flex;justify-content:center;gap:32px;margin-bottom:24px}
-        .public-stat-value{font-size:20px;font-weight:700;display:block}
-        .public-stat-label{font-size:11px;color:var(--text-muted);margin-top:2px}
-        .public-links{display:flex;flex-direction:column;gap:12px}
-        .public-link-btn{padding:16px 20px;background:rgba(109,76,255,0.15);border:1px solid rgba(109,76,255,0.3);border-radius:var(--radius-md);color:white;display:flex;align-items:center;gap:12px}
-        .public-link-btn:hover{background:rgba(109,76,255,0.25);transform:translateY(-2px)}
-        .public-link-icon{width:24px;font-size:20px;color:var(--primary)}
-        .public-link-text{flex:1;text-align:left;font-weight:500}
-        
-        /* ===== Footer ===== */
-        .footer{background:var(--bg-secondary);padding:40px 0 20px;margin-top:60px;border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:12px}
-        
-        /* ===== Responsive ===== */
-        @media(max-width:768px){
-            .hero h1{font-size:36px}.auth-container{grid-template-columns:1fr}.auth-left{display:none}.dashboard-view,.editor-view{grid-template-columns:1fr}.sidebar{display:none}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0a0a0a;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            cursor: url('https://cur.cursors-4u.net/cursors/cur-2/cur116.cur'), auto;
+        }
+
+        /* Animated background */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0a0a0a 100%);
+        }
+
+        .background::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(109, 76, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px 20px;
+            max-width: 500px;
+            width: 100%;
+            backdrop-filter: blur(5px);
+        }
+
+        .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            border: 3px solid #6d4aff;
+            box-shadow: 0 0 30px rgba(109, 76, 255, 0.5);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(109, 76, 255, 0.5); }
+            50% { box-shadow: 0 0 50px rgba(109, 76, 255, 0.8); }
+        }
+
+        .username {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #6d4aff;
+            text-shadow: 0 0 10px rgba(109, 76, 255, 0.5);
+        }
+
+        .bio {
+            font-size: 0.9rem;
+            color: #cccccc;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: rgba(109, 76, 255, 0.1);
+            border: 1px solid rgba(109, 76, 255, 0.3);
+            border-radius: 10px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .link-item:hover {
+            background: rgba(109, 76, 255, 0.2);
+            border-color: #6d4aff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(109, 76, 255, 0.3);
+        }
+
+        .link-item i {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            width: 30px;
+            text-align: center;
+        }
+
+        .link-text {
+            flex: 1;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .tagline {
+            margin-top: 30px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .audio-player {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(109, 76, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: 1px solid rgba(109, 76, 255, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .audio-player i {
+            color: #6d4aff;
+        }
+
+        .typing-effect {
+            display: inline-block;
+            border-right: 2px solid #6d4aff;
+            animation: blink 0.7s step-end infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { border-color: transparent; }
+            51%, 100% { border-right: 2px solid #6d4aff; }
         }
     </style>
 </head>
 <body>
-    <!-- NAVIGATION -->
-    <nav class="navbar hidden" id="mainNav">
-        <div class="container">
-            <span class="logo" onclick="goHome()">guns.lol</span>
-            <div class="nav-links" id="navLinks"></div>
+    <div class="background"></div>
+    
+    <div class="container">
+        <!-- Avatar Bild -->
+        <img src="https://via.placeholder.com/150/6d4aff/ffffff?text=L" alt="Avatar" class="avatar">
+        
+        <!-- Username -->
+        <div class="username">@deinname</div>
+        
+        <!-- Bio -->
+        <div class="bio">
+            <span class="typing-effect">Developer | Gamer | Creator</span>
         </div>
-    </nav>
-
-    <!-- LANDING PAGE -->
-    <div id="landingView" class="view">
-        <section class="hero">
-            <div class="container">
-                <h1>Create Your <span style="background:linear-gradient(135deg, var(--primary), var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Link-in-Bio</span> Page</h1>
-                <p>Teile alle deine Links auf einer ästhetischen Seite. Kostenlos.</p>
-                <div class="hero-buttons">
-                    <button onclick="navigateTo('register')" class="btn btn-primary btn-large">Kostenlos Starten</button>
-                    <button onclick="showDemo()" class="btn btn-secondary btn-large">Demo Sehen</button>
-                </div>
-            </div>
-        </section>
-        <section class="features">
-            <div class="container">
-                <h2>Warum guns.lol?</h2>
-                <div class="feature-grid">
-                    <div class="feature-card"><i class="fas fa-palette feature-icon"></i><h3>Voll Anpassbar</h3><p>Hintergründe, Farben, Animationen!</p></div>
-                    <div class="feature-card"><i class="fas fa-link feature-icon"></i><h3>Unlimited Links</h3><p>So viele Links wie du willst!</p></div>
-                    <div class="feature-card"><i class="fas fa-chart-line feature-icon"></i><h3>Analytics</h3><p>Besucher & Klicks tracken!</p></div>
-                    <div class="feature-card"><i class="fas fa-music feature-icon"></i><h3>Custom Audio</h3><p>Dein Song auf der Seite!</p></div>
-                </div>
-            </div>
-        </section>
-        <div class="footer"><p>&copy; 2026 guns.lol Clone - Made by Lumo 🐱</p></div>
-    </div>
-
-    <!-- LOGIN -->
-    <div id="loginView" class="view auth-view hidden">
-        <div class="auth-container">
-            <div class="auth-left"><h1>guns.lol</h1><p>Willkommen zurück!</p></div>
-            <div class="auth-right">
-                <div id="loginAlerts"></div>
-                <form class="auth-form" onsubmit="handleLogin(event)">
-                    <h2>Melde dich an</h2>
-                    <p class="subtitle">oder <span onclick="navigateTo('register')">neu registrieren</span></p>
-                    <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="email@example.com" required></div>
-                    <div class="form-group"><label>Passwort</label><div class="password-input"><input type="password" id="loginPassword" placeholder="••••••" required><button type="button" class="toggle-password" onclick="togglePassword('loginPassword')"><i class="fas fa-eye"></i></button></div></div>
-                    <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-sign-in-alt"></i> Anmelden</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- REGISTER -->
-    <div id="registerView" class="view auth-view hidden">
-        <div class="auth-container">
-            <div class="auth-left"><h1>guns.lol</h1><p>Erstelle dein Konto!</p></div>
-            <div class="auth-right">
-                <div id="registerAlerts"></div>
-                <form class="auth-form" onsubmit="handleRegister(event)">
-                    <h2>Konto erstellen</h2>
-                    <div class="form-group"><label>Benutzername *</label><div class="input-with-addon"><span class="addon">@</span><input type="text" id="regUsername" placeholder="deinname" required oninput="checkUsername()"><span class="availability" id="usernameCheck"></span></div><small>URL: guns.lol/@deinname</small></div>
-                    <div class="form-group"><label>Anzeigename</label><input type="text" id="regDisplayName" placeholder="Dein Name"></div>
-                    <div class="form-group"><label>Email *</label><input type="email" id="regEmail" placeholder="email@example.com" required></div>
-                    <div class="form-group"><label>Passwort *</label><div class="password-input"><input type="password" id="regPassword" placeholder="Mindestens 8 Zeichen" required><button type="button" class="toggle-password" onclick="togglePassword('regPassword')"><i class="fas fa-eye"></i></button></div><small>8+ Zeichen</small></div>
-                    <div class="form-group"><label class="checkbox-label"><input type="checkbox" id="regTerms" required><span>AGB akzeptieren *</span></label></div>
-                    <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-user-plus"></i> Konto erstellen</button>
-                    <p class="auth-switch">Bereits dabei? <span onclick="navigateTo('login')">Anmelden</span></p>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- DASHBOARD -->
-    <div id="dashboardView" class="view dashboard-view hidden">
-        <aside class="sidebar">
-            <div class="sidebar-header"><span class="logo">guns.lol</span></div>
-            <nav class="sidebar-nav">
-                <div class="nav-item active" onclick="switchDashTab('overview')"><i class="fas fa-home"></i><span>Übersicht</span></div>
-                <div class="nav-item" onclick="navigateTo('editor')"><i class="fas fa-edit"></i><span>Profil bearbeiten</span></div>
-                <div class="nav-item" onclick="openPublicProfile()"><i class="fas fa-eye"></i><span>Seite ansehen</span></div>
-            </nav>
-            <div class="sidebar-footer"><button class="logout-btn" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Abmelden</button></div>
-        </aside>
-        <main class="main-content">
-            <header class="top-bar"><div class="user-menu"><img id="dashAvatar" src="" class="user-avatar"><span id="dashUsername" style="font-weight:600;font-size:13px;"></span></div></header>
-            <div class="dashboard-content">
-                <div class="welcome-banner"><div class="welcome-text"><h1 id="dashWelcome">Willkommen!</h1><p>Verwalte dein Profil</p></div><button onclick="navigateTo('editor')" class="btn" style="background:white;color:var(--primary)"><i class="fas fa-paint-brush"></i> Bearbeiten</button></div>
-                <div class="stats-grid">
-                    <div class="stat-card"><div class="stat-icon visits"><i class="fas fa-eye"></i></div><div class="stat-info"><div class="stat-value" id="statVisits">0</div><div class="stat-label">Besuche</div></div></div>
-                    <div class="stat-card"><div class="stat-icon visits"><i class="fas fa-hand-pointer"></i></div><div class="stat-info"><div class="stat-value" id="statClicks">0</div><div class="stat-label">Klicks</div></div></div>
-                    <div class="stat-card"><div class="stat-icon visits"><i class="fas fa-link"></i></div><div class="stat-info"><div class="stat-value" id="statLinks">0</div><div class="stat-label">Aktive Links</div></div></div>
-                </div>
-                <div class="quick-actions"><h3>Schnellaktionen</h3><div class="actions-grid"><button class="action-btn" onclick="navigateTo('editor')"><i class="fas fa-edit"></i><span>Bearbeiten</span></button><button class="action-btn" onclick="openPublicProfile()"><i class="fas fa-eye"></i><span>Ansehen</span></button><button class="action-btn" onclick="shareProfile()"><i class="fas fa-share-alt"></i><span>Teilen</span></button></div></div>
-            </div>
-        </main>
-    </div>
-
-    <!-- EDITOR -->
-    <div id="editorView" class="view editor-view hidden">
-        <header class="editor-header"><div class="back-btn" onclick="navigateTo('dashboard')"><i class="fas fa-arrow-left"></i> Zurück</div><h1>Profil bearbeiten</h1><button class="btn btn-small btn-primary" onclick="saveProfile()"><i class="fas fa-save"></i> Speichern</button></header>
-        <aside class="editor-sidebar">
-            <div class="editor-tabs">
-                <button class="editor-tab active" onclick="switchEditorTab('basics')"><i class="fas fa-user"></i><span>Allgemein</span></button>
-                <button class="editor-tab" onclick="switchEditorTab('links')"><i class="fas fa-link"></i><span>Links</span></button>
-                <button class="editor-tab" onclick="switchEditorTab('design')"><i class="fas fa-palette"></i><span>Design</span></button>
-            </div>
+        
+        <!-- Links -->
+        <div class="links">
+            <a href="https://discord.com" class="link-item" target="_blank">
+                <i class="fab fa-discord"></i>
+                <span class="link-text">Discord</span>
+            </a>
             
-            <div class="editor-panel active" id="panel-basics">
-                <h3>Profil Basics</h3>
-                <div class="form-group"><label>Profilbild</label><div class="avatar-upload"><div class="avatar-preview"><img id="editAvatarPreview" src=""></div><div class="file-input-wrapper"><button class="btn btn-small btn-outline">Bild hochladen</button><input type="file" id="avatarUpload" accept="image/*" onchange="uploadAvatar()"></div></div><input type="text" id="editAvatarUrl" placeholder="Oder Bild-URL" style="margin-top:8px;" onchange="updateAvatarPreview()"></div>
-                <div class="form-group"><label>Benutzername</label><div class="input-with-addon"><span class="addon">@</span><input type="text" id="editUsername" disabled></div></div>
-                <div class="form-group"><label>Anzeigename</label><input type="text" id="editDisplayName" oninput="updatePreview()"></div>
-                <div class="form-group"><label>Bio</label><textarea id="editBio" rows="3" maxlength="140" oninput="updateCharCounter();updatePreview()"></textarea><div class="char-counter" style="text-align:right;font-size:11px;color:var(--text-muted)"><span id="bioCount">0</span>/140</div></div>
-            </div>
-
-            <div class="editor-panel" id="panel-links">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h3>Links</h3><button class="btn btn-small btn-primary" onclick="addLink()"><i class="fas fa-plus"></i> Neu</button></div>
-                <div class="links-editor" id="linksContainer"></div>
-            </div>
-
-            <div class="editor-panel" id="panel-design">
-                <h3>Design</h3><div class="form-group"><label>Hintergrundfarbe</label><div style="display:flex;gap:10px"><input type="color" id="bgColorPicker" value="#0a0a0a" style="width:60px;height:40px;border:none;cursor:pointer" onchange="updatePreviewBg()"><input type="text" id="bgColorText" value="#0a0a0a" style="flex:1;padding:10px" onchange="document.getElementById('bgColorPicker').value=this.value;updatePreviewBg()"></div></div>
-            </div>
-        </aside>
-        <aside class="preview-panel">
-            <div style="font-size:15px;margin-bottom:12px;font-weight:600">Live Vorschau</div>
-            <div class="preview-frame"><div class="profile-preview" id="livePreview"><img id="previewAvatar" class="preview-avatar"><h2 class="preview-username" id="previewUsername"></h2><p class="preview-bio" id="previewBio"></p><div class="preview-stats"><div class="preview-stat"><span class="stat-num" id="prevVisits">0</span><span class="stat-label">Besuche</span></div><div class="preview-stat"><span class="stat-num" id="prevLinks">0</span><span class="stat-label">Links</span></div></div><div class="preview-links" id="previewLinks"></div></div></div>
-            <button class="btn btn-primary btn-small" style="width:100%" onclick="openPublicProfile()"><i class="fas fa-external-link-alt"></i> Öffentliche Seite öffnen</button>
-        </aside>
-    </div>
-
-    <!-- PUBLIC PROFILE -->
-    <div id="publicView" class="view public-view hidden">
-        <div class="public-profile">
-            <button class="public-close" onclick="closePublic()"><i class="fas fa-times"></i></button>
-            <img id="publicAvatar" class="public-avatar">
-            <h1 class="public-username" id="publicUsername"></h1>
-            <p class="public-bio" id="publicBio"></p>
-            <div class="public-stats"><div class="public-stat"><span class="public-stat-value" id="pubVisits">0</span><span class="public-stat-label">Besuche</span></div><div class="public-stat"><span class="public-stat-value" id="pubLinks">0</span><span class="public-stat-label">Links</span></div></div>
-            <div class="public-links" id="publicLinks"></div>
-            <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border)"><a href="#" id="publicProfileUrl" target="_blank" class="btn btn-small btn-outline">🔗 Profil kopieren</a></div>
+            <a href="https://instagram.com" class="link-item" target="_blank">
+                <i class="fab fa-instagram"></i>
+                <span class="link-text">Instagram</span>
+            </a>
+            
+            <a href="https://twitter.com" class="link-item" target="_blank">
+                <i class="fab fa-twitter"></i>
+                <span class="link-text">Twitter/X</span>
+            </a>
+            
+            <a href="https://youtube.com" class="link-item" target="_blank">
+                <i class="fab fa-youtube"></i>
+                <span class="link-text">YouTube</span>
+            </a>
+            
+            <a href="https://github.com" class="link-item" target="_blank">
+                <i class="fab fa-github"></i>
+                <span class="link-text">GitHub</span>
+            </a>
+            
+            <a href="https://twitch.tv" class="link-item" target="_blank">
+                <i class="fab fa-twitch"></i>
+                <span class="link-text">Twitch</span>
+            </a>
+        </div>
+        
+        <div class="tagline">
+            Powered by Lumo ✨
         </div>
     </div>
 
-    <!-- FOOTER -->
-    <div class="footer hidden" id="footer"><p>&copy; 2026 guns.lol Clone</p></div>
+    <!-- Optional: Audio Player (kommentiert aus) -->
+    <!--
+    <div class="audio-player">
+        <i class="fas fa-music"></i>
+        <span id="song-name">Song Titel</span>
+    </div>
+    -->
 
     <script>
-        // ==================== STATE ====================
-        let currentUser=null;
-        let users=JSON.parse(localStorage.getItem('guns_users')||'{}');
-        
-        // ==================== INIT ====================
-        function init(){
-            const saved=localStorage.getItem('guns_currentUser');
-            if(saved){
-                currentUser=JSON.parse(saved);
-                showNav(true);
-                navigateTo('dashboard');
-            }else{
-                navigateTo('landing');
-            }
-        }
-        
-        // ==================== NAVIGATION ====================
-        function navigateTo(view){
-            document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));
-            document.getElementById('footer').classList.add('hidden');
+        // Typing Effect für die Bio
+        const bioElement = document.querySelector('.typing-effect');
+        const texts = ['Developer | Gamer | Creator', 'Content Creator', 'Tech Enthusiast'];
+        let textIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+
+        function typeEffect() {
+            const currentText = texts[textIndex];
             
-            switch(view){
-                case 'landing':
-                    document.getElementById('landingView').classList.remove('hidden');
-                    document.getElementById('footer').classList.remove('hidden');
-                    showNav(false);
-                    break;
-                case 'login':
-                    document.getElementById('loginView').classList.remove('hidden');
-                    showNav(false);
-                    break;
-                case 'register':
-                    document.getElementById('registerView').classList.remove('hidden');
-                    showNav(false);
-                    break;
-                case 'dashboard':
-                    if(!currentUser)return navigateTo('login');
-                    document.getElementById('dashboardView').classList.remove('hidden');
-                    updateDashboard();
-                    break;
-                case 'editor':
-                    if(!currentUser)return navigateTo('login');
-                    document.getElementById('editorView').classList.remove('hidden');
-                    loadEditor();
-                    break;
-                case 'public':
-                    if(!currentUser)return navigateTo('login');
-                    document.getElementById('publicView').classList.remove('hidden');
-                    renderPublicProfile();
-                    break;
+            if (isDeleting) {
+                bioElement.textContent = currentText.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                bioElement.textContent = currentText.substring(0, charIndex + 1);
+                charIndex++;
             }
-        }
-        
-        function goHome(){navigateTo(currentUser?'dashboard':'landing')}
-        
-        function showNav(show){
-            const nav=document.getElementById('mainNav');
-            const links=document.getElementById('navLinks');
-            if(show){
-                nav.classList.remove('hidden');
-                links.innerHTML=`<a onclick="navigateTo('dashboard')">Dashboard</a><button class="btn btn-small btn-outline" onclick="handleLogout()">Abmelden</button>`;
-            }else{
-                nav.classList.add('hidden');
-                links.innerHTML=`<a onclick="navigateTo('landing')">Start</a><a onclick="navigateTo('login')">Login</a><button class="btn btn-small btn-primary" onclick="navigateTo('register')">Registrieren</button>`;
+
+            if (!isDeleting && charIndex === currentText.length) {
+                setTimeout(() => isDeleting = true, 2000);
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                textIndex = (textIndex + 1) % texts.length;
             }
+
+            const speed = isDeleting ? 50 : 100;
+            setTimeout(typeEffect, speed);
         }
-        
-        // ==================== AUTH ====================
-        function showAlert(containerId,message,type){
-            const container=document.getElementById(containerId);
-            container.innerHTML=`<div class="alert alert-${type}">${message}</div>`;
-            setTimeout(()=>container.innerHTML='',4000);
-        }
-        
-        function checkUsername(){
-            const username=document.getElementById('regUsername')?.value.toLowerCase().trim();
-            const checkEl=document.getElementById('usernameCheck');
-            if(!username){checkEl.className='availability';checkEl.textContent='';return}
-            if(users['@'+username]){checkEl.className='availability taken';checkEl.innerHTML='<i class="fas fa-times"></i> Vergabe
+
+        document.addEventListener('DOMContentLoaded', typeEffect);
+
+        // Click Sound Effekt (optional)
+        document.querySelectorAll('.link-item').forEach(link => {
+            link.addEventListener('click', () => {
+                const audio = new Audio();
+                // Du kannst hier einen eigenen Sound hinzufügen
+                console.log('Link geklickt!');
+            });
+        });
+    </script>
+</body>
+</html>
