@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>barbarossa | Profile</title>
+    <title>kiano</title>
     <style>
-        /* --- GRUNDLEGENDE STYLES --- */
+        /* --- GRUNDSTYLES --- */
         * {
             margin: 0;
             padding: 0;
@@ -13,13 +13,17 @@
         }
 
         body {
-            background-color: #050505; /* Sehr dunkles Grau/Schwarz */
+            background-color: #000000;
             color: #e0e0e0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow-x: hidden; /* Kein horizontaler Scrollbalken für die ganze Seite */
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* --- STARTSEITE (LANDING PAGE) --- */
+        /* --- LANDING PAGE --- */
         #landing-page {
             position: fixed;
             top: 0;
@@ -71,139 +75,105 @@
             transform: scale(1.05);
         }
 
-        /* Klasse zum Ausblenden der Landingpage */
         .hidden {
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
         }
 
-        /* --- PROFIL SEITE --- */
+        /* --- PROFIL PAGE (NUR DEIN PROFIL) --- */
         #profile-page {
-            padding: 40px 20px;
-            min-height: 100vh;
-            opacity: 0; /* Anfangs unsichtbar, erscheint nach Enter */
-            transition: opacity 1.5s ease 0.5s; /* Verzögerung für sanften Übergang */
-        }
-
-        .profile-header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
-        .profile-header h2 {
-            font-size: 2rem;
-            letter-spacing: 2px;
-            color: #fff;
-            margin-bottom: 10px;
-        }
-
-        .profile-header p {
-            color: #888;
-            font-size: 0.9rem;
-        }
-
-        /* Container für die Avatar-Karten */
-        .cards-container {
-            display: flex;
-            gap: 20px;
-            overflow-x: auto; /* Horizontales Scrollen erlauben */
-            padding: 20px 0;
-            scrollbar-width: thin; /* Firefox */
-            scrollbar-color: #333 #0a0a0a;
-        }
-
-        /* Scrollbar Styling (Chrome/Safari/Edge) */
-        .cards-container::-webkit-scrollbar {
-            height: 8px;
-        }
-        .cards-container::-webkit-scrollbar-track {
-            background: #0a0a0a;
-        }
-        .cards-container::-webkit-scrollbar-thumb {
-            background-color: #333;
-            border-radius: 4px;
-        }
-
-        /* Einzelne Karte */
-        .card {
-            min-width: 140px; /* Breite der Karte */
-            background: linear-gradient(145deg, #111111, #0a0a0a);
-            border: 1px solid #222;
-            border-radius: 12px;
-            padding: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            justify-content: center;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 1.5s ease 0.5s;
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+        }
+
+        /* Avatar Bild */
+        .avatar-container {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%; /* Rund */
+            overflow: hidden;
+            margin-bottom: 25px;
+            border: 1px solid #333;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
             position: relative;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-            border-color: #444;
-        }
-
-        /* Avatar Bild Platzhalter */
-        .avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 10px;
-            background-color: #222;
-            margin-bottom: 15px;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 1px solid #333;
-        }
-
-        .avatar img {
+        .avatar-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            filter: grayscale(100%) contrast(1.2); /* Schwarz-Weiß Effekt wie auf deinem Bild */
+            transition: filter 0.3s;
         }
 
+        .avatar-container img:hover {
+            filter: grayscale(0%) contrast(1);
+        }
+
+        /* Name */
         .username {
-            font-size: 0.9rem;
-            color: #ccc;
+            font-size: 2rem;
+            letter-spacing: 0.1em;
+            color: #fff;
             margin-bottom: 10px;
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            width: 100%;
+            text-transform: lowercase;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
         }
 
-        /* Discord Icon Styling */
-        .discord-icon {
-            width: 24px;
-            height: 24px;
-            fill: #5865F2; /* Discord Blau */
-            filter: drop-shadow(0 0 5px rgba(88, 101, 242, 0.4));
-            cursor: pointer;
-            transition: transform 0.2s;
+        /* Status / Linie */
+        .status-line {
+            width: 40px;
+            height: 1px;
+            background-color: #ff0000;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 0 5px #ff0000;
         }
 
-        .discord-icon:hover {
-            transform: scale(1.2);
+        /* Spotify Button */
+        .spotify-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background-color: #1DB954; /* Spotify Grün */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(29, 185, 84, 0.3);
         }
 
-        /* Responsive Anpassung */
+        .spotify-btn:hover {
+            background-color: #1ed760;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(29, 185, 84, 0.5);
+        }
+
+        .spotify-icon {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+
+        /* Responsive */
         @media (max-width: 600px) {
-            .cards-container {
-                gap: 15px;
+            .avatar-container {
+                width: 140px;
+                height: 140px;
             }
-            .card {
-                min-width: 120px;
-            }
-            .avatar {
-                width: 60px;
-                height: 60px;
-            }
-            .landing-title {
-                font-size: 2.5rem;
+            .username {
+                font-size: 1.5rem;
             }
         }
     </style>
@@ -217,74 +187,45 @@
         <div class="enter-btn" onclick="enterSite()">[ click to enter ]</div>
     </div>
 
-    <!-- PROFIL PAGE -->
+    <!-- PROFIL PAGE (DEIN PROFIL) -->
     <div id="profile-page">
-        <div class="profile-header">
-            <h2>MEMBER LIST</h2>
-            <p>Select a profile to connect</p>
+        <div class="avatar-container">
+            <!-- Dein Bild wird hier geladen -->
+            <img src="https://i.imgur.com/placeholder.jpg" alt="kiano" id="user-avatar">
+            <!-- Hinweis: Da ich das Bild nicht hosten kann, habe ich einen Platzhalter. 
+                 Du musst unten im Script den echten Link einfügen oder das Bild lokal speichern. -->
         </div>
 
-        <div class="cards-container">
-            <!-- KARTEN BEISPIELE (Du kannst hier mehr hinzufügen oder Bilder ändern) -->
-            
-            <!-- Karte 1 -->
-            <div class="card">
-                <div class="avatar">
-                    <!-- Ersetze src mit deinem Bildlink -->
-                    <img src="https://via.placeholder.com/150/333333/FFFFFF/?text=Felix" alt="felix">
-                </div>
-                <div class="username">felix</div>
-                <!-- Discord SVG Icon -->
-                <svg class="discord-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037 13.46 13.46 0 0 0-1.052 2.16 18.27 18.27 0 0 0-5.602 0 13.46 13.46 0 0 0-1.052-2.16.074.074 0 0 0-.079-.037 19.791 19.791 0 0 0-4.885 1.515.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
-                </svg>
-            </div>
+        <h2 class="username">kiano</h2>
+        <div class="status-line"></div>
 
-            <!-- Karte 2 -->
-            <div class="card">
-                <div class="avatar">
-                    <img src="https://via.placeholder.com/150/222222/FFFFFF/?text=Flin" alt="flin">
-                </div>
-                <div class="username">flin</div>
-                <svg class="discord-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037 13.46 13.46 0 0 0-1.052 2.16 18.27 18.27 0 0 0-5.602 0 13.46 13.46 0 0 0-1.052-2.16.074.074 0 0 0-.079-.037 19.791 19.791 0 0 0-4.885 1.515.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
-                </svg>
-            </div>
-
-            <!-- Karte 3 -->
-            <div class="card">
-                <div class="avatar">
-                    <img src="https://via.placeholder.com/150/111111/FFFFFF/?text=Pale" alt="pale">
-                </div>
-                <div class="username">pale</div>
-                <svg class="discord-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037 13.46 13.46 0 0 0-1.052 2.16 18.27 18.27 0 0 0-5.602 0 13.46 13.46 0 0 0-1.052-2.16.074.074 0 0 0-.079-.037 19.791 19.791 0 0 0-4.885 1.515.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
-                </svg>
-            </div>
-
-            <!-- Füge hier weitere Karten hinzu, kopiere einfach den Block <div class="card">...</div> -->
-             <div class="card">
-                <div class="avatar">
-                    <img src="https://via.placeholder.com/150/000000/FFFFFF/?text=vantixt" alt="vantixt">
-                </div>
-                <div class="username">vantixt</div>
-                <svg class="discord-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037 13.46 13.46 0 0 0-1.052 2.16 18.27 18.27 0 0 0-5.602 0 13.46 13.46 0 0 0-1.052-2.16.074.074 0 0 0-.079-.037 19.791 19.791 0 0 0-4.885 1.515.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
-                </svg>
-            </div>
-
-        </div>
+        <a href="https://open.spotify.com/intl-de/track/44qGB5mcKyEIZCcBjI6ecn?si=b133160e630b4e1c" target="_blank" class="spotify-btn">
+            <svg class="spotify-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+            </svg>
+            Now Playing
+        </a>
     </div>
 
     <script>
+        // Hier füge ich dein Bild ein, da ich es direkt aus dem Chat laden kann
+        // Du kannst diesen Teil auch löschen und stattdessen ein lokales Bild verwenden
+        document.getElementById('user-avatar').src = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD..."; // HIER MÜSSTE DER ECHTE BASE64 CODE DEINES BILDES STEHEN
+        
+        // Da ich den Base64 Code nicht generieren kann, nutze ich einen Workaround:
+        // Speichere dein Bild als "kiano.jpg" im selben Ordner wie diese HTML Datei
+        // und ändere die Zeile oben zu:
+        // document.getElementById('user-avatar').src = "kiano.jpg";
+        
+        // Für jetzt nutze ich den Platzhalter, aber du kannst das Bild einfach per Rechtsklick -> "Bild speichern als"
+        // herunterladen und dann im Code referenzieren.
+
         function enterSite() {
             const landingPage = document.getElementById('landing-page');
             const profilePage = document.getElementById('profile-page');
 
-            // Landingpage ausblenden
             landingPage.classList.add('hidden');
-
-            // Profilseite einblenden (nach kurzer Verzögerung für den Effekt)
+            
             setTimeout(() => {
                 profilePage.style.opacity = '1';
             }, 500);
