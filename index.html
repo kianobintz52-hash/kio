@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>barbarossa</title>
+    <title>barbarossa | Profile</title>
     <style>
-        /* Grundlegendes Reset */
+        /* --- GRUNDLEGENDE STYLES --- */
         * {
             margin: 0;
             padding: 0;
@@ -13,50 +13,47 @@
         }
 
         body {
-            background-color: #000000;
+            background-color: #050505; /* Sehr dunkles Grau/Schwarz */
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden; /* Kein horizontaler Scrollbalken für die ganze Seite */
+        }
+
+        /* --- STARTSEITE (LANDING PAGE) --- */
+        #landing-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100vh;
+            background-color: #000000;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-family: 'Arial', sans-serif; /* Oder eine serifenlose Schrift deiner Wahl */
-            overflow: hidden;
-            color: white;
+            z-index: 1000;
+            transition: opacity 1s ease, visibility 1s ease;
         }
 
-        .container {
-            text-align: center;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Der Haupttext "barbarossa" */
-        h1 {
+        .landing-title {
             font-size: 3.5rem;
             font-weight: 400;
-            letter-spacing: 0.2em; /* Viel Abstand zwischen den Buchstaben */
+            letter-spacing: 0.2em;
             color: #ffffff;
-            margin-bottom: 2rem;
-            text-transform: lowercase; /* Wie im Bild */
-            
-            /* Der weiche weiße Glow hinter dem Text */
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3), 
-                         0 0 40px rgba(255, 255, 255, 0.1);
-            
-            /* Leichter Weichzeichner-Effekt, falls gewünscht */
+            text-transform: lowercase;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            margin-bottom: 1rem;
             filter: blur(0.5px);
         }
 
-        /* Die rote Linie unter dem Text */
-        .line {
+        .landing-line {
             width: 60px;
             height: 1px;
             background-color: #ff0000;
             margin: 0 auto 3rem auto;
             box-shadow: 0 0 10px #ff0000;
-            opacity: 0.8;
         }
 
-        /* Der "[ CLICK TO ENTER ]" Button */
         .enter-btn {
             font-size: 0.8rem;
             color: #ff0000;
@@ -74,54 +71,202 @@
             transform: scale(1.05);
         }
 
-        /* Optional: Ein sehr subtiler Hintergrund-Grauschleier für Tiefe */
-        .bg-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, #111 0%, #000 70%);
-            z-index: 0;
+        /* Klasse zum Ausblenden der Landingpage */
+        .hidden {
+            opacity: 0;
+            visibility: hidden;
             pointer-events: none;
         }
 
-        /* Lade-Effekt beim Klicken */
-        .fade-out {
-            animation: fadeOut 1s forwards;
+        /* --- PROFIL SEITE --- */
+        #profile-page {
+            padding: 40px 20px;
+            min-height: 100vh;
+            opacity: 0; /* Anfangs unsichtbar, erscheint nach Enter */
+            transition: opacity 1.5s ease 0.5s; /* Verzögerung für sanften Übergang */
         }
 
-        @keyframes fadeOut {
-            to {
-                opacity: 0;
-                visibility: hidden;
+        .profile-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .profile-header h2 {
+            font-size: 2rem;
+            letter-spacing: 2px;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .profile-header p {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        /* Container für die Avatar-Karten */
+        .cards-container {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto; /* Horizontales Scrollen erlauben */
+            padding: 20px 0;
+            scrollbar-width: thin; /* Firefox */
+            scrollbar-color: #333 #0a0a0a;
+        }
+
+        /* Scrollbar Styling (Chrome/Safari/Edge) */
+        .cards-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        .cards-container::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        .cards-container::-webkit-scrollbar-thumb {
+            background-color: #333;
+            border-radius: 4px;
+        }
+
+        /* Einzelne Karte */
+        .card {
+            min-width: 140px; /* Breite der Karte */
+            background: linear-gradient(145deg, #111111, #0a0a0a);
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            border-color: #444;
+        }
+
+        /* Avatar Bild Platzhalter */
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            background-color: #222;
+            margin-bottom: 15px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #333;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .username {
+            font-size: 0.9rem;
+            color: #ccc;
+            margin-bottom: 10px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        /* Discord Icon Styling */
+        .discord-icon {
+            width: 24px;
+            height: 24px;
+            fill: #5865F2; /* Discord Blau */
+            filter: drop-shadow(0 0 5px rgba(88, 101, 242, 0.4));
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .discord-icon:hover {
+            transform: scale(1.2);
+        }
+
+        /* Responsive Anpassung */
+        @media (max-width: 600px) {
+            .cards-container {
+                gap: 15px;
+            }
+            .card {
+                min-width: 120px;
+            }
+            .avatar {
+                width: 60px;
+                height: 60px;
+            }
+            .landing-title {
+                font-size: 2.5rem;
             }
         }
     </style>
 </head>
 <body>
 
-    <div class="bg-overlay"></div>
-
-    <div class="container" id="main-content">
-        <h1>barbarossa</h1>
-        <div class="line"></div>
+    <!-- LANDING PAGE -->
+    <div id="landing-page">
+        <h1 class="landing-title">barbarossa</h1>
+        <div class="landing-line"></div>
         <div class="enter-btn" onclick="enterSite()">[ click to enter ]</div>
     </div>
 
-    <script>
-        function enterSite() {
-            const content = document.getElementById('main_content');
-            // Füge die Animation hinzu
-            content.classList.add('fade-out');
+    <!-- PROFIL PAGE -->
+    <div id="profile-page">
+        <div class="profile-header">
+            <h2>MEMBER LIST</h2>
+            <p>Select a profile to connect</p>
+        </div>
+
+        <div class="cards-container">
+            <!-- KARTEN BEISPIELE (Du kannst hier mehr hinzufügen oder Bilder ändern) -->
             
-            // Nach der Animation (1 Sekunde) könnte man weiterleiten
-            setTimeout(() => {
-                // Hier würdest du normalerweise zur nächsten Seite weiterleiten
-                // window.location.href = "dashboard.html"; 
-                alert("Willkommen bei barbarossa."); // Nur als Demo
-            }, 1000);
-        }
-    </script>
-</body>
-</html>
+            <!-- Karte 1 -->
+            <div class="card">
+                <div class="avatar">
+                    <!-- Ersetze src mit deinem Bildlink -->
+                    <img src="https://via.placeholder.com/150/333333/FFFFFF/?text=Felix" alt="felix">
+                </div>
+                <div class="username">felix</div>
+                <!-- Discord SVG Icon -->
+                <svg class="discord-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037 13.46 13.46 0 0 0-1.052 2.16 18.27 18.27 0 0 0-5.602 0 13.46 13.46 0 0 0-1.052-2.16.074.074 0 0 0-.079-.037 19.791 19.791 0 0 0-4.885 1.515.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                </svg>
+            </div>
+
+            <!-- Karte 2 -->
+            <div class="card">
+                <div class="avatar">
+                    <img src="https://via.placeholder.com/150/222222/FFFFFF/?text=Flin" alt="flin">
+                </div>
+                <div class="username">flin</div>
+                <svg class="discord-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037 13.46 13.46 0 0 0-1.052 2.16 18.27 18.27 0 0 0-5.602 0 13.46 13.46 0 0 0-1.052-2.16.074.074 0 0 0-.079-.037 19.791 19.791 0 0 0-4.885 1.515.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                </svg>
+            </div>
+
+            <!-- Karte 3 -->
+            <div class="card">
+                <div class="avatar">
+                    <img src="https://via.placeholder.com/150/111111/FFFFFF/?text=Pale" alt="pale">
+                </div>
+                <div class="username">pale</div>
+                <svg class="discord-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037 13.46 13.46 0 0 0-1.052 2.16 18.27 18.27 0 0 0-5.602 0 13.46 13.46 0 0 0-1.052-2.16.074.074 0 0 0-.079-.037 19.791 19.791 0 0 0-4.885 1.515.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                </svg>
+            </div>
+
+            <!-- Füge hier weitere Karten hinzu, kopiere einfach den Block <div class="card">...</div> -->
+             <div class="card">
+                <div class="avatar">
+                    <img src="https://via.placeholder.com/150/000000/FFFFFF/?text=vantixt" alt="vantixt">
+                </div>
+                <div class="username">vantixt</div>
+                <svg class="discord-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.0
